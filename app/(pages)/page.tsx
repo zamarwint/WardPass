@@ -87,17 +87,7 @@ export default function Page() {
           <div className="container w-2/6 text-left flex flex-col gap-15">
             <h2 className="text-2xl md:text-8xl font-bold text-primary">What is WardPass?</h2>
             <div className="flex flex-col gap-8 text-xl">
-              <p>
-                WardPass is a password solutions application. It has two (2) parts: A
-                password generator and a password manager. The password generator
-                allows you to create strong and secure passwords, and the password
-                manager securely stores those passwords.
-              </p>
-              <p>
-                With the password manager, you can easily organize your passwords into
-                different folders, and copy and paste them into your clipboard when
-                you want to sign in.
-              </p>
+              <p>WardPass is a secure password management solution. With WardPass, you can easily organize your passwords into different folders, and use them when you want to sign in to any service.</p>
             </div>
           </div>
           <div><Vault size={512} /> </div>

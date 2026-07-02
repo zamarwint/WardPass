@@ -30,6 +30,10 @@ const navigationLinks = [
     {
         label: "Password Generator",
         path: "/password-generator"
+    },
+    {
+        label: "Download",
+        path: "/download"
     }
 ];
 
