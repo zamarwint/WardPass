@@ -16,23 +16,20 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { scrollToAnchor } from "@/lib/handyFunctions";
 
 const navigationLinks = [
     {
-        label: "Home",
-        path: "/",
-    },
-    {
         label: "Features",
-        path: "/#features",
+        path: "#features",
     },
     {
         label: "Security",
-        path: "/#security",
+        path: "#security",
     },
     {
         label: "Password Generator",
-        path: "/#password-generator"
+        path: "/password-generator"
     }
 ];
 
@@ -85,15 +82,17 @@ export default function Navbar() {
         }
     }, [])
 
+    scrollToAnchor();
     return (
         <header className="bg-surface/80 dark:bg-surface/80 backdrop-blur-md docked w-full top-0 z-50 border-b border-white/10 flat no shadows fixed" >
             <div className="flex justify-between items-center w-full px-4 md:px-10 py-4 max-w-container-max mx-auto">
+                {/* Desktop menu */}
                 <div className="flex items-center gap-8">
                     <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
                     <nav className="hidden md:flex items-center gap-6">
-                        <Link className="hover:text-primary hover:border-b-2 hover:border-primary hover:pb-1 hover:opacity-80 transition-all" href="#features">Features</Link>
-                        <Link className="hover:text-primary hover:border-b-2 hover:border-primary hover:pb-1 hover:opacity-80 transition-all" href="#security">Security</Link>
-                        <Link className="hover:text-primary hover:border-b-2 hover:border-primary hover:pb-1 hover:opacity-80 transition-all" href="#password-generator">Password Generator</Link>
+                        {navigationLinks.map((link, index) => (
+                            <Link key={index} className="hover:text-primary hover:border-b-2 hover:border-primary hover:pb-1 hover:opacity-80 transition-all" href={link.path}>{link.label}</Link>
+                        ))}
                     </nav>
                 </div>
 

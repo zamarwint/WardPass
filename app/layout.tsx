@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${geistSans.variable} ${jetbrainsMono.variable} antialiased`}>
+      <body className={`${inter.variable} ${geistSans.variable} ${jetbrainsMono.variable} w-screen h-screen antialiased min-h-full min-w-full flex flex-col items-center justify-center overflow-x-hidden`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
