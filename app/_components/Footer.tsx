@@ -9,11 +9,11 @@ export default function Footer() {
                     <p className="text-xs uppercase tracking-widest text-muted-foreground">© 2024 WardPass. Active Security Protocols Engaged.</p>
                 </div>
                 <nav className="text-xs flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-4">
-                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="#">Privacy Policy</Link>
-                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="#">Terms of Service</Link>
-                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="#">Security Whitepaper</Link>
-                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="#">Status</Link>
-                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="#">Contact Support</Link>
+                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="/privacy-policy">Privacy Policy</Link>
+                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="/tos">Terms of Service</Link>
+                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="/security-whitepaper">Security Whitepaper</Link>
+                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="/status">Status</Link>
+                    <Link className="text-muted-foreground hover:underline hover:underline-offset-6 transition-colors" href="/contact">Contact Support</Link>
                 </nav>
             </div>
         </footer>

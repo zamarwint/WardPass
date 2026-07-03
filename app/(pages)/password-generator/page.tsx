@@ -137,7 +137,7 @@ export default function PasswordGeneratorPage() {
                 <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">Generate a Secure Password</h1>
                 <p className="text-xl text-muted-foreground">Remember to store it somewhere safe afterwards.</p>
             </div>
-            <div className="flex flex-col items-center justify-center border border-neutral-600 bg-card drop-shadow-xl/25 py-10 w-full gap-10 rounded-2xl">
+            <div className="flex flex-col items-center justify-center border border-neutral-600 bg-card/80 drop-shadow-xl/25 py-10 w-full gap-10 rounded-2xl">
                 <FieldSet className="w-full px-4 md:px-10">
                     <FieldLegend className="text-center">Password</FieldLegend>
                     <FieldDescription className="text-center">Generate your password.</FieldDescription>

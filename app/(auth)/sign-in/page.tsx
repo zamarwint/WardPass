@@ -5,6 +5,7 @@ import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldS
 import { Input } from "@/components/ui/input";
 import { Circle, LockKeyholeOpen, ShieldPlus } from "lucide-react";
 import Link from "next/link";
+import { FaGoogle } from "react-icons/fa";
 
 export default function SignInPage() {
     return (
@@ -17,10 +18,15 @@ export default function SignInPage() {
                         <FieldTitle className="text-4xl font-bold">Login</FieldTitle>
                         <FieldDescription>Access your secure vault.</FieldDescription>
 
-                        {/* <Field>
-                            <FieldLabel htmlFor="name" className="text-muted-foreground">Full Name</FieldLabel>
-                            <Input type="text" id="name" autoComplete="off" placeholder="e.g. John Doe" className="h-12" />
-                        </Field> */}
+                        <Field>
+                            <FieldTitle className="text-muted-foreground">Continue with Google</FieldTitle>
+                            <Button variant="outline" size="lg"><FaGoogle /> Google</Button>
+                        </Field>
+
+                        <div className="flex flex-col justify-center items-center">
+                            <FieldSeparator className="w-full" />
+                            <div className="bg-neutral-950 text-muted-foreground z-9 -translate-y-3.5 px-4">OR</div>
+                        </div>
 
                         <FieldGroup className="w-xl">
                             <Field>

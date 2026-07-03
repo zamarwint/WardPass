@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 export default function NotFoundPage() {
     const router = useRouter();
     return (
-        <motion.div className="flex flex-col w-screen h-screen items-center justify-center gap-4 font-geist">
+        <motion.div className="flex flex-col w-screen h-screen items-center justify-center gap-4 font-geist text-center">
             <TriangleAlert size={128} color="#FFFF00" />
             <h1 className="text-4xl md:text-8xl font-geist font-bold text-primary">404</h1>
             <p className="text-muted-foreground">Page Not Found</p>

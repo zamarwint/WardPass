@@ -5,6 +5,7 @@ import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, F
 import { FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
 import { CheckCircle, CheckCircleIcon, Circle, ShieldPlus } from "lucide-react";
+import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 
 export default function SignUpPage() {
@@ -12,7 +13,7 @@ export default function SignUpPage() {
         <>
             <div className="flex items-center justify-center w-screen h-screen z-999">
                 {/* SIGN UP CARD */}
-                <div className="bg-neutral-950 w-full h-full flex flex-col items-center justify-center gap-10">
+                <div className="bg-neutral-950 w-full h-full flex flex-col items-center justify-center gap-5">
                     <Link href="/" className="font-bold text-3xl tracking-tighter text-primary uppercase">WARDPASS</Link>
                     <FieldSet>
                         <FieldTitle className="text-4xl text-primary font-bold">Sign Up</FieldTitle>
@@ -22,6 +23,16 @@ export default function SignUpPage() {
                             <FieldLabel htmlFor="name" className="text-muted-foreground">Full Name</FieldLabel>
                             <Input type="text" id="name" autoComplete="off" placeholder="e.g. John Doe" className="h-12" />
                         </Field> */}
+
+                        <Field>
+                            <FieldTitle className="text-muted-foreground">Continue with Google</FieldTitle>
+                            <Button variant="outline" size="lg"><FaGoogle /> Google</Button>
+                        </Field>
+
+                        <div className="flex flex-col justify-center items-center">
+                            <FieldSeparator className="w-full" />
+                            <div className="bg-neutral-950 text-muted-foreground z-9 -translate-y-3.5 px-4">OR</div>
+                        </div>
 
                         <FieldGroup className="w-xl">
                             <Field>

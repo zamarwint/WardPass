@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 // If your Prisma file is located elsewhere, you can change the path
 import { prisma } from "./prisma";
+import { env } from "@/lib/env";
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -9,5 +10,11 @@ export const auth = betterAuth({
     }),
     emailAndPassword: {
         enabled: true,
-    }
+    },
+    socialProviders: {
+        google: {
+            clientId: env.GOOGLE_CLIENT_ID,
+            clientSecret: env.GOOGLE_CLIENT_SECRET,
+        },
+    },
 });
