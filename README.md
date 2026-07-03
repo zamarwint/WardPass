@@ -23,7 +23,7 @@ Visit [the website.](https://wardpass.netlify.app/)
 
 **_NB: This feature has not been developed as yet, and it will be electron based._**
 
-To get WardPass for Desktop, go to the [official website](https://wardpass.netlify.app/) and download it from there.
+To get WardPass for Desktop, go to the [official website](https://wardpass.netlify.app/download/) and download it from there.
 
 #### <u>DISCLAIMER</u>
 When you open the app, ignore the pop-up from Microsoft Defender, saying **"it prevented an unrecognized app from starting"**, the app is **virus free**, this only shows because I haven't yet purchased a code signing certificate for it from Microsoft. Microsoft automatically red flags apps that do not have their certificate.
