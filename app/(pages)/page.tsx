@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { useRef } from 'react';
 import { PaymentCard, WebsiteCredentialCard } from "../_components/ui-cards";
 import React, { Suspense } from 'react';
+import Link from "next/link";
 
 const Spline = React.lazy(() => import('@splinetool/react-spline'));
 
@@ -85,20 +86,20 @@ export default function Page() {
                   Active Protection Enabled
                 </div>
                 <h1 className="text-4xl font-bold md:text-6xl mb-6">
-                  Your Digital Life, <br /><span className="text-primary">Cryptographically Secured</span>
+                  The Password Management Solution, <br /><span className="text-primary">You Deserve.</span>
                 </h1>
                 <p className="text-on-surface-variant mb-10 max-w-xl">
                   Deploy a high-performance digital vault engineered for power users. Zero-knowledge architecture meets uncompromising speed. Your data remains an impenetrable asset.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto font-geist">
-                  <a className="font-bold btn-primary px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-primary/80" href="#">
+                  <Link href="/(auth)/sign-up" className="font-bold btn-primary px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-primary/80">
                     Get Started for Free
                     <span className="text-[18px]"><MoveRight /></span>
-                  </a>
-                  <a className="font-bold btn-outline px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2 hover:text-primary hover:border-primary" href="#">
+                  </Link>
+                  <Link href="#about" className="font-bold btn-outline px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2 hover:text-primary hover:border-primary">
                     Learn More
                     <span className="text-[18px]"><MoveUpRight /></span>
-                  </a>
+                  </Link >
                 </div>
                 <div className="mt-8 flex items-center gap-2 font-mono text-muted-foreground">
                   <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>

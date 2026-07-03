@@ -133,9 +133,11 @@ export default function Navbar() {
                             </Link>
                         ))}
                 </div>
+
+                {/* LOGIN AND SIGN-UP */}
                 <div className="flex items-center gap-4">
-                    <Link className="hidden md:block text-on-surface-variant hover:text-primary transition-colors" href="#">Login</Link>
-                    <Link className="hidden md:block bg-primary text-primary-foreground px-6 py-2 font-label-sm text-label-sm uppercase tracking-wider hover:bg-primary/80" href="#">Get Started</Link>
+                    <Link className="hidden md:block text-on-surface-variant hover:text-primary transition-colors" href="sign-in">Login</Link>
+                    <Link className="hidden md:block bg-primary text-primary-foreground px-6 py-2 font-label-sm text-label-sm uppercase tracking-wider hover:bg-primary/80" href="sign-up">Get Started</Link>
                 </div>
             </div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
