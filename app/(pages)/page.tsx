@@ -228,9 +228,9 @@ export default function Page() {
           <div className="p-12 text-center max-w-4xl mx-auto border border-white/10 hover:border-primary/50 bg-card">
             <h2 className="text-2xl md:text-4xl font-bold font-geist text-white mb-6">Ready to secure your assets?</h2>
             <p className="mb-10 max-w-2xl mx-auto text-muted-foreground">Join thousands of power users who trust WardPass with their most sensitive digital credentials.</p>
-            <a className="btn-primary px-10 py-4 inline-block uppercase tracking-wider hover:bg-primary/80" href="#">
+            <Link href="sign-up" className="btn-primary px-10 py-4 inline-block uppercase tracking-wider hover:bg-primary/80">
               Initialize Vault
-            </a>
+            </Link>
           </div>
         </div>
       </motion.section >
