@@ -6,6 +6,8 @@
 
 @source "./app";
 
+@source ".app/_components";
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -56,10 +58,6 @@
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 /* Kinetic Vault Design System - Light theme */
