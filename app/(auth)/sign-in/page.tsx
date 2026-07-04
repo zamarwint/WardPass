@@ -1,13 +1,41 @@
+"use client";
+
 import { PaymentCard, WebsiteCredentialCard } from "@/app/_components/ui-cards";
 import { Button } from "@/components/ui/button";
 import DotPattern from "@/components/ui/dot-pattern";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Circle, LockKeyholeOpen, ShieldPlus } from "lucide-react";
+import { Circle, Loader2Icon, LockKeyholeOpen, ShieldPlus } from "lucide-react";
 import Link from "next/link";
+import { useTransition } from "react";
 import { FaGoogle } from "react-icons/fa";
+import { toast } from "sonner";
 
 export default function SignInPage() {
+    const [googlePending, startGoogleTransition] = useTransition()
+    const [emailPending, startEmailTransition] = useTransition()
+
+    // async function signInWithGoogle() {
+    //     startGoogleTransition(async () => {
+    //         await authClient.signIn.social({
+    //             provider: "google",
+    //             callbackURL: "/dashboard",
+    //             fetchOptions: {
+    //                 onSuccess: () => {
+    //                     toast.success("Account created successfully. Redirecting...")
+    //                 },
+    //                 onError: (error) => {
+    //                     toast.error("Internal server error. Please try again.")
+    //                 }
+    //             }
+    //         });
+    //     })
+    // }
+
+    const signInWithEmail = async () => {
+        // TODO ADD SIGNIN w EMAIL LOGIC
+    }
+
     return (
         <>
             <div className="flex items-center justify-center w-screen h-screen z-999">
@@ -20,7 +48,18 @@ export default function SignInPage() {
 
                         <Field>
                             <FieldTitle className="text-muted-foreground">Continue with Google</FieldTitle>
-                            <Button variant="outline" size="lg"><FaGoogle /> Google</Button>
+                            <Button variant="outline" size="lg" disabled={googlePending}>
+                                {googlePending ? (
+                                    <>
+                                        <Loader2Icon className="size-4 animate-spin" />
+                                        <span>Loading...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaGoogle /> Sign in with Google
+                                    </>
+                                )}
+                            </Button>
                         </Field>
 
                         <div className="flex flex-col justify-center items-center">

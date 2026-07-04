@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { geistSans, inter, jetbrainsMono } from "./fonts"
 import "./globals.css";
 import { ThemeProvider } from "./_components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
   title: "WardPass",
@@ -23,6 +24,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

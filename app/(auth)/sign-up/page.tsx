@@ -9,6 +9,10 @@ import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 
 export default function SignUpPage() {
+    // const signUp = async () => {
+    //     // TODO: ADD SIGN UP LOGIC
+    // }
+
     return (
         <>
             <div className="flex items-center justify-center w-screen h-screen z-999">
@@ -17,24 +21,14 @@ export default function SignUpPage() {
                     <Link href="/" className="font-bold text-3xl tracking-tighter text-primary uppercase">WARDPASS</Link>
                     <FieldSet>
                         <FieldTitle className="text-4xl text-primary font-bold">Sign Up</FieldTitle>
-                        <FieldDescription>Create an account for a vault.</FieldDescription>
-
-                        {/* <Field>
-                            <FieldLabel htmlFor="name" className="text-muted-foreground">Full Name</FieldLabel>
-                            <Input type="text" id="name" autoComplete="off" placeholder="e.g. John Doe" className="h-12" />
-                        </Field> */}
-
-                        <Field>
-                            <FieldTitle className="text-muted-foreground">Continue with Google</FieldTitle>
-                            <Button variant="outline" size="lg"><FaGoogle /> Google</Button>
-                        </Field>
-
-                        <div className="flex flex-col justify-center items-center">
-                            <FieldSeparator className="w-full" />
-                            <div className="bg-neutral-950 text-muted-foreground z-9 -translate-y-3.5 px-4">OR</div>
-                        </div>
+                        <FieldDescription>Create an account for a vault. <span className="font-bold">OAuth</span> is <span className="font-bold underline">NOT</span> supported on the Sign Up page.</FieldDescription>
 
                         <FieldGroup className="w-xl">
+                            <Field>
+                                <FieldLabel htmlFor="name" className="text-muted-foreground">Full Name</FieldLabel>
+                                <Input type="text" id="name" autoComplete="off" placeholder="e.g. John Doe" className="h-12" />
+                            </Field>
+
                             <Field>
                                 <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
                                 <Input type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" />
@@ -88,8 +82,8 @@ export default function SignUpPage() {
                 </div>
                 {/* STACK THE CARDS ON TOP OF EACH OTHER */}
                 <div className="w-full flex flex-col items-center justify-center">
-                    <div className="z-998 rotate-13 translate-y-20"><PaymentCard /></div>
-                    <div className="z-999 -rotate-13 -translate-y-20"><WebsiteCredentialCard /></div>
+                    <div className="z-998 rotate-13 -translate-y-8"><PaymentCard withoutHeader={true} /></div>
+                    <div className="z-999 -rotate-13 translate-y-1"><WebsiteCredentialCard withoutHeader={true} /></div>
                 </div>
             </div>
             <DotPattern />
