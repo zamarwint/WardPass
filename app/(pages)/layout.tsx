@@ -7,7 +7,7 @@ export default function PageLayout({
     children: React.ReactNode
 }>) {
     return (
-        <div className="flex flex-col min-h-screen min-w-screen">
+        <div className="flex flex-col w-full h-full min-h-screen min-w-screen overflow-x-hidden">
             <Navbar />
             {children}
             <Footer />

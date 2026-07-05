@@ -84,7 +84,7 @@ export function PaymentCard({ withoutHeader = false }: { withoutHeader?: boolean
 export function WebsiteCredentialCard({ withoutHeader = false }: { withoutHeader?: boolean }) {
     if (withoutHeader) {
         return (
-            <div className="w-full max-w-[380px] bg-card rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/20 hover:shadow-primary/20 relative overflow-hidden">
+            <div className="w-full max-w-[380px] bg-card rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20 relative overflow-hidden">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-card border border-neutral-200 dark:border-neutral-800 shrink-0">
@@ -131,7 +131,7 @@ export function WebsiteCredentialCard({ withoutHeader = false }: { withoutHeader
     return (
         <div className="group flex flex-col justify-center items-center p-4 md:p-8 bg-background border border-neutral-200 dark:border-neutral-800 rounded-xl w-fit">
             <div className="text-sm mb-6 uppercase tracking-widest w-full text-center">Website Credential</div>
-            <div className="w-full max-w-[380px] bg-card/10 rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/20 hover:shadow-primary/20 relative overflow-hidden">
+            <div className="w-full max-w-[380px] bg-card/10 rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20 relative overflow-hidden">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-card border border-neutral-200 dark:border-neutral-800 shrink-0">

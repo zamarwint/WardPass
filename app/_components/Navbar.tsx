@@ -84,10 +84,10 @@ export default function Navbar() {
 
     scrollToAnchor();
     return (
-        <header className="bg-transparent backdrop-blur-md w-full top-0 z-50 border-b border-white/10 fixed" >
+        <header className="bg-transparent backdrop-blur-md w-full z-50 border-b border-foreground/10 fixed flex flex-col">
             <div className="flex justify-between items-center w-full px-4 md:px-10 py-4 mx-auto">
                 {/* Desktop menu */}
-                <div className="flex items-center gap-8">
+                <div className="hidden lg:flex items-center gap-8 w-full">
                     <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
                     <nav className="hidden md:flex items-center gap-6">
                         {navigationLinks.map((link, index) => (
@@ -97,7 +97,8 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Menu Toggle (Visual Only) */}
-                <div className="lg:hidden">
+                <div className="lg:hidden flex items-center justify-between gap-8 w-full">
+                    <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
                     <div
                         onClick={() => setOpen(!open)}
                         className="cursor-pointer text-primary"
@@ -110,7 +111,7 @@ export default function Navbar() {
                 <div
                     className={
                         open
-                            ? "flex flex-col lg:hidden bg-white/90 dark:bg-neutral-900/90 text-black dark:text-white w-screen h-screen items-left justify-left fixed top-20 left-0 z-999"
+                            ? "flex flex-col lg:hidden w-screen h-screen items-left justify-left fixed top-20 left-0 z-999"
                             : "hidden"
                     }
                 >
@@ -122,7 +123,7 @@ export default function Navbar() {
                                 className={
                                     pathName === link.path
                                         ? `block transition w-full p-5 bg-primary text-primary-foreground`
-                                        : "block transition w-full p-5"
+                                        : "block transition w-full p-5 bg-background"
                                 }
                             >
                                 {link.label}
@@ -131,9 +132,9 @@ export default function Navbar() {
                 </div>
 
                 {/* LOGIN AND SIGN-UP */}
-                <div className="flex items-center gap-4">
+                <div className="hidden md:flex items-center justify-end gap-4 w-full">
                     <Link className="hidden md:block btn-ghost transition-colors" href="sign-in">Login</Link>
-                    <Link className="hidden md:block btn-primary px-6 py-2 uppercase tracking-wider" href="sign-up">Get Started</Link>
+                    <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider" href="sign-up">Get Started</Link>
                 </div>
             </div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>

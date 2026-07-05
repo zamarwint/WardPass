@@ -125,7 +125,7 @@ export default function Page() {
       }
 
       {/* Trust Bar motion.Section */}
-      <motion.section className="border-y border-white/5 py-12">
+      <motion.section className="border-y border-foreground/5 py-12">
         <div className="mx-auto">
           <div className="flex flex-col items-center justify-center space-y-6">
             <p className="uppercase tracking-widest font-bold">Certified Security Protocols</p>
@@ -139,7 +139,7 @@ export default function Page() {
 
 
       {/* ABOUT SECTION */}
-      <motion.section id="about" className="border-y border-white/5 py-21 px-4 font-geist">
+      <motion.section id="about" className="border-y border-foreground/5 py-21 px-4 font-geist">
         <div className="flex flex-col md:flex-row mx-auto items-center justify-around gap-10 md:gap-0">
           <div className="w-64 md:w-2/6 text-center md:text-left flex flex-col gap-15">
             <h2 className="text-2xl md:text-8xl font-bold text-primary">What is WardPass?</h2>
@@ -155,7 +155,7 @@ export default function Page() {
       </motion.section>
 
       {/* Feature Grid Section */}
-      <motion.section id="features" className="py-24 px-4 md:px-10">
+      <motion.section id="features" className="py-24 px-4 md:px-10 border-y border-foreground/5">
         <div className="flex flex-col items-start">
           <div className="mb-16 max-w-3xl flex flex-col gap-4">
             <h2 className="font-bold text-3xl">Engineered for Absolute Trust</h2>
@@ -182,7 +182,7 @@ export default function Page() {
       </motion.section>
 
       {/* How It Works motion.Section */}
-      <motion.section id="security" className="py-24 border-t border-white/5 relative overflow-hidden">
+      <motion.section id="security" className="py-24 border-y border-foreground/5 relative overflow-hidden">
         {/* Decorative circuit lines */}
         <div className="absolute inset-0 pointer-events-none opacity-20">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -223,7 +223,7 @@ export default function Page() {
       </motion.section>
 
       {/* CTA motion.Section - */}
-      <motion.section className="py-30" >
+      <motion.section className="py-30 border-y border-foreground/5" >
         <div className="mx-auto">
           <div className="p-12 text-center max-w-4xl mx-auto border border-foreground/20 hover:border-primary/50 bg-card">
             <h2 className="text-2xl md:text-4xl font-bold font-geist mb-6">Ready to secure your assets?</h2>
@@ -234,6 +234,6 @@ export default function Page() {
           </div>
         </div>
       </motion.section >
-    </motion.main >
+    </motion.main>
   )
 }

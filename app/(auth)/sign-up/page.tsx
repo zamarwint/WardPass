@@ -17,7 +17,7 @@ export default function SignUpPage() {
         <>
             <div className="flex items-center justify-center w-screen h-screen z-999">
                 {/* SIGN UP CARD */}
-                <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-5">
+                <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-5 border-r border-foreground/5">
                     <Link href="/" className="font-bold text-3xl tracking-tighter text-primary uppercase">WARDPASS</Link>
                     <FieldSet>
                         <FieldTitle className="text-4xl text-primary font-bold">Sign Up</FieldTitle>
