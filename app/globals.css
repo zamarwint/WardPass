@@ -63,38 +63,38 @@
 /* Kinetic Vault Design System - Light theme */
 :root {
   --background: #ffffff;
-  --foreground: #1a1a1a;
-  --card: #f8f8f8;
-  --card-foreground: #1a1a1a;
+  --foreground: #1c1c14;
+  --card: #fcfcf8;
+  --card-foreground: #1c1c14;
   --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
-  --primary: #eaea00;
-  --primary-foreground: #1a1a1a;
-  --secondary: #e4e4e7;
-  --secondary-foreground: #1a1a1a;
-  --muted: #f4f4f5;
-  --muted-foreground: rgba(26, 26, 26, 0.6);
-  --accent: #eaea00;
-  --accent-foreground: #1a1a1a;
+  --popover-foreground: #1c1c14;
+  --primary: #8c8c00;
+  --primary-foreground: #ffffff;
+  --secondary: #eaeae0;
+  --secondary-foreground: #1c1c14;
+  --muted: #f4f4ec;
+  --muted-foreground: rgba(28, 28, 20, 0.6);
+  --accent: #8c8c00;
+  --accent-foreground: #ffffff;
   --destructive: #93000a;
   --destructive-foreground: #ffffff;
-  --border: rgba(26, 26, 26, 0.15);
-  --input: rgba(26, 26, 26, 0.15);
-  --ring: #eaea00;
+  --border: rgba(28, 28, 20, 0.15);
+  --input: rgba(28, 28, 20, 0.15);
+  --ring: #8c8c00;
   --radius: 0px;
-  --chart-1: #eaea00;
-  --chart-2: #c8c6c5;
-  --chart-3: #e4e2e1;
-  --chart-4: #939277;
-  --chart-5: #484831;
-  --sidebar: #f8f8f8;
-  --sidebar-foreground: #1a1a1a;
-  --sidebar-primary: #eaea00;
-  --sidebar-primary-foreground: #1a1a1a;
-  --sidebar-accent: #e4e4e7;
-  --sidebar-accent-foreground: #1a1a1a;
-  --sidebar-border: rgba(26, 26, 26, 0.15);
-  --sidebar-ring: #eaea00;
+  --chart-1: #8c8c00;
+  --chart-2: #c4c4b5;
+  --chart-3: #e2e2d5;
+  --chart-4: #919175;
+  --chart-5: #474730;
+  --sidebar: #fcfcf8;
+  --sidebar-foreground: #1c1c14;
+  --sidebar-primary: #8c8c00;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eaeae0;
+  --sidebar-accent-foreground: #1c1c14;
+  --sidebar-border: rgba(28, 28, 20, 0.15);
+  --sidebar-ring: #8c8c00;
 }
 
 /* Kinetic Vault Design System - Dark theme */
@@ -136,7 +136,7 @@
 
 @layer base {
   .btn-primary {
-    @apply bg-primary text-primary-foreground;
+    @apply bg-primary text-primary-foreground hover:bg-primary/85;
   }
 
   .btn-secondary {
@@ -156,11 +156,17 @@
   }
 
   .btn-outline {
-    @apply border border-input bg-background text-foreground;
+    @apply border border-input bg-background text-foreground hover:border-primary hover:text-primary;
   }
+
+  .btn-ghost {
+    @apply hover:text-primary;
+  }
+
   button {
     cursor: pointer;
   }
+
   .heading-xl {
     font-family: var(--font-sans);
     font-size: 3.75rem;
@@ -169,6 +175,7 @@
     letter-spacing: -0.025em;
     text-wrap: pretty;
   }
+
   .heading-lg {
     font-family: var(--font-sans);
     font-size: 3rem;
@@ -177,6 +184,7 @@
     letter-spacing: -0.025em;
     text-wrap: pretty;
   }
+
   .heading-md {
     font-family: var(--font-sans);
     font-size: 2.25rem;
@@ -185,6 +193,7 @@
     letter-spacing: -0.025em;
     text-wrap: pretty;
   }
+
   .heading-sm {
     font-family: var(--font-sans);
     font-size: 1.5rem;
@@ -193,21 +202,27 @@
     letter-spacing: -0.025em;
     text-wrap: pretty;
   }
+
   .container-padding-x {
     padding-inline: 1.5rem;
   }
+
   .section-padding-y {
     padding-block: 6rem;
   }
+
   .section-title-gap-xl {
     gap: 1.5rem;
   }
+
   .section-title-gap-lg {
     gap: 1.25rem;
   }
+
   .section-title-gap-md {
     gap: 1.25rem;
   }
+
   .section-title-gap-sm {
     gap: 1rem;
   }
@@ -267,33 +282,42 @@
   .heading-xl {
     font-size: 3rem;
   }
+
   .heading-lg {
     font-size: 2.25rem;
     line-height: 2.5rem;
   }
+
   .heading-md {
     font-size: 1.875rem;
     line-height: 2.25rem;
   }
+
   .heading-sm {
     font-size: 1.25rem;
     line-height: 1.75rem;
   }
+
   .container-padding-x {
     padding-inline: 1rem;
   }
+
   .section-padding-y {
     padding-block: 4rem;
   }
+
   .section-title-gap-xl {
     gap: 1.25rem;
   }
+
   .section-title-gap-lg {
     gap: 1rem;
   }
+
   .section-title-gap-md {
     gap: 1rem;
   }
+
   .section-title-gap-sm {
     gap: 1rem;
   }

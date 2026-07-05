@@ -31,10 +31,6 @@ const navigationLinks = [
         label: "Password Generator",
         path: "/password-generator"
     },
-    {
-        label: "Download",
-        path: "/download"
-    }
 ];
 
 export function ModeToggle() {
@@ -88,8 +84,8 @@ export default function Navbar() {
 
     scrollToAnchor();
     return (
-        <header className="bg-surface/80 dark:bg-surface/80 backdrop-blur-md docked w-full top-0 z-50 border-b border-white/10 fixed" >
-            <div className="flex justify-between items-center w-full px-4 md:px-10 py-4 max-w-container-max mx-auto">
+        <header className="bg-transparent backdrop-blur-md w-full top-0 z-50 border-b border-white/10 fixed" >
+            <div className="flex justify-between items-center w-full px-4 md:px-10 py-4 mx-auto">
                 {/* Desktop menu */}
                 <div className="flex items-center gap-8">
                     <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
@@ -136,8 +132,8 @@ export default function Navbar() {
 
                 {/* LOGIN AND SIGN-UP */}
                 <div className="flex items-center gap-4">
-                    <Link className="hidden md:block text-on-surface-variant hover:text-primary transition-colors" href="sign-in">Login</Link>
-                    <Link className="hidden md:block bg-primary text-primary-foreground px-6 py-2 font-label-sm text-label-sm uppercase tracking-wider hover:bg-primary/80" href="sign-up">Get Started</Link>
+                    <Link className="hidden md:block btn-ghost transition-colors" href="sign-in">Login</Link>
+                    <Link className="hidden md:block btn-primary px-6 py-2 uppercase tracking-wider" href="sign-up">Get Started</Link>
                 </div>
             </div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>

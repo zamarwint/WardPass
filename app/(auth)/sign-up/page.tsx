@@ -17,7 +17,7 @@ export default function SignUpPage() {
         <>
             <div className="flex items-center justify-center w-screen h-screen z-999">
                 {/* SIGN UP CARD */}
-                <div className="bg-neutral-950 w-full h-full flex flex-col items-center justify-center gap-5">
+                <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-5">
                     <Link href="/" className="font-bold text-3xl tracking-tighter text-primary uppercase">WARDPASS</Link>
                     <FieldSet>
                         <FieldTitle className="text-4xl text-primary font-bold">Sign Up</FieldTitle>
@@ -41,7 +41,7 @@ export default function SignUpPage() {
                         </FieldGroup>
 
                         {/* Security Checklist */}
-                        <div className="bg-card p-4 rounded border border-white/10 space-y-3">
+                        <div className="bg-card p-4 rounded border border-black/10 dark:border-white/10 space-y-3">
                             <h4 className="font-bold uppercase tracking-wider mb-2">Security Requirements</h4>
                             <ul className="space-y-2 font-mono text-sm">
                                 <li className="flex items-center gap-2">
@@ -59,17 +59,17 @@ export default function SignUpPage() {
                             </ul>
 
                             {/* Trust Bar Indicator */}
-                            <div className="mt-4 pt-3 border-t border-white/10 flex gap-1 h-1.5">
+                            <div className="mt-4 pt-3 border-t border-black/10 dark:border-white/10 flex gap-1 h-1.5">
                                 <div className="flex-1 size-2 bg-primary rounded-l-sm"></div>
-                                <div className="flex-1 size-2 bg-neutral-600"></div>
-                                <div className="flex-1 size-2 bg-neutral-600"></div>
-                                <div className="flex-1 size-2 bg-neutral-600 rounded-r-sm"></div>
+                                <div className="flex-1 size-2 bg-neutral-300 dark:bg-neutral-600"></div>
+                                <div className="flex-1 size-2 bg-neutral-300 dark:bg-neutral-600"></div>
+                                <div className="flex-1 size-2 bg-neutral-300 dark:bg-neutral-600 rounded-r-sm"></div>
                             </div>
                             <p className="text-right text-[10px] mt-1">STRENGTH: WEAK</p>
                         </div>
 
                         <Field orientation="horizontal">
-                            <Button variant="secondary" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/80"><ShieldPlus /> INITIALIZE VAULT</Button>
+                            <Button variant="default" size="lg" className="w-full"><ShieldPlus /> INITIALIZE VAULT</Button>
                         </Field>
 
                         <FieldSeparator />

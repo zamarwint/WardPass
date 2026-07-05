@@ -20,7 +20,7 @@ const features = [
   },
   {
     icon: <ShieldEllipsis />,
-    title: "Client-Side AES-256 Encryption",
+    title: "Client-Side AES-256-GCM Encryption",
     description: "Military-grade encryption happens locally on your device before a single byte hits our servers.",
     protocol: "AES-256-GCM"
   },
@@ -61,9 +61,9 @@ const securityPipelineClasses = (phaseNumber: number) => {
     case 1:
       return ["w-12 h-12 bg-primary text-background flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,255,0,0.3)]", "text-primary mb-1 uppercase tracking-widest font-geist"]
     case 2:
-      return ["w-12 h-12 bg-background border border-primary text-primary flex items-center justify-center shrink-0", "text-primary mb-1 uppercase tracking-widest font-geist"]
+      return ["w-12 h-12 bg-background text-primary border border-primary flex items-center justify-center shrink-0", "text-primary mb-1 uppercase tracking-widest font-geist"]
     case 3:
-      return ["w-12 h-12 bg-background border border-white/20 flex items-center justify-center shrink-0", "mb-1 uppercase tracking-widest font-geist"]
+      return ["w-12 h-12 bg-background border border-foreground/20 flex items-center justify-center shrink-0", "mb-1 uppercase tracking-widest font-geist"]
     default:
       return [""]
   }
@@ -81,22 +81,22 @@ export default function Page() {
           <div className="mx-auto px-4 md:px-10 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="flex flex-col items-start max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-[#ffff00]/30 bg-[#ffff00]/5 text-primary-fixed uppercase tracking-wider text-primary">
+                <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-primary/30 bg-primary/5 text-primary uppercase tracking-wider">
                   <span><ShieldCheck /></span>
                   Active Protection Enabled
                 </div>
                 <h1 className="text-4xl font-bold md:text-6xl mb-6">
                   The Password Management Solution, <br /><span className="text-primary">You Deserve.</span>
                 </h1>
-                <p className="text-on-surface-variant mb-10 max-w-xl">
+                <p className="mb-10 max-w-xl">
                   Deploy a high-performance digital vault engineered for power users. Zero-knowledge architecture meets uncompromising speed. Your data remains an impenetrable asset.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto font-geist">
-                  <Link href="/(auth)/sign-up" className="font-bold btn-primary px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-primary/80">
+                  <Link href="/sign-up" className="font-bold btn-primary px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2">
                     Get Started for Free
                     <span className="text-[18px]"><MoveRight /></span>
                   </Link>
-                  <Link href="#about" className="font-bold btn-outline px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2 hover:text-primary hover:border-primary">
+                  <Link href="#about" className="font-bold btn-outline px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2">
                     Learn More
                     <span className="text-[18px]"><MoveUpRight /></span>
                   </Link >
@@ -155,10 +155,10 @@ export default function Page() {
       </motion.section>
 
       {/* Feature Grid Section */}
-      <motion.section id="features" className="py-24 px-4 md:px-10 bg-black">
+      <motion.section id="features" className="py-24 px-4 md:px-10">
         <div className="flex flex-col items-start">
           <div className="mb-16 max-w-3xl flex flex-col gap-4">
-            <h2 className="font-bold text-3xl text-white">Engineered for Absolute Trust</h2>
+            <h2 className="font-bold text-3xl">Engineered for Absolute Trust</h2>
             <p className="text-muted-foreground">We rebuilt password management from the ground up, prioritizing mathematical certainty over promises.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -168,8 +168,8 @@ export default function Page() {
                 <div className="w-12 h-12 mb-6 flex items-center justify-center border border-primary/30 bg-primary/10 text-primary">
                   <span className="">{feature.icon}</span>
                 </div>
-                <h3 className="text-white font-bold mb-3 text-lg">{feature.title}</h3>
-                <p className="font-body-md text-body-md text-on-surface-variant mb-8 grow">
+                <h3 className="font-bold mb-3 text-lg">{feature.title}</h3>
+                <p className="mb-8 grow">
                   {feature.description}
                 </p>
                 <div className="pt-4 border-t border-white/10 font-mono text-xs">
@@ -186,23 +186,23 @@ export default function Page() {
         {/* Decorative circuit lines */}
         <div className="absolute inset-0 pointer-events-none opacity-20">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,100 L200,100 L250,150 L500,150 L550,100 L1000,100" fill="none" stroke="#ffff00" strokeWidth="1"></path>
-            <path d="M0,200 L150,200 L200,250 L600,250 L650,200 L1000,200" fill="none" stroke="#ffff00" strokeDasharray="4,4" strokeWidth="1"></path>
+            <path d="M0,100 L200,100 L250,150 L500,150 L550,100 L1000,100" fill="none" className="stroke-primary" strokeWidth="1"></path>
+            <path d="M0,200 L150,200 L200,250 L600,250 L650,200 L1000,200" fill="none" className="stroke-primary" strokeDasharray="4,4" strokeWidth="1"></path>
           </svg>
         </div>
         <div className="mx-auto relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-white mb-4 font-bold text-2xl">The Security Pipeline</h2>
-            <p className="text-on-surface-variant max-w-2xl mx-auto">A transparent look at how your data travels from your device to our vaults.</p>
+            <h2 className="mb-4 font-bold text-2xl">The Security Pipeline</h2>
+            <p className="max-w-2xl mx-auto">A transparent look at how your data travels from your device to our vaults.</p>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-start relative px-4 md:px-10">
             {/* Horizontal connection line (Desktop) */}
-            <div className="hidden md:block absolute top-6 left-0 w-full h-px bg-white/10 z-0">
+            <div className="hidden md:block absolute top-6 left-0 w-full h-px bg-foreground/10 z-0">
               {/* Active circuit segment */}
               <div className="h-full bg-primary w-2/3 shadow-[0_0_8px_rgba(255,255,0,0.5)]"></div>
             </div>
             {/* Vertical connection line (Mobile) */}
-            <div className="md:hidden absolute top-0 left-6 h-full w-px bg-white/10 z-0">
+            <div className="md:hidden absolute top-0 left-6 h-full w-px bg-foreground/10 z-0">
               <div className="w-full bg-primary h-2/3 shadow-[0_0_8px_rgba(255,255,0,0.5)]"></div>
             </div>
 
@@ -213,7 +213,7 @@ export default function Page() {
                 </div>
                 <div>
                   <div className={`${securityPipelineClasses(step.phaseNumber)[1]}`}>{step.phaseTitle}</div>
-                  <h4 className="text-white text-2xl font-bold mb-2">{step.title}</h4>
+                  <h4 className="text-2xl font-bold mb-2">{step.title}</h4>
                   <p className="text-sm">{step.description}</p>
                 </div>
               </div>
@@ -223,10 +223,10 @@ export default function Page() {
       </motion.section>
 
       {/* CTA motion.Section - */}
-      <motion.section className="py-30 bg-black" >
+      <motion.section className="py-30" >
         <div className="mx-auto">
-          <div className="p-12 text-center max-w-4xl mx-auto border border-white/10 hover:border-primary/50 bg-card">
-            <h2 className="text-2xl md:text-4xl font-bold font-geist text-white mb-6">Ready to secure your assets?</h2>
+          <div className="p-12 text-center max-w-4xl mx-auto border border-foreground/20 hover:border-primary/50 bg-card">
+            <h2 className="text-2xl md:text-4xl font-bold font-geist mb-6">Ready to secure your assets?</h2>
             <p className="mb-10 max-w-2xl mx-auto text-muted-foreground">Join thousands of power users who trust WardPass with their most sensitive digital credentials.</p>
             <Link href="sign-up" className="btn-primary px-10 py-4 inline-block uppercase tracking-wider hover:bg-primary/80">
               Initialize Vault

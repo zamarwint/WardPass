@@ -218,7 +218,7 @@ export function DotPattern({
   return (
     <div
       ref={containerRef}
-      className={cn("fixed inset-0 overflow-hidden bg-neutral-950", className)}
+      className={cn("fixed inset-0 overflow-hidden bg-neutral-50 dark:bg-neutral-950", className)}
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
