@@ -16,6 +16,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
+import { motion, useScroll } from "motion/react";
 import { scrollToAnchor } from "@/lib/handyFunctions";
 
 const navigationLinks = [
@@ -61,6 +63,7 @@ export function ModeToggle() {
 }
 
 export default function Navbar() {
+    const { scrollYProgress } = useScroll();
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const pathName = usePathname();
@@ -68,6 +71,7 @@ export default function Navbar() {
     useEffect(() => {
         if (typeof window === undefined) return;
         if (pathName !== '/') return;
+        console.log(scrollYProgress)
 
         const handleKeyEscape = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
@@ -84,8 +88,16 @@ export default function Navbar() {
 
     scrollToAnchor();
     return (
-        <header className="bg-transparent backdrop-blur-md w-full z-50 border-b border-foreground/10 fixed flex flex-col">
-            <div className="flex justify-between items-center w-full px-4 md:px-10 py-4 mx-auto">
+        <motion.header
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{
+                duration: 1,
+            }}
+            className="bg-transparent backdrop-blur-md w-full z-50 border-b border-foreground/10 fixed flex flex-col font-geist"
+        >
+            <motion.div className="flex justify-between items-center w-full px-4 md:px-10 py-4 mx-auto">
                 {/* Desktop menu */}
                 <div className="hidden lg:flex items-center gap-8 w-full">
                     <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
@@ -132,11 +144,11 @@ export default function Navbar() {
                 </div>
 
                 {/* LOGIN AND SIGN-UP */}
-                <div className="hidden md:flex items-center justify-end gap-4 w-full">
+                <div className="hidden lg:flex items-center justify-end gap-4 w-full">
                     <Link className="hidden md:block btn-ghost transition-colors" href="sign-in">Login</Link>
-                    <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider" href="sign-up">Get Started</Link>
+                    <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="sign-up">Get Started</Link>
                 </div>
-            </div>
+            </motion.div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogContent className="z-999 flex flex-col items-center justify-center">
                     <DialogHeader>
@@ -145,6 +157,14 @@ export default function Navbar() {
                     <ModeToggle />
                 </DialogContent>
             </Dialog>
-        </header>
+            <motion.div
+                id="scroll-indicator"
+                className="fixed top-0 left-0 right-0 h-[2px] w-screen bg-primary origin-left z-50"
+                style={{
+                    scaleX: scrollYProgress,
+                    transformOrigin: "0%",
+                }}
+            />
+        </motion.header>
     )
 }

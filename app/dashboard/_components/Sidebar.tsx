@@ -40,7 +40,7 @@ export default function Sidebar() {
             transition={{ duration: 0.5 }}
             className="h-screen px-4 py-8 bg-card w-fit flex flex-col gap-20 justify-between"
         >
-            <Link className="font-bold text-3xl tracking-tighter text-primary uppercase px-10" href="/dashboard">WardPass</Link>
+            <Link className="font-bold text-3xl tracking-tighter text-primary px-10" href="/dashboard">WardPass</Link>
             <div className="w-full flex flex-col gap-2 h-full">
                 <Button variant="ghost" size="lg" className="w-full flex justify-between">
                     <h1 className="font-bold text-lg">Vaults</h1>

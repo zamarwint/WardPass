@@ -9,7 +9,7 @@ export default function NotFoundPage() {
     const router = useRouter();
     return (
         <motion.div className="flex flex-col w-screen h-screen items-center justify-center gap-4 font-geist text-center">
-            <TriangleAlert size={128} color="#FFFF00" />
+            <TriangleAlert size={128} className="text-primary" />
             <h1 className="text-4xl md:text-8xl font-geist font-bold text-primary">404</h1>
             <p className="text-muted-foreground">Page Not Found</p>
             <div className="w-full flex items-center justify-center">
