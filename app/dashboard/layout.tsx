@@ -1,10 +1,8 @@
 "use client";
 
-import { getWindowWidth } from "@/lib/handyFunctions";
 import DesktopOnly from "../_components/DesktopOnly";
 import Sidebar from "./_components/Sidebar"
-
-const windowWidth = getWindowWidth();
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function DashboardLayout({
     children,
@@ -13,7 +11,7 @@ export default function DashboardLayout({
 }>) {
     return (
         <div className="flex min-h-screen min-w-screen font-geist">
-            {windowWidth < 1024 ? (
+            {useIsMobile() ? (
                 <DesktopOnly />
             ) : (
                 <>

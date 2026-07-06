@@ -1,0 +1,15 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield Outline - Muted Dark Yellow -->
+  <path d="M100 20C100 20 40 40 40 100C40 160 100 180 100 180C100 180 160 160 160 100C160 40 100 20 100 20Z" stroke="#8c8c00" stroke-width="8" stroke-linejoin="round" />
+  
+  <!-- Cryptographic Grid Pattern -->
+  <path d="M70 60H130V140H70V60Z" stroke="#8c8c00" stroke-width="2" />
+  <path d="M70 80H130M70 100H130M70 120H130M90 60V140M110 60V140" stroke="#8c8c00" stroke-width="1" stroke-dasharray="2 2" opacity="0.6" />
+  
+  <!-- Central Lock -->
+  <rect x="90" y="90" width="20" height="25" rx="2" fill="#8c8c00" />
+  <path d="M93 90V85C93 81.134 96.134 78 100 78C103.866 78 107 81.134 107 85V90" stroke="#8c8c00" stroke-width="3" stroke-linecap="round" />
+  
+  <!-- Technical Accents -->
+  <circle cx="100" cy="100" r="45" stroke="#8c8c00" stroke-width="0.5" stroke-dasharray="1 4" />
+</svg>

@@ -62,10 +62,3 @@ export const useViewportWidth = () => {
 
 //     return "#home";
 // };
-
-export const getWindowWidth = (): number => {
-    if (typeof window !== 'undefined') {
-        return window.innerWidth;
-    }
-    return 0; // Default for SSR
-}

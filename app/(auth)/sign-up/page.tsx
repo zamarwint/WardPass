@@ -1,17 +1,54 @@
+"use client";
+
 import { PaymentCard, WebsiteCredentialCard } from "@/app/_components/ui-cards";
 import { Button } from "@/components/ui/button";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
-import { CheckCircle, CheckCircleIcon, Circle, ShieldPlus } from "lucide-react";
+import { CheckCircle, CheckCircleIcon, Circle, Loader2Icon, ShieldPlus } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
+import { authClient } from "@/utils/auth-client";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import PasswordInput from "@/app/(auth)/_components/PasswordInput";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
-    // const signUp = async () => {
-    //     // TODO: ADD SIGN UP LOGIC
-    // }
+    const [emailPending, startEmailTransition] = useTransition();
+    const [fullName, setFullName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const router = useRouter();
+
+    const signUpWithEmail = async () => {
+        startEmailTransition(async () => {
+            const { data, error } = await authClient.signUp.email({
+                email, // user email address
+                password, // user password -> min 8 characters by default
+                name: fullName, // user display name
+                callbackURL: "/dashboard" // A URL to redirect to after the user verifies their email (optional)
+            }, {
+                onRequest: (ctx) => {
+                    toast.loading("Signing you up...");
+                },
+                onSuccess: (ctx) => {
+                    //redirect to the dashboard or sign in page
+                    toast.dismiss();
+                    toast.success("Account created successfully. Redirecting to dashboard... " + ctx.data);
+                    router.push("/dashboard"); // CALLBACK URL WILL ONLY WORK IF THE USER VERIFIES THEIR EMAIL, TODO ADD EMAIL VERIFICATION.
+                },
+                onError: (ctx) => {
+                    // display the error message
+                    toast.dismiss();
+                    toast.error(ctx.error.message);
+                },
+
+            });
+            console.log(data, error);
+        })
+    }
 
     return (
         <>
@@ -26,17 +63,17 @@ export default function SignUpPage() {
                         <FieldGroup className="w-xl">
                             <Field>
                                 <FieldLabel htmlFor="name" className="text-muted-foreground">Full Name</FieldLabel>
-                                <Input type="text" id="name" autoComplete="off" placeholder="e.g. John Doe" className="h-12" />
+                                <Input type="text" id="name" autoComplete="off" placeholder="e.g. John Doe" className="h-12" onChange={(e) => setFullName(e.target.value)} />
                             </Field>
 
                             <Field>
                                 <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
-                                <Input type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" />
+                                <Input type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" onChange={(e) => setEmail(e.target.value)} />
                             </Field>
 
                             <Field>
                                 <FieldLabel htmlFor="password" className="text-muted-foreground">Password</FieldLabel>
-                                <Input type="password" id="password" autoComplete="off" placeholder="************" className="h-12" />
+                                <PasswordInput id="password" autoComplete="off" placeholder="************" className="h-12" onChange={(e) => setPassword(e.target.value)} />
                             </Field>
                         </FieldGroup>
 
@@ -69,7 +106,18 @@ export default function SignUpPage() {
                         </div>
 
                         <Field orientation="horizontal">
-                            <Button variant="default" size="lg" className="w-full"><ShieldPlus /> INITIALIZE VAULT</Button>
+                            <Button disabled={emailPending} variant="default" size="lg" className="w-full" onClick={signUpWithEmail}>
+                                {emailPending ? (
+                                    <>
+                                        <Loader2Icon className="size-4 animate-spin" />
+                                        <span>Loading...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <ShieldPlus /> INITIALIZE VAULT
+                                    </>
+                                )}
+                            </Button>
                         </Field>
 
                         <FieldSeparator />

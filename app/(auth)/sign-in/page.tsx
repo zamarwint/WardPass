@@ -1,39 +1,86 @@
 "use client";
 
-import { PaymentCard, WebsiteCredentialCard } from "@/app/_components/ui-cards";
+import PasswordInput from "@/app/(auth)/_components/PasswordInput";
+import { PaymentCard } from "@/app/_components/ui-cards";
 import { Button } from "@/components/ui/button";
 import DotPattern from "@/components/ui/dot-pattern";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/utils/auth-client";
 import { Circle, Loader2Icon, LockKeyholeOpen, ShieldPlus } from "lucide-react";
 import Link from "next/link";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
+    const router = useRouter();
     const [googlePending, startGoogleTransition] = useTransition()
     const [emailPending, startEmailTransition] = useTransition()
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    // async function signInWithGoogle() {
-    //     startGoogleTransition(async () => {
-    //         await authClient.signIn.social({
-    //             provider: "google",
-    //             callbackURL: "/dashboard",
-    //             fetchOptions: {
-    //                 onSuccess: () => {
-    //                     toast.success("Account created successfully. Redirecting...")
-    //                 },
-    //                 onError: (error) => {
-    //                     toast.error("Internal server error. Please try again.")
-    //                 }
-    //             }
-    //         });
-    //     })
-    // }
+    const signInWithGoogle = async () => {
+        startGoogleTransition(async () => {
+            const data = await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/dashboard",
+                fetchOptions: {
+                    onRequest: () => {
+                        toast.loading("Signing you up with Google...");
+                    },
+                    onSuccess: () => {
+                        toast.dismiss();
+                        toast.success("Account created successfully. Redirecting...")
+                        router.push("/dashboard"); // CALLBACK URL WILL ONLY WORK IF THE USER VERIFIES THEIR EMAIL, TODO ADD EMAIL VERIFICATION.
+                    },
+                    onError: (error) => {
+                        toast.error("Internal server error. Please try again.")
+                        console.log(error);
+                    }
+                }
+            });
+            console.log(data);
+        })
+    }
 
     const signInWithEmail = async () => {
-        // TODO ADD SIGNIN w EMAIL LOGIC
+        startEmailTransition(async () => {
+            const { data, error } = await authClient.signIn.email({
+                /**
+                 * The user email
+                 */
+                email,
+                /**
+                 * The user password
+                 */
+                password,
+                /**
+                 * A URL to redirect to after the user verifies their email (optional)
+                 */
+                callbackURL: "/dashboard",
+                /**
+                 * remember the user session after the browser is closed. 
+                 * @default true
+                 */
+                rememberMe: false
+            }, {
+                onRequest: (ctx) => {
+                    toast.loading("Signing you in...");
+                },
+                onSuccess: (ctx) => {
+                    //redirect to the dashboard or sign in page
+                    toast.dismiss();
+                    toast.success("Signed in successfully. Redirecting to dashboard... " + ctx.data);
+                },
+                onError: (ctx) => {
+                    // display the error message
+                    toast.error(ctx.error.message);
+                },
+            })
+            console.log(data, error);
+        })
     }
 
     return (
@@ -48,7 +95,7 @@ export default function SignInPage() {
 
                         <Field>
                             <FieldTitle className="text-muted-foreground">Continue with Google</FieldTitle>
-                            <Button variant="outline" size="lg" disabled={googlePending}>
+                            <Button variant="outline" size="lg" disabled={googlePending} onClick={signInWithGoogle}>
                                 {googlePending ? (
                                     <>
                                         <Loader2Icon className="size-4 animate-spin" />
@@ -70,12 +117,12 @@ export default function SignInPage() {
                         <FieldGroup className="w-xl">
                             <Field>
                                 <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
-                                <Input type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" />
+                                <Input type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" onChange={(e) => setEmail(e.target.value)} />
                             </Field>
 
                             <Field>
                                 <FieldLabel htmlFor="password" className="text-muted-foreground">Password</FieldLabel>
-                                <Input type="password" id="password" autoComplete="off" placeholder="************" className="h-12" />
+                                <PasswordInput id="password" autoComplete="off" placeholder="************" className="h-12" onChange={(e) => setPassword(e.target.value)} />
                             </Field>
                         </FieldGroup>
 
@@ -95,7 +142,18 @@ export default function SignInPage() {
                         </div>
 
                         <Field orientation="horizontal">
-                            <Button variant="default" size="lg" className="w-full"><LockKeyholeOpen /> UNLOCK VAULT</Button>
+                            <Button disabled={emailPending} variant="default" size="lg" className="w-full" onClick={signInWithEmail}>
+                                {emailPending ? (
+                                    <>
+                                        <Loader2Icon className="size-4 animate-spin" />
+                                        <span>Loading...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <LockKeyholeOpen /> UNLOCK VAULT
+                                    </>
+                                )}
+                            </Button>
                         </Field>
 
                         <FieldSeparator />
@@ -106,7 +164,7 @@ export default function SignInPage() {
                         </FieldDescription>
                     </FieldSet>
                 </div>
-                {/* STACK THE CARDS ON TOP OF EACH OTHER */}
+                {/* ONE CARD */}
                 <div className="w-full flex flex-col items-center justify-center">
                     <PaymentCard />
                 </div>
