@@ -28,7 +28,7 @@ export default function SignUpPage() {
                 email, // user email address
                 password, // user password -> min 8 characters by default
                 name: fullName, // user display name
-                callbackURL: "/dashboard" // A URL to redirect to after the user verifies their email (optional)
+                callbackURL: process.env.NEXT_PUBLIC_APP_URL + '/dashboard' // A URL to redirect to after the user verifies their email (optional)
             }, {
                 onRequest: (ctx) => {
                     toast.loading("Signing you up...");
@@ -36,8 +36,8 @@ export default function SignUpPage() {
                 onSuccess: (ctx) => {
                     //redirect to the dashboard or sign in page
                     toast.dismiss();
-                    toast.success("Account created successfully. Redirecting to dashboard... " + ctx.data);
-                    router.push("/dashboard"); // CALLBACK URL WILL ONLY WORK IF THE USER VERIFIES THEIR EMAIL, TODO ADD EMAIL VERIFICATION.
+                    toast.success("Success! Check your email to verify your account." + ctx.data);
+                    router.push("/verify-email");
                 },
                 onError: (ctx) => {
                     // display the error message
@@ -47,6 +47,7 @@ export default function SignUpPage() {
 
             });
             console.log(data, error);
+            localStorage.setItem("currentUserEmail", email);
         })
     }
 

@@ -33,6 +33,10 @@ const navigationLinks = [
         label: "Password Generator",
         path: "/password-generator"
     },
+    {
+        label: "Chrome Extension",
+        path: "/extension"
+    },
 ];
 
 export function ModeToggle() {
@@ -68,9 +72,21 @@ export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const pathName = usePathname();
 
+    // PREVENT USER FROM SCROLLING WHEN MOBILE MENU IS ACTIVE
+    useEffect(() => {
+        if (open) {
+            document.documentElement.style.overflow = "hidden";
+        } else {
+            document.documentElement.style.overflow = "auto";
+        }
+    }, [open]);
+
+    // CHANGE THEME, FOR DEV PURPOSES, NOT FOR PRODUCTION
     useEffect(() => {
         if (typeof window === undefined) return;
         if (pathName !== '/') return;
+        if (process.env.NEXT_PUBLIC_NODE_ENV === 'production') return;
+
         console.log(scrollYProgress)
 
         const handleKeyEscape = (e: KeyboardEvent) => {
@@ -98,17 +114,17 @@ export default function Navbar() {
             className="bg-transparent backdrop-blur-md w-full z-50 border-b border-foreground/10 fixed flex flex-col font-geist"
         >
             <motion.div className="flex justify-between items-center w-full px-4 md:px-10 py-4 mx-auto">
-                {/* Desktop menu */}
+                {/* DESKTOP MENU */}
                 <div className="hidden lg:flex items-center gap-8 w-full">
                     <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
                     <nav className="hidden md:flex items-center gap-6">
                         {navigationLinks.map((link, index) => (
-                            <Link key={index} className="hover:text-primary hover:border-b-2 hover:border-primary hover:pb-1 hover:opacity-80 transition-all" href={link.path}>{link.label}</Link>
+                            <Link key={index} className={pathName === link.path ? "text-primary border-b-2 border-primary pb-1 opacity-80 transition-all " : "hover:text-primary hover:border-b-2 hover:border-primary hover:pb-1 hover:opacity-80 transition-all"} href={link.path}>{link.label}</Link>
                         ))}
                     </nav>
                 </div>
 
-                {/* Mobile Menu Toggle (Visual Only) */}
+                {/* MOBILE MENU (VISUAL ONLY) */}
                 <div className="lg:hidden flex items-center justify-between gap-8 w-full">
                     <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
                     <div
@@ -119,11 +135,11 @@ export default function Navbar() {
                     </div>
                 </div>
 
-                {/* MOBILE MENU */}
+                {/* MOBILE MENU DROPDOWN */}
                 <div
                     className={
                         open
-                            ? "flex flex-col lg:hidden w-screen h-screen items-left justify-left fixed top-20 left-0 z-999"
+                            ? "flex flex-col lg:hidden w-screen h-screen items-left justify-left top-20 left-0 z-999 fixed"
                             : "hidden"
                     }
                 >
@@ -134,8 +150,8 @@ export default function Navbar() {
                                 href={link.path}
                                 className={
                                     pathName === link.path
-                                        ? `block transition w-full p-5 bg-primary text-primary-foreground`
-                                        : "block transition w-full p-5 bg-background"
+                                        ? `block transition w-full h-fit p-5 bg-primary text-primary-foreground`
+                                        : "block transition w-full h-fit p-5 bg-background"
                                 }
                             >
                                 {link.label}
@@ -143,7 +159,7 @@ export default function Navbar() {
                         ))}
                 </div>
 
-                {/* LOGIN AND SIGN-UP */}
+                {/* LOGIN AND SIGN-UP (DESKTOP ONLY) */}
                 <div className="hidden lg:flex items-center justify-end gap-4 w-full">
                     <Link className="hidden md:block btn-ghost transition-colors" href="sign-in">Login</Link>
                     <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="sign-up">Get Started</Link>

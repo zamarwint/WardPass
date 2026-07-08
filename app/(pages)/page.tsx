@@ -6,10 +6,11 @@ import { MoveRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useRef } from 'react';
 import { PaymentCard, WebsiteCredentialCard } from "../_components/ui-cards";
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
+import dynamic from "next/dynamic";
 import Link from "next/link";
 
-const Spline = React.lazy(() => import('@splinetool/react-spline'));
+const Spline = dynamic(() => import('@splinetool/react-spline'), { ssr: false });
 
 const features = [
   {
@@ -71,7 +72,7 @@ const securityPipelineClasses = (phaseNumber: number) => {
 
 export default function Page() {
   return (
-    <motion.main className="grow">
+    <motion.main className="grow font-geist">
       {/* Hero motion.Section  */
         <motion.section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-black">
           {/* Subtle background grid */}

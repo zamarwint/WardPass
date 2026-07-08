@@ -59,7 +59,7 @@ export default function SignInPage() {
                 /**
                  * A URL to redirect to after the user verifies their email (optional)
                  */
-                callbackURL: "/dashboard",
+                callbackURL: process.env.NEXT_PUBLIC_APP_URL + '/dashboard',
                 /**
                  * remember the user session after the browser is closed. 
                  * @default true
@@ -72,10 +72,12 @@ export default function SignInPage() {
                 onSuccess: (ctx) => {
                     //redirect to the dashboard or sign in page
                     toast.dismiss();
-                    toast.success("Signed in successfully. Redirecting to dashboard... " + ctx.data);
+                    toast.success("Success! Check your email to verify your account." + ctx.data);
+                    router.push("/verify-email");
                 },
                 onError: (ctx) => {
                     // display the error message
+                    toast.dismiss();
                     toast.error(ctx.error.message);
                 },
             })
