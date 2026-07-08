@@ -6,19 +6,10 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-
-import { Button } from "@/components/ui/button"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
 import { motion, useScroll } from "motion/react";
 import { scrollToAnchor } from "@/lib/handyFunctions";
+import { authClient } from "@/utils/auth-client";
+import { ModeToggleIcon } from "@/app/_components/themeChange";
 
 const navigationLinks = [
     {
@@ -39,38 +30,12 @@ const navigationLinks = [
     },
 ];
 
-export function ModeToggle() {
-    const { setTheme } = useTheme()
-
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                    <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-                    <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-                    <span className="sr-only">Toggle theme</span>
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
-                    Light
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    Dark
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
-                    System
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
-}
-
 export default function Navbar() {
     const { scrollYProgress } = useScroll();
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const pathName = usePathname();
+    const { data: session, error, isPending } = authClient.useSession.get();
 
     // PREVENT USER FROM SCROLLING WHEN MOBILE MENU IS ACTIVE
     useEffect(() => {
@@ -161,8 +126,17 @@ export default function Navbar() {
 
                 {/* LOGIN AND SIGN-UP (DESKTOP ONLY) */}
                 <div className="hidden lg:flex items-center justify-end gap-4 w-full">
-                    <Link className="hidden md:block btn-ghost transition-colors" href="sign-in">Login</Link>
-                    <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="sign-up">Get Started</Link>
+                    {session?.user ? (
+                        <>
+                            <ModeToggleIcon />
+                            <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="/dashboard">Dashboard</Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link className="hidden md:block btn-ghost transition-colors" href="sign-in">Login</Link>
+                            <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="sign-up">Get Started</Link>
+                        </>
+                    )}
                 </div>
             </motion.div>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -170,7 +144,7 @@ export default function Navbar() {
                     <DialogHeader>
                         <DialogTitle>Change Theme</DialogTitle>
                     </DialogHeader>
-                    <ModeToggle />
+                    <ModeToggleIcon />
                 </DialogContent>
             </Dialog>
             <motion.div

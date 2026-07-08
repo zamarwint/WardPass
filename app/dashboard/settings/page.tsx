@@ -20,6 +20,7 @@ import PasswordInput from "@/app/(auth)/_components/PasswordInput";
 import { authClient } from "@/utils/auth-client";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
+import { ModeToggleButton } from "@/app/_components/themeChange";
 
 export default function SettingsPage() {
     const { data: session, error, isPending } = authClient.useSession.get();
@@ -29,7 +30,6 @@ export default function SettingsPage() {
     const [changedEmail, setChangedEmail] = useState(session?.user?.email as string)
     const [changedPassword, setChangedPassword] = useState("")
     const [deletePending, startDeleteTransition] = useTransition();
-
 
     const deleteAccount = () => {
         startDeleteTransition(async () => {
@@ -78,6 +78,19 @@ export default function SettingsPage() {
 
                     <Field className="w-fit">
                         <Button className="h-12 w-fit px-10" size="lg" onClick={() => { }}>Update Settings</Button>
+                    </Field>
+                </FieldGroup>
+
+                <FieldSeparator />
+
+                <FieldGroup>
+                    <Field>
+                        <FieldLabel className="text-xl">Change Theme</FieldLabel>
+                        <FieldDescription>Switch between light, dark, and system themes.</FieldDescription>
+                    </Field>
+
+                    <Field className="w-fit">
+                        <ModeToggleButton />
                     </Field>
                 </FieldGroup>
 
