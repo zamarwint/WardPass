@@ -79,7 +79,7 @@ export default function Sidebar() {
                     onSuccess: (ctx) => {
                         toast.dismiss();
                         router.push("/sign-in"); // redirect to login page
-                        toast.success("Signed out successfully. Redirecting...");
+                        toast.success("Signed out successfully.");
                     },
                     onError: (ctx) => {
                         toast.error("Sign out failed. Internal server error. " + ctx.error.message);
@@ -102,9 +102,18 @@ export default function Sidebar() {
                     WardPass
                 </Link>
                 <motion.p className="font-semibold text-sm">ACTIVE SECURITY</motion.p>
-                <Button variant="secondary" size="lg" className="w-full flex justify-start mt-10">
-                    <LockKeyhole size="lg" />
-                    Lock WardPass
+                <Button disabled={signOutPending} variant="secondary" size="lg" className="w-full flex justify-start mt-10" onClick={signOut}>
+                    {signOutPending ? (
+                        <>
+                            <Loader2Icon className="size-4 animate-spin" />
+                            <span>Loading...</span>
+                        </>
+                    ) : (
+                        <>
+                            <LockKeyhole size="lg" />
+                            <span>Lock WardPass <span className="text-muted-foreground">(Log Out)</span></span>
+                        </>
+                    )}
                 </Button>
                 <Separator className="my-2" />
             </motion.div>
@@ -168,19 +177,6 @@ export default function Sidebar() {
                         Settings
                     </Button>
                 </Link>
-                <Button disabled={signOutPending} variant="ghost" size="lg" className="w-full flex justify-start" onClick={signOut}>
-                    {signOutPending ? (
-                        <>
-                            <Loader2Icon className="size-4 animate-spin" />
-                            <span>Loading...</span>
-                        </>
-                    ) : (
-                        <>
-                            <LogOut />
-                            <span>Log Out</span>
-                        </>
-                    )}
-                </Button>
             </motion.div>
         </motion.div>
     )

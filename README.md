@@ -21,7 +21,7 @@ Try WardPass today! Available under the MIT License.
 
 ## Feedback
 
-To give feedback, please visit my Portfolio website and contact me from there.
+To give feedback, please visit my [Portfolio website](https://zamarwint.xyz/) and contact me from there.
 
 ###
 

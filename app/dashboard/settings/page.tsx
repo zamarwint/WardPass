@@ -22,11 +22,14 @@ import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 
 export default function SettingsPage() {
+    const { data: session, error, isPending } = authClient.useSession.get();
+
     const [deleteConfirm, setDeleteConfirm] = useState("");
     const [password, setPassword] = useState("");
-    const [changedEmail, setChangedEmail] = useState("")
+    const [changedEmail, setChangedEmail] = useState(session?.user?.email as string)
     const [changedPassword, setChangedPassword] = useState("")
     const [deletePending, startDeleteTransition] = useTransition();
+
 
     const deleteAccount = () => {
         startDeleteTransition(async () => {
@@ -65,7 +68,7 @@ export default function SettingsPage() {
                 <FieldGroup>
                     <Field className="w-xl">
                         <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
-                        <Input type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" onChange={(e) => setChangedEmail(e.target.value)} />
+                        <Input type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" onChange={(e) => setChangedEmail(e.target.value)} value={changedEmail} />
                     </Field>
 
                     <Field className="w-xl">
