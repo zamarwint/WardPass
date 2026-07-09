@@ -17,6 +17,7 @@
     "@splinetool/runtime": "^1.12.98",
     "@t3-oss/env-nextjs": "^0.13.11",
     "better-auth": "^1.6.23",
+    "check-password-strength": "^3.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

@@ -16,9 +16,9 @@ export default function DashboardLayout({
             ) : (
                 <>
                     <Sidebar />
-                    {children}
-                </>)
-            }
+                    <div className="flex flex-1 flex-col w-full min-h-screen">{children}</div>
+                </>
+            )}
         </div>
     )
 }

@@ -132,7 +132,7 @@ export default function Page() {
             <p className="uppercase tracking-widest font-bold">Certified Security Protocols</p>
             <div className="flex flex-row gap-2">
               <Lock className="text-gray-500" />
-              <p className="font-geist font-bold">AES-256 ENCRYPTION</p>
+              <p className="font-geist font-bold">AES-256 GCM ENCRYPTION</p>
             </div>
           </div>
         </div>

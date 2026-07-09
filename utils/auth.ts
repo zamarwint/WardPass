@@ -18,11 +18,21 @@ export const auth = betterAuth({
             sendEmail({
                 to: user.email,
                 subject: "Verify your email address for WardPass.",
-                text: `<div><p>Click the link to verify your email:</p><a href="${url}">Verify your email</a></div>`,
+                text: `<div><p>Click the link to verify your email:</p> <a href="${url}">Verify your email</a></div>`,
             });
         },
     },
     user: {
+        changeEmail: {
+            enabled: true,
+            sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
+                sendEmail({
+                    to: user.email, // Sent to the CURRENT email
+                    subject: 'Approve email change',
+                    text: `<div><p>Click the link to approve the change to ${newEmail}:</p> <a href="${url}">Verify email change.</a></div>`
+                })
+            }
+        },
         deleteUser: {
             enabled: true,
             sendDeleteAccountVerification: async (

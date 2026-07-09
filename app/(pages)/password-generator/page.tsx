@@ -180,7 +180,7 @@ export default function PasswordGeneratorPage() {
                                 className="font-normal"
                                 defaultChecked
                             >
-                                UPPERCASE LETTERS
+                                UPPERCASE LETTERS (A-Z)
                             </FieldLabel>
                         </Field>
                         <Field orientation="horizontal">
@@ -189,7 +189,7 @@ export default function PasswordGeneratorPage() {
                                 htmlFor="finder-pref-9k2-external-disks-1yg"
                                 className="font-normal"
                             >
-                                lowercase letters
+                                lowercase letters (a-z)
                             </FieldLabel>
                         </Field>
                         <Field orientation="horizontal">
@@ -198,7 +198,7 @@ export default function PasswordGeneratorPage() {
                                 htmlFor="finder-pref-9k2-cds-dvds-fzt"
                                 className="font-normal"
                             >
-                                Numbers
+                                Numbers (0-9)
                             </FieldLabel>
                         </Field>
                         <Field orientation="horizontal">
@@ -207,7 +207,7 @@ export default function PasswordGeneratorPage() {
                                 htmlFor="finder-pref-9k2-connected-servers-6l2"
                                 className="font-normal"
                             >
-                                Symbols
+                                Symbols (!, @, #, $, %, ^, &, *, ?, _, -, =)
                             </FieldLabel>
                         </Field>
                         <Field orientation="horizontal">
@@ -216,7 +216,7 @@ export default function PasswordGeneratorPage() {
                                 htmlFor="finder-pref-9k2-connected-servers-6l2"
                                 className="font-normal"
                             >
-                                Spaces
+                                Spaces ( )
                             </FieldLabel>
                         </Field>
 

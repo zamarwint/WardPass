@@ -10,17 +10,27 @@ import { CheckCircle, CheckCircleIcon, Circle, Loader2Icon, ShieldPlus } from "l
 import { FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { authClient } from "@/utils/auth-client";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import PasswordInput from "@/app/(auth)/_components/PasswordInput";
 import { useRouter } from "next/navigation";
+
+import { passwordStrength } from 'check-password-strength';
+import PasswordStrengthBar from "@/app/_components/PasswordStrengthBar";
 
 export default function SignUpPage() {
     const [emailPending, startEmailTransition] = useTransition();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [checkStrength, setCheckStrength] = useState("");
     const router = useRouter();
+
+    useEffect(() => {
+        const strength = passwordStrength(password).value;
+        setCheckStrength(strength);
+    }, [password])
+    // Returns: 'Too weak', 'Weak', 'Medium', or 'Strong'   
 
     const signUpWithEmail = async () => {
         startEmailTransition(async () => {
@@ -79,32 +89,10 @@ export default function SignUpPage() {
                         </FieldGroup>
 
                         {/* Security Checklist */}
-                        <div className="bg-card p-4 rounded border border-black/10 dark:border-white/10 space-y-3">
-                            <h4 className="font-bold uppercase tracking-wider mb-2">Security Requirements</h4>
-                            <ul className="space-y-2 font-mono text-sm">
-                                <li className="flex items-center gap-2">
-                                    <span className="text-[16px]" data-icon="check_circle">{/* <CheckCircleIcon /> */} <Circle /></span>
-                                    12+ Characters Length
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <span className="text-[16px]" data-icon="radio_button_unchecked"><Circle /> </span>
-                                    Contains Uppercase Letter
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <span className="text-[16px]" data-icon="radio_button_unchecked"><Circle /></span>
-                                    Contains Number &amp; Symbol
-                                </li>
-                            </ul>
-
-                            {/* Trust Bar Indicator */}
-                            <div className="mt-4 pt-3 border-t border-black/10 dark:border-white/10 flex gap-1 h-1.5">
-                                <div className="flex-1 size-2 bg-primary rounded-l-sm"></div>
-                                <div className="flex-1 size-2 bg-neutral-300 dark:bg-neutral-600"></div>
-                                <div className="flex-1 size-2 bg-neutral-300 dark:bg-neutral-600"></div>
-                                <div className="flex-1 size-2 bg-neutral-300 dark:bg-neutral-600 rounded-r-sm"></div>
-                            </div>
-                            <p className="text-right text-[10px] mt-1">STRENGTH: WEAK</p>
-                        </div>
+                        <span className="text-left">
+                            {checkStrength}
+                            <PasswordStrengthBar strength={checkStrength} />
+                        </span>
 
                         <Field orientation="horizontal">
                             <Button disabled={emailPending} variant="default" size="lg" className="w-full" onClick={signUpWithEmail}>

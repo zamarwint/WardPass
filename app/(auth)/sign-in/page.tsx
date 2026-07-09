@@ -128,21 +128,6 @@ export default function SignInPage() {
                             </Field>
                         </FieldGroup>
 
-                        {/* Security Trust Bar (Decorative) */}
-                        <div className="pt-2 pb-4">
-                            <div className="flex justify-between items-end mb-1">
-                                <span className="font-medium uppercase">Encryption Level</span>
-                                <span className="font-mono text-xs text-primary">AES-256</span>
-                            </div>
-                            <div className="flex gap-1 h-1.5 w-full">
-                                <div className="h-full bg-primary flex-1 rounded-sm"></div>
-                                <div className="h-full bg-primary flex-1 rounded-sm"></div>
-                                <div className="h-full bg-primary opacity-30 flex-1 rounded-sm"></div>
-                                <div className="h-full bg-primary opacity-30 flex-1 rounded-sm"></div>
-                                <div className="h-full bg-primary opacity-30 flex-1 rounded-sm"></div>
-                            </div>
-                        </div>
-
                         <Field orientation="horizontal">
                             <Button disabled={emailPending} variant="default" size="lg" className="w-full" onClick={signInWithEmail}>
                                 {emailPending ? (

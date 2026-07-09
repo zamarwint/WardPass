@@ -128,7 +128,7 @@ export default function Sidebar() {
                             <DropdownMenuItem disabled>No vaults.</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <Dialog>
-                                <DialogTrigger className="w-full cursor-pointer hover:bg-primary hover:text-muted flex items-center justify-center gap-1 font-medium"><span>Create Vault</span> <PlusIcon /></DialogTrigger>
+                                <DialogTrigger className="w-full cursor-pointer hover:bg-primary hover:text-muted flex items-center justify-center text-sm">Create Vault <PlusIcon size="16" className="ml-1" /></DialogTrigger>
                                 <DialogContent>
                                     <DialogHeader>
                                         <DialogTitle>Create New Vault</DialogTitle>
@@ -151,7 +151,7 @@ export default function Sidebar() {
                 ))}
             </motion.div>
             <motion.div className="flex flex-col items-start justify-start gap-1">
-                <Link href="/chrome-extension" className="w-full">
+                <Link href="/extension" className="w-full">
                     <Button disabled variant="ghost" size="lg" className="w-full flex justify-start">
                         <ExternalLink size="lg" />
                         Get Chrome Extension (Coming soon)
@@ -169,10 +169,10 @@ export default function Sidebar() {
                         Support
                     </Button>
                 </Link>
-                <Separator className="mb-2" />
+                <Separator className="my-2" />
                 <Profile />
                 <Link href="/dashboard/settings" className="w-full">
-                    <Button variant={pathName === '/dashboard/settings' ? "default" : "ghost"} size="lg" className="w-full flex justify-start">
+                    <Button variant={pathName.startsWith('/dashboard/settings') ? "default" : "ghost"} size="lg" className="w-full flex justify-start mt-2">
                         <Settings size="lg" />
                         Settings
                     </Button>
