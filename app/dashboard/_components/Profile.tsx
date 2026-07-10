@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { Loader2Icon, SquarePen, User } from "lucide-react";
+import { CircleUserRound, Loader2Icon, SquarePen } from "lucide-react";
 
 import {
     Dialog,
@@ -86,7 +86,7 @@ export default function Profile() {
                         ) : (
                             <motion.div className="flex items-center justify-between gap-2 w-full">
                                 <div className="flex items-center justify-center gap-2">
-                                    {session ? <Image src={session?.user?.image as string} alt="Profile image" width={24} height={24} /> : <User size="lg" />}
+                                    {session?.user.image ? <Image src={session?.user.image} alt="Profile image" width={24} height={24} /> : <CircleUserRound size={64} />}
                                     <div className="flex flex-col items-start justify-start">
                                         <div className="font-semibold">{session ? session.user.name : "Name"}</div>
                                         <div className="font-normal text-muted-foreground">{session ? session.user.email : "Email"}</div>
@@ -107,7 +107,7 @@ export default function Profile() {
                         </DialogDescription>
                         <div className="flex flex-col gap-4 items-start pt-6">
                             <DialogTitle>Change your profile picture.</DialogTitle>
-                            <Image src={session?.user?.image as string} alt="Profile image" width={96} height={96} className="rounded-full text-center" />
+                            {session?.user?.image ? <Image src={session?.user?.image as string} alt="Profile image" width={96} height={96} className="rounded-full text-center" /> : <CircleUserRound size={96} />}
                             <Separator />
                             <DialogTitle>Change your name.</DialogTitle>
                             <Label htmlFor="name" className="text-muted-foreground">Full Name</Label>

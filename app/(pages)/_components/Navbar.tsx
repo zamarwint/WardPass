@@ -126,7 +126,7 @@ export default function Navbar() {
 
                 {/* LOGIN AND SIGN-UP (DESKTOP ONLY) */}
                 <div className="hidden lg:flex items-center justify-end gap-4 w-full">
-                    {session ? (
+                    {session?.user ? (
                         <>
                             <ModeToggleIcon />
                             <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="/dashboard">Dashboard</Link>

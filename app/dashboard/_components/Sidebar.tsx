@@ -97,9 +97,9 @@ export default function Sidebar() {
             className="h-screen px-4 py-8 bg-card/40 backdrop:blur-sm w-fit flex flex-col justify-between"
         >
             <motion.div className="flex flex-col items-center justify-center">
-                <Link className="font-bold text-3xl tracking-tighter text-primary px-5 flex items-center justify-center" href="/dashboard">
-                    <Image src="/favicon.svg" alt="logo" width={0} height={0} className="w-[48px] h-[48px]" loading="eager" />
-                    WardPass
+                <Link className="font-bold text-3xl tracking-tighter text-primary px-5 flex flex-col items-center justify-center gap-0.5" href="/dashboard">
+                    <Image src="/../../icon.png" alt="logo" width={0} height={0} className="w-[48px] h-[48px]" loading="eager" />
+                    <span>WardPass</span>
                 </Link>
                 <motion.p className="font-semibold text-sm">ACTIVE SECURITY</motion.p>
                 <Button disabled={signOutPending} variant="secondary" size="lg" className="w-full flex justify-start mt-10" onClick={signOut}>

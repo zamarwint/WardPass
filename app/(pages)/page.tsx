@@ -9,6 +9,7 @@ import { PaymentCard, WebsiteCredentialCard } from "../_components/ui-cards";
 import { Suspense } from 'react';
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import Image from "next/image";
 
 const Spline = dynamic(() => import('@splinetool/react-spline'), { ssr: false });
 
@@ -130,10 +131,9 @@ export default function Page() {
         <div className="mx-auto">
           <div className="flex flex-col items-center justify-center space-y-6">
             <p className="uppercase tracking-widest font-bold">Certified Security Protocols</p>
-            <div className="flex flex-row gap-2">
-              <Lock className="text-gray-500" />
-              <p className="font-geist font-bold">AES-256 GCM ENCRYPTION</p>
-            </div>
+            <Link href="https://gdpr-info.eu/" target="_blank">
+              <Image src="/security-badges.svg" alt="Security Badges" width={1440} height={190} className="w-full max-w-[800px] h-auto" loading="eager" />
+            </Link>
           </div>
         </div>
       </motion.section>
