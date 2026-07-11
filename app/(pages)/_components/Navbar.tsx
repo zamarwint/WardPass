@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 import { motion, useScroll } from "motion/react";
-import { scrollToAnchor } from "@/lib/handyFunctions";
+import { scrollToAnchor } from "@/lib/functions";
 import { authClient } from "@/utils/auth-client";
 import { ModeToggleIcon } from "@/app/_components/themeChange";
 

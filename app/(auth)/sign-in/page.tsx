@@ -32,7 +32,7 @@ export default function SignInPage() {
                     },
                     onSuccess: () => {
                         toast.dismiss();
-                        toast.success("Account created successfully. Redirecting...")
+                        toast.success("Successfully signed in!")
                         router.push("/dashboard"); // CALLBACK URL WILL ONLY WORK IF THE USER VERIFIES THEIR EMAIL, TODO ADD EMAIL VERIFICATION.
                     },
                     onError: (error) => {
@@ -72,8 +72,7 @@ export default function SignInPage() {
                 onSuccess: (ctx) => {
                     //redirect to the dashboard or sign in page
                     toast.dismiss();
-                    toast.success("Success! Check your email to verify your account." + ctx.data);
-                    router.push("/verify-email");
+                    toast.success("Success!");
                 },
                 onError: (ctx) => {
                     // display the error message
