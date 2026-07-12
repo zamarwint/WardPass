@@ -3,31 +3,14 @@
 import { motion } from "motion/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { AppWindow, ChevronDown, CircleQuestionMark, CreditCard, ExternalLink, FileLock, House, IdCard, Loader2Icon, LockKeyhole, LogOut, LucideIcon, NotebookText, PlusIcon, Settings } from "lucide-react";
+import { CircleQuestionMark, CreditCard, ExternalLink, FileLock, House, IdCard, Loader2Icon, LockKeyhole, LogOut, LucideIcon, NotebookText, PlusIcon, Settings } from "lucide-react";
 import { authClient } from "@/utils/auth-client";
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import Profile from "./Profile";
+import CreateVault from "./CreateVault";
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 
@@ -118,29 +101,7 @@ export default function Sidebar() {
                 <Separator className="my-2" />
             </motion.div>
             <motion.div className="w-full flex flex-col gap-2 h-full py-2">
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="lg" className="w-full flex justify-between text-lg font-bold">Vaults <ChevronDown size="lg" /></Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="font-geist">
-                        <DropdownMenuGroup>
-                            <DropdownMenuLabel>Vaults</DropdownMenuLabel>
-                            <DropdownMenuItem disabled>No vaults.</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <Dialog>
-                                <DialogTrigger className="w-full cursor-pointer hover:bg-primary hover:text-muted flex items-center justify-center text-sm">Create Vault <PlusIcon size="16" className="ml-1" /></DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Create New Vault</DialogTitle>
-                                        <DialogDescription>
-                                            Create a new vault.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                </DialogContent>
-                            </Dialog>
-                        </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <CreateVault />
                 {sidebarItems.map((item, index) => (
                     <Link key={index} href={item.path}>
                         <Button variant={pathName === item.path ? "default" : "ghost"} size="lg" className="w-full flex justify-start">
@@ -171,8 +132,8 @@ export default function Sidebar() {
                 </Link>
                 <Separator className="my-2" />
                 <Profile />
-                <Link href="/dashboard/settings" className="w-full">
-                    <Button variant={pathName.startsWith('/dashboard/settings') ? "default" : "ghost"} size="lg" className="w-full flex justify-start mt-2">
+                <Link href="/settings" className="w-full">
+                    <Button variant={pathName.startsWith('/settings') ? "default" : "ghost"} size="lg" className="w-full flex justify-start mt-2">
                         <Settings size="lg" />
                         Settings
                     </Button>

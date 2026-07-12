@@ -1,6 +1,6 @@
 "use client"
 
-import DesktopOnly from "../_components/DesktopOnly"
+import DesktopOnly from "@/app/_components/DesktopOnly"
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function AuthLayout({

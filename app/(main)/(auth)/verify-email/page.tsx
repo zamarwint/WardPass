@@ -10,24 +10,22 @@ import { Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { getUserSession } from "@/app/actions/getSession";
 
 export default function VerifyEmailPage() {
     const [verificationPending, StartVerificationTransition] = useTransition();
-    const email = () => {
-        let dataEmail = localStorage.getItem("currentUserEmail");
+    const { isPending, data, error } = useQuery({
+        queryKey: ["getSession2"],
+        queryFn: async () => await getUserSession()
+    })
 
-        if (!dataEmail) {
-            toast.error("No email found");
-            return null
-        }
-
-        return dataEmail;
-    }
+    error && toast.error("There was an error loading your profile. Please try refreshing the page.");
 
     const handleResendVerification = async () => {
         StartVerificationTransition(async () => {
-            const { data, error } = await authClient.sendVerificationEmail({
-                email: email() as string,
+            await authClient.sendVerificationEmail({
+                email: data?.user?.email!,
                 callbackURL: "/",
                 fetchOptions: {
                     onRequest: () => {
@@ -43,7 +41,6 @@ export default function VerifyEmailPage() {
                     }
                 }
             })
-            console.log(data, error);
         })
     }
 
@@ -62,6 +59,11 @@ export default function VerifyEmailPage() {
                             <>
                                 <Loader2Icon className="animate-spin" />
                                 <span>Resending...</span>
+                            </>
+                        ) : isPending ? (
+                            <>
+                                <Loader2Icon className="size-4 animate-spin" />
+                                <span>Loading...</span>
                             </>
                         ) : (
                             <span>Resend verification email</span>

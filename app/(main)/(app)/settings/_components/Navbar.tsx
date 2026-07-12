@@ -9,23 +9,23 @@ import { usePathname } from "next/navigation";
 const navigationLinks = [
     {
         label: "General",
-        path: "/dashboard/settings",
+        path: "/settings",
     },
     {
         label: "Account",
-        path: "/dashboard/settings/account",
+        path: "/settings/account",
     },
     {
         label: "Security",
-        path: "/dashboard/settings/security"
+        path: "/settings/security"
     },
     {
         label: "Import",
-        path: "/dashboard/settings/import"
+        path: "/settings/import"
     },
     {
         label: "Export",
-        path: "/dashboard/settings/export"
+        path: "/settings/export"
     },
     {
         label: "Support",
@@ -37,7 +37,7 @@ const navigationLinks = [
     },
     {
         label: "Other Apps",
-        path: "/dashboard/settings/other-apps"
+        path: "/settings/other-apps"
     },
 ];
 

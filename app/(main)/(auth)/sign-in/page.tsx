@@ -1,6 +1,6 @@
 "use client";
 
-import PasswordInput from "@/app/(auth)/_components/PasswordInput";
+import PasswordInput from "./../_components/PasswordInput";
 import { PaymentCard } from "@/app/_components/ui-cards";
 import { Button } from "@/components/ui/button";
 import DotPattern from "@/components/ui/dot-pattern";
@@ -23,7 +23,7 @@ export default function SignInPage() {
 
     const signInWithGoogle = async () => {
         startGoogleTransition(async () => {
-            const data = await authClient.signIn.social({
+            await authClient.signIn.social({
                 provider: "google",
                 callbackURL: "/dashboard",
                 fetchOptions: {
@@ -41,13 +41,12 @@ export default function SignInPage() {
                     }
                 }
             });
-            console.log(data);
         })
     }
 
     const signInWithEmail = async () => {
         startEmailTransition(async () => {
-            const { data, error } = await authClient.signIn.email({
+            await authClient.signIn.email({
                 /**
                  * The user email
                  */
@@ -80,7 +79,6 @@ export default function SignInPage() {
                     toast.error(ctx.error.message);
                 },
             })
-            console.log(data, error);
         })
     }
 

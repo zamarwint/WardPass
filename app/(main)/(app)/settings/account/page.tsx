@@ -4,7 +4,7 @@ import { motion } from "motion/react"
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import PasswordInput from "@/app/(auth)/_components/PasswordInput";
+import PasswordInput from "@/app/(main)/(auth)/_components/PasswordInput";
 import { useState, useTransition } from "react";
 import { authClient } from "@/utils/auth-client";
 import { toast } from "sonner";
@@ -20,11 +20,16 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import { useQuery } from "@tanstack/react-query";
+import { getUserSession } from "@/app/actions/getSession";
 
 export default function AccountPage() {
-    const { data: session, error, isPending } = authClient.useSession.get();
+    const { isPending, data, error } = useQuery({
+        queryKey: ["getSession2"],
+        queryFn: async () => await getUserSession()
+    })
 
-    const [newEmail, setNewEmail] = useState(session?.user?.email as string)
+    const [newEmail, setNewEmail] = useState(data?.user.email as string)
     const [emailPending, startEmailChangeTransition] = useTransition();
     const [currentPassword, setCurrentPassword] = useState("")
     const [newPassword, setNewPassword] = useState("");
@@ -39,7 +44,7 @@ export default function AccountPage() {
 
     const changeEmail = () => {
         startEmailChangeTransition(async () => {
-            const { data, error } = await authClient.changeEmail({
+            await authClient.changeEmail({
                 newEmail: newEmail,
                 callbackURL: "/dashboard", // to redirect after verification
                 fetchOptions: {
@@ -62,7 +67,7 @@ export default function AccountPage() {
 
     const changePassword = () => {
         startPasswordChangeTransition(async () => {
-            const { data, error } = await authClient.changePassword({
+            await authClient.changePassword({
                 newPassword, // required
                 currentPassword, // required
                 revokeOtherSessions: true,
@@ -86,7 +91,7 @@ export default function AccountPage() {
 
     const deleteAccount = () => {
         startDeleteTransition(async () => {
-            const { data, error } = await authClient.deleteUser({
+            await authClient.deleteUser({
                 password: passwordForDeletion,
                 fetchOptions: {
                     onRequest: () => {
@@ -115,31 +120,41 @@ export default function AccountPage() {
                         <FieldDescription>Update your account information and preferences.</FieldDescription>
                     </Field>
 
-                    <Field className="w-xl">
-                        <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
-                        <Input disabled={!editing} type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" onChange={(e) => setNewEmail(e.target.value)} value={newEmail} />
-                    </Field>
+                    {error && toast.error("Internal Server Error. Please try again." + error.message)}
 
-                    <Field className="w-xl">
-                        <FieldLabel htmlFor="password" className="text-muted-foreground">Current Password</FieldLabel>
-                        <PasswordInput disabled={!editing} id="password" autoComplete="off" placeholder="************" className="h-12" onChange={(e) => setCurrentPassword(e.target.value)} value={currentPassword} />
-                    </Field>
+                    {isPending ? (
+                        <Field>
+                            <FieldTitle>Loading...</FieldTitle>
+                        </Field>
+                    ) : (
+                        <FieldGroup>
+                            <Field className="w-xl">
+                                <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
+                                <Input disabled={!editing} type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" onChange={(e) => setNewEmail(e.target.value)} value={newEmail} />
+                            </Field>
 
-                    <Field className="w-xl">
-                        <FieldLabel htmlFor="password" className="text-muted-foreground">Set New Password</FieldLabel>
-                        <PasswordInput disabled={!editing} id="password" autoComplete="off" placeholder="************" className="h-12" onChange={(e) => setNewPassword(e.target.value)} value={newPassword} />
-                    </Field>
+                            <Field className="w-xl">
+                                <FieldLabel htmlFor="password" className="text-muted-foreground">Current Password</FieldLabel>
+                                <PasswordInput disabled={!editing} id="password" autoComplete="off" placeholder="************" className="h-12" onChange={(e) => setCurrentPassword(e.target.value)} value={currentPassword} />
+                            </Field>
 
-                    <Field className="w-xl">
-                        <FieldLabel htmlFor="password" className="text-muted-foreground">Confirm New Password</FieldLabel>
-                        <PasswordInput disabled={!editing} id="password" autoComplete="off" placeholder="************" className="h-12" onChange={(e) => setConfirmNewPassword(e.target.value)} value={confirmNewPassword} />
-                    </Field>
+                            <Field className="w-xl">
+                                <FieldLabel htmlFor="password" className="text-muted-foreground">Set New Password</FieldLabel>
+                                <PasswordInput disabled={!editing} id="password" autoComplete="off" placeholder="************" className="h-12" onChange={(e) => setNewPassword(e.target.value)} value={newPassword} />
+                            </Field>
+
+                            <Field className="w-xl">
+                                <FieldLabel htmlFor="password" className="text-muted-foreground">Confirm New Password</FieldLabel>
+                                <PasswordInput disabled={!editing} id="password" autoComplete="off" placeholder="************" className="h-12" onChange={(e) => setConfirmNewPassword(e.target.value)} value={confirmNewPassword} />
+                            </Field>
+                        </FieldGroup>
+                    )}
 
                     <FieldGroup className="flex flex-row">
                         <Button variant="secondary" className="h-12 w-fit px-10" size="lg" onClick={() => setEditing(!editing)}>{editing ? "Cancel" : "Edit"}</Button>
                         <Button disabled={!editing || !newEmail || !currentPassword || !newPassword || !confirmNewPassword} className="h-12 w-fit px-10" size="lg" onClick={() => {
                             // CHECKS
-                            if (newEmail === session?.user.email) {
+                            if (newEmail === data?.user.email) {
                                 toast.error("Error: New email is same as current email.");
                                 return;
                             }

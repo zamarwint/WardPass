@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { CircleUserRound, Loader2Icon, SquarePen } from "lucide-react";
@@ -19,17 +18,25 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useQuery } from "@tanstack/react-query";
+import { getUserSession } from "@/app/actions/getSession";
 
 export default function Profile() {
-    const { data: session, error, isPending } = authClient.useSession.get();
-    const [newName, setNewName] = useState(session?.user.name as string);
-    const [newImage, setNewImage] = useState(session?.user.image as string);
+    const { isPending, data, error } = useQuery({
+        queryKey: ["getSession1"],
+        queryFn: async () => await getUserSession()
+    })
+
+    error ? toast.error(error.message) : null;
+
+    const [newName, setNewName] = useState<string>(data?.user?.name || "");
+    const [newImage, setNewImage] = useState(data?.user.image);
     const [nameChangePending, startNameChangeTransition] = useTransition();
     const [imageChangePending, startImageChangeTransition] = useTransition();
 
     const updateUserName = async () => {
         startNameChangeTransition(async () => {
-            authClient.updateUser({
+            await authClient.updateUser({
                 name: newName,
                 fetchOptions: {
                     onRequest: (ctx) => {
@@ -52,8 +59,8 @@ export default function Profile() {
 
     const updateUserImage = async () => {
         startImageChangeTransition(async () => {
-            authClient.updateUser({
-                image: newName,
+            await authClient.updateUser({
+                image: newImage,
                 fetchOptions: {
                     onRequest: (ctx) => {
                         toast.loading("Updating...");
@@ -86,10 +93,10 @@ export default function Profile() {
                         ) : (
                             <motion.div className="flex items-center justify-between gap-2 w-full">
                                 <div className="flex items-center justify-center gap-2">
-                                    {session?.user.image ? <Image src={session?.user.image} alt="Profile image" width={24} height={24} /> : <CircleUserRound size={64} />}
+                                    {data?.user.image ? <Image src={data?.user.image} alt="Profile image" width={24} height={24} /> : <CircleUserRound size={64} />}
                                     <div className="flex flex-col items-start justify-start">
-                                        <div className="font-semibold">{session ? session.user.name : "Name"}</div>
-                                        <div className="font-normal text-muted-foreground">{session ? session.user.email : "Email"}</div>
+                                        <div className="font-semibold">{data ? data.user.name : "Name"}</div>
+                                        <div className="font-normal text-muted-foreground">{data ? data.user.email : "Email"}</div>
                                     </div>
                                 </div>
                                 <div>
@@ -107,7 +114,7 @@ export default function Profile() {
                         </DialogDescription>
                         <div className="flex flex-col gap-4 items-start pt-6">
                             <DialogTitle>Change your profile picture.</DialogTitle>
-                            {session?.user?.image ? <Image src={session?.user?.image as string} alt="Profile image" width={96} height={96} className="rounded-full text-center" /> : <CircleUserRound size={96} />}
+                            {data?.user?.image ? <Image src={data?.user.image} alt="Profile image" width={96} height={96} className="rounded-full text-center" /> : <CircleUserRound size={96} />}
                             <Separator />
                             <DialogTitle>Change your name.</DialogTitle>
                             <Label htmlFor="name" className="text-muted-foreground">Full Name</Label>
@@ -115,7 +122,7 @@ export default function Profile() {
                             <Separator />
                             <Button disabled={!newName || !newImage || nameChangePending || imageChangePending} onClick={() => {
                                 // CHECKS
-                                if (newName === session?.user.name) {
+                                if (newName === data?.user.name) {
                                     toast.error("Error: New name is the same as current name.");
                                     return;
                                 }

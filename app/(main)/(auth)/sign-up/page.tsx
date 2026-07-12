@@ -12,7 +12,7 @@ import Link from "next/link";
 import { authClient } from "@/utils/auth-client";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
-import PasswordInput from "@/app/(auth)/_components/PasswordInput";
+import PasswordInput from "./../_components/PasswordInput";
 import { useRouter } from "next/navigation";
 
 import { passwordStrength } from 'check-password-strength';
@@ -34,7 +34,7 @@ export default function SignUpPage() {
 
     const signUpWithEmail = async () => {
         startEmailTransition(async () => {
-            const { data, error } = await authClient.signUp.email({
+            await authClient.signUp.email({
                 email, // user email address
                 password, // user password -> min 8 characters by default
                 name: fullName, // user display name
@@ -56,7 +56,6 @@ export default function SignUpPage() {
                 },
 
             });
-            console.log(data, error);
             localStorage.setItem("currentUserEmail", email);
         })
     }

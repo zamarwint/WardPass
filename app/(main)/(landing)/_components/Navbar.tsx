@@ -1,15 +1,17 @@
 "use client";
 
 import Link from "next/link"
-import { Menu, X } from "lucide-react"
+import { Loader2Icon, Menu, X } from "lucide-react"
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 import { motion, useScroll } from "motion/react";
 import { scrollToAnchor } from "@/lib/functions";
-import { authClient } from "@/utils/auth-client";
+import { useQuery } from "@tanstack/react-query";
+import { getUserSession } from "@/app/actions/getSession";
 import { ModeToggleIcon } from "@/app/_components/themeChange";
+import { toast } from "sonner";
 
 const navigationLinks = [
     {
@@ -35,7 +37,12 @@ export default function Navbar() {
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const pathName = usePathname();
-    const { data: session, error, isPending } = authClient.useSession.get();
+    const { isPending, data, error } = useQuery({
+        queryKey: ["getSession3"],
+        queryFn: async () => await getUserSession()
+    })
+
+    error && toast.error("An error occured." + error.message);
 
     // PREVENT USER FROM SCROLLING WHEN MOBILE MENU IS ACTIVE
     useEffect(() => {
@@ -126,7 +133,11 @@ export default function Navbar() {
 
                 {/* LOGIN AND SIGN-UP (DESKTOP ONLY) */}
                 <div className="hidden lg:flex items-center justify-end gap-4 w-full">
-                    {session?.user ? (
+                    {isPending ? (
+                        <>
+                            <Loader2Icon className="size-4 animate-spin" />
+                        </>
+                    ) : data?.user ? (
                         <>
                             <ModeToggleIcon />
                             <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="/dashboard">Dashboard</Link>

@@ -1,10 +1,10 @@
 "use client";
 
-import DesktopOnly from "../_components/DesktopOnly";
-import Sidebar from "./_components/Sidebar"
+import DesktopOnly from "../../../app/_components/DesktopOnly";
+import Sidebar from "./dashboard/_components/Sidebar"
 import { useIsMobile } from "@/hooks/use-mobile";
 
-export default function DashboardLayout({
+export default function AppLayout({
     children,
 }: Readonly<{
     children: React.ReactNode

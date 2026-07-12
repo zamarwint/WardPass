@@ -5,7 +5,7 @@ import { ChevronsLeftRightEllipsis, EyeOff, Lock, MoveUpRight, Server, Share2Ico
 import { MoveRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useRef } from 'react';
-import { PaymentCard, WebsiteCredentialCard } from "../_components/ui-cards";
+import { PaymentCard, WebsiteCredentialCard } from "@/app/_components/ui-cards";
 import { Suspense } from 'react';
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -69,6 +69,31 @@ const securityPipelineClasses = (phaseNumber: number) => {
     default:
       return [""]
   }
+}
+
+function CircuitLines() {
+  return (
+    <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,100 L200,100 L250,150 L500,150 L550,100 L1000,100" fill="none" className="stroke-primary" strokeWidth="1"></path>
+      <path d="M0,200 L150,200 L200,250 L600,250 L650,200 L1000,200" fill="none" className="stroke-primary" strokeDasharray="4,4" strokeWidth="1"></path>
+    </svg>
+  )
+}
+
+function SecurityDecoration() {
+  return (
+    <>
+      {/* Horizontal connection line (Desktop) */}
+      <div className="hidden md:block absolute top-6 left-0 w-full h-px bg-foreground/10 z-0">
+        {/* Active circuit segment */}
+        <div className="h-full bg-primary w-2/3 shadow-[0_0_8px_rgba(255,255,0,0.5)]"></div>
+      </div>
+      {/* Vertical connection line (Mobile) */}
+      <div className="md:hidden absolute top-0 left-6 h-full w-px bg-foreground/10 z-0">
+        <div className="w-full bg-primary h-2/3 shadow-[0_0_8px_rgba(255,255,0,0.5)]"></div>
+      </div>
+    </>
+  )
 }
 
 export default function Page() {
@@ -156,9 +181,9 @@ export default function Page() {
       </motion.section>
 
       {/* Feature Grid Section */}
-      <motion.section id="features" className="py-24 px-4 md:px-10 border-y border-foreground/5">
+      <motion.section id="features" className="w-full py-24 px-4 md:px-10 border-y border-foreground/5 flex items-center justify-center">
         <div className="flex flex-col items-start">
-          <div className="mb-16 max-w-3xl flex flex-col gap-4">
+          <div className="mb-16 max-w-3xl flex flex-col gap-4 items-start justify-start">
             <h2 className="font-bold text-3xl">Engineered for Absolute Trust</h2>
             <p className="text-muted-foreground">We rebuilt password management from the ground up, prioritizing mathematical certainty over promises.</p>
           </div>
@@ -186,10 +211,7 @@ export default function Page() {
       <motion.section id="security" className="py-24 border-y border-foreground/5 relative overflow-hidden">
         {/* Decorative circuit lines */}
         <div className="absolute inset-0 pointer-events-none opacity-20">
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,100 L200,100 L250,150 L500,150 L550,100 L1000,100" fill="none" className="stroke-primary" strokeWidth="1"></path>
-            <path d="M0,200 L150,200 L200,250 L600,250 L650,200 L1000,200" fill="none" className="stroke-primary" strokeDasharray="4,4" strokeWidth="1"></path>
-          </svg>
+          <CircuitLines />
         </div>
         <div className="mx-auto relative z-10">
           <div className="text-center mb-16">
@@ -197,16 +219,7 @@ export default function Page() {
             <p className="max-w-2xl mx-auto">A transparent look at how your data travels from your device to our vaults.</p>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-start relative px-4 md:px-10">
-            {/* Horizontal connection line (Desktop) */}
-            <div className="hidden md:block absolute top-6 left-0 w-full h-px bg-foreground/10 z-0">
-              {/* Active circuit segment */}
-              <div className="h-full bg-primary w-2/3 shadow-[0_0_8px_rgba(255,255,0,0.5)]"></div>
-            </div>
-            {/* Vertical connection line (Mobile) */}
-            <div className="md:hidden absolute top-0 left-6 h-full w-px bg-foreground/10 z-0">
-              <div className="w-full bg-primary h-2/3 shadow-[0_0_8px_rgba(255,255,0,0.5)]"></div>
-            </div>
-
+            <SecurityDecoration />
             {securityPipeline.map((step, index) => (
               <div key={index} className="flex flex-row md:flex-col items-center md:items-start gap-6 md:gap-4 relative z-10 mb-12 md:mb-0 md:w-1/3 pr-8">
                 <div className={`${securityPipelineClasses(step.phaseNumber)[0]}`}>
