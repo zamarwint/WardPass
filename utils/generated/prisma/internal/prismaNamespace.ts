@@ -387,7 +387,8 @@ export const ModelName = {
   User: 'User',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Vault: 'Vault'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification"
+    modelProps: "user" | "session" | "account" | "verification" | "vault"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +704,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Vault: {
+      payload: Prisma.$VaultPayload<ExtArgs>
+      fields: Prisma.VaultFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VaultFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VaultFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload>
+        }
+        findFirst: {
+          args: Prisma.VaultFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VaultFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload>
+        }
+        findMany: {
+          args: Prisma.VaultFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload>[]
+        }
+        create: {
+          args: Prisma.VaultCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload>
+        }
+        createMany: {
+          args: Prisma.VaultCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VaultCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload>[]
+        }
+        delete: {
+          args: Prisma.VaultDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload>
+        }
+        update: {
+          args: Prisma.VaultUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload>
+        }
+        deleteMany: {
+          args: Prisma.VaultDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VaultUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VaultUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload>[]
+        }
+        upsert: {
+          args: Prisma.VaultUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VaultPayload>
+        }
+        aggregate: {
+          args: Prisma.VaultAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVault>
+        }
+        groupBy: {
+          args: Prisma.VaultGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VaultGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VaultCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VaultCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -798,6 +873,18 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const VaultScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  icon: 'icon',
+  iconColor: 'iconColor',
+  userId: 'userId'
+} as const
+
+export type VaultScalarFieldEnum = (typeof VaultScalarFieldEnum)[keyof typeof VaultScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -992,6 +1079,7 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
+  vault?: Prisma.VaultOmit
 }
 
 /* Types for Logging */
