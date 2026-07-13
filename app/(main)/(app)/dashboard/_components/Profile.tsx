@@ -18,14 +18,10 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useQuery } from "@tanstack/react-query";
-import { getUserSession } from "@/app/actions/getSession";
+import { getAuthSession } from "@/lib/queries/getSessionQuery";
 
 export default function Profile() {
-    const { isPending, data, error } = useQuery({
-        queryKey: ["getSession1"],
-        queryFn: async () => await getUserSession()
-    })
+    const { isPending, data, error } = getAuthSession();
 
     error ? toast.error(error.message) : null;
 

@@ -47,7 +47,7 @@ export const auth = betterAuth({
                     subject: "Verify Deletion for your WardPass Account.",
                     text: `<div><p>Click the link to verify deletion:</p><a href="${url}">Verify Deletion</a></div>`
                 });
-            },
+            }
         }
     },
     socialProviders: {

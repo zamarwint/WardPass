@@ -20,14 +20,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { useQuery } from "@tanstack/react-query";
-import { getUserSession } from "@/app/actions/getSession";
+import { getAuthSession } from "@/lib/queries/getSessionQuery";
 
 export default function AccountPage() {
-    const { isPending, data, error } = useQuery({
-        queryKey: ["getSession2"],
-        queryFn: async () => await getUserSession()
-    })
+    const { isPending, data, error } = getAuthSession();
 
     const [newEmail, setNewEmail] = useState(data?.user.email as string)
     const [emailPending, startEmailChangeTransition] = useTransition();

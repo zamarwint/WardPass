@@ -1,15 +1,11 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useQuery } from "@tanstack/react-query";
-import { getUserSession } from "@/app/actions/getSession";
 import { toast } from "sonner";
+import { getAuthSession } from "@/lib/queries/getSessionQuery";
 
 export default function DashboardPage() {
-    const { isPending, data, error } = useQuery({
-        queryKey: ["getSession2"],
-        queryFn: async () => await getUserSession()
-    })
+    const { isPending, data, error } = getAuthSession();
 
     error && toast.error("There was an error loading your profile. Please try refreshing the page.");
 

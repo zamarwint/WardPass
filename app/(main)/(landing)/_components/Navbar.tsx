@@ -8,8 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 
 import { motion, useScroll } from "motion/react";
 import { scrollToAnchor } from "@/lib/functions";
-import { useQuery } from "@tanstack/react-query";
-import { getUserSession } from "@/app/actions/getSession";
+import { getAuthSession } from "@/lib/queries/getSessionQuery";
 import { ModeToggleIcon } from "@/app/_components/themeChange";
 import { toast } from "sonner";
 
@@ -37,10 +36,7 @@ export default function Navbar() {
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const pathName = usePathname();
-    const { isPending, data, error } = useQuery({
-        queryKey: ["getSession3"],
-        queryFn: async () => await getUserSession()
-    })
+    const { isPending, data, error } = getAuthSession();
 
     error && toast.error("An error occured." + error.message);
 
@@ -136,6 +132,7 @@ export default function Navbar() {
                     {isPending ? (
                         <>
                             <Loader2Icon className="size-4 animate-spin" />
+                            <span>Loading...</span>
                         </>
                     ) : data?.user ? (
                         <>
