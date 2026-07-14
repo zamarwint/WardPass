@@ -25,7 +25,7 @@ export default function SignInPage() {
         startGoogleTransition(async () => {
             await authClient.signIn.social({
                 provider: "google",
-                callbackURL: "/dashboard",
+                callbackURL: "/user/vault",
                 fetchOptions: {
                     onRequest: () => {
                         toast.loading("Signing you up with Google...");
@@ -33,7 +33,7 @@ export default function SignInPage() {
                     onSuccess: () => {
                         toast.dismiss();
                         toast.success("Successfully signed in!")
-                        router.push("/dashboard"); // CALLBACK URL WILL ONLY WORK IF THE USER VERIFIES THEIR EMAIL, TODO ADD EMAIL VERIFICATION.
+                        router.push("/user/vault"); // CALLBACK URL WILL ONLY WORK IF THE USER VERIFIES THEIR EMAIL, TODO ADD EMAIL VERIFICATION.
                     },
                     onError: (error) => {
                         toast.error("Internal server error. Please try again.")
@@ -58,7 +58,7 @@ export default function SignInPage() {
                 /**
                  * A URL to redirect to after the user verifies their email (optional)
                  */
-                callbackURL: process.env.NEXT_PUBLIC_APP_URL + '/dashboard',
+                callbackURL: process.env.NEXT_PUBLIC_APP_URL + '/user/vault',
                 /**
                  * remember the user session after the browser is closed. 
                  * @default true

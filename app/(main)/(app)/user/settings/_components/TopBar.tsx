@@ -9,23 +9,23 @@ import { usePathname } from "next/navigation";
 const navigationLinks = [
     {
         label: "General",
-        path: "/settings",
+        path: "/user/settings",
     },
     {
         label: "Account",
-        path: "/settings/account",
+        path: "/user/settings/account",
     },
     {
         label: "Security",
-        path: "/settings/security"
+        path: "/user/settings/security"
     },
     {
         label: "Import",
-        path: "/settings/import"
+        path: "/user/settings/import"
     },
     {
         label: "Export",
-        path: "/settings/export"
+        path: "/user/settings/export"
     },
     {
         label: "Support",
@@ -37,11 +37,11 @@ const navigationLinks = [
     },
     {
         label: "Other Apps",
-        path: "/settings/other-apps"
+        path: "/user/settings/other-apps"
     },
 ];
 
-export default function Navbar() {
+export default function TopBar() {
     const pathName = usePathname();
     return (
         <motion.div className="flex flex-col bg-transparent backdrop-blur-xl fixed w-full h-fit px-10 pt-10">

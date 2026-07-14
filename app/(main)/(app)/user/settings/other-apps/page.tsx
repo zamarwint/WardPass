@@ -22,12 +22,12 @@ const otherApps = [
     {
         title: "WardPass Chrome Extension",
         description: "WardPass Chrome Extension - Auto fill your passwords in your browser!",
-        url: ""
+        url: "/extension"
     },
     {
         title: "WardPass Firefox Extension",
         description: "WardPass Firefox Extension - Auto fill your passwords in your browser!",
-        url: ""
+        url: "/extension"
     },
     {
         title: "Reckon",

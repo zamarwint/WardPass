@@ -1,4 +1,4 @@
-import Navbar from "./_components/Navbar"
+import TopBar from "./_components/TopBar"
 
 export default function PageLayout({
     children,
@@ -7,7 +7,7 @@ export default function PageLayout({
 }>) {
     return (
         <div className="flex flex-col gap-10 w-full mx-auto h-screen overflow-y-scroll">
-            <Navbar />
+            <TopBar />
             {children}
         </div>
     )

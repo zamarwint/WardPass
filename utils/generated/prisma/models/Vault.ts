@@ -30,6 +30,8 @@ export type VaultMinAggregateOutputType = {
   slug: string | null
   icon: string | null
   iconColor: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
   userId: string | null
 }
 
@@ -39,6 +41,8 @@ export type VaultMaxAggregateOutputType = {
   slug: string | null
   icon: string | null
   iconColor: string | null
+  createdAt: Date | null
+  updatedAt: Date | null
   userId: string | null
 }
 
@@ -48,6 +52,8 @@ export type VaultCountAggregateOutputType = {
   slug: number
   icon: number
   iconColor: number
+  createdAt: number
+  updatedAt: number
   userId: number
   _all: number
 }
@@ -59,6 +65,8 @@ export type VaultMinAggregateInputType = {
   slug?: true
   icon?: true
   iconColor?: true
+  createdAt?: true
+  updatedAt?: true
   userId?: true
 }
 
@@ -68,6 +76,8 @@ export type VaultMaxAggregateInputType = {
   slug?: true
   icon?: true
   iconColor?: true
+  createdAt?: true
+  updatedAt?: true
   userId?: true
 }
 
@@ -77,6 +87,8 @@ export type VaultCountAggregateInputType = {
   slug?: true
   icon?: true
   iconColor?: true
+  createdAt?: true
+  updatedAt?: true
   userId?: true
   _all?: true
 }
@@ -159,6 +171,8 @@ export type VaultGroupByOutputType = {
   slug: string
   icon: string
   iconColor: string | null
+  createdAt: Date
+  updatedAt: Date
   userId: string
   _count: VaultCountAggregateOutputType | null
   _min: VaultMinAggregateOutputType | null
@@ -189,8 +203,14 @@ export type VaultWhereInput = {
   slug?: Prisma.StringFilter<"Vault"> | string
   icon?: Prisma.StringFilter<"Vault"> | string
   iconColor?: Prisma.StringNullableFilter<"Vault"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Vault"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Vault"> | Date | string
   userId?: Prisma.StringFilter<"Vault"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  loginItems?: Prisma.LoginItemListRelationFilter
+  secureNoteItems?: Prisma.SecureNoteItemListRelationFilter
+  creditCardItems?: Prisma.CreditCardItemListRelationFilter
+  identities?: Prisma.IdentityItemListRelationFilter
 }
 
 export type VaultOrderByWithRelationInput = {
@@ -199,8 +219,14 @@ export type VaultOrderByWithRelationInput = {
   slug?: Prisma.SortOrder
   icon?: Prisma.SortOrder
   iconColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  loginItems?: Prisma.LoginItemOrderByRelationAggregateInput
+  secureNoteItems?: Prisma.SecureNoteItemOrderByRelationAggregateInput
+  creditCardItems?: Prisma.CreditCardItemOrderByRelationAggregateInput
+  identities?: Prisma.IdentityItemOrderByRelationAggregateInput
 }
 
 export type VaultWhereUniqueInput = Prisma.AtLeast<{
@@ -212,8 +238,14 @@ export type VaultWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Vault"> | string
   icon?: Prisma.StringFilter<"Vault"> | string
   iconColor?: Prisma.StringNullableFilter<"Vault"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Vault"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Vault"> | Date | string
   userId?: Prisma.StringFilter<"Vault"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  loginItems?: Prisma.LoginItemListRelationFilter
+  secureNoteItems?: Prisma.SecureNoteItemListRelationFilter
+  creditCardItems?: Prisma.CreditCardItemListRelationFilter
+  identities?: Prisma.IdentityItemListRelationFilter
 }, "id" | "slug">
 
 export type VaultOrderByWithAggregationInput = {
@@ -222,6 +254,8 @@ export type VaultOrderByWithAggregationInput = {
   slug?: Prisma.SortOrder
   icon?: Prisma.SortOrder
   iconColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   _count?: Prisma.VaultCountOrderByAggregateInput
   _max?: Prisma.VaultMaxOrderByAggregateInput
@@ -237,6 +271,8 @@ export type VaultScalarWhereWithAggregatesInput = {
   slug?: Prisma.StringWithAggregatesFilter<"Vault"> | string
   icon?: Prisma.StringWithAggregatesFilter<"Vault"> | string
   iconColor?: Prisma.StringNullableWithAggregatesFilter<"Vault"> | string | null
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"Vault"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Vault"> | Date | string
   userId?: Prisma.StringWithAggregatesFilter<"Vault"> | string
 }
 
@@ -246,7 +282,13 @@ export type VaultCreateInput = {
   slug: string
   icon: string
   iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutVaultsInput
+  loginItems?: Prisma.LoginItemCreateNestedManyWithoutVaultInput
+  secureNoteItems?: Prisma.SecureNoteItemCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemCreateNestedManyWithoutVaultInput
 }
 
 export type VaultUncheckedCreateInput = {
@@ -255,7 +297,13 @@ export type VaultUncheckedCreateInput = {
   slug: string
   icon: string
   iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   userId: string
+  loginItems?: Prisma.LoginItemUncheckedCreateNestedManyWithoutVaultInput
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemUncheckedCreateNestedManyWithoutVaultInput
 }
 
 export type VaultUpdateInput = {
@@ -264,7 +312,13 @@ export type VaultUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutVaultsNestedInput
+  loginItems?: Prisma.LoginItemUpdateManyWithoutVaultNestedInput
+  secureNoteItems?: Prisma.SecureNoteItemUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUpdateManyWithoutVaultNestedInput
 }
 
 export type VaultUncheckedUpdateInput = {
@@ -273,7 +327,13 @@ export type VaultUncheckedUpdateInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  loginItems?: Prisma.LoginItemUncheckedUpdateManyWithoutVaultNestedInput
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUncheckedUpdateManyWithoutVaultNestedInput
 }
 
 export type VaultCreateManyInput = {
@@ -282,6 +342,8 @@ export type VaultCreateManyInput = {
   slug: string
   icon: string
   iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
   userId: string
 }
 
@@ -291,6 +353,8 @@ export type VaultUpdateManyMutationInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type VaultUncheckedUpdateManyInput = {
@@ -299,6 +363,8 @@ export type VaultUncheckedUpdateManyInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -318,6 +384,8 @@ export type VaultCountOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   icon?: Prisma.SortOrder
   iconColor?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
@@ -327,6 +395,8 @@ export type VaultMaxOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   icon?: Prisma.SortOrder
   iconColor?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
@@ -336,7 +406,14 @@ export type VaultMinOrderByAggregateInput = {
   slug?: Prisma.SortOrder
   icon?: Prisma.SortOrder
   iconColor?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+}
+
+export type VaultScalarRelationFilter = {
+  is?: Prisma.VaultWhereInput
+  isNot?: Prisma.VaultWhereInput
 }
 
 export type VaultCreateNestedManyWithoutUserInput = {
@@ -381,12 +458,74 @@ export type VaultUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.VaultScalarWhereInput | Prisma.VaultScalarWhereInput[]
 }
 
+export type VaultCreateNestedOneWithoutLoginItemsInput = {
+  create?: Prisma.XOR<Prisma.VaultCreateWithoutLoginItemsInput, Prisma.VaultUncheckedCreateWithoutLoginItemsInput>
+  connectOrCreate?: Prisma.VaultCreateOrConnectWithoutLoginItemsInput
+  connect?: Prisma.VaultWhereUniqueInput
+}
+
+export type VaultUpdateOneRequiredWithoutLoginItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.VaultCreateWithoutLoginItemsInput, Prisma.VaultUncheckedCreateWithoutLoginItemsInput>
+  connectOrCreate?: Prisma.VaultCreateOrConnectWithoutLoginItemsInput
+  upsert?: Prisma.VaultUpsertWithoutLoginItemsInput
+  connect?: Prisma.VaultWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VaultUpdateToOneWithWhereWithoutLoginItemsInput, Prisma.VaultUpdateWithoutLoginItemsInput>, Prisma.VaultUncheckedUpdateWithoutLoginItemsInput>
+}
+
+export type VaultCreateNestedOneWithoutSecureNoteItemsInput = {
+  create?: Prisma.XOR<Prisma.VaultCreateWithoutSecureNoteItemsInput, Prisma.VaultUncheckedCreateWithoutSecureNoteItemsInput>
+  connectOrCreate?: Prisma.VaultCreateOrConnectWithoutSecureNoteItemsInput
+  connect?: Prisma.VaultWhereUniqueInput
+}
+
+export type VaultUpdateOneRequiredWithoutSecureNoteItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.VaultCreateWithoutSecureNoteItemsInput, Prisma.VaultUncheckedCreateWithoutSecureNoteItemsInput>
+  connectOrCreate?: Prisma.VaultCreateOrConnectWithoutSecureNoteItemsInput
+  upsert?: Prisma.VaultUpsertWithoutSecureNoteItemsInput
+  connect?: Prisma.VaultWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VaultUpdateToOneWithWhereWithoutSecureNoteItemsInput, Prisma.VaultUpdateWithoutSecureNoteItemsInput>, Prisma.VaultUncheckedUpdateWithoutSecureNoteItemsInput>
+}
+
+export type VaultCreateNestedOneWithoutCreditCardItemsInput = {
+  create?: Prisma.XOR<Prisma.VaultCreateWithoutCreditCardItemsInput, Prisma.VaultUncheckedCreateWithoutCreditCardItemsInput>
+  connectOrCreate?: Prisma.VaultCreateOrConnectWithoutCreditCardItemsInput
+  connect?: Prisma.VaultWhereUniqueInput
+}
+
+export type VaultUpdateOneRequiredWithoutCreditCardItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.VaultCreateWithoutCreditCardItemsInput, Prisma.VaultUncheckedCreateWithoutCreditCardItemsInput>
+  connectOrCreate?: Prisma.VaultCreateOrConnectWithoutCreditCardItemsInput
+  upsert?: Prisma.VaultUpsertWithoutCreditCardItemsInput
+  connect?: Prisma.VaultWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VaultUpdateToOneWithWhereWithoutCreditCardItemsInput, Prisma.VaultUpdateWithoutCreditCardItemsInput>, Prisma.VaultUncheckedUpdateWithoutCreditCardItemsInput>
+}
+
+export type VaultCreateNestedOneWithoutIdentitiesInput = {
+  create?: Prisma.XOR<Prisma.VaultCreateWithoutIdentitiesInput, Prisma.VaultUncheckedCreateWithoutIdentitiesInput>
+  connectOrCreate?: Prisma.VaultCreateOrConnectWithoutIdentitiesInput
+  connect?: Prisma.VaultWhereUniqueInput
+}
+
+export type VaultUpdateOneRequiredWithoutIdentitiesNestedInput = {
+  create?: Prisma.XOR<Prisma.VaultCreateWithoutIdentitiesInput, Prisma.VaultUncheckedCreateWithoutIdentitiesInput>
+  connectOrCreate?: Prisma.VaultCreateOrConnectWithoutIdentitiesInput
+  upsert?: Prisma.VaultUpsertWithoutIdentitiesInput
+  connect?: Prisma.VaultWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VaultUpdateToOneWithWhereWithoutIdentitiesInput, Prisma.VaultUpdateWithoutIdentitiesInput>, Prisma.VaultUncheckedUpdateWithoutIdentitiesInput>
+}
+
 export type VaultCreateWithoutUserInput = {
   id?: string
   name: string
   slug: string
   icon: string
   iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  loginItems?: Prisma.LoginItemCreateNestedManyWithoutVaultInput
+  secureNoteItems?: Prisma.SecureNoteItemCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemCreateNestedManyWithoutVaultInput
 }
 
 export type VaultUncheckedCreateWithoutUserInput = {
@@ -395,6 +534,12 @@ export type VaultUncheckedCreateWithoutUserInput = {
   slug: string
   icon: string
   iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  loginItems?: Prisma.LoginItemUncheckedCreateNestedManyWithoutVaultInput
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemUncheckedCreateNestedManyWithoutVaultInput
 }
 
 export type VaultCreateOrConnectWithoutUserInput = {
@@ -432,7 +577,297 @@ export type VaultScalarWhereInput = {
   slug?: Prisma.StringFilter<"Vault"> | string
   icon?: Prisma.StringFilter<"Vault"> | string
   iconColor?: Prisma.StringNullableFilter<"Vault"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Vault"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Vault"> | Date | string
   userId?: Prisma.StringFilter<"Vault"> | string
+}
+
+export type VaultCreateWithoutLoginItemsInput = {
+  id?: string
+  name: string
+  slug: string
+  icon: string
+  iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutVaultsInput
+  secureNoteItems?: Prisma.SecureNoteItemCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemCreateNestedManyWithoutVaultInput
+}
+
+export type VaultUncheckedCreateWithoutLoginItemsInput = {
+  id?: string
+  name: string
+  slug: string
+  icon: string
+  iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemUncheckedCreateNestedManyWithoutVaultInput
+}
+
+export type VaultCreateOrConnectWithoutLoginItemsInput = {
+  where: Prisma.VaultWhereUniqueInput
+  create: Prisma.XOR<Prisma.VaultCreateWithoutLoginItemsInput, Prisma.VaultUncheckedCreateWithoutLoginItemsInput>
+}
+
+export type VaultUpsertWithoutLoginItemsInput = {
+  update: Prisma.XOR<Prisma.VaultUpdateWithoutLoginItemsInput, Prisma.VaultUncheckedUpdateWithoutLoginItemsInput>
+  create: Prisma.XOR<Prisma.VaultCreateWithoutLoginItemsInput, Prisma.VaultUncheckedCreateWithoutLoginItemsInput>
+  where?: Prisma.VaultWhereInput
+}
+
+export type VaultUpdateToOneWithWhereWithoutLoginItemsInput = {
+  where?: Prisma.VaultWhereInput
+  data: Prisma.XOR<Prisma.VaultUpdateWithoutLoginItemsInput, Prisma.VaultUncheckedUpdateWithoutLoginItemsInput>
+}
+
+export type VaultUpdateWithoutLoginItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutVaultsNestedInput
+  secureNoteItems?: Prisma.SecureNoteItemUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUpdateManyWithoutVaultNestedInput
+}
+
+export type VaultUncheckedUpdateWithoutLoginItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUncheckedUpdateManyWithoutVaultNestedInput
+}
+
+export type VaultCreateWithoutSecureNoteItemsInput = {
+  id?: string
+  name: string
+  slug: string
+  icon: string
+  iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutVaultsInput
+  loginItems?: Prisma.LoginItemCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemCreateNestedManyWithoutVaultInput
+}
+
+export type VaultUncheckedCreateWithoutSecureNoteItemsInput = {
+  id?: string
+  name: string
+  slug: string
+  icon: string
+  iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  loginItems?: Prisma.LoginItemUncheckedCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemUncheckedCreateNestedManyWithoutVaultInput
+}
+
+export type VaultCreateOrConnectWithoutSecureNoteItemsInput = {
+  where: Prisma.VaultWhereUniqueInput
+  create: Prisma.XOR<Prisma.VaultCreateWithoutSecureNoteItemsInput, Prisma.VaultUncheckedCreateWithoutSecureNoteItemsInput>
+}
+
+export type VaultUpsertWithoutSecureNoteItemsInput = {
+  update: Prisma.XOR<Prisma.VaultUpdateWithoutSecureNoteItemsInput, Prisma.VaultUncheckedUpdateWithoutSecureNoteItemsInput>
+  create: Prisma.XOR<Prisma.VaultCreateWithoutSecureNoteItemsInput, Prisma.VaultUncheckedCreateWithoutSecureNoteItemsInput>
+  where?: Prisma.VaultWhereInput
+}
+
+export type VaultUpdateToOneWithWhereWithoutSecureNoteItemsInput = {
+  where?: Prisma.VaultWhereInput
+  data: Prisma.XOR<Prisma.VaultUpdateWithoutSecureNoteItemsInput, Prisma.VaultUncheckedUpdateWithoutSecureNoteItemsInput>
+}
+
+export type VaultUpdateWithoutSecureNoteItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutVaultsNestedInput
+  loginItems?: Prisma.LoginItemUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUpdateManyWithoutVaultNestedInput
+}
+
+export type VaultUncheckedUpdateWithoutSecureNoteItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  loginItems?: Prisma.LoginItemUncheckedUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUncheckedUpdateManyWithoutVaultNestedInput
+}
+
+export type VaultCreateWithoutCreditCardItemsInput = {
+  id?: string
+  name: string
+  slug: string
+  icon: string
+  iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutVaultsInput
+  loginItems?: Prisma.LoginItemCreateNestedManyWithoutVaultInput
+  secureNoteItems?: Prisma.SecureNoteItemCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemCreateNestedManyWithoutVaultInput
+}
+
+export type VaultUncheckedCreateWithoutCreditCardItemsInput = {
+  id?: string
+  name: string
+  slug: string
+  icon: string
+  iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  loginItems?: Prisma.LoginItemUncheckedCreateNestedManyWithoutVaultInput
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedCreateNestedManyWithoutVaultInput
+  identities?: Prisma.IdentityItemUncheckedCreateNestedManyWithoutVaultInput
+}
+
+export type VaultCreateOrConnectWithoutCreditCardItemsInput = {
+  where: Prisma.VaultWhereUniqueInput
+  create: Prisma.XOR<Prisma.VaultCreateWithoutCreditCardItemsInput, Prisma.VaultUncheckedCreateWithoutCreditCardItemsInput>
+}
+
+export type VaultUpsertWithoutCreditCardItemsInput = {
+  update: Prisma.XOR<Prisma.VaultUpdateWithoutCreditCardItemsInput, Prisma.VaultUncheckedUpdateWithoutCreditCardItemsInput>
+  create: Prisma.XOR<Prisma.VaultCreateWithoutCreditCardItemsInput, Prisma.VaultUncheckedCreateWithoutCreditCardItemsInput>
+  where?: Prisma.VaultWhereInput
+}
+
+export type VaultUpdateToOneWithWhereWithoutCreditCardItemsInput = {
+  where?: Prisma.VaultWhereInput
+  data: Prisma.XOR<Prisma.VaultUpdateWithoutCreditCardItemsInput, Prisma.VaultUncheckedUpdateWithoutCreditCardItemsInput>
+}
+
+export type VaultUpdateWithoutCreditCardItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutVaultsNestedInput
+  loginItems?: Prisma.LoginItemUpdateManyWithoutVaultNestedInput
+  secureNoteItems?: Prisma.SecureNoteItemUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUpdateManyWithoutVaultNestedInput
+}
+
+export type VaultUncheckedUpdateWithoutCreditCardItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  loginItems?: Prisma.LoginItemUncheckedUpdateManyWithoutVaultNestedInput
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUncheckedUpdateManyWithoutVaultNestedInput
+}
+
+export type VaultCreateWithoutIdentitiesInput = {
+  id?: string
+  name: string
+  slug: string
+  icon: string
+  iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutVaultsInput
+  loginItems?: Prisma.LoginItemCreateNestedManyWithoutVaultInput
+  secureNoteItems?: Prisma.SecureNoteItemCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemCreateNestedManyWithoutVaultInput
+}
+
+export type VaultUncheckedCreateWithoutIdentitiesInput = {
+  id?: string
+  name: string
+  slug: string
+  icon: string
+  iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+  loginItems?: Prisma.LoginItemUncheckedCreateNestedManyWithoutVaultInput
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedCreateNestedManyWithoutVaultInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedCreateNestedManyWithoutVaultInput
+}
+
+export type VaultCreateOrConnectWithoutIdentitiesInput = {
+  where: Prisma.VaultWhereUniqueInput
+  create: Prisma.XOR<Prisma.VaultCreateWithoutIdentitiesInput, Prisma.VaultUncheckedCreateWithoutIdentitiesInput>
+}
+
+export type VaultUpsertWithoutIdentitiesInput = {
+  update: Prisma.XOR<Prisma.VaultUpdateWithoutIdentitiesInput, Prisma.VaultUncheckedUpdateWithoutIdentitiesInput>
+  create: Prisma.XOR<Prisma.VaultCreateWithoutIdentitiesInput, Prisma.VaultUncheckedCreateWithoutIdentitiesInput>
+  where?: Prisma.VaultWhereInput
+}
+
+export type VaultUpdateToOneWithWhereWithoutIdentitiesInput = {
+  where?: Prisma.VaultWhereInput
+  data: Prisma.XOR<Prisma.VaultUpdateWithoutIdentitiesInput, Prisma.VaultUncheckedUpdateWithoutIdentitiesInput>
+}
+
+export type VaultUpdateWithoutIdentitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutVaultsNestedInput
+  loginItems?: Prisma.LoginItemUpdateManyWithoutVaultNestedInput
+  secureNoteItems?: Prisma.SecureNoteItemUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUpdateManyWithoutVaultNestedInput
+}
+
+export type VaultUncheckedUpdateWithoutIdentitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  loginItems?: Prisma.LoginItemUncheckedUpdateManyWithoutVaultNestedInput
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedUpdateManyWithoutVaultNestedInput
 }
 
 export type VaultCreateManyUserInput = {
@@ -441,6 +876,8 @@ export type VaultCreateManyUserInput = {
   slug: string
   icon: string
   iconColor?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type VaultUpdateWithoutUserInput = {
@@ -449,6 +886,12 @@ export type VaultUpdateWithoutUserInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginItems?: Prisma.LoginItemUpdateManyWithoutVaultNestedInput
+  secureNoteItems?: Prisma.SecureNoteItemUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUpdateManyWithoutVaultNestedInput
 }
 
 export type VaultUncheckedUpdateWithoutUserInput = {
@@ -457,6 +900,12 @@ export type VaultUncheckedUpdateWithoutUserInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginItems?: Prisma.LoginItemUncheckedUpdateManyWithoutVaultNestedInput
+  secureNoteItems?: Prisma.SecureNoteItemUncheckedUpdateManyWithoutVaultNestedInput
+  creditCardItems?: Prisma.CreditCardItemUncheckedUpdateManyWithoutVaultNestedInput
+  identities?: Prisma.IdentityItemUncheckedUpdateManyWithoutVaultNestedInput
 }
 
 export type VaultUncheckedUpdateManyWithoutUserInput = {
@@ -465,8 +914,66 @@ export type VaultUncheckedUpdateManyWithoutUserInput = {
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   iconColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type VaultCountOutputType
+ */
+
+export type VaultCountOutputType = {
+  loginItems: number
+  secureNoteItems: number
+  creditCardItems: number
+  identities: number
+}
+
+export type VaultCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  loginItems?: boolean | VaultCountOutputTypeCountLoginItemsArgs
+  secureNoteItems?: boolean | VaultCountOutputTypeCountSecureNoteItemsArgs
+  creditCardItems?: boolean | VaultCountOutputTypeCountCreditCardItemsArgs
+  identities?: boolean | VaultCountOutputTypeCountIdentitiesArgs
+}
+
+/**
+ * VaultCountOutputType without action
+ */
+export type VaultCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VaultCountOutputType
+   */
+  select?: Prisma.VaultCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * VaultCountOutputType without action
+ */
+export type VaultCountOutputTypeCountLoginItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoginItemWhereInput
+}
+
+/**
+ * VaultCountOutputType without action
+ */
+export type VaultCountOutputTypeCountSecureNoteItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SecureNoteItemWhereInput
+}
+
+/**
+ * VaultCountOutputType without action
+ */
+export type VaultCountOutputTypeCountCreditCardItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CreditCardItemWhereInput
+}
+
+/**
+ * VaultCountOutputType without action
+ */
+export type VaultCountOutputTypeCountIdentitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.IdentityItemWhereInput
+}
 
 
 export type VaultSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -475,8 +982,15 @@ export type VaultSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   slug?: boolean
   icon?: boolean
   iconColor?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  loginItems?: boolean | Prisma.Vault$loginItemsArgs<ExtArgs>
+  secureNoteItems?: boolean | Prisma.Vault$secureNoteItemsArgs<ExtArgs>
+  creditCardItems?: boolean | Prisma.Vault$creditCardItemsArgs<ExtArgs>
+  identities?: boolean | Prisma.Vault$identitiesArgs<ExtArgs>
+  _count?: boolean | Prisma.VaultCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vault"]>
 
 export type VaultSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -485,6 +999,8 @@ export type VaultSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   slug?: boolean
   icon?: boolean
   iconColor?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vault"]>
@@ -495,6 +1011,8 @@ export type VaultSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   slug?: boolean
   icon?: boolean
   iconColor?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vault"]>
@@ -505,12 +1023,19 @@ export type VaultSelectScalar = {
   slug?: boolean
   icon?: boolean
   iconColor?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   userId?: boolean
 }
 
-export type VaultOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "icon" | "iconColor" | "userId", ExtArgs["result"]["vault"]>
+export type VaultOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "icon" | "iconColor" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["vault"]>
 export type VaultInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  loginItems?: boolean | Prisma.Vault$loginItemsArgs<ExtArgs>
+  secureNoteItems?: boolean | Prisma.Vault$secureNoteItemsArgs<ExtArgs>
+  creditCardItems?: boolean | Prisma.Vault$creditCardItemsArgs<ExtArgs>
+  identities?: boolean | Prisma.Vault$identitiesArgs<ExtArgs>
+  _count?: boolean | Prisma.VaultCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VaultIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -523,6 +1048,10 @@ export type $VaultPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Vault"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    loginItems: Prisma.$LoginItemPayload<ExtArgs>[]
+    secureNoteItems: Prisma.$SecureNoteItemPayload<ExtArgs>[]
+    creditCardItems: Prisma.$CreditCardItemPayload<ExtArgs>[]
+    identities: Prisma.$IdentityItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -530,6 +1059,8 @@ export type $VaultPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     slug: string
     icon: string
     iconColor: string | null
+    createdAt: Date
+    updatedAt: Date
     userId: string
   }, ExtArgs["result"]["vault"]>
   composites: {}
@@ -926,6 +1457,10 @@ readonly fields: VaultFieldRefs;
 export interface Prisma__VaultClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  loginItems<T extends Prisma.Vault$loginItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vault$loginItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoginItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  secureNoteItems<T extends Prisma.Vault$secureNoteItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vault$secureNoteItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SecureNoteItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  creditCardItems<T extends Prisma.Vault$creditCardItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vault$creditCardItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CreditCardItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  identities<T extends Prisma.Vault$identitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vault$identitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IdentityItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -960,6 +1495,8 @@ export interface VaultFieldRefs {
   readonly slug: Prisma.FieldRef<"Vault", 'String'>
   readonly icon: Prisma.FieldRef<"Vault", 'String'>
   readonly iconColor: Prisma.FieldRef<"Vault", 'String'>
+  readonly createdAt: Prisma.FieldRef<"Vault", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Vault", 'DateTime'>
   readonly userId: Prisma.FieldRef<"Vault", 'String'>
 }
     
@@ -1359,6 +1896,102 @@ export type VaultDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Vaults to delete.
    */
   limit?: number
+}
+
+/**
+ * Vault.loginItems
+ */
+export type Vault$loginItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoginItem
+   */
+  select?: Prisma.LoginItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoginItem
+   */
+  omit?: Prisma.LoginItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoginItemInclude<ExtArgs> | null
+  where?: Prisma.LoginItemWhereInput
+  orderBy?: Prisma.LoginItemOrderByWithRelationInput | Prisma.LoginItemOrderByWithRelationInput[]
+  cursor?: Prisma.LoginItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoginItemScalarFieldEnum | Prisma.LoginItemScalarFieldEnum[]
+}
+
+/**
+ * Vault.secureNoteItems
+ */
+export type Vault$secureNoteItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SecureNoteItem
+   */
+  select?: Prisma.SecureNoteItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SecureNoteItem
+   */
+  omit?: Prisma.SecureNoteItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SecureNoteItemInclude<ExtArgs> | null
+  where?: Prisma.SecureNoteItemWhereInput
+  orderBy?: Prisma.SecureNoteItemOrderByWithRelationInput | Prisma.SecureNoteItemOrderByWithRelationInput[]
+  cursor?: Prisma.SecureNoteItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SecureNoteItemScalarFieldEnum | Prisma.SecureNoteItemScalarFieldEnum[]
+}
+
+/**
+ * Vault.creditCardItems
+ */
+export type Vault$creditCardItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CreditCardItem
+   */
+  select?: Prisma.CreditCardItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CreditCardItem
+   */
+  omit?: Prisma.CreditCardItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CreditCardItemInclude<ExtArgs> | null
+  where?: Prisma.CreditCardItemWhereInput
+  orderBy?: Prisma.CreditCardItemOrderByWithRelationInput | Prisma.CreditCardItemOrderByWithRelationInput[]
+  cursor?: Prisma.CreditCardItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CreditCardItemScalarFieldEnum | Prisma.CreditCardItemScalarFieldEnum[]
+}
+
+/**
+ * Vault.identities
+ */
+export type Vault$identitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the IdentityItem
+   */
+  select?: Prisma.IdentityItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the IdentityItem
+   */
+  omit?: Prisma.IdentityItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.IdentityItemInclude<ExtArgs> | null
+  where?: Prisma.IdentityItemWhereInput
+  orderBy?: Prisma.IdentityItemOrderByWithRelationInput | Prisma.IdentityItemOrderByWithRelationInput[]
+  cursor?: Prisma.IdentityItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.IdentityItemScalarFieldEnum | Prisma.IdentityItemScalarFieldEnum[]
 }
 
 /**

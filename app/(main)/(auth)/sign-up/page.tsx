@@ -83,10 +83,10 @@ export default function SignUpPage() {
 
     function SignUpComponent() {
         const [emailPending, startEmailTransition] = useTransition();
-        const [fullName, setFullName] = useState("");
-        const [email, setEmail] = useState("");
-        const [password, setPassword] = useState("");
-        const [checkStrength, setCheckStrength] = useState("");
+        const [fullName, setFullName] = useState<string>("");
+        const [email, setEmail] = useState<string>("");
+        const [password, setPassword] = useState<string>("");
+        const [checkStrength, setCheckStrength] = useState<string>("");
 
         useEffect(() => {
             const strength = passwordStrength(password).value;
@@ -100,7 +100,7 @@ export default function SignUpPage() {
                     email, // user email address
                     password, // user password -> min 8 characters by default
                     name: fullName, // user display name
-                    callbackURL: process.env.NEXT_PUBLIC_APP_URL + '/dashboard' // A URL to redirect to after the user verifies their email (optional)
+                    callbackURL: process.env.NEXT_PUBLIC_APP_URL + '/sign-in' // A URL to redirect to after the user verifies their email (optional)
                 }, {
                     onRequest: (ctx) => {
                         toast.loading("Signing you up...");

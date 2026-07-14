@@ -55,7 +55,11 @@ export const ModelName = {
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification',
-  Vault: 'Vault'
+  Vault: 'Vault',
+  LoginItem: 'LoginItem',
+  SecureNoteItem: 'SecureNoteItem',
+  CreditCardItem: 'CreditCardItem',
+  IdentityItem: 'IdentityItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -138,10 +142,95 @@ export const VaultScalarFieldEnum = {
   slug: 'slug',
   icon: 'icon',
   iconColor: 'iconColor',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   userId: 'userId'
 } as const
 
 export type VaultScalarFieldEnum = (typeof VaultScalarFieldEnum)[keyof typeof VaultScalarFieldEnum]
+
+
+export const LoginItemScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  username: 'username',
+  email: 'email',
+  password: 'password',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  vaultId: 'vaultId'
+} as const
+
+export type LoginItemScalarFieldEnum = (typeof LoginItemScalarFieldEnum)[keyof typeof LoginItemScalarFieldEnum]
+
+
+export const SecureNoteItemScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  vaultId: 'vaultId'
+} as const
+
+export type SecureNoteItemScalarFieldEnum = (typeof SecureNoteItemScalarFieldEnum)[keyof typeof SecureNoteItemScalarFieldEnum]
+
+
+export const CreditCardItemScalarFieldEnum = {
+  id: 'id',
+  cardNumber: 'cardNumber',
+  cardHolderName: 'cardHolderName',
+  expiryDate: 'expiryDate',
+  cvv: 'cvv',
+  billingAddress1: 'billingAddress1',
+  billingAddress2: 'billingAddress2',
+  zipCode: 'zipCode',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  vaultId: 'vaultId'
+} as const
+
+export type CreditCardItemScalarFieldEnum = (typeof CreditCardItemScalarFieldEnum)[keyof typeof CreditCardItemScalarFieldEnum]
+
+
+export const IdentityItemScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phoneNumber: 'phoneNumber',
+  organizationName: 'organizationName',
+  address1: 'address1',
+  address2: 'address2',
+  zipCode: 'zipCode',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  floor: 'floor',
+  county: 'county',
+  poBox: 'poBox',
+  socialSecurityNumber: 'socialSecurityNumber',
+  passportNumber: 'passportNumber',
+  licenseNumber: 'licenseNumber',
+  companyName: 'companyName',
+  occupation: 'occupation',
+  x: 'x',
+  linkedin: 'linkedin',
+  instagram: 'instagram',
+  tiktok: 'tiktok',
+  facebook: 'facebook',
+  github: 'github',
+  other: 'other',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  vaultId: 'vaultId'
+} as const
+
+export type IdentityItemScalarFieldEnum = (typeof IdentityItemScalarFieldEnum)[keyof typeof IdentityItemScalarFieldEnum]
 
 
 export const SortOrder = {

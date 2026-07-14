@@ -137,7 +137,7 @@ export default function Navbar() {
                     ) : data?.user ? (
                         <>
                             <ModeToggleIcon />
-                            <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="/dashboard">Dashboard</Link>
+                            <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="/user/vault">Dashboard</Link>
                         </>
                     ) : (
                         <>
