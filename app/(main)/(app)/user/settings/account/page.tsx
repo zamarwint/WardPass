@@ -20,10 +20,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { getAuthSession } from "@/lib/queries/getSessionQuery";
+import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
 
 export default function AccountPage() {
-    const { isPending, data, error } = getAuthSession();
+    const { isPending, data, error } = GetAuthSession();
 
     const [newEmail, setNewEmail] = useState(data?.user.email as string)
     const [emailPending, startEmailChangeTransition] = useTransition();
@@ -42,7 +42,7 @@ export default function AccountPage() {
         startEmailChangeTransition(async () => {
             await authClient.changeEmail({
                 newEmail: newEmail,
-                callbackURL: "/dashboard", // to redirect after verification
+                callbackURL: "/user/vault", // to redirect after verification
                 fetchOptions: {
                     onRequest: () => {
                         toast.loading("Changing your email...");
@@ -166,13 +166,13 @@ export default function AccountPage() {
                             }
 
                             if (newEmail && newPassword) {
-                                changeEmail;
-                                changePassword;
+                                changeEmail();
+                                changePassword();
                                 return;
                             }
 
-                            if (newEmail) changeEmail;
-                            if (newPassword) changePassword;
+                            if (newEmail) changeEmail();
+                            if (newPassword) changePassword();
                         }}>{emailPending || passwordPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

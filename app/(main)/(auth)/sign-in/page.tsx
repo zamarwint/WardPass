@@ -7,7 +7,7 @@ import DotPattern from "@/components/ui/dot-pattern";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/utils/auth-client";
-import { Circle, Loader2Icon, LockKeyholeOpen, ShieldPlus } from "lucide-react";
+import { Loader2Icon, LockKeyholeOpen } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { FaGoogle } from "react-icons/fa";
@@ -65,11 +65,11 @@ export default function SignInPage() {
                  */
                 rememberMe: false
             }, {
-                onRequest: (ctx) => {
+                onRequest: () => {
                     toast.loading("Signing you in...");
                 },
-                onSuccess: (ctx) => {
-                    //redirect to the dashboard or sign in page
+                onSuccess: () => {
+                    //redirect to the user vault page
                     toast.dismiss();
                     toast.success("Success!");
                 },
@@ -143,7 +143,7 @@ export default function SignInPage() {
                         <FieldSeparator />
 
                         <FieldDescription>
-                            Don't have an account?
+                            No account yet?
                             <Link href="/sign-up" className="mx-2">Create an Account</Link>
                         </FieldDescription>
                     </FieldSet>

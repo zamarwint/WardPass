@@ -7,8 +7,8 @@ import { usePathname } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 import { motion, useScroll } from "motion/react";
-import { scrollToAnchor } from "@/lib/functions";
-import { getAuthSession } from "@/lib/queries/getSessionQuery";
+import { ScrollToAnchor } from "@/lib/functions";
+import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
 import { ModeToggleIcon } from "@/app/_components/themeChange";
 import { toast } from "sonner";
 
@@ -36,9 +36,9 @@ export default function Navbar() {
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const pathName = usePathname();
-    const { isPending, data, error } = getAuthSession();
+    const { isPending, data, error } = GetAuthSession();
 
-    error && toast.error("An error occured." + error.message);
+    if (error) toast.error("An error occured." + error.message);
 
     // PREVENT USER FROM SCROLLING WHEN MOBILE MENU IS ACTIVE
     useEffect(() => {
@@ -68,9 +68,9 @@ export default function Navbar() {
         return () => {
             window.removeEventListener("keydown", handleKeyEscape);
         }
-    }, [])
+    })
 
-    scrollToAnchor();
+    ScrollToAnchor();
     return (
         <motion.header
             initial={{ opacity: 0 }}
@@ -112,7 +112,7 @@ export default function Navbar() {
                     }
                 >
                     {open &&
-                        navigationLinks.map((link, index): any => (
+                        navigationLinks.map((link, index) => (
                             <Link
                                 key={index}
                                 href={link.path}
@@ -137,7 +137,7 @@ export default function Navbar() {
                     ) : data?.user ? (
                         <>
                             <ModeToggleIcon />
-                            <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="/user/vault">Dashboard</Link>
+                            <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="/user/vault">VAULT DASHBOARD</Link>
                         </>
                     ) : (
                         <>

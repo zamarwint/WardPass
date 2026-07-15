@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from "@/utils/db";
-import { getUserSession } from "./getSession";
+import { getUserSession } from "../getSession";
 
 export async function createVault(name: string, icon: string, iconColor: string) {
     const session = await getUserSession();
@@ -19,6 +19,5 @@ export async function createVault(name: string, icon: string, iconColor: string)
         }
     })
 
-    // revalidatePath, coming soon
     return vault;
 }

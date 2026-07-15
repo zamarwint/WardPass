@@ -179,7 +179,7 @@ export type LoginItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 
 export type LoginItemGroupByOutputType = {
   id: string
-  name: string | null
+  name: string
   url: string | null
   username: string | null
   email: string
@@ -213,7 +213,7 @@ export type LoginItemWhereInput = {
   OR?: Prisma.LoginItemWhereInput[]
   NOT?: Prisma.LoginItemWhereInput | Prisma.LoginItemWhereInput[]
   id?: Prisma.StringFilter<"LoginItem"> | string
-  name?: Prisma.StringNullableFilter<"LoginItem"> | string | null
+  name?: Prisma.StringFilter<"LoginItem"> | string
   url?: Prisma.StringNullableFilter<"LoginItem"> | string | null
   username?: Prisma.StringNullableFilter<"LoginItem"> | string | null
   email?: Prisma.StringFilter<"LoginItem"> | string
@@ -227,7 +227,7 @@ export type LoginItemWhereInput = {
 
 export type LoginItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrderInput | Prisma.SortOrder
+  name?: Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -244,7 +244,7 @@ export type LoginItemWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.LoginItemWhereInput | Prisma.LoginItemWhereInput[]
   OR?: Prisma.LoginItemWhereInput[]
   NOT?: Prisma.LoginItemWhereInput | Prisma.LoginItemWhereInput[]
-  name?: Prisma.StringNullableFilter<"LoginItem"> | string | null
+  name?: Prisma.StringFilter<"LoginItem"> | string
   url?: Prisma.StringNullableFilter<"LoginItem"> | string | null
   username?: Prisma.StringNullableFilter<"LoginItem"> | string | null
   email?: Prisma.StringFilter<"LoginItem"> | string
@@ -258,7 +258,7 @@ export type LoginItemWhereUniqueInput = Prisma.AtLeast<{
 
 export type LoginItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrderInput | Prisma.SortOrder
+  name?: Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -277,7 +277,7 @@ export type LoginItemScalarWhereWithAggregatesInput = {
   OR?: Prisma.LoginItemScalarWhereWithAggregatesInput[]
   NOT?: Prisma.LoginItemScalarWhereWithAggregatesInput | Prisma.LoginItemScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"LoginItem"> | string
-  name?: Prisma.StringNullableWithAggregatesFilter<"LoginItem"> | string | null
+  name?: Prisma.StringWithAggregatesFilter<"LoginItem"> | string
   url?: Prisma.StringNullableWithAggregatesFilter<"LoginItem"> | string | null
   username?: Prisma.StringNullableWithAggregatesFilter<"LoginItem"> | string | null
   email?: Prisma.StringWithAggregatesFilter<"LoginItem"> | string
@@ -290,7 +290,7 @@ export type LoginItemScalarWhereWithAggregatesInput = {
 
 export type LoginItemCreateInput = {
   id?: string
-  name?: string | null
+  name: string
   url?: string | null
   username?: string | null
   email: string
@@ -303,7 +303,7 @@ export type LoginItemCreateInput = {
 
 export type LoginItemUncheckedCreateInput = {
   id?: string
-  name?: string | null
+  name: string
   url?: string | null
   username?: string | null
   email: string
@@ -316,7 +316,7 @@ export type LoginItemUncheckedCreateInput = {
 
 export type LoginItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -329,7 +329,7 @@ export type LoginItemUpdateInput = {
 
 export type LoginItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -342,7 +342,7 @@ export type LoginItemUncheckedUpdateInput = {
 
 export type LoginItemCreateManyInput = {
   id?: string
-  name?: string | null
+  name: string
   url?: string | null
   username?: string | null
   email: string
@@ -355,7 +355,7 @@ export type LoginItemCreateManyInput = {
 
 export type LoginItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -367,7 +367,7 @@ export type LoginItemUpdateManyMutationInput = {
 
 export type LoginItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -471,7 +471,7 @@ export type LoginItemUncheckedUpdateManyWithoutVaultNestedInput = {
 
 export type LoginItemCreateWithoutVaultInput = {
   id?: string
-  name?: string | null
+  name: string
   url?: string | null
   username?: string | null
   email: string
@@ -483,7 +483,7 @@ export type LoginItemCreateWithoutVaultInput = {
 
 export type LoginItemUncheckedCreateWithoutVaultInput = {
   id?: string
-  name?: string | null
+  name: string
   url?: string | null
   username?: string | null
   email: string
@@ -524,7 +524,7 @@ export type LoginItemScalarWhereInput = {
   OR?: Prisma.LoginItemScalarWhereInput[]
   NOT?: Prisma.LoginItemScalarWhereInput | Prisma.LoginItemScalarWhereInput[]
   id?: Prisma.StringFilter<"LoginItem"> | string
-  name?: Prisma.StringNullableFilter<"LoginItem"> | string | null
+  name?: Prisma.StringFilter<"LoginItem"> | string
   url?: Prisma.StringNullableFilter<"LoginItem"> | string | null
   username?: Prisma.StringNullableFilter<"LoginItem"> | string | null
   email?: Prisma.StringFilter<"LoginItem"> | string
@@ -537,7 +537,7 @@ export type LoginItemScalarWhereInput = {
 
 export type LoginItemCreateManyVaultInput = {
   id?: string
-  name?: string | null
+  name: string
   url?: string | null
   username?: string | null
   email: string
@@ -549,7 +549,7 @@ export type LoginItemCreateManyVaultInput = {
 
 export type LoginItemUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -561,7 +561,7 @@ export type LoginItemUpdateWithoutVaultInput = {
 
 export type LoginItemUncheckedUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -573,7 +573,7 @@ export type LoginItemUncheckedUpdateWithoutVaultInput = {
 
 export type LoginItemUncheckedUpdateManyWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -658,7 +658,7 @@ export type $LoginItemPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    name: string | null
+    name: string
     url: string | null
     username: string | null
     email: string

@@ -11,7 +11,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 
-import { Button } from "../../../../components/ui/button";
+import { Button } from "../../../../../../components/ui/button";
 import * as Lucide from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ import { motion } from "motion/react";
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
-import { createVault } from "@/app/actions/createVault";
+import { createVault } from "@/app/actions/vault/createVault";
 import { Loader2Icon } from "lucide-react";
 
 const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging'];

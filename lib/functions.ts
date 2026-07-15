@@ -1,10 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { authClient } from "@/utils/auth-client";
-import { toast } from "sonner";
 
 // SCROLL TO ANCHOR LINK
-export const scrollToAnchor = () => {
+export const ScrollToAnchor = () => {
     const pathname = usePathname();
     const lastHash = useRef("");
 

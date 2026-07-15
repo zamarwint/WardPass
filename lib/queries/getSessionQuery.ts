@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserSession } from "@/app/actions/getSession";
 
-export const getAuthSession = () => {
+export const GetAuthSession = () => {
     return useQuery({
         queryKey: ["get-session"],
         refetchOnWindowFocus: false,

@@ -8,8 +8,7 @@ import { DotPattern } from "@/components/ui/dot-pattern";
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
-import { CheckCircle, CheckCircleIcon, Circle, Loader2Icon, ShieldPlus } from "lucide-react";
-import { FaGoogle } from "react-icons/fa";
+import { Loader2Icon, ShieldPlus } from "lucide-react";
 import Link from "next/link";
 import { authClient } from "@/utils/auth-client";
 import React, { useEffect, useState, useTransition } from "react";
@@ -102,10 +101,10 @@ export default function SignUpPage() {
                     name: fullName, // user display name
                     callbackURL: process.env.NEXT_PUBLIC_APP_URL + '/sign-in' // A URL to redirect to after the user verifies their email (optional)
                 }, {
-                    onRequest: (ctx) => {
+                    onRequest: () => {
                         toast.loading("Signing you up...");
                     },
-                    onSuccess: (ctx) => {
+                    onSuccess: () => {
                         //redirect to verify email page
                         toast.dismiss();
                         setCurrentUserEmail(email);

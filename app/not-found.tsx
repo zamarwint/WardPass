@@ -23,7 +23,7 @@ export default function NotFoundPage() {
                     />
                 </svg>
             </div>
-            <p className="text-muted-foreground">We're sorry, the page you requested could not be found. Please go back to the homepage.</p>
+            <p className="text-muted-foreground">We&aps;re sorry, the page you requested could not be found. Please go back to the homepage.</p>
             <Button variant="default" size="lg" className="px-8 py-6 font-geist" onClick={() => router.push("/")}>Back to Homepage</Button>
         </motion.div>
     )

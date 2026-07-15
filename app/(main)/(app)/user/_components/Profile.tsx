@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { CircleUserRound, Loader2Icon, SquarePen } from "lucide-react";
+import { Loader2Icon, SquarePen } from "lucide-react";
 
 import {
     Dialog,
@@ -16,18 +16,36 @@ import {
 } from "@/components/ui/dialog"
 
 import { authClient } from "@/utils/auth-client";
-import Image from "next/image";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { getAuthSession } from "@/lib/queries/getSessionQuery";
+import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
+
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar"
+
+export function ProfileAvatar({ image, alt, fallback, size }: { image: string, alt: string, fallback: string, size: string }) {
+    return (
+        <Avatar className={size}>
+            <AvatarImage
+                src={image}
+                alt={alt}
+                className="grayscale"
+            />
+            <AvatarFallback>{fallback}</AvatarFallback>
+        </Avatar>
+    )
+}
 
 export default function Profile() {
-    const { isPending, data, error } = getAuthSession();
+    const { isPending, data, error } = GetAuthSession();
 
-    error ? toast.error(error.message) : null;
+    if (error) toast.error(error.message);
 
     const [newName, setNewName] = useState<string>(data?.user?.name || "");
     const [newImage, setNewImage] = useState(data?.user.image);
@@ -39,7 +57,7 @@ export default function Profile() {
             await authClient.updateUser({
                 name: newName,
                 fetchOptions: {
-                    onRequest: (ctx) => {
+                    onRequest: () => {
                         toast.loading("Updating...");
                     },
                     onSuccess: (ctx) => {
@@ -62,7 +80,7 @@ export default function Profile() {
             await authClient.updateUser({
                 image: newImage,
                 fetchOptions: {
-                    onRequest: (ctx) => {
+                    onRequest: () => {
                         toast.loading("Updating...");
                     },
                     onSuccess: (ctx) => {
@@ -92,7 +110,7 @@ export default function Profile() {
                     ) : (
                         <motion.div className="flex items-center justify-between gap-2 w-full">
                             <div className="flex items-center justify-center gap-2">
-                                {data?.user.image ? <Image src={data?.user.image} alt="Profile image" width={24} height={24} /> : <CircleUserRound size={64} />}
+                                <ProfileAvatar size="size-8" image={data?.user.image as string} alt={data?.user.name || "Profile picture"} fallback={`${data?.user.name.split(" ")[0][0]}${data?.user.name.split(" ")[1][0]}`} />
                                 <div className="flex flex-col items-start justify-start">
                                     <div className="font-semibold">{data ? data.user.name : "Name"}</div>
                                     <div className="font-normal text-muted-foreground">{data ? data.user.email : "Email"}</div>
@@ -115,7 +133,7 @@ export default function Profile() {
                         <Separator />
                         <DialogTitle className="self-start">Change your profile picture.</DialogTitle>
                         <motion.div className="flex flex-col items-center justify-center gap-2">
-                            {data?.user?.image ? <Image src={data?.user.image} alt="Profile image" width={96} height={96} className="rounded-full text-center" /> : <CircleUserRound size={96} />}
+                            <ProfileAvatar size="size-32" image={data?.user.image as string} alt={data?.user.name || "Profile picture"} fallback={`${data?.user.name.split(" ")[0][0]}${data?.user.name.split(" ")[1][0]}`} />
                             <motion.div className="flex items-center justify-center gap-2">
                                 <Button>Edit Image</Button>
                                 <Button variant="destructive">Remove Image</Button>
@@ -136,13 +154,13 @@ export default function Profile() {
                             }
 
                             if (newName && newImage) {
-                                updateUserName;
-                                updateUserImage;
+                                updateUserName();
+                                updateUserImage();
                                 return;
                             }
 
-                            if (newName) updateUserName;
-                            if (newImage) updateUserImage;
+                            if (newName) updateUserName();
+                            if (newImage) updateUserImage();
                         }}>{nameChangePending || imageChangePending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

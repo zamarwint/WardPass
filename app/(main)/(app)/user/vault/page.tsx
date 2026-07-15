@@ -1,8 +1,6 @@
-import { prisma } from '../../../../../utils/db';
-import { getUserSession } from '@/app/actions/getSession';
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
 import Link from 'next/link';
-import CreateVault from '../../_components/CreateVault';
+import CreateVault from './../_components/vault/CreateVault';
 
 import {
     Field,
@@ -17,24 +15,10 @@ import {
     FieldTitle,
 } from "@/components/ui/field"
 import { Button } from "@/components/ui/button";
+import { getVaults } from '@/app/actions/vault/getVaults';
 
 export default async function VaultSelectionPage() {
-    const session = await getUserSession();
-    const vaults = await prisma.vault.findMany({
-        where: {
-            userId: session?.user.id
-        },
-        select: {
-            id: true,
-            name: true,
-            slug: true,
-            icon: true,
-            iconColor: true,
-        },
-        orderBy: {
-            name: "asc",
-        }
-    }).then((vaults) => {
+    const vaults = getVaults().then((vaults) => {
         if (!vaults || vaults.length === 0) {
             return <FieldDescription>No vaults found. Create one above.</FieldDescription>
         }
@@ -42,7 +26,7 @@ export default async function VaultSelectionPage() {
             <Link key={vault.id} href={`/user/vault/${vault.id}`} className='w-full'>
                 <Button size="lg" className="flex items-center p-5 w-full">
                     <DynamicIcon name={vault.icon as IconName} size={32} />
-                    <span className="ml-2 text-md font-semibold">{vault.name}</span>
+                    <span className="ml-1 text-md font-bold">{vault.name}</span>
                 </Button>
             </Link>
         ))

@@ -47,7 +47,7 @@ export default function TopBar() {
         <motion.div className="flex flex-col bg-transparent backdrop-blur-xl fixed w-full h-fit px-10 pt-10">
             <div className="flex flex-col gap-5">
                 <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">Settings</h1>
-                <p className="text-xl text-muted-foreground">Manage your account settings.</p>
+                <p className="text-xl text-muted-foreground">Manage your preferences.</p>
             </div>
             <motion.div className="flex items-center justify-start gap-4 pt-6">
                 {navigationLinks.map((link, key) => (

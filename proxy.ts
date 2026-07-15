@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
     // THE AUTH PAGES
     const isAuthPage = pathname === '/sign-in' || pathname === '/sign-up';
 
-    // CHECKS IF THERE'S A SESSION OR NOT. IF NO SESSION, REDIRECT TO LOGIN OR SIGN UP, IF SESSION, REDIRECT TO DASHBOARD.
+    // CHECKS IF THERE'S A SESSION OR NOT. IF NO SESSION, REDIRECT TO LOGIN OR SIGN UP, IF SESSION, REDIRECT TO USER VAULTS.
     if (isAuthPage && session) {
         return NextResponse.redirect(new URL('/user/vault', request.url));
     }

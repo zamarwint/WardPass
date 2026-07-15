@@ -114,7 +114,7 @@ export default function PasswordGeneratorPage() {
             return;
         } catch (err) {
             setSuccessOrFailure(1);
-            setModalMessage("An error occured. Please try again.");
+            setModalMessage("An error occured. Please try again." + err);
             setModalOpen(true);
             return;
         }

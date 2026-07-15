@@ -160,7 +160,7 @@
   }
 
   .btn-ghost {
-    @apply hover:text-primary;
+    @apply hover:bg-muted;
   }
 }
 
@@ -189,7 +189,7 @@
 
 @layer base {
   ::selection {
-    @apply bg-white text-neutral-700;
+    @apply bg-foreground text-background;
   }
 }
 

@@ -1,11 +1,10 @@
 "use client";
 
 import GridPattern from "@/components/ui/grid-pattern";
-import { ChevronsLeftRightEllipsis, EyeOff, Lock, MoveUpRight, Server, Share2Icon, ShieldCheck, ShieldEllipsis, Smartphone, Vault } from "lucide-react"
+import { ChevronsLeftRightEllipsis, EyeOff, MoveUpRight, Server, Share2Icon, ShieldCheck, ShieldEllipsis, Smartphone } from "lucide-react"
 import { MoveRight } from "lucide-react";
 import { motion } from "motion/react";
-import { useRef } from 'react';
-import { PaymentCard, WebsiteCredentialCard } from "@/app/_components/ui-cards";
+import { PaymentCard } from "@/app/_components/ui-cards";
 import { Suspense } from 'react';
 import dynamic from "next/dynamic";
 import Link from "next/link";

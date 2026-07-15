@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { createCookie } from "@/app/actions/createCookie";
+import { createCookie } from "@/app/actions/cookie/createCookie";
 
-export function createCookieQuery(name: string, value: string) {
+export function CreateCookieQuery(name: string, value: string) {
     return useQuery({
         queryKey: ["create-cookie"],
         queryFn: () => createCookie(name, value),
