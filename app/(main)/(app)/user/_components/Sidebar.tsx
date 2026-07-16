@@ -31,7 +31,7 @@ export default async function Sidebar() {
                 <SideButton hrefExact={true} href="/user/vault" text="All Vaults" Icon={<Vault />} className="mt-10" />
                 <Separator className="my-2" />
             </div>
-            <div className="w-full flex flex-col gap-2 h-full overflow-y-scroll no-scrollbar">
+            <div className="w-full flex flex-col gap-2 flex-1 overflow-y-auto no-scrollbar">
                 {vaults}
             </div>
             <div className="flex flex-col items-start justify-start gap-1">

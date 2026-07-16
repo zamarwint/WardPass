@@ -26,6 +26,7 @@ export type AggregateIdentityItem = {
 
 export type IdentityItemMinAggregateOutputType = {
   id: string | null
+  itemType: string | null
   name: string | null
   email: string | null
   phoneNumber: string | null
@@ -58,6 +59,7 @@ export type IdentityItemMinAggregateOutputType = {
 
 export type IdentityItemMaxAggregateOutputType = {
   id: string | null
+  itemType: string | null
   name: string | null
   email: string | null
   phoneNumber: string | null
@@ -90,6 +92,7 @@ export type IdentityItemMaxAggregateOutputType = {
 
 export type IdentityItemCountAggregateOutputType = {
   id: number
+  itemType: number
   name: number
   email: number
   phoneNumber: number
@@ -124,6 +127,7 @@ export type IdentityItemCountAggregateOutputType = {
 
 export type IdentityItemMinAggregateInputType = {
   id?: true
+  itemType?: true
   name?: true
   email?: true
   phoneNumber?: true
@@ -156,6 +160,7 @@ export type IdentityItemMinAggregateInputType = {
 
 export type IdentityItemMaxAggregateInputType = {
   id?: true
+  itemType?: true
   name?: true
   email?: true
   phoneNumber?: true
@@ -188,6 +193,7 @@ export type IdentityItemMaxAggregateInputType = {
 
 export type IdentityItemCountAggregateInputType = {
   id?: true
+  itemType?: true
   name?: true
   email?: true
   phoneNumber?: true
@@ -293,6 +299,7 @@ export type IdentityItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type IdentityItemGroupByOutputType = {
   id: string
+  itemType: string
   name: string
   email: string
   phoneNumber: string
@@ -346,6 +353,7 @@ export type IdentityItemWhereInput = {
   OR?: Prisma.IdentityItemWhereInput[]
   NOT?: Prisma.IdentityItemWhereInput | Prisma.IdentityItemWhereInput[]
   id?: Prisma.StringFilter<"IdentityItem"> | string
+  itemType?: Prisma.StringFilter<"IdentityItem"> | string
   name?: Prisma.StringFilter<"IdentityItem"> | string
   email?: Prisma.StringFilter<"IdentityItem"> | string
   phoneNumber?: Prisma.StringFilter<"IdentityItem"> | string
@@ -379,6 +387,7 @@ export type IdentityItemWhereInput = {
 
 export type IdentityItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
@@ -415,6 +424,7 @@ export type IdentityItemWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.IdentityItemWhereInput | Prisma.IdentityItemWhereInput[]
   OR?: Prisma.IdentityItemWhereInput[]
   NOT?: Prisma.IdentityItemWhereInput | Prisma.IdentityItemWhereInput[]
+  itemType?: Prisma.StringFilter<"IdentityItem"> | string
   name?: Prisma.StringFilter<"IdentityItem"> | string
   email?: Prisma.StringFilter<"IdentityItem"> | string
   phoneNumber?: Prisma.StringFilter<"IdentityItem"> | string
@@ -448,6 +458,7 @@ export type IdentityItemWhereUniqueInput = Prisma.AtLeast<{
 
 export type IdentityItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
@@ -486,6 +497,7 @@ export type IdentityItemScalarWhereWithAggregatesInput = {
   OR?: Prisma.IdentityItemScalarWhereWithAggregatesInput[]
   NOT?: Prisma.IdentityItemScalarWhereWithAggregatesInput | Prisma.IdentityItemScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"IdentityItem"> | string
+  itemType?: Prisma.StringWithAggregatesFilter<"IdentityItem"> | string
   name?: Prisma.StringWithAggregatesFilter<"IdentityItem"> | string
   email?: Prisma.StringWithAggregatesFilter<"IdentityItem"> | string
   phoneNumber?: Prisma.StringWithAggregatesFilter<"IdentityItem"> | string
@@ -518,6 +530,7 @@ export type IdentityItemScalarWhereWithAggregatesInput = {
 
 export type IdentityItemCreateInput = {
   id?: string
+  itemType?: string
   name: string
   email: string
   phoneNumber: string
@@ -550,6 +563,7 @@ export type IdentityItemCreateInput = {
 
 export type IdentityItemUncheckedCreateInput = {
   id?: string
+  itemType?: string
   name: string
   email: string
   phoneNumber: string
@@ -582,6 +596,7 @@ export type IdentityItemUncheckedCreateInput = {
 
 export type IdentityItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -614,6 +629,7 @@ export type IdentityItemUpdateInput = {
 
 export type IdentityItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -646,6 +662,7 @@ export type IdentityItemUncheckedUpdateInput = {
 
 export type IdentityItemCreateManyInput = {
   id?: string
+  itemType?: string
   name: string
   email: string
   phoneNumber: string
@@ -678,6 +695,7 @@ export type IdentityItemCreateManyInput = {
 
 export type IdentityItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -709,6 +727,7 @@ export type IdentityItemUpdateManyMutationInput = {
 
 export type IdentityItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -751,6 +770,7 @@ export type IdentityItemOrderByRelationAggregateInput = {
 
 export type IdentityItemCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
@@ -783,6 +803,7 @@ export type IdentityItemCountOrderByAggregateInput = {
 
 export type IdentityItemMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
@@ -815,6 +836,7 @@ export type IdentityItemMaxOrderByAggregateInput = {
 
 export type IdentityItemMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
@@ -889,6 +911,7 @@ export type IdentityItemUncheckedUpdateManyWithoutVaultNestedInput = {
 
 export type IdentityItemCreateWithoutVaultInput = {
   id?: string
+  itemType?: string
   name: string
   email: string
   phoneNumber: string
@@ -920,6 +943,7 @@ export type IdentityItemCreateWithoutVaultInput = {
 
 export type IdentityItemUncheckedCreateWithoutVaultInput = {
   id?: string
+  itemType?: string
   name: string
   email: string
   phoneNumber: string
@@ -980,6 +1004,7 @@ export type IdentityItemScalarWhereInput = {
   OR?: Prisma.IdentityItemScalarWhereInput[]
   NOT?: Prisma.IdentityItemScalarWhereInput | Prisma.IdentityItemScalarWhereInput[]
   id?: Prisma.StringFilter<"IdentityItem"> | string
+  itemType?: Prisma.StringFilter<"IdentityItem"> | string
   name?: Prisma.StringFilter<"IdentityItem"> | string
   email?: Prisma.StringFilter<"IdentityItem"> | string
   phoneNumber?: Prisma.StringFilter<"IdentityItem"> | string
@@ -1012,6 +1037,7 @@ export type IdentityItemScalarWhereInput = {
 
 export type IdentityItemCreateManyVaultInput = {
   id?: string
+  itemType?: string
   name: string
   email: string
   phoneNumber: string
@@ -1043,6 +1069,7 @@ export type IdentityItemCreateManyVaultInput = {
 
 export type IdentityItemUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1074,6 +1101,7 @@ export type IdentityItemUpdateWithoutVaultInput = {
 
 export type IdentityItemUncheckedUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1105,6 +1133,7 @@ export type IdentityItemUncheckedUpdateWithoutVaultInput = {
 
 export type IdentityItemUncheckedUpdateManyWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1138,6 +1167,7 @@ export type IdentityItemUncheckedUpdateManyWithoutVaultInput = {
 
 export type IdentityItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  itemType?: boolean
   name?: boolean
   email?: boolean
   phoneNumber?: boolean
@@ -1171,6 +1201,7 @@ export type IdentityItemSelect<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type IdentityItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  itemType?: boolean
   name?: boolean
   email?: boolean
   phoneNumber?: boolean
@@ -1204,6 +1235,7 @@ export type IdentityItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type IdentityItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  itemType?: boolean
   name?: boolean
   email?: boolean
   phoneNumber?: boolean
@@ -1237,6 +1269,7 @@ export type IdentityItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
 
 export type IdentityItemSelectScalar = {
   id?: boolean
+  itemType?: boolean
   name?: boolean
   email?: boolean
   phoneNumber?: boolean
@@ -1267,7 +1300,7 @@ export type IdentityItemSelectScalar = {
   vaultId?: boolean
 }
 
-export type IdentityItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phoneNumber" | "organizationName" | "address1" | "address2" | "zipCode" | "city" | "state" | "country" | "floor" | "county" | "poBox" | "socialSecurityNumber" | "passportNumber" | "licenseNumber" | "companyName" | "occupation" | "x" | "linkedin" | "instagram" | "tiktok" | "facebook" | "github" | "other" | "createdAt" | "updatedAt" | "vaultId", ExtArgs["result"]["identityItem"]>
+export type IdentityItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "itemType" | "name" | "email" | "phoneNumber" | "organizationName" | "address1" | "address2" | "zipCode" | "city" | "state" | "country" | "floor" | "county" | "poBox" | "socialSecurityNumber" | "passportNumber" | "licenseNumber" | "companyName" | "occupation" | "x" | "linkedin" | "instagram" | "tiktok" | "facebook" | "github" | "other" | "createdAt" | "updatedAt" | "vaultId", ExtArgs["result"]["identityItem"]>
 export type IdentityItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }
@@ -1285,6 +1318,7 @@ export type $IdentityItemPayload<ExtArgs extends runtime.Types.Extensions.Intern
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    itemType: string
     name: string
     email: string
     phoneNumber: string
@@ -1738,6 +1772,7 @@ export interface Prisma__IdentityItemClient<T, Null = never, ExtArgs extends run
  */
 export interface IdentityItemFieldRefs {
   readonly id: Prisma.FieldRef<"IdentityItem", 'String'>
+  readonly itemType: Prisma.FieldRef<"IdentityItem", 'String'>
   readonly name: Prisma.FieldRef<"IdentityItem", 'String'>
   readonly email: Prisma.FieldRef<"IdentityItem", 'String'>
   readonly phoneNumber: Prisma.FieldRef<"IdentityItem", 'String'>

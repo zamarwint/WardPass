@@ -6,9 +6,9 @@ export default function AppLayout({
     children: React.ReactNode
 }>) {
     return (
-        <div className="hidden lg:flex min-h-screen min-w-screen font-geist">
+        <div className="hidden lg:flex h-screen w-screen font-geist overflow-hidden">
             <Sidebar />
-            <div className="flex flex-1 flex-col w-full min-h-screen">{children}</div>
+            <div className="flex flex-1 flex-col w-full h-full overflow-hidden">{children}</div>
         </div>
     )
 }

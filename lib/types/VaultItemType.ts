@@ -1,5 +1,6 @@
 export type LoginItem = {
     id: string | null
+    itemType: "LOGIN"
     name: string | null
     url: string | null
     username: string | null
@@ -13,6 +14,7 @@ export type LoginItem = {
 
 export type SecureNoteItem = {
     id: string | null
+    itemType: "SECURE_NOTE"
     title: string | null
     content: string | null
     createdAt: Date | null
@@ -22,6 +24,7 @@ export type SecureNoteItem = {
 
 export type CreditCardItem = {
     id: string | null
+    itemType: "CREDIT_CARD"
     cardNumber: number | null
     cardHolderName: string | null
     expiryDate: string | null
@@ -39,6 +42,7 @@ export type CreditCardItem = {
 
 export type IdentityItem = {
     id: string | null
+    itemType: "IDENTITY"
     name: string | null
     email: string | null
     phoneNumber: string | null

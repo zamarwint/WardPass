@@ -1,3 +1,9 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "WardPass - License",
+};
+
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldSeparator } from "@/components/ui/field";
 import { ArrowLeft } from "lucide-react";

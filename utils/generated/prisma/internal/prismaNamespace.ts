@@ -1191,6 +1191,7 @@ export type VaultScalarFieldEnum = (typeof VaultScalarFieldEnum)[keyof typeof Va
 
 export const LoginItemScalarFieldEnum = {
   id: 'id',
+  itemType: 'itemType',
   name: 'name',
   url: 'url',
   username: 'username',
@@ -1207,6 +1208,7 @@ export type LoginItemScalarFieldEnum = (typeof LoginItemScalarFieldEnum)[keyof t
 
 export const SecureNoteItemScalarFieldEnum = {
   id: 'id',
+  itemType: 'itemType',
   title: 'title',
   content: 'content',
   createdAt: 'createdAt',
@@ -1219,6 +1221,7 @@ export type SecureNoteItemScalarFieldEnum = (typeof SecureNoteItemScalarFieldEnu
 
 export const CreditCardItemScalarFieldEnum = {
   id: 'id',
+  itemType: 'itemType',
   cardNumber: 'cardNumber',
   cardHolderName: 'cardHolderName',
   expiryDate: 'expiryDate',
@@ -1239,6 +1242,7 @@ export type CreditCardItemScalarFieldEnum = (typeof CreditCardItemScalarFieldEnu
 
 export const IdentityItemScalarFieldEnum = {
   id: 'id',
+  itemType: 'itemType',
   name: 'name',
   email: 'email',
   phoneNumber: 'phoneNumber',

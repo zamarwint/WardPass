@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Contact WardPass",
+};
+
 
 export default function ContactPage() {
     return (

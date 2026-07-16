@@ -1,16 +1,8 @@
-"use client";
-
-import GridPattern from "@/components/ui/grid-pattern";
-import { ChevronsLeftRightEllipsis, EyeOff, MoveUpRight, Server, Share2Icon, ShieldCheck, ShieldEllipsis, Smartphone } from "lucide-react"
-import { MoveRight } from "lucide-react";
-import { motion } from "motion/react";
+import { ChevronsLeftRightEllipsis, EyeOff, Server, Share2Icon, ShieldEllipsis, Smartphone } from "lucide-react"
 import { PaymentCard } from "@/app/_components/ui-cards";
-import { Suspense } from 'react';
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
-
-const Spline = dynamic(() => import('@splinetool/react-spline'), { ssr: false });
+import Hero from "./_components/Hero";;
 
 const features = [
   {
@@ -97,61 +89,11 @@ function SecurityDecoration() {
 
 export default function Page() {
   return (
-    <motion.main className="grow font-geist">
-      {/* Hero motion.Section  */
-        <motion.section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-black">
-          {/* Subtle background grid */}
-          <div>
-            <GridPattern width={40} height={40} strokeDasharray="0" squares={[[0, 0]]} />
-          </div>
-          <div className="mx-auto px-4 md:px-10 relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="flex flex-col items-start max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-primary/30 bg-primary/5 text-primary uppercase tracking-wider">
-                  <span><ShieldCheck /></span>
-                  Active Protection Enabled
-                </div>
-                <h1 className="text-4xl font-bold md:text-6xl mb-6">
-                  The Password Management Solution, <br /><span className="text-primary">You Deserve.</span>
-                </h1>
-                <p className="mb-10 max-w-xl">
-                  Deploy a high-performance digital vault engineered for power users. Zero-knowledge architecture meets uncompromising speed. Your data remains an impenetrable asset.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto font-geist">
-                  <Link href="/sign-up" className="font-bold btn-primary px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2">
-                    Get Started for Free
-                    <span className="text-[18px]"><MoveRight /></span>
-                  </Link>
-                  <Link href="#about" className="font-bold btn-outline px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2">
-                    Learn More
-                    <span className="text-[18px]"><MoveUpRight /></span>
-                  </Link >
-                </div>
-                <div className="mt-8 flex items-center gap-2 font-mono text-muted-foreground">
-                  <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-                  System Status: Operational &amp; Secure
-                </div>
-              </div>
-              <div className="aboslute aspect-square">
-                <Suspense fallback={<div>Loading...</div>}>
-                  <Spline
-                    scene="https://prod.spline.design/83XZaXzRG30dL4fJ/scene.splinecode"
-                    className="pointer-events-none w-full h-full"
-                    onLoad={(spline) => {
-                      spline.setSize(1500, 1500);
-                      spline.setZoom(2);
-                    }}
-                  />
-                </Suspense>
-                {/* <img alt="" className="max-w-full max-h-full object-contain filter drop-shadow-[0_0_40px_rgba(255,255,0,0.15)]" src="" /> */}
-              </div>
-            </div>
-          </div>
-        </motion.section>
-      }
+    <main className="grow font-geist">
+      <Hero />
 
-      {/* Trust Bar motion.Section */}
-      <motion.section className="border-y border-foreground/5 py-12">
+      {/* Trust Bar Section */}
+      <section className="border-y border-foreground/5 py-12">
         <div className="mx-auto">
           <div className="flex flex-col items-center justify-center space-y-6">
             <p className="uppercase tracking-widest font-bold">Certified Security Protocols</p>
@@ -160,11 +102,11 @@ export default function Page() {
             </Link>
           </div>
         </div>
-      </motion.section>
+      </section>
 
 
       {/* ABOUT SECTION */}
-      <motion.section id="about" className="border-y border-foreground/5 py-21 px-4 font-geist">
+      <section id="about" className="border-y border-foreground/5 py-21 px-4 font-geist">
         <div className="flex flex-col md:flex-row mx-auto items-center justify-around gap-10 md:gap-0">
           <div className="w-64 md:w-2/6 text-center md:text-left flex flex-col gap-15">
             <h2 className="text-2xl md:text-8xl font-bold text-primary">What is WardPass?</h2>
@@ -177,10 +119,10 @@ export default function Page() {
             <PaymentCard />
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Feature Grid Section */}
-      <motion.section id="features" className="w-full py-24 px-4 md:px-10 border-y border-foreground/5 flex items-center justify-center">
+      <section id="features" className="w-full py-24 px-4 md:px-10 border-y border-foreground/5 flex items-center justify-center">
         <div className="flex flex-col items-start">
           <div className="mb-16 max-w-3xl flex flex-col gap-4 items-start justify-start">
             <h2 className="font-bold text-3xl">Engineered for Absolute Trust</h2>
@@ -204,10 +146,10 @@ export default function Page() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* How It Works motion.Section */}
-      <motion.section id="security" className="py-24 border-y border-foreground/5 relative overflow-hidden">
+      {/* How It Works Section */}
+      <section id="security" className="py-24 border-y border-foreground/5 relative overflow-hidden">
         {/* Decorative circuit lines */}
         <div className="absolute inset-0 pointer-events-none opacity-20">
           <CircuitLines />
@@ -233,10 +175,10 @@ export default function Page() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* CTA motion.Section - */}
-      <motion.section className="py-30 border-y border-foreground/5" >
+      {/* CTA Section - */}
+      <section className="py-30 border-y border-foreground/5" >
         <div className="mx-auto">
           <div className="p-12 text-center max-w-4xl mx-auto border border-foreground/20 hover:border-primary/50 bg-card">
             <h2 className="text-2xl md:text-4xl font-bold font-geist mb-6">Ready to secure your assets?</h2>
@@ -246,7 +188,7 @@ export default function Page() {
             </Link>
           </div>
         </div>
-      </motion.section >
-    </motion.main>
+      </section >
+    </main>
   )
 }

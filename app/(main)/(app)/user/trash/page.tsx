@@ -1,3 +1,9 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Trash Bin",
+};
+
 export default function TrashPage() {
     return (
         <div className="flex flex-col bg-transparent backdrop-blur-xl fixed px-10 pt-10">

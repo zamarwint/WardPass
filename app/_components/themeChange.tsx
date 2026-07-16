@@ -38,27 +38,19 @@ export function ModeToggleIcon() {
     )
 }
 
-import { useEffect, useId, useState } from 'react'
+import { useId, useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { SunIcon, MoonIcon } from 'lucide-react'
 
 export const SwitchDualIconLabelDemo = () => {
     const id = useId()
-    const [checked, setChecked] = useState(true)
-    const { setTheme, resolvedTheme } = useTheme();
+    const [checked, setChecked] = useState<boolean>(true)
+    const { setTheme } = useTheme();
 
     const toggleSwitch = () => {
         setChecked(prev => !prev);
         setTheme(checked ? "light" : "dark");
     }
-
-    useEffect(() => {
-        if (resolvedTheme === "light") {
-            setChecked(false);
-        } else if (resolvedTheme === "dark") {
-            setChecked(true);
-        }
-    }, [resolvedTheme]);
 
     return (
         <div className='group inline-flex items-center gap-2' data-state={checked ? 'checked' : 'unchecked'}>

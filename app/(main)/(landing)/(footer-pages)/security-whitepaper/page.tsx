@@ -1,3 +1,9 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "WardPass - Security Whitepaper",
+};
+
 export default function SecurityWhitepaperPage() {
     return (
         <div className="py-30 mx-auto flex flex-col gap-10">

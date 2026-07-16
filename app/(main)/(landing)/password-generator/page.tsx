@@ -5,19 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     Dialog,
-    DialogClose,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import {
     Field,
-    FieldContent,
     FieldDescription,
-    FieldError,
     FieldGroup,
     FieldLabel,
     FieldLegend,
@@ -132,7 +127,7 @@ export default function PasswordGeneratorPage() {
     };
 
     return (
-        <div className="py-30 mx-auto flex flex-col gap-10">
+        <>
             <div className="flex flex-col items-center justify-center text-center gap-3">
                 <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">Generate a Secure Password</h1>
                 <p className="text-xl text-muted-foreground">Remember to store it somewhere safe afterwards.</p>
@@ -253,6 +248,6 @@ export default function PasswordGeneratorPage() {
                     )}
                 </DialogContent>
             </Dialog>
-        </div>
+        </>
     )
 }

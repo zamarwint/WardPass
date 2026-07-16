@@ -26,6 +26,7 @@ export type AggregateLoginItem = {
 
 export type LoginItemMinAggregateOutputType = {
   id: string | null
+  itemType: string | null
   name: string | null
   url: string | null
   username: string | null
@@ -39,6 +40,7 @@ export type LoginItemMinAggregateOutputType = {
 
 export type LoginItemMaxAggregateOutputType = {
   id: string | null
+  itemType: string | null
   name: string | null
   url: string | null
   username: string | null
@@ -52,6 +54,7 @@ export type LoginItemMaxAggregateOutputType = {
 
 export type LoginItemCountAggregateOutputType = {
   id: number
+  itemType: number
   name: number
   url: number
   username: number
@@ -67,6 +70,7 @@ export type LoginItemCountAggregateOutputType = {
 
 export type LoginItemMinAggregateInputType = {
   id?: true
+  itemType?: true
   name?: true
   url?: true
   username?: true
@@ -80,6 +84,7 @@ export type LoginItemMinAggregateInputType = {
 
 export type LoginItemMaxAggregateInputType = {
   id?: true
+  itemType?: true
   name?: true
   url?: true
   username?: true
@@ -93,6 +98,7 @@ export type LoginItemMaxAggregateInputType = {
 
 export type LoginItemCountAggregateInputType = {
   id?: true
+  itemType?: true
   name?: true
   url?: true
   username?: true
@@ -179,6 +185,7 @@ export type LoginItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 
 export type LoginItemGroupByOutputType = {
   id: string
+  itemType: string
   name: string
   url: string | null
   username: string | null
@@ -213,6 +220,7 @@ export type LoginItemWhereInput = {
   OR?: Prisma.LoginItemWhereInput[]
   NOT?: Prisma.LoginItemWhereInput | Prisma.LoginItemWhereInput[]
   id?: Prisma.StringFilter<"LoginItem"> | string
+  itemType?: Prisma.StringFilter<"LoginItem"> | string
   name?: Prisma.StringFilter<"LoginItem"> | string
   url?: Prisma.StringNullableFilter<"LoginItem"> | string | null
   username?: Prisma.StringNullableFilter<"LoginItem"> | string | null
@@ -227,6 +235,7 @@ export type LoginItemWhereInput = {
 
 export type LoginItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -244,6 +253,7 @@ export type LoginItemWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.LoginItemWhereInput | Prisma.LoginItemWhereInput[]
   OR?: Prisma.LoginItemWhereInput[]
   NOT?: Prisma.LoginItemWhereInput | Prisma.LoginItemWhereInput[]
+  itemType?: Prisma.StringFilter<"LoginItem"> | string
   name?: Prisma.StringFilter<"LoginItem"> | string
   url?: Prisma.StringNullableFilter<"LoginItem"> | string | null
   username?: Prisma.StringNullableFilter<"LoginItem"> | string | null
@@ -258,6 +268,7 @@ export type LoginItemWhereUniqueInput = Prisma.AtLeast<{
 
 export type LoginItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   url?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -277,6 +288,7 @@ export type LoginItemScalarWhereWithAggregatesInput = {
   OR?: Prisma.LoginItemScalarWhereWithAggregatesInput[]
   NOT?: Prisma.LoginItemScalarWhereWithAggregatesInput | Prisma.LoginItemScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"LoginItem"> | string
+  itemType?: Prisma.StringWithAggregatesFilter<"LoginItem"> | string
   name?: Prisma.StringWithAggregatesFilter<"LoginItem"> | string
   url?: Prisma.StringNullableWithAggregatesFilter<"LoginItem"> | string | null
   username?: Prisma.StringNullableWithAggregatesFilter<"LoginItem"> | string | null
@@ -290,6 +302,7 @@ export type LoginItemScalarWhereWithAggregatesInput = {
 
 export type LoginItemCreateInput = {
   id?: string
+  itemType?: string
   name: string
   url?: string | null
   username?: string | null
@@ -303,6 +316,7 @@ export type LoginItemCreateInput = {
 
 export type LoginItemUncheckedCreateInput = {
   id?: string
+  itemType?: string
   name: string
   url?: string | null
   username?: string | null
@@ -316,6 +330,7 @@ export type LoginItemUncheckedCreateInput = {
 
 export type LoginItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -329,6 +344,7 @@ export type LoginItemUpdateInput = {
 
 export type LoginItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -342,6 +358,7 @@ export type LoginItemUncheckedUpdateInput = {
 
 export type LoginItemCreateManyInput = {
   id?: string
+  itemType?: string
   name: string
   url?: string | null
   username?: string | null
@@ -355,6 +372,7 @@ export type LoginItemCreateManyInput = {
 
 export type LoginItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -367,6 +385,7 @@ export type LoginItemUpdateManyMutationInput = {
 
 export type LoginItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -390,6 +409,7 @@ export type LoginItemOrderByRelationAggregateInput = {
 
 export type LoginItemCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   username?: Prisma.SortOrder
@@ -403,6 +423,7 @@ export type LoginItemCountOrderByAggregateInput = {
 
 export type LoginItemMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   username?: Prisma.SortOrder
@@ -416,6 +437,7 @@ export type LoginItemMaxOrderByAggregateInput = {
 
 export type LoginItemMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   username?: Prisma.SortOrder
@@ -471,6 +493,7 @@ export type LoginItemUncheckedUpdateManyWithoutVaultNestedInput = {
 
 export type LoginItemCreateWithoutVaultInput = {
   id?: string
+  itemType?: string
   name: string
   url?: string | null
   username?: string | null
@@ -483,6 +506,7 @@ export type LoginItemCreateWithoutVaultInput = {
 
 export type LoginItemUncheckedCreateWithoutVaultInput = {
   id?: string
+  itemType?: string
   name: string
   url?: string | null
   username?: string | null
@@ -524,6 +548,7 @@ export type LoginItemScalarWhereInput = {
   OR?: Prisma.LoginItemScalarWhereInput[]
   NOT?: Prisma.LoginItemScalarWhereInput | Prisma.LoginItemScalarWhereInput[]
   id?: Prisma.StringFilter<"LoginItem"> | string
+  itemType?: Prisma.StringFilter<"LoginItem"> | string
   name?: Prisma.StringFilter<"LoginItem"> | string
   url?: Prisma.StringNullableFilter<"LoginItem"> | string | null
   username?: Prisma.StringNullableFilter<"LoginItem"> | string | null
@@ -537,6 +562,7 @@ export type LoginItemScalarWhereInput = {
 
 export type LoginItemCreateManyVaultInput = {
   id?: string
+  itemType?: string
   name: string
   url?: string | null
   username?: string | null
@@ -549,6 +575,7 @@ export type LoginItemCreateManyVaultInput = {
 
 export type LoginItemUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -561,6 +588,7 @@ export type LoginItemUpdateWithoutVaultInput = {
 
 export type LoginItemUncheckedUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -573,6 +601,7 @@ export type LoginItemUncheckedUpdateWithoutVaultInput = {
 
 export type LoginItemUncheckedUpdateManyWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -587,6 +616,7 @@ export type LoginItemUncheckedUpdateManyWithoutVaultInput = {
 
 export type LoginItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  itemType?: boolean
   name?: boolean
   url?: boolean
   username?: boolean
@@ -601,6 +631,7 @@ export type LoginItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type LoginItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  itemType?: boolean
   name?: boolean
   url?: boolean
   username?: boolean
@@ -615,6 +646,7 @@ export type LoginItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type LoginItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  itemType?: boolean
   name?: boolean
   url?: boolean
   username?: boolean
@@ -629,6 +661,7 @@ export type LoginItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 
 export type LoginItemSelectScalar = {
   id?: boolean
+  itemType?: boolean
   name?: boolean
   url?: boolean
   username?: boolean
@@ -640,7 +673,7 @@ export type LoginItemSelectScalar = {
   vaultId?: boolean
 }
 
-export type LoginItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "url" | "username" | "email" | "password" | "note" | "createdAt" | "updatedAt" | "vaultId", ExtArgs["result"]["loginItem"]>
+export type LoginItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "itemType" | "name" | "url" | "username" | "email" | "password" | "note" | "createdAt" | "updatedAt" | "vaultId", ExtArgs["result"]["loginItem"]>
 export type LoginItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }
@@ -658,6 +691,7 @@ export type $LoginItemPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    itemType: string
     name: string
     url: string | null
     username: string | null
@@ -1092,6 +1126,7 @@ export interface Prisma__LoginItemClient<T, Null = never, ExtArgs extends runtim
  */
 export interface LoginItemFieldRefs {
   readonly id: Prisma.FieldRef<"LoginItem", 'String'>
+  readonly itemType: Prisma.FieldRef<"LoginItem", 'String'>
   readonly name: Prisma.FieldRef<"LoginItem", 'String'>
   readonly url: Prisma.FieldRef<"LoginItem", 'String'>
   readonly username: Prisma.FieldRef<"LoginItem", 'String'>

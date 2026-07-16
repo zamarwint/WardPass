@@ -109,7 +109,7 @@ export default function AccountPage() {
 
     return (
         <motion.div className="flex flex-col gap-10 items-start justify-start pt-60 px-10 py-5">
-            <Field className="flex flex-col gap-10 overflow-y-scroll">
+            <Field className="flex flex-col gap-10">
                 <FieldGroup>
                     <Field>
                         <FieldLabel className="text-xl">Account Settings</FieldLabel>

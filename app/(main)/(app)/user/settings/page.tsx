@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 export default function GeneralSettingsPage() {
     return (
         <motion.div className="flex flex-col gap-10 items-start justify-start py-60 px-10">
-            <Field className="flex flex-col gap-10 overflow-y-scroll">
+            <Field className="flex flex-col gap-10">
                 <FieldGroup>
                     <Field>
                         <FieldLabel className="text-xl">Language</FieldLabel>

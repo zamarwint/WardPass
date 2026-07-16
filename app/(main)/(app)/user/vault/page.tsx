@@ -6,16 +6,17 @@ import {
     Field,
     FieldContent,
     FieldDescription,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-    FieldLegend,
-    FieldSeparator,
     FieldSet,
     FieldTitle,
 } from "@/components/ui/field"
 import { Button } from "@/components/ui/button";
 import { getVaults } from '@/app/actions/vault/getVaults';
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Select Vault",
+};
+
 
 export default async function VaultSelectionPage() {
     const vaults = getVaults().then((vaults) => {

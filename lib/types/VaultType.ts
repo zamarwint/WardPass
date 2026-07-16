@@ -1,10 +1,10 @@
 import { CreditCardItem, IdentityItem, LoginItem, SecureNoteItem } from "./VaultItemType"
 
 export type Vault = {
-    id: string | null
-    name: string | null
-    slug: string | null
-    icon: string | null
+    id: string
+    name: string
+    slug: string
+    icon: string
     iconColor: string | null
 
     createdAt: Date | null
@@ -23,3 +23,5 @@ export enum VaultItemEnum {
     CREDIT_CARD,
     IDENTITY
 }
+
+export type VaultItem = LoginItem | SecureNoteItem | CreditCardItem | IdentityItem;

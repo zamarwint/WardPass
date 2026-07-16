@@ -16,7 +16,6 @@ import * as Lucide from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { motion } from "motion/react";
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
@@ -64,7 +63,7 @@ export default function CreateVault() {
                 </div>
                 <div className="flex flex-col gap-3">
                     <Label htmlFor="vaultIcon">Choose an icon</Label>
-                    <motion.div className="flex flex-wrap">
+                    <div className="flex flex-wrap">
                         {iconsToRender.map((iconName) => (
                             <Button
                                 variant={selectedIcon === iconName ? "default" : "ghost"}
@@ -76,7 +75,7 @@ export default function CreateVault() {
                                 <DynamicIcon name={iconName as IconName} size={32} />
                             </Button>
                         ))}
-                    </motion.div>
+                    </div>
                 </div>
                 <div className="flex flex-col gap-3">
                     <Label htmlFor="vaultColor">Enter Vault Color</Label>
@@ -84,7 +83,7 @@ export default function CreateVault() {
                 </div>
                 <DialogFooter className="font-geist">
                     <DialogClose className="text-md mr-1">Cancel</DialogClose>
-                    <Button variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
+                    <Button disabled={isPending || !vaultName || !selectedIcon || !vaultColor} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

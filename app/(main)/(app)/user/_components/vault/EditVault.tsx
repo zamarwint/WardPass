@@ -81,7 +81,7 @@ export default function EditVault({ open, onOpenChange, vault }: { open: boolean
                 </div>
                 <DialogFooter className="font-geist">
                     <DialogClose className="text-md mr-1">Cancel</DialogClose>
-                    <Button variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
+                    <Button disabled={isPending || (vaultName === vault.name && selectedIcon === vault.icon && vaultColor === vault.iconColor)} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

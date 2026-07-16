@@ -26,6 +26,7 @@ export type AggregateSecureNoteItem = {
 
 export type SecureNoteItemMinAggregateOutputType = {
   id: string | null
+  itemType: string | null
   title: string | null
   content: string | null
   createdAt: Date | null
@@ -35,6 +36,7 @@ export type SecureNoteItemMinAggregateOutputType = {
 
 export type SecureNoteItemMaxAggregateOutputType = {
   id: string | null
+  itemType: string | null
   title: string | null
   content: string | null
   createdAt: Date | null
@@ -44,6 +46,7 @@ export type SecureNoteItemMaxAggregateOutputType = {
 
 export type SecureNoteItemCountAggregateOutputType = {
   id: number
+  itemType: number
   title: number
   content: number
   createdAt: number
@@ -55,6 +58,7 @@ export type SecureNoteItemCountAggregateOutputType = {
 
 export type SecureNoteItemMinAggregateInputType = {
   id?: true
+  itemType?: true
   title?: true
   content?: true
   createdAt?: true
@@ -64,6 +68,7 @@ export type SecureNoteItemMinAggregateInputType = {
 
 export type SecureNoteItemMaxAggregateInputType = {
   id?: true
+  itemType?: true
   title?: true
   content?: true
   createdAt?: true
@@ -73,6 +78,7 @@ export type SecureNoteItemMaxAggregateInputType = {
 
 export type SecureNoteItemCountAggregateInputType = {
   id?: true
+  itemType?: true
   title?: true
   content?: true
   createdAt?: true
@@ -155,6 +161,7 @@ export type SecureNoteItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 
 export type SecureNoteItemGroupByOutputType = {
   id: string
+  itemType: string
   title: string | null
   content: string
   createdAt: Date
@@ -185,6 +192,7 @@ export type SecureNoteItemWhereInput = {
   OR?: Prisma.SecureNoteItemWhereInput[]
   NOT?: Prisma.SecureNoteItemWhereInput | Prisma.SecureNoteItemWhereInput[]
   id?: Prisma.StringFilter<"SecureNoteItem"> | string
+  itemType?: Prisma.StringFilter<"SecureNoteItem"> | string
   title?: Prisma.StringNullableFilter<"SecureNoteItem"> | string | null
   content?: Prisma.StringFilter<"SecureNoteItem"> | string
   createdAt?: Prisma.DateTimeFilter<"SecureNoteItem"> | Date | string
@@ -195,6 +203,7 @@ export type SecureNoteItemWhereInput = {
 
 export type SecureNoteItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -208,6 +217,7 @@ export type SecureNoteItemWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.SecureNoteItemWhereInput | Prisma.SecureNoteItemWhereInput[]
   OR?: Prisma.SecureNoteItemWhereInput[]
   NOT?: Prisma.SecureNoteItemWhereInput | Prisma.SecureNoteItemWhereInput[]
+  itemType?: Prisma.StringFilter<"SecureNoteItem"> | string
   title?: Prisma.StringNullableFilter<"SecureNoteItem"> | string | null
   content?: Prisma.StringFilter<"SecureNoteItem"> | string
   createdAt?: Prisma.DateTimeFilter<"SecureNoteItem"> | Date | string
@@ -218,6 +228,7 @@ export type SecureNoteItemWhereUniqueInput = Prisma.AtLeast<{
 
 export type SecureNoteItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   title?: Prisma.SortOrderInput | Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -233,6 +244,7 @@ export type SecureNoteItemScalarWhereWithAggregatesInput = {
   OR?: Prisma.SecureNoteItemScalarWhereWithAggregatesInput[]
   NOT?: Prisma.SecureNoteItemScalarWhereWithAggregatesInput | Prisma.SecureNoteItemScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"SecureNoteItem"> | string
+  itemType?: Prisma.StringWithAggregatesFilter<"SecureNoteItem"> | string
   title?: Prisma.StringNullableWithAggregatesFilter<"SecureNoteItem"> | string | null
   content?: Prisma.StringWithAggregatesFilter<"SecureNoteItem"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SecureNoteItem"> | Date | string
@@ -242,6 +254,7 @@ export type SecureNoteItemScalarWhereWithAggregatesInput = {
 
 export type SecureNoteItemCreateInput = {
   id?: string
+  itemType?: string
   title?: string | null
   content: string
   createdAt?: Date | string
@@ -251,6 +264,7 @@ export type SecureNoteItemCreateInput = {
 
 export type SecureNoteItemUncheckedCreateInput = {
   id?: string
+  itemType?: string
   title?: string | null
   content: string
   createdAt?: Date | string
@@ -260,6 +274,7 @@ export type SecureNoteItemUncheckedCreateInput = {
 
 export type SecureNoteItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -269,6 +284,7 @@ export type SecureNoteItemUpdateInput = {
 
 export type SecureNoteItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -278,6 +294,7 @@ export type SecureNoteItemUncheckedUpdateInput = {
 
 export type SecureNoteItemCreateManyInput = {
   id?: string
+  itemType?: string
   title?: string | null
   content: string
   createdAt?: Date | string
@@ -287,6 +304,7 @@ export type SecureNoteItemCreateManyInput = {
 
 export type SecureNoteItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -295,6 +313,7 @@ export type SecureNoteItemUpdateManyMutationInput = {
 
 export type SecureNoteItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -314,6 +333,7 @@ export type SecureNoteItemOrderByRelationAggregateInput = {
 
 export type SecureNoteItemCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -323,6 +343,7 @@ export type SecureNoteItemCountOrderByAggregateInput = {
 
 export type SecureNoteItemMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -332,6 +353,7 @@ export type SecureNoteItemMaxOrderByAggregateInput = {
 
 export type SecureNoteItemMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  itemType?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -383,6 +405,7 @@ export type SecureNoteItemUncheckedUpdateManyWithoutVaultNestedInput = {
 
 export type SecureNoteItemCreateWithoutVaultInput = {
   id?: string
+  itemType?: string
   title?: string | null
   content: string
   createdAt?: Date | string
@@ -391,6 +414,7 @@ export type SecureNoteItemCreateWithoutVaultInput = {
 
 export type SecureNoteItemUncheckedCreateWithoutVaultInput = {
   id?: string
+  itemType?: string
   title?: string | null
   content: string
   createdAt?: Date | string
@@ -428,6 +452,7 @@ export type SecureNoteItemScalarWhereInput = {
   OR?: Prisma.SecureNoteItemScalarWhereInput[]
   NOT?: Prisma.SecureNoteItemScalarWhereInput | Prisma.SecureNoteItemScalarWhereInput[]
   id?: Prisma.StringFilter<"SecureNoteItem"> | string
+  itemType?: Prisma.StringFilter<"SecureNoteItem"> | string
   title?: Prisma.StringNullableFilter<"SecureNoteItem"> | string | null
   content?: Prisma.StringFilter<"SecureNoteItem"> | string
   createdAt?: Prisma.DateTimeFilter<"SecureNoteItem"> | Date | string
@@ -437,6 +462,7 @@ export type SecureNoteItemScalarWhereInput = {
 
 export type SecureNoteItemCreateManyVaultInput = {
   id?: string
+  itemType?: string
   title?: string | null
   content: string
   createdAt?: Date | string
@@ -445,6 +471,7 @@ export type SecureNoteItemCreateManyVaultInput = {
 
 export type SecureNoteItemUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -453,6 +480,7 @@ export type SecureNoteItemUpdateWithoutVaultInput = {
 
 export type SecureNoteItemUncheckedUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -461,6 +489,7 @@ export type SecureNoteItemUncheckedUpdateWithoutVaultInput = {
 
 export type SecureNoteItemUncheckedUpdateManyWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemType?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -471,6 +500,7 @@ export type SecureNoteItemUncheckedUpdateManyWithoutVaultInput = {
 
 export type SecureNoteItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  itemType?: boolean
   title?: boolean
   content?: boolean
   createdAt?: boolean
@@ -481,6 +511,7 @@ export type SecureNoteItemSelect<ExtArgs extends runtime.Types.Extensions.Intern
 
 export type SecureNoteItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  itemType?: boolean
   title?: boolean
   content?: boolean
   createdAt?: boolean
@@ -491,6 +522,7 @@ export type SecureNoteItemSelectCreateManyAndReturn<ExtArgs extends runtime.Type
 
 export type SecureNoteItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  itemType?: boolean
   title?: boolean
   content?: boolean
   createdAt?: boolean
@@ -501,6 +533,7 @@ export type SecureNoteItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
 
 export type SecureNoteItemSelectScalar = {
   id?: boolean
+  itemType?: boolean
   title?: boolean
   content?: boolean
   createdAt?: boolean
@@ -508,7 +541,7 @@ export type SecureNoteItemSelectScalar = {
   vaultId?: boolean
 }
 
-export type SecureNoteItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "content" | "createdAt" | "updatedAt" | "vaultId", ExtArgs["result"]["secureNoteItem"]>
+export type SecureNoteItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "itemType" | "title" | "content" | "createdAt" | "updatedAt" | "vaultId", ExtArgs["result"]["secureNoteItem"]>
 export type SecureNoteItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }
@@ -526,6 +559,7 @@ export type $SecureNoteItemPayload<ExtArgs extends runtime.Types.Extensions.Inte
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    itemType: string
     title: string | null
     content: string
     createdAt: Date
@@ -956,6 +990,7 @@ export interface Prisma__SecureNoteItemClient<T, Null = never, ExtArgs extends r
  */
 export interface SecureNoteItemFieldRefs {
   readonly id: Prisma.FieldRef<"SecureNoteItem", 'String'>
+  readonly itemType: Prisma.FieldRef<"SecureNoteItem", 'String'>
   readonly title: Prisma.FieldRef<"SecureNoteItem", 'String'>
   readonly content: Prisma.FieldRef<"SecureNoteItem", 'String'>
   readonly createdAt: Prisma.FieldRef<"SecureNoteItem", 'DateTime'>

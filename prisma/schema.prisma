@@ -98,6 +98,7 @@ model Vault {
 
 model LoginItem {
   id       String  @id @default(cuid())
+  itemType String  @default("LOGIN")
   name     String
   url      String?
   username String?
@@ -115,9 +116,10 @@ model LoginItem {
 }
 
 model SecureNoteItem {
-  id      String  @id @default(cuid())
-  title   String?
-  content String
+  id       String  @id @default(cuid())
+  itemType String  @default("SECURE_NOTE")
+  title    String?
+  content  String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -130,6 +132,7 @@ model SecureNoteItem {
 
 model CreditCardItem {
   id              String  @id @default(cuid())
+  itemType        String  @default("CREDIT_CARD")
   cardNumber      Int
   cardHolderName  String
   expiryDate      String
@@ -151,7 +154,8 @@ model CreditCardItem {
 }
 
 model IdentityItem {
-  id String @id @default(cuid())
+  id       String @id @default(cuid())
+  itemType String @default("IDENTITY")
 
   // Personal Details
   name        String
