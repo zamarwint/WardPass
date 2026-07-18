@@ -29,7 +29,7 @@ export default function Hero() {
                                 Get Started for Free
                                 <span className="text-[18px]"><MoveRight /></span>
                             </Link>
-                            <Link href="#about" className="font-bold btn-outline px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2">
+                            <Link href="#about" className="font-bold btn-secondary px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2">
                                 Learn More
                                 <span className="text-[18px]"><MoveUpRight /></span>
                             </Link >

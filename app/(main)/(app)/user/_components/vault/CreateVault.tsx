@@ -22,14 +22,14 @@ import { useMutation } from "@tanstack/react-query";
 import { createVault } from "@/app/actions/vault/createVault";
 import { Loader2Icon } from "lucide-react";
 
-const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging'];
+const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
 
 export default function CreateVault() {
     const [selectedIcon, setSelectedIcon] = useState<IconName>();
     const [vaultName, setVaultName] = useState<string>("");
     const [vaultColor, setVaultColor] = useState<string>("");
 
-    const { mutate, data, isPending } = useMutation({
+    const { mutate, error, isPending } = useMutation({
         mutationFn: () => createVault(vaultName, selectedIcon as string, vaultColor),
         onMutate: () => {
             toast.dismiss();
@@ -37,11 +37,11 @@ export default function CreateVault() {
         },
         onSuccess: () => {
             toast.dismiss();
-            toast.success("Vault created successfully!" + data);
+            toast.success("Vault created successfully!");
         },
         onError: () => {
             toast.dismiss();
-            toast.error("There was an error creating your vault. Please try again later.");
+            toast.error("There was an error creating your vault. Please try again later." + error);
         }
     });
 

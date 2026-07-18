@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
-import { SwitchDualIconLabelDemo } from "@/app/_components/themeChange";
+import { SwitchDualIconLabelDemo } from "@/app/_components/ThemeChange";
 
 import {
     DropdownMenu,

@@ -1,5 +1,5 @@
 import { ChevronsLeftRightEllipsis, EyeOff, Server, Share2Icon, ShieldEllipsis, Smartphone } from "lucide-react"
-import { PaymentCard } from "@/app/_components/ui-cards";
+import { PaymentCard } from "@/app/_components/UICards";
 import Link from "next/link";
 import Image from "next/image";
 import Hero from "./_components/Hero";;
@@ -115,7 +115,6 @@ export default function Page() {
             </div>
           </div>
           <div className="flex gap-4">
-            {/* <Vault className="size-64 md:size-128" /> */}
             <PaymentCard />
           </div>
         </div>

@@ -1,7 +1,7 @@
-export default function EmailVerification() {
+export default function Trash() {
     return (
         <div>
-
+            Trash Bin
         </div>
     )
 }

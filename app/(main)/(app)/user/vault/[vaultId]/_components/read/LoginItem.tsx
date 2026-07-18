@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/field"
 
 import { Input } from "@/components/ui/input"
-import PasswordInput from "@/app/(main)/(auth)/_components/PasswordInput";
+import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
 import type { LoginItem } from "@/lib/types/VaultItemType";
 
 export default function LoginItem({ vaultItem }: { vaultItem: LoginItem }) {
@@ -23,8 +23,7 @@ export default function LoginItem({ vaultItem }: { vaultItem: LoginItem }) {
                 <FieldDescription className="text-muted-foreground text-xl">View your <span className="font-bold">{vaultItem.itemType}</span> details.</FieldDescription>
             </FieldSet>
 
-            {/* grid grid-cols-1 md:grid-cols-2 gap-4 w-full */}
-            <FieldGroup>
+            <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
                 <Field>
                     <FieldLabel>Name</FieldLabel>
                     <Input type="text" placeholder="Name of login item" id="name" value={vaultItem.name!} readOnly className="h-12" />

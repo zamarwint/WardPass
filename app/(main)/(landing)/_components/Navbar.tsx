@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { motion, useScroll } from "motion/react";
 import { ScrollToAnchor } from "@/lib/functions";
 import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
-import { ModeToggleIcon } from "@/app/_components/themeChange";
+import { ModeToggleIcon } from "@/app/_components/ThemeChange";
 import { toast } from "sonner";
 
 const navigationLinks = [

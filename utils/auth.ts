@@ -47,6 +47,54 @@ export const auth = betterAuth({
                     subject: "Verify Deletion for your WardPass Account.",
                     text: `<div><p>Click the link to verify deletion:</p><a href="${url}">Verify Deletion</a></div>`
                 });
+            },
+            afterDelete: async ({ id, name }) => {
+                console.log('Account with name: ' + name + ' has been deleted.');
+
+                const vaults = await prisma.vault.findMany({
+                    where: {
+                        userId: id,
+                    }
+                })
+
+                console.log('Found ' + vaults.length + ' vaults for ' + name);
+                console.log('Deleting all data from the vaults...');
+
+                vaults.forEach(async (vault) => {
+                    await prisma.loginItem.deleteMany({
+                        where: {
+                            vaultId: vault.id,
+                        }
+                    });
+
+                    await prisma.secureNoteItem.deleteMany({
+                        where: {
+                            vaultId: vault.id,
+                        }
+                    });
+
+                    await prisma.creditCardItem.deleteMany({
+                        where: {
+                            vaultId: vault.id,
+                        }
+                    });
+
+                    await prisma.identityItem.deleteMany({
+                        where: {
+                            vaultId: vault.id,
+                        }
+                    });
+                })
+
+                console.log('Deleted all data from the vaults, deleting user vaults...');
+
+                const { count } = await prisma.vault.deleteMany({
+                    where: {
+                        userId: id
+                    }
+                })
+
+                console.log('Successfully deleted all of' + name + ' vaults. Total vaults: ' + count);
             }
         }
     },

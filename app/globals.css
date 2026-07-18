@@ -136,19 +136,19 @@
 
 @layer base {
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/85;
+    @apply bg-primary text-primary-foreground hover:bg-primary/80;
   }
 
   .btn-secondary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary aria-expanded:bg-secondary aria-expanded:text-secondary-foreground
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/60 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground
   }
 
   .btn-teritary {
     @apply border-l-4 border-primary bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-primary dark:bg-input/30 dark:hover:bg-input/50;
   }
 
-  .btn-muted {
-    @apply bg-muted text-muted-foreground;
+  .btn-link {
+    @apply text-primary underline-offset-4 hover:underline;
   }
 
   .btn-accent {
@@ -156,15 +156,15 @@
   }
 
   .btn-destructive {
-    @apply bg-destructive text-destructive-foreground hover:bg-destructive/85;
+    @apply bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40;
   }
 
   .btn-outline {
-    @apply border border-input bg-background text-foreground hover:border-primary hover:text-primary;
+    @apply border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50;
   }
 
   .btn-ghost {
-    @apply hover:bg-muted;
+    @apply hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50;
   }
 }
 

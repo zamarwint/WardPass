@@ -43,7 +43,7 @@ export default async function VaultSelectionPage() {
                     <FieldTitle className='text-3xl font-bold'>Select Vault</FieldTitle>
                     <FieldDescription>Choose an existing vault or create a new one to continue.</FieldDescription>
                 </FieldSet>
-                <div className='flex flex-col items-center justify-center w-xl gap-3'>
+                <div className='flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3'>
                     <CreateVault />
                     {vaults}
                 </div>

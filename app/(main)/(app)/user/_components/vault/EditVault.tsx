@@ -8,7 +8,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 
 import { Button } from "../../../../../../components/ui/button";
@@ -22,14 +21,14 @@ import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
 import { editVault } from "@/app/actions/vault/editVault";
 
-const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging'];
+const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
 
 export default function EditVault({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: { id: string, name: string, slug: string, icon: string, iconColor: string | null } }) {
     const [selectedIcon, setSelectedIcon] = useState<IconName>(vault.icon as IconName);
     const [vaultName, setVaultName] = useState<string>(vault.name);
     const [vaultColor, setVaultColor] = useState<string>(vault.iconColor!);
 
-    const { mutate, data, isPending } = useMutation({
+    const { mutate, error, isPending } = useMutation({
         mutationFn: () => editVault(vault.id, vaultName, selectedIcon, vaultColor),
         onMutate: () => {
             toast.dismiss();
@@ -37,12 +36,12 @@ export default function EditVault({ open, onOpenChange, vault }: { open: boolean
         },
         onSuccess: () => {
             toast.dismiss();
-            toast.success("Vault updated successfully!" + data);
+            toast.success("Vault updated successfully!");
             onOpenChange(false);
         },
         onError: () => {
             toast.dismiss();
-            toast.error("There was an error updating your vault. Please try again later.");
+            toast.error("There was an error updating your vault. Please try again later." + error);
         }
     });
 

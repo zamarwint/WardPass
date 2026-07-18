@@ -1,6 +1,6 @@
 "use client";
 
-import PasswordInput from "@/app/(main)/(auth)/_components/PasswordInput";
+import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
 import createLogin from "@/app/actions/login/createLogin";
 import { Button } from "@/components/ui/button";
 import {

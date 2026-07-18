@@ -1,25 +1,25 @@
 "use client";
 
 import { motion } from "motion/react"
-import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import PasswordInput from "@/app/(main)/(auth)/_components/PasswordInput";
+import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
 import { useState, useTransition } from "react";
 import { authClient } from "@/utils/auth-client";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 
 import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogCancel
+} from "@/components/ui/alert-dialog"
 import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
 
 export default function AccountPage() {
@@ -126,7 +126,7 @@ export default function AccountPage() {
                         <FieldGroup>
                             <Field className="w-xl">
                                 <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
-                                <Input disabled={!editing} type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" onChange={(e) => setNewEmail(e.target.value)} value={newEmail} />
+                                <Input disabled={!editing} type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@gmail.com" className="h-12" onChange={(e) => setNewEmail(e.target.value)} value={newEmail} />
                             </Field>
 
                             <Field className="w-xl">
@@ -193,17 +193,17 @@ export default function AccountPage() {
                         <FieldDescription>This section contains actions that are irreversible.</FieldDescription>
                     </Field>
                     <Field className="w-fit">
-                        <Dialog>
-                            <DialogTrigger asChild>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
                                 <Button variant="destructive" className="cursor-pointer h-12 w-fit px-10">Delete Account</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Delete Account</DialogTitle>
-                                    <DialogDescription>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Account</AlertDialogTitle>
+                                    <AlertDialogDescription>
                                         Are you sure you want to delete account? This action <span className="underline underline-offset-4 font-semibold text-destructive">cannot be undone</span>.
-                                    </DialogDescription>
-                                </DialogHeader>
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
 
                                 <div className="flex flex-col gap-4">
                                     <h1 className="font-semibold">Type <span className="underline underline-offset-4">delete wardpass</span> to confirm.</h1>
@@ -213,26 +213,25 @@ export default function AccountPage() {
                                     <PasswordInput className="h-12" placeholder="•••••••••••••" onChange={(e) => setPasswordForDeletion(e.target.value)} />
                                 </div>
 
-                                <Button disabled={deleteConfirm !== "delete wardpass" || passwordForDeletion === "" || deletePending} className="h-12 w-fit px-10" size="lg" variant="destructive" onClick={deleteAccount}>
-                                    {deletePending ? (
-                                        <>
-                                            <Loader2Icon className="size-4 animate-spin" />
-                                            <span>Loading...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span>Delete Account</span>
-                                        </>
-                                    )}
-                                </Button>
-
-                                <DialogFooter className="flex flex-row justify-between">
-                                    <DialogClose asChild>
-                                        <Button className="h-12 w-fit px-10" size="lg" variant="secondary">Cancel</Button>
-                                    </DialogClose>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel asChild>
+                                        <Button className="w-fit px-8" size="lg" variant="secondary">Cancel</Button>
+                                    </AlertDialogCancel>
+                                    <Button disabled={deleteConfirm !== "delete wardpass" || passwordForDeletion === "" || deletePending} className="w-fit px-8" size='lg' variant="destructive" onClick={deleteAccount}>
+                                        {deletePending ? (
+                                            <>
+                                                <Loader2Icon className="size-4 animate-spin" />
+                                                <span>Loading...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>Delete Account</span>
+                                            </>
+                                        )}
+                                    </Button>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </Field>
                 </FieldGroup>
             </Field>

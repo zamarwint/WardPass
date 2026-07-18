@@ -22,7 +22,7 @@ import { useState } from "react";
 export default function DeleteVault({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: { id: string, name: string, slug: string, icon: string, iconColor: string | null } }) {
     const [vaultNameConfirm, setVaultNameConfirm] = useState<string>("");
 
-    const { mutate, data, isPending } = useMutation({
+    const { mutate, error, isPending } = useMutation({
         mutationFn: () => deleteVault(vault.id),
         onMutate: () => {
             toast.dismiss();
@@ -30,12 +30,12 @@ export default function DeleteVault({ open, onOpenChange, vault }: { open: boole
         },
         onSuccess: () => {
             toast.dismiss();
-            toast.success("Vault deleted successfully!" + data);
+            toast.success("Vault deleted successfully!");
             onOpenChange(false);
         },
         onError: () => {
             toast.dismiss();
-            toast.error("There was an error deleting your vault. Please try again later.");
+            toast.error("There was an error deleting your vault. Please try again later." + error);
         }
     });
 

@@ -1,7 +1,7 @@
 "use client";
 
-import PasswordInput from "./../_components/PasswordInput";
-import { PaymentCard } from "@/app/_components/ui-cards";
+import { PasswordInput } from "./../_components/PasswordInput";
+import { PaymentCard } from "@/app/_components/UICards";
 import { Button } from "@/components/ui/button";
 import DotPattern from "@/components/ui/dot-pattern";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
@@ -116,7 +116,7 @@ export default function SignInPage() {
                         <FieldGroup className="w-xl">
                             <Field>
                                 <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
-                                <Input type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@matrix.com" className="h-12" onChange={(e) => setEmail(e.target.value)} />
+                                <Input type="email" id="email" autoComplete="off" placeholder="e.g. john@example.com" className="h-12" onChange={(e) => setEmail(e.target.value)} />
                             </Field>
 
                             <Field>
