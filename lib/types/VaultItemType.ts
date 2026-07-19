@@ -25,7 +25,7 @@ export type SecureNoteItem = {
 export type CreditCardItem = {
     id: string | null
     itemType: "CREDIT_CARD"
-    cardNumber: number | null
+    cardNumber: string | null
     cardHolderName: string | null
     expiryDate: string | null
     cvv: number | null

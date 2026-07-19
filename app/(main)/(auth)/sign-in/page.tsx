@@ -116,12 +116,12 @@ export default function SignInPage() {
                         <FieldGroup className="w-xl">
                             <Field>
                                 <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
-                                <Input type="email" id="email" autoComplete="off" placeholder="e.g. john@example.com" className="h-12" onChange={(e) => setEmail(e.target.value)} />
+                                <Input type="email" id="email" required placeholder="e.g. john@example.com" className="h-12" onChange={(e) => setEmail(e.target.value)} />
                             </Field>
 
                             <Field>
                                 <FieldLabel htmlFor="password" className="text-muted-foreground">Password</FieldLabel>
-                                <PasswordInput id="password" autoComplete="off" placeholder="************" className="h-12" onChange={(e) => setPassword(e.target.value)} />
+                                <PasswordInput id="password" required placeholder="************" className="h-12" onChange={(e) => setPassword(e.target.value)} />
                             </Field>
                         </FieldGroup>
 
@@ -143,8 +143,8 @@ export default function SignInPage() {
                         <FieldSeparator />
 
                         <FieldDescription>
-                            No account yet?
-                            <Link href="/sign-up" className="mx-2">Create an Account</Link>
+                            Forgot your Password?
+                            <Link href="/reset-password" className="mx-2">Reset Password</Link>
                         </FieldDescription>
                     </FieldSet>
                 </div>

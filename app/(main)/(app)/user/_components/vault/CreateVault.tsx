@@ -28,6 +28,7 @@ export default function CreateVault() {
     const [selectedIcon, setSelectedIcon] = useState<IconName>();
     const [vaultName, setVaultName] = useState<string>("");
     const [vaultColor, setVaultColor] = useState<string>("");
+    const [open, setOpen] = useState<boolean>(false);
 
     const { mutate, error, isPending } = useMutation({
         mutationFn: () => createVault(vaultName, selectedIcon as string, vaultColor),
@@ -37,16 +38,18 @@ export default function CreateVault() {
         },
         onSuccess: () => {
             toast.dismiss();
+            setOpen(false);
             toast.success("Vault created successfully!");
         },
         onError: () => {
             toast.dismiss();
+            setOpen(false);
             toast.error("There was an error creating your vault. Please try again later." + error);
         }
     });
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="secondary" size="lg" className="p-5 w-full">Create Vault <Lucide.PlusIcon size="16" /></Button>
             </DialogTrigger>

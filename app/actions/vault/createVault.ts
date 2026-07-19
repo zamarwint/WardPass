@@ -2,6 +2,7 @@
 
 import { prisma } from "@/utils/db";
 import { getUserSession } from "../getSession";
+import { revalidatePath } from "next/cache";
 
 export async function createVault(name: string, icon: string, iconColor: string) {
     const session = await getUserSession();
@@ -19,5 +20,6 @@ export async function createVault(name: string, icon: string, iconColor: string)
         }
     })
 
+    revalidatePath(`/user/vault/${vault.id}`);
     return vault;
 }

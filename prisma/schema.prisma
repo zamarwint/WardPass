@@ -116,9 +116,9 @@ model LoginItem {
 }
 
 model SecureNoteItem {
-  id       String  @id @default(cuid())
-  itemType String  @default("SECURE_NOTE")
-  title    String?
+  id       String @id @default(cuid())
+  itemType String @default("SECURE_NOTE")
+  title    String
   content  String
 
   createdAt DateTime @default(now())
@@ -133,7 +133,7 @@ model SecureNoteItem {
 model CreditCardItem {
   id              String  @id @default(cuid())
   itemType        String  @default("CREDIT_CARD")
-  cardNumber      Int
+  cardNumber      String
   cardHolderName  String
   expiryDate      String
   cvv             Int

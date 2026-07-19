@@ -5,7 +5,7 @@ import { redirect, useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Globe, PlusIcon } from "lucide-react";
+import { CreditCard, Globe, IdCard, NotebookPen, PlusIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getVaultItems } from "@/app/actions/vault/getVaultItems";
 import { useState } from "react";
@@ -26,6 +26,12 @@ import CreateLoginItem from "./_components/create/CreateLoginItem";
 
 import type { LoginItem as LoginItemType, SecureNoteItem as SecureNoteItemType, CreditCardItem as CreditCardItemType, IdentityItem as IdentityItemType } from "@/lib/types/VaultItemType";
 import LoginDropdown from "./_components/dropdowns/LoginDropdown";
+import CreateSecureNoteItem from "./_components/create/CreateSecureNoteItem";
+import SecureNoteDropdown from "./_components/dropdowns/SecureNoteDropdown";
+import CreateCreditCardItem from "./_components/create/CreateCreditCardItem";
+import CreateIdentityItem from "./_components/create/CreateIdentityItem";
+import CreditCardDropdown from "./_components/dropdowns/CreditCardDropdown";
+import IdentityDropdown from "./_components/dropdowns/IdentityDropdown";
 
 // THE PURPOSE OF THIS PAGE IS TO DISPLAY ALL THE VAULT ITEMS IN A LIST ON THE LEFT SIDE, AND WHEN SELECTED, DISPLAY THE ITEM DETAILS ON THE RIGHT SIDE. 
 // LIKE LOGIN ITEMS, SECURE NOTE ITEMS, CREDIT CARD ITEMS, AND IDENTITY ITEMS
@@ -33,21 +39,19 @@ export default function VaultIDPage() {
     const { vaultId } = useParams();
     const [selectedItem, setSelectedItem] = useState<VaultItem | null>(null);
 
+    // DROPDOWN
+    const [openDropdown, setOpenDropdown] = useState<boolean>(false);
+
     // ALL CRUD COMPONENT STATE MANAGEMENT
     const [createLogin, setCreateLogin] = useState<boolean>(false);
-    const [openLoginDropdown, setOpenLoginDropdown] = useState<boolean>(false);
+    const [createSecureNote, setCreateSecureNote] = useState<boolean>(false);
+    const [createCreditCard, setCreateCreditCard] = useState<boolean>(false);
+    const [createIdentity, setCreateIdentity] = useState<boolean>(false);
 
-    // const [createSecureNote, setCreateSecureNote] = useState<boolean>(false);
-    // const [editSecureNote, setEditSecureNote] = useState<boolean>(false);
-    // const [deleteSecureNote, setDeleteSecureNote] = useState<boolean>(false);
-
-    // const [createCreditCard, setCreateCreditCard] = useState<boolean>(false);
-    // const [editCreditCard, setEditCreditCard] = useState<boolean>(false);
-    // const [deleteCreditCard, setDeleteCreditCard] = useState<boolean>(false);
-
-    // const [createIdentity, setCreateIdentity] = useState<boolean>(false);
-    // const [editIdentity, setEditIdentity] = useState<boolean>(false);
-    // const [deleteIdentity, setDeleteIdentity] = useState<boolean>(false);
+    // UNSELECT ITEMS
+    const unSelectItems = () => {
+        setSelectedItem(null);
+    }
 
     // GET CURRENT VAULT ITEMS
     const { data: vaultItems, isLoading: vaultItemsLoading, error: vaultItemsError } = useQuery({
@@ -69,13 +73,13 @@ export default function VaultIDPage() {
             {createLogin && <CreateLoginItem vaultId={vaultId as string} cancel={() => setCreateLogin(!createLogin)} />}
 
             {/* SECURE NOTE COMPONENTS */}
-            {/* {createSecureNote && <CreateSecureNoteItem vaultId={vaultId as string} />} */}
+            {createSecureNote && <CreateSecureNoteItem vaultId={vaultId as string} cancel={() => setCreateSecureNote(!createSecureNote)} />}
 
             {/* CREDIT CARD COMPONENTS */}
-            {/* {createCreditCard && <CreateCreditCardItem vaultId={vaultId as string} />}
+            {createCreditCard && <CreateCreditCardItem vaultId={vaultId as string} cancel={() => setCreateCreditCard(!createCreditCard)} />}
 
             {/* IDENTITY COMPONENTS */}
-            {/* {createIdentity && <CreateIdentityItem vaultId={vaultId as string} /> */}
+            {createIdentity && <CreateIdentityItem vaultId={vaultId as string} cancel={() => setCreateIdentity(!createIdentity)} />}
 
             <div className="size-full flex items-center justify-center overflow-hidden">
                 <div className="w-1/3 h-full border-r border-muted flex flex-col items-center justify-start overflow-hidden">
@@ -88,13 +92,13 @@ export default function VaultIDPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuItem onClick={() => setCreateLogin(true)} className="cursor-pointer">Login Item</DropdownMenuItem>
-                            <DropdownMenuItem className="cursor-pointer">Secure Note</DropdownMenuItem>
-                            <DropdownMenuItem className="cursor-pointer">Credit Card</DropdownMenuItem>
-                            <DropdownMenuItem className="cursor-pointer">Identity</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setCreateSecureNote(true)} className="cursor-pointer">Secure Note</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setCreateCreditCard(true)} className="cursor-pointer">Credit Card</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setCreateIdentity(true)} className="cursor-pointer">Identity</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Separator className="bg-muted" />
-                    <div className="w-[90%] mt-4 flex-1 overflow-y-auto pb-8">
+                    <div className="w-[90%] mt-4 flex-1 overflow-y-auto pb-8" onDoubleClick={unSelectItems}>
                         {vaultItemsLoading ? <div>Loading...</div> : (vaultItems?.loginItems?.length === 0 &&
                             vaultItems?.secureNoteItems?.length === 0 &&
                             vaultItems?.creditCardItems?.length === 0 &&
@@ -112,23 +116,55 @@ export default function VaultIDPage() {
                                                 <p className="font-mono text-sm">{item.email}</p>
                                             </div>
                                         </div>
-                                        {selectedItem?.id === item.id && <LoginDropdown open={openLoginDropdown} onOpenChange={() => setOpenLoginDropdown(!openLoginDropdown)} loginItem={item} />}
+                                        {selectedItem?.id === item.id && <LoginDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} loginItem={item} />}
                                     </div>
                                 ))}
                                 {vaultItems?.secureNoteItems?.map((item) => (
-                                    <Button key={item.id} size="lg" className="size-full text-md rounded-xl flex flex-col items-start justify-center" onClick={() => setSelectedItem(item)}>
-                                        <h1>{item.title}</h1>
-                                    </Button>
+                                    <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                        <div className="flex flex-col gap-3 p-2 w-full">
+                                            <div className="size-full flex flex-col items-start justify-center gap-2">
+                                                <div className="flex items-center gap-2">
+                                                    <NotebookPen className="size=[80%] text-primary" />
+                                                    <h1 className="font-bold">{item.title}</h1>
+                                                </div>
+                                                <p className="text-md text-muted-foreground font-medium line-clamp-1">{item.content}</p>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <Separator />
+                                                <div className="flex items-center justify-between w-full pt-2">
+                                                    <p className="text-xs font-medium text-muted-foreground">LAST UPDATED</p>
+                                                    <p className="text-xs font-mono text-muted-foreground">{item.updatedAt?.toDateString()}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {selectedItem?.id === item.id && <SecureNoteDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} secureNoteItem={item} />}
+                                    </div>
                                 ))}
                                 {vaultItems?.creditCardItems?.map((item) => (
-                                    <Button key={item.id} variant="outline" size="lg" className="size-full text-md rounded-xl flex flex-col items-start justify-center" onClick={() => setSelectedItem(item)} >
-                                        <h1>{item.cardHolderName}</h1>
-                                    </Button>
+                                    <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                        <div className="flex flex-col gap-2 p-2 w-full">
+                                            <CreditCard className="size=[80%] text-primary" />
+                                            <div className="size-full flex flex-col items-start justify-center gap-1">
+                                                <h1 className="font-bold">{item.cardHolderName}</h1>
+                                                <p className="text-md text-muted-foreground font-medium line-clamp-1">{item.billingAddress1}</p>
+                                            </div>
+                                        </div>
+                                        {selectedItem?.id === item.id && <CreditCardDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} creditCardItem={item} />}
+                                    </div>
                                 ))}
                                 {vaultItems?.identities?.map((item) => (
-                                    <Button key={item.id} variant="outline" size="lg" className="size-full text-md rounded-xl flex flex-col items-start justify-center" onClick={() => setSelectedItem(item)} >
-                                        <h1>{item.name}</h1>
-                                    </Button>
+                                    <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                        <div className="flex gap-3 p-2">
+                                            <div className="w-[75px] h-[50px] flex items-center justify-center bg-background rounded-full">
+                                                <IdCard className="size-[70%] text-primary" />
+                                            </div>
+                                            <div className="size-full flex flex-col items-start justify-center">
+                                                <h1 className="text-primary font-bold">{item.name}</h1>
+                                                <p className="font-mono text-sm">{item.phoneNumber}</p>
+                                            </div>
+                                        </div>
+                                        {selectedItem?.id === item.id && <IdentityDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} identityItem={item} />}
+                                    </div>
                                 ))}
                             </div>
                         }
@@ -143,10 +179,10 @@ export default function VaultIDPage() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center size-full">
-                            {selectedItem?.itemType === "LOGIN" && <LoginItem vaultItem={selectedItem as LoginItemType} />}
-                            {selectedItem?.itemType === "SECURE_NOTE" && <SecureNoteItem vaultItem={selectedItem as SecureNoteItemType} />}
-                            {selectedItem?.itemType === "CREDIT_CARD" && <CreditCardItem vaultItem={selectedItem as CreditCardItemType} />}
-                            {selectedItem?.itemType === "IDENTITY" && <IdentityItem vaultItem={selectedItem as IdentityItemType} />}
+                            {selectedItem?.itemType === "LOGIN" && <LoginItem loginItem={selectedItem as LoginItemType} />}
+                            {selectedItem?.itemType === "SECURE_NOTE" && <SecureNoteItem secureNoteItem={selectedItem as SecureNoteItemType} />}
+                            {selectedItem?.itemType === "CREDIT_CARD" && <CreditCardItem creditCardItem={selectedItem as CreditCardItemType} />}
+                            {selectedItem?.itemType === "IDENTITY" && <IdentityItem identityItem={selectedItem as IdentityItemType} />}
                         </div>
                     )}
                 </div>

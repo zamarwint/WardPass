@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
 import { sendEmail } from "@/lib/sendEmail";
+import { redirect } from "next/navigation";
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -11,9 +12,21 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: true,
+        revokeSessionsOnPasswordReset: true,
+        sendResetPassword: async ({ user, url }) => {
+            sendEmail({
+                to: user.email,
+                subject: 'Reset your WardPass password',
+                text: `<div><p>Click the link to reset your password:</p><a href="${url}">Reset password</a></div>`
+            })
+        },
+        onPasswordReset: async ({ user }) => {
+            console.log(`User ${user.email} has successfully reset their password.`);
+        }
     },
     emailVerification: {
         sendOnSignUp: true,
+        autoSignInAfterVerification: true,
         sendVerificationEmail: async ({ user, url }) => {
             sendEmail({
                 to: user.email,
@@ -21,6 +34,10 @@ export const auth = betterAuth({
                 text: `<div><p>Click the link to verify your email:</p> <a href="${url}">Verify your email</a></div>`,
             });
         },
+        async afterEmailVerification(user) {
+            console.log(`User ${user.email} has been successfully verified.`);
+            redirect('/user/vault');
+        }
     },
     user: {
         changeEmail: {

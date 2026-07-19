@@ -24,5 +24,7 @@ export default async function deleteLogin({
         },
     })
 
+    // // UPDATING STATE FROM THE SERVER ACTION AFTER CREATING THE LOGIN ITEM. ONLY WORKS WITH DIALOGS, NOT DIVS, NOT ALERT DIALOGS.
+    // revalidatePath(`/user/vault/${vaultId}`);
     return deletedLogin;
 }

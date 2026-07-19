@@ -27,19 +27,17 @@ export type AggregateCreditCardItem = {
 }
 
 export type CreditCardItemAvgAggregateOutputType = {
-  cardNumber: number | null
   cvv: number | null
 }
 
 export type CreditCardItemSumAggregateOutputType = {
-  cardNumber: number | null
   cvv: number | null
 }
 
 export type CreditCardItemMinAggregateOutputType = {
   id: string | null
   itemType: string | null
-  cardNumber: number | null
+  cardNumber: string | null
   cardHolderName: string | null
   expiryDate: string | null
   cvv: number | null
@@ -57,7 +55,7 @@ export type CreditCardItemMinAggregateOutputType = {
 export type CreditCardItemMaxAggregateOutputType = {
   id: string | null
   itemType: string | null
-  cardNumber: number | null
+  cardNumber: string | null
   cardHolderName: string | null
   expiryDate: string | null
   cvv: number | null
@@ -93,12 +91,10 @@ export type CreditCardItemCountAggregateOutputType = {
 
 
 export type CreditCardItemAvgAggregateInputType = {
-  cardNumber?: true
   cvv?: true
 }
 
 export type CreditCardItemSumAggregateInputType = {
-  cardNumber?: true
   cvv?: true
 }
 
@@ -246,7 +242,7 @@ export type CreditCardItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 export type CreditCardItemGroupByOutputType = {
   id: string
   itemType: string
-  cardNumber: number
+  cardNumber: string
   cardHolderName: string
   expiryDate: string
   cvv: number
@@ -287,7 +283,7 @@ export type CreditCardItemWhereInput = {
   NOT?: Prisma.CreditCardItemWhereInput | Prisma.CreditCardItemWhereInput[]
   id?: Prisma.StringFilter<"CreditCardItem"> | string
   itemType?: Prisma.StringFilter<"CreditCardItem"> | string
-  cardNumber?: Prisma.IntFilter<"CreditCardItem"> | number
+  cardNumber?: Prisma.StringFilter<"CreditCardItem"> | string
   cardHolderName?: Prisma.StringFilter<"CreditCardItem"> | string
   expiryDate?: Prisma.StringFilter<"CreditCardItem"> | string
   cvv?: Prisma.IntFilter<"CreditCardItem"> | number
@@ -328,7 +324,7 @@ export type CreditCardItemWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CreditCardItemWhereInput[]
   NOT?: Prisma.CreditCardItemWhereInput | Prisma.CreditCardItemWhereInput[]
   itemType?: Prisma.StringFilter<"CreditCardItem"> | string
-  cardNumber?: Prisma.IntFilter<"CreditCardItem"> | number
+  cardNumber?: Prisma.StringFilter<"CreditCardItem"> | string
   cardHolderName?: Prisma.StringFilter<"CreditCardItem"> | string
   expiryDate?: Prisma.StringFilter<"CreditCardItem"> | string
   cvv?: Prisma.IntFilter<"CreditCardItem"> | number
@@ -373,7 +369,7 @@ export type CreditCardItemScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CreditCardItemScalarWhereWithAggregatesInput | Prisma.CreditCardItemScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"CreditCardItem"> | string
   itemType?: Prisma.StringWithAggregatesFilter<"CreditCardItem"> | string
-  cardNumber?: Prisma.IntWithAggregatesFilter<"CreditCardItem"> | number
+  cardNumber?: Prisma.StringWithAggregatesFilter<"CreditCardItem"> | string
   cardHolderName?: Prisma.StringWithAggregatesFilter<"CreditCardItem"> | string
   expiryDate?: Prisma.StringWithAggregatesFilter<"CreditCardItem"> | string
   cvv?: Prisma.IntWithAggregatesFilter<"CreditCardItem"> | number
@@ -391,7 +387,7 @@ export type CreditCardItemScalarWhereWithAggregatesInput = {
 export type CreditCardItemCreateInput = {
   id?: string
   itemType?: string
-  cardNumber: number
+  cardNumber: string
   cardHolderName: string
   expiryDate: string
   cvv: number
@@ -409,7 +405,7 @@ export type CreditCardItemCreateInput = {
 export type CreditCardItemUncheckedCreateInput = {
   id?: string
   itemType?: string
-  cardNumber: number
+  cardNumber: string
   cardHolderName: string
   expiryDate: string
   cvv: number
@@ -427,7 +423,7 @@ export type CreditCardItemUncheckedCreateInput = {
 export type CreditCardItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemType?: Prisma.StringFieldUpdateOperationsInput | string
-  cardNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
   cardHolderName?: Prisma.StringFieldUpdateOperationsInput | string
   expiryDate?: Prisma.StringFieldUpdateOperationsInput | string
   cvv?: Prisma.IntFieldUpdateOperationsInput | number
@@ -445,7 +441,7 @@ export type CreditCardItemUpdateInput = {
 export type CreditCardItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemType?: Prisma.StringFieldUpdateOperationsInput | string
-  cardNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
   cardHolderName?: Prisma.StringFieldUpdateOperationsInput | string
   expiryDate?: Prisma.StringFieldUpdateOperationsInput | string
   cvv?: Prisma.IntFieldUpdateOperationsInput | number
@@ -463,7 +459,7 @@ export type CreditCardItemUncheckedUpdateInput = {
 export type CreditCardItemCreateManyInput = {
   id?: string
   itemType?: string
-  cardNumber: number
+  cardNumber: string
   cardHolderName: string
   expiryDate: string
   cvv: number
@@ -481,7 +477,7 @@ export type CreditCardItemCreateManyInput = {
 export type CreditCardItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemType?: Prisma.StringFieldUpdateOperationsInput | string
-  cardNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
   cardHolderName?: Prisma.StringFieldUpdateOperationsInput | string
   expiryDate?: Prisma.StringFieldUpdateOperationsInput | string
   cvv?: Prisma.IntFieldUpdateOperationsInput | number
@@ -498,7 +494,7 @@ export type CreditCardItemUpdateManyMutationInput = {
 export type CreditCardItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemType?: Prisma.StringFieldUpdateOperationsInput | string
-  cardNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
   cardHolderName?: Prisma.StringFieldUpdateOperationsInput | string
   expiryDate?: Prisma.StringFieldUpdateOperationsInput | string
   cvv?: Prisma.IntFieldUpdateOperationsInput | number
@@ -542,7 +538,6 @@ export type CreditCardItemCountOrderByAggregateInput = {
 }
 
 export type CreditCardItemAvgOrderByAggregateInput = {
-  cardNumber?: Prisma.SortOrder
   cvv?: Prisma.SortOrder
 }
 
@@ -583,7 +578,6 @@ export type CreditCardItemMinOrderByAggregateInput = {
 }
 
 export type CreditCardItemSumOrderByAggregateInput = {
-  cardNumber?: Prisma.SortOrder
   cvv?: Prisma.SortOrder
 }
 
@@ -640,7 +634,7 @@ export type IntFieldUpdateOperationsInput = {
 export type CreditCardItemCreateWithoutVaultInput = {
   id?: string
   itemType?: string
-  cardNumber: number
+  cardNumber: string
   cardHolderName: string
   expiryDate: string
   cvv: number
@@ -657,7 +651,7 @@ export type CreditCardItemCreateWithoutVaultInput = {
 export type CreditCardItemUncheckedCreateWithoutVaultInput = {
   id?: string
   itemType?: string
-  cardNumber: number
+  cardNumber: string
   cardHolderName: string
   expiryDate: string
   cvv: number
@@ -703,7 +697,7 @@ export type CreditCardItemScalarWhereInput = {
   NOT?: Prisma.CreditCardItemScalarWhereInput | Prisma.CreditCardItemScalarWhereInput[]
   id?: Prisma.StringFilter<"CreditCardItem"> | string
   itemType?: Prisma.StringFilter<"CreditCardItem"> | string
-  cardNumber?: Prisma.IntFilter<"CreditCardItem"> | number
+  cardNumber?: Prisma.StringFilter<"CreditCardItem"> | string
   cardHolderName?: Prisma.StringFilter<"CreditCardItem"> | string
   expiryDate?: Prisma.StringFilter<"CreditCardItem"> | string
   cvv?: Prisma.IntFilter<"CreditCardItem"> | number
@@ -721,7 +715,7 @@ export type CreditCardItemScalarWhereInput = {
 export type CreditCardItemCreateManyVaultInput = {
   id?: string
   itemType?: string
-  cardNumber: number
+  cardNumber: string
   cardHolderName: string
   expiryDate: string
   cvv: number
@@ -738,7 +732,7 @@ export type CreditCardItemCreateManyVaultInput = {
 export type CreditCardItemUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemType?: Prisma.StringFieldUpdateOperationsInput | string
-  cardNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
   cardHolderName?: Prisma.StringFieldUpdateOperationsInput | string
   expiryDate?: Prisma.StringFieldUpdateOperationsInput | string
   cvv?: Prisma.IntFieldUpdateOperationsInput | number
@@ -755,7 +749,7 @@ export type CreditCardItemUpdateWithoutVaultInput = {
 export type CreditCardItemUncheckedUpdateWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemType?: Prisma.StringFieldUpdateOperationsInput | string
-  cardNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
   cardHolderName?: Prisma.StringFieldUpdateOperationsInput | string
   expiryDate?: Prisma.StringFieldUpdateOperationsInput | string
   cvv?: Prisma.IntFieldUpdateOperationsInput | number
@@ -772,7 +766,7 @@ export type CreditCardItemUncheckedUpdateWithoutVaultInput = {
 export type CreditCardItemUncheckedUpdateManyWithoutVaultInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   itemType?: Prisma.StringFieldUpdateOperationsInput | string
-  cardNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  cardNumber?: Prisma.StringFieldUpdateOperationsInput | string
   cardHolderName?: Prisma.StringFieldUpdateOperationsInput | string
   expiryDate?: Prisma.StringFieldUpdateOperationsInput | string
   cvv?: Prisma.IntFieldUpdateOperationsInput | number
@@ -882,7 +876,7 @@ export type $CreditCardItemPayload<ExtArgs extends runtime.Types.Extensions.Inte
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     itemType: string
-    cardNumber: number
+    cardNumber: string
     cardHolderName: string
     expiryDate: string
     cvv: number
@@ -1321,7 +1315,7 @@ export interface Prisma__CreditCardItemClient<T, Null = never, ExtArgs extends r
 export interface CreditCardItemFieldRefs {
   readonly id: Prisma.FieldRef<"CreditCardItem", 'String'>
   readonly itemType: Prisma.FieldRef<"CreditCardItem", 'String'>
-  readonly cardNumber: Prisma.FieldRef<"CreditCardItem", 'Int'>
+  readonly cardNumber: Prisma.FieldRef<"CreditCardItem", 'String'>
   readonly cardHolderName: Prisma.FieldRef<"CreditCardItem", 'String'>
   readonly expiryDate: Prisma.FieldRef<"CreditCardItem", 'String'>
   readonly cvv: Prisma.FieldRef<"CreditCardItem", 'Int'>

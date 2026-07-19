@@ -19,8 +19,10 @@ import { useState } from "react"
 import deleteLogin from "@/app/actions/login/deleteLogin";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function DeleteLoginItemDialog({ open, onOpenChange, loginItem }: { open: boolean, onOpenChange: (open: boolean) => void, loginItem: LoginItem }) {
+    const router = useRouter();
     const [loginNameConfirm, setLoginNameConfirm] = useState<string>("");
 
     const { mutate, data, isPending } = useMutation({
@@ -33,12 +35,19 @@ export default function DeleteLoginItemDialog({ open, onOpenChange, loginItem }:
             toast.dismiss();
             toast.success("Login Item deleted successfully!" + data);
             onOpenChange(false);
+            router.refresh();
         },
         onError: () => {
             toast.dismiss();
             toast.error("There was an error deleting your Login Item. Please try again later.");
+            onOpenChange(false);
+            router.refresh();
         }
     });
+
+    const handleSubmit = () => {
+        mutate();
+    }
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -58,7 +67,7 @@ export default function DeleteLoginItemDialog({ open, onOpenChange, loginItem }:
                         <Button variant="outline">Cancel</Button>
                     </AlertDialogCancel>
                     <AlertDialogAction asChild>
-                        <Button disabled={loginNameConfirm.toLowerCase() !== loginItem.name?.toLowerCase() || isPending} variant="destructive" className="font-bold" onClick={() => mutate()}>Delete</Button>
+                        <Button disabled={loginNameConfirm.toLowerCase() !== loginItem.name?.toLowerCase() || isPending} variant="destructive" className="font-bold" onClick={handleSubmit}>Delete</Button>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

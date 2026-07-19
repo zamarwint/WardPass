@@ -42,6 +42,7 @@ export default function EditVault({ open, onOpenChange, vault }: { open: boolean
         onError: () => {
             toast.dismiss();
             toast.error("There was an error updating your vault. Please try again later." + error);
+            onOpenChange(false);
         }
     });
 

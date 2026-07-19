@@ -18,8 +18,10 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
+import { useRouter } from "next/navigation";
 
 export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
+    const router = useRouter();
     const [name, setName] = useState<string>("")
     const [url, setUrl] = useState<string>("")
     const [username, setUsername] = useState<string>("")
@@ -27,18 +29,20 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
     const [password, setPassword] = useState<string>("")
     const [note, setNote] = useState<string>("")
 
-    const { mutate, data, isPending } = useMutation({
+    const { mutate, error, isPending } = useMutation({
         mutationFn: () => createLogin({ vaultId, name, url, username, email, password, note }),
         onMutate: () => {
             toast.loading("Creating login item...")
         },
         onSuccess: () => {
             toast.dismiss();
-            toast.success("Login item created successfully" + data);
+            toast.success("Login item created successfully");
+            cancel();
+            router.refresh();
         },
-        onError: (error) => {
+        onError: () => {
             toast.dismiss();
-            toast.error("Failed to create login item." + error.message)
+            toast.error("Failed to create login item." + error?.message)
         }
     })
 
@@ -58,7 +62,7 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
             className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
             <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-center justify-center border-r border-muted z-999 px-8 gap-8 bg-background">
+            <Field className="size-full flex flex-col items-center justify-center border-r border-muted z-999 px-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Create Login Item</FieldLegend>
                     <FieldDescription>Create a new login item.</FieldDescription>

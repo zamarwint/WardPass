@@ -36,6 +36,7 @@ export default function DeleteVault({ open, onOpenChange, vault }: { open: boole
         onError: () => {
             toast.dismiss();
             toast.error("There was an error deleting your vault. Please try again later." + error);
+            onOpenChange(false);
         }
     });
 

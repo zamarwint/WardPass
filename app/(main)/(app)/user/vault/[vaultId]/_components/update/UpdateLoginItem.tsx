@@ -19,8 +19,10 @@ import { Loader2Icon, PenIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
+import { useRouter } from "next/navigation";
 
 export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: LoginItem, cancel: () => void }) {
+    const router = useRouter();
     const [name, setName] = useState<string>(loginItem.name!)
     const [url, setUrl] = useState<string>(loginItem.url!)
     const [username, setUsername] = useState<string>(loginItem.username!)
@@ -28,18 +30,20 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: Logi
     const [password, setPassword] = useState<string>(loginItem.password!)
     const [note, setNote] = useState<string>(loginItem.note!)
 
-    const { mutate, data, isPending } = useMutation({
+    const { mutate, error, isPending } = useMutation({
         mutationFn: () => updateLogin({ id: loginItem.id as string, vaultId: loginItem.vaultId as string, name, url, username, email, password, note }),
         onMutate: () => {
             toast.loading("Updating login item...")
         },
         onSuccess: () => {
             toast.dismiss();
-            toast.success("Login item updated successfully" + data);
+            toast.success("Login item updated successfully");
+            cancel();
+            router.refresh();
         },
-        onError: (error) => {
+        onError: () => {
             toast.dismiss();
-            toast.error("Failed to update login item." + error.message)
+            toast.error("Failed to update login item." + error?.message)
         }
     })
 
@@ -59,7 +63,7 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: Logi
             className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
             <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-center justify-center border-r border-muted z-999 px-8 gap-8 bg-background">
+            <Field className="size-full flex flex-col items-center justify-center border-r border-muted z-999 px-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Update Login</FieldLegend>
                     <FieldDescription>Update {loginItem.name}.</FieldDescription>

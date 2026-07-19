@@ -141,8 +141,10 @@ export default function Profile() {
                         </motion.div>
                         <Separator />
                         <DialogTitle className="self-start">Change your name.</DialogTitle>
-                        <Label htmlFor="name" className="self-start text-muted-foreground">Full Name</Label>
-                        <Input type="text" id="name" placeholder="e.g. John Doe" value={newName} onChange={(e) => setNewName(e.target.value)} />
+                        <div className="w-full flex flex-col gap-2">
+                            <Label htmlFor="name" className="self-start text-muted-foreground">Full Name</Label>
+                            <Input type="text" id="name" placeholder="e.g. John Doe" value={newName} onChange={(e) => setNewName(e.target.value)} />
+                        </div>
                     </div>
                     <DialogFooter className="mt-2">
                         <DialogClose className="text-md mr-1">Cancel</DialogClose>

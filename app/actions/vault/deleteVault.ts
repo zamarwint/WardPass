@@ -2,6 +2,7 @@
 
 import { prisma } from "@/utils/db";
 import { getUserSession } from "../getSession";
+import { revalidatePath } from "next/cache";
 
 export async function deleteVault(vaultId: string) {
     const session = await getUserSession();
@@ -15,5 +16,6 @@ export async function deleteVault(vaultId: string) {
         }
     })
 
+    revalidatePath(`/user/vault`);
     return vault;
 }
