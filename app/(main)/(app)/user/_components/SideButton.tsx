@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import VaultDropdown from "./vault/VaultDropdown";
+import { LockIcon } from "lucide-react";
 
 export function VaultSideButton({ vault }: { vault: { id: string, name: string, slug: string, icon: string, iconColor: string | null } }) {
     const pathName = usePathname();
@@ -23,6 +24,15 @@ export function VaultSideButton({ vault }: { vault: { id: string, name: string, 
                 <VaultDropdown open={open} onOpenChange={setOpen} vault={vault} />
             </div>
         </div>
+    )
+}
+
+export function LockSideButton({ disabled = false }: { disabled?: boolean }) {
+    return (
+        <Button disabled={disabled} variant={"ghost"} size="lg" className="w-full flex justify-start">
+            <LockIcon className="w-4 h-4" />
+            <span>Lock Vaults (Coming soon)</span>
+        </Button>
     )
 }
 

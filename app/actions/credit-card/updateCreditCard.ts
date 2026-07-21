@@ -49,9 +49,7 @@ export default async function updateCreditCard({
         },
         where: {
             id: id,
-            vaultId: vaultId,
-            cardNumber: cardNumber,
-            cardHolderName: cardHolderName
+            vaultId: vaultId
         },
         data: {
             cardNumber,

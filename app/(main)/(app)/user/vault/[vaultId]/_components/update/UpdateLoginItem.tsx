@@ -14,15 +14,15 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { LoginItem } from "@/lib/types/VaultItemType";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon, PenIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
-import { useRouter } from "next/navigation";
 
 export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: LoginItem, cancel: () => void }) {
-    const router = useRouter();
+    const queryClient = useQueryClient();
+
     const [name, setName] = useState<string>(loginItem.name!)
     const [url, setUrl] = useState<string>(loginItem.url!)
     const [username, setUsername] = useState<string>(loginItem.username!)
@@ -39,7 +39,10 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: Logi
             toast.dismiss();
             toast.success("Login item updated successfully");
             cancel();
-            router.refresh();
+            queryClient.invalidateQueries({
+                queryKey: ["vaultItems", loginItem.vaultId],
+                refetchType: 'active'
+            });
         },
         onError: () => {
             toast.dismiss();
@@ -60,17 +63,17 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: Logi
                 visible: { opacity: 1, x: 0 },
             }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            className="flex w-screen h-screen items-start justify-start z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-center justify-center border-r border-muted z-999 px-8 gap-8 bg-background overflow-y-scroll">
+            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100 cursor-pointer" onClick={cancel}></div>
+            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Update Login</FieldLegend>
                     <FieldDescription>Update {loginItem.name}.</FieldDescription>
                 </FieldSet>
 
-                <FieldGroup>
-                    <FieldSeparator />
+                <FieldSeparator />
+                <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
                     <Field>
                         <FieldLabel>Name</FieldLabel>
                         <Input type="text" placeholder="Name of login item" id="name" value={name} onChange={(e) => { setName(e.target.value) }} className="h-12" />
@@ -98,9 +101,9 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: Logi
                         <FieldLabel>Note</FieldLabel>
                         <Input type="text" placeholder="Note" id="note" value={note} onChange={(e) => { setNote(e.target.value) }} className="h-12" />
                     </Field>
-                    <FieldSeparator />
                 </FieldGroup>
 
+                <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
                     <Button disabled={isPending || !name || !email || !password || (name == loginItem.name && url == loginItem.url && username == loginItem.username && email == loginItem.email && password == loginItem.password && note == loginItem.note)} onClick={handleSubmit} className="font-bold">

@@ -10,8 +10,31 @@ import { Loader2Icon, X } from "lucide-react";
 import { WebsiteCredentialCard } from "@/app/_components/UICards";
 import { DotPattern } from "@/components/ui/dot-pattern";
 
-export default function VerifyEmailComponent({ currentUserEmail, cancel }: { currentUserEmail: string, cancel: () => void }) {
+export default function VerifyEmailComponent({ currentUserEmail, type, cancel }: { currentUserEmail: string, type: string, cancel: () => void }) {
     const [verificationPending, StartVerificationTransition] = useTransition();
+    const [resetPasswordPending, StartResetPasswordTransition] = useTransition();
+
+    const handleResendPasswordResetEmail = async () => {
+        StartResetPasswordTransition(async () => {
+            await authClient.requestPasswordReset({
+                email: currentUserEmail,
+                redirectTo: process.env.NEXT_PUBLIC_APP_URL + '/reset-password',
+                fetchOptions: {
+                    onRequest: () => {
+                        toast.loading("Sending email verification...");
+                    },
+                    onSuccess: () => {
+                        toast.dismiss();
+                        toast.success("Success. Check your email.");
+                    },
+                    onError: () => {
+                        toast.dismiss();
+                        toast.error("Failed to send verification email");
+                    }
+                }
+            })
+        })
+    }
 
     const handleResendVerification = async () => {
         StartVerificationTransition(async () => {
@@ -42,18 +65,18 @@ export default function VerifyEmailComponent({ currentUserEmail, cancel }: { cur
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-12 border-r border-foreground/5">
                     <Link href="/" className="font-bold text-3xl tracking-tighter text-primary uppercase">WARDPASS</Link>
                     <FieldSet>
-                        <FieldTitle className="text-8xl font-bold text-center">Verify Your Email</FieldTitle>
-                        <FieldDescription className="text-center text-xl">Check your email for a <span className="font-bold">verification link.</span></FieldDescription>
+                        <FieldTitle className="text-8xl font-bold text-center">{type === 'Sign Up' ? 'Verify Email to Sign Up' : type === 'Reset Password' ? 'Reset Your Password' : 'Verify Your Email'}</FieldTitle>
+                        <FieldDescription className="text-center text-xl">Check your email for a <span className="font-bold">{type === 'Sign Up' ? 'verification link' : type === 'Reset Password' ? 'reset link' : 'verification link'}</span></FieldDescription>
                     </FieldSet>
                     <FieldSet>
-                        <Button size="lg" className="text-md px-6 py-7" onClick={handleResendVerification}>
-                            {verificationPending ? (
+                        <Button size="lg" className="text-md px-6 py-7" onClick={type === 'Sign Up' ? handleResendVerification : type === 'Reset Password' ? handleResendPasswordResetEmail : handleResendVerification}>
+                            {verificationPending || resetPasswordPending ? (
                                 <>
                                     <Loader2Icon className="animate-spin" />
                                     <span>Resending...</span>
                                 </>
                             ) : (
-                                <span>Resend verification email</span>
+                                <span>Resend {type === 'Sign Up' ? 'verification' : type === 'Reset Password' ? 'reset' : 'verification'} email</span>
                             )}
                         </Button>
                     </FieldSet>

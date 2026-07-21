@@ -11,10 +11,11 @@ import {
 
 import { Input } from "@/components/ui/input"
 import type { CreditCardItem } from "@/lib/types/VaultItemType";
+import PasswordCopyInput from "../../../../_components/PasswordCopyInput";
 
 export default function CreditCardItem({ creditCardItem }: { creditCardItem: CreditCardItem }) {
     return (
-        <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background">
+        <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background overflow-y-scroll">
             <FieldSet>
                 <FieldTitle className="text-primary text-6xl font-bold">{creditCardItem.cardHolderName}</FieldTitle>
                 <FieldDescription className="text-muted-foreground text-xl">View your <span className="font-bold">{creditCardItem.itemType}</span> details.</FieldDescription>
@@ -27,16 +28,16 @@ export default function CreditCardItem({ creditCardItem }: { creditCardItem: Cre
                 </Field>
                 <Field>
                     <FieldLabel>Card Number</FieldLabel>
-                    <Input type="text" placeholder="Card number" id="cardNumber" value={creditCardItem.cardNumber!} readOnly className="h-12" />
+                    <PasswordCopyInput placeholder="Card number" id="cardNumber" value={creditCardItem.cardNumber!} readOnly className="h-12" />
                 </Field>
                 <Field>
                     <FieldLabel>CVV</FieldLabel>
-                    <Input type="text" placeholder="CVV" id="cvv" value={creditCardItem.cvv!} readOnly className="h-12" />
+                    <PasswordCopyInput placeholder="CVV" id="cvv" value={creditCardItem.cvv!} readOnly className="h-12" />
                 </Field>
 
                 <Field>
                     <FieldLabel>Expiry Date</FieldLabel>
-                    <Input type="text" placeholder="Expiry Date" id="expiryDate" value={creditCardItem.expiryDate!.toString()} readOnly className="h-12" />
+                    <PasswordCopyInput placeholder="Expiry Date" id="expiryDate" value={creditCardItem.expiryDate!.toString()} readOnly className="h-12" />
                 </Field>
 
                 <Field>
@@ -70,7 +71,7 @@ export default function CreditCardItem({ creditCardItem }: { creditCardItem: Cre
                 </Field>
             </FieldGroup>
 
-            <FieldSet>
+            <FieldGroup>
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <FieldLabel>Created At</FieldLabel>
@@ -84,7 +85,7 @@ export default function CreditCardItem({ creditCardItem }: { creditCardItem: Cre
                         <FieldDescription>{creditCardItem.updatedAt?.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</FieldDescription>
                     </FieldContent>
                 </Field>
-            </FieldSet>
+            </FieldGroup>
         </Field>
     )
 }

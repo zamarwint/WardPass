@@ -11,6 +11,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { LoginItem } from "@/lib/types/VaultItemType"
 import { Label } from "@/components/ui/label"
@@ -18,14 +19,15 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import deleteLogin from "@/app/actions/login/deleteLogin";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Trash2Icon } from "lucide-react";
 
-export default function DeleteLoginItemDialog({ open, onOpenChange, loginItem }: { open: boolean, onOpenChange: (open: boolean) => void, loginItem: LoginItem }) {
-    const router = useRouter();
+export default function DeleteLoginItemDialog({ loginItem }: { loginItem: LoginItem }) {
+    const queryClient = useQueryClient();
+
     const [loginNameConfirm, setLoginNameConfirm] = useState<string>("");
 
-    const { mutate, data, isPending } = useMutation({
+    const { mutate, error, isPending } = useMutation({
         mutationFn: () => deleteLogin({ id: loginItem.id as string, vaultId: loginItem.vaultId as string, name: loginItem.name as string }),
         onMutate: () => {
             toast.dismiss();
@@ -33,15 +35,15 @@ export default function DeleteLoginItemDialog({ open, onOpenChange, loginItem }:
         },
         onSuccess: () => {
             toast.dismiss();
-            toast.success("Login Item deleted successfully!" + data);
-            onOpenChange(false);
-            router.refresh();
+            toast.success("Login Item deleted successfully!");
+            queryClient.invalidateQueries({
+                queryKey: ["deleteVaultItems", loginItem.vaultId],
+                refetchType: 'active'
+            });
         },
         onError: () => {
             toast.dismiss();
-            toast.error("There was an error deleting your Login Item. Please try again later.");
-            onOpenChange(false);
-            router.refresh();
+            toast.error("There was an error deleting your Login Item. Please try again later." + error);
         }
     });
 
@@ -50,7 +52,10 @@ export default function DeleteLoginItemDialog({ open, onOpenChange, loginItem }:
     }
 
     return (
-        <AlertDialog open={open} onOpenChange={onOpenChange}>
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="icon"><Trash2Icon className="text-destructive" /></Button>
+            </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete <span className="font-bold">{loginItem.name}</span></AlertDialogTitle>

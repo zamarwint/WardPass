@@ -4,29 +4,23 @@ import { motion } from "motion/react"
 
 import {
     Field,
-    FieldContent,
     FieldDescription,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-    FieldLegend,
-    FieldSeparator,
-    FieldSet,
     FieldTitle,
 } from "@/components/ui/field"
 
 import Link from "next/link"
 import { ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const otherApps = [
     {
         title: "WardPass Chrome Extension",
-        description: "WardPass Chrome Extension - Auto fill your passwords in your browser!",
+        description: "WardPass Chrome Extension - Auto fill your passwords in your browser! (Coming soon)",
         url: "/extension"
     },
     {
         title: "WardPass Firefox Extension",
-        description: "WardPass Firefox Extension - Auto fill your passwords in your browser!",
+        description: "WardPass Firefox Extension - Auto fill your passwords in your browser! (Coming soon)",
         url: "/extension"
     },
     {
@@ -54,7 +48,11 @@ export default function OtherAppsPage() {
                     <Field key={key} className="border border-border rounded-xl p-10 w-xl">
                         <FieldTitle>{app.title}</FieldTitle>
                         <FieldDescription>{app.description}</FieldDescription>
-                        <Link href={app.url} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm text-center p-4 mt-4 flex items-center justify-center gap-2">Visit {app.title} <ExternalLink size={16} /> </Link>
+                        <Link href={app.url !== '/extension' ? app.url : '/'} target="_blank" rel="noopener noreferrer" className="text-sm text-center flex items-center justify-center gap-2">
+                            <Button disabled={app.url === "/extension"} variant={app.url === "/extension" ? "ghost" : "default"} size="lg" className="w-full flex justify-start p-6 mt-4">
+                                <span>{app.url === "/extension" ? "Coming soon" : "Visit app"}</span> <ExternalLink size={16} />
+                            </Button>
+                        </Link>
                     </Field>
                 ))}
             </motion.div>

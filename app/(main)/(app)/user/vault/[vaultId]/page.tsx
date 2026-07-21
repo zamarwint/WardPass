@@ -5,7 +5,7 @@ import { redirect, useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { CreditCard, Globe, IdCard, NotebookPen, PlusIcon } from "lucide-react";
+import { CreditCard, Globe, IdCard, LayoutList, NotebookPen, PlusIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getVaultItems } from "@/app/actions/vault/getVaultItems";
 import { useState } from "react";
@@ -53,11 +53,15 @@ export default function VaultIDPage() {
         setSelectedItem(null);
     }
 
-    // GET CURRENT VAULT ITEMS
+    // GET CURRENT VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
     const { data: vaultItems, isLoading: vaultItemsLoading, error: vaultItemsError } = useQuery({
         queryKey: ["vaultItems", vaultId],
         queryFn: () => getVaultItems(vaultId as string),
-        refetchOnWindowFocus: false
+        refetchOnMount: true,
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+        staleTime: 1000 * 60 * 2,
+        gcTime: 1000 * 60 * 5
     })
 
     if (vaultItemsError) {
@@ -108,7 +112,7 @@ export default function VaultIDPage() {
                                 {vaultItems?.loginItems?.map((item) => (
                                     <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                         <div className="flex gap-3 p-2">
-                                            <div className="w-[75px] h-[50px] flex items-center justify-center bg-background rounded-xl">
+                                            <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-xl">
                                                 <Globe className="size-[80%] text-primary" />
                                             </div>
                                             <div className="size-full flex flex-col items-start justify-center">
@@ -121,13 +125,13 @@ export default function VaultIDPage() {
                                 ))}
                                 {vaultItems?.secureNoteItems?.map((item) => (
                                     <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                        <div className="flex flex-col gap-3 p-2 w-full">
+                                        <div className="flex flex-col gap-3 p-2 w-[90%]">
                                             <div className="size-full flex flex-col items-start justify-center gap-2">
                                                 <div className="flex items-center gap-2">
                                                     <NotebookPen className="size=[80%] text-primary" />
                                                     <h1 className="font-bold">{item.title}</h1>
                                                 </div>
-                                                <p className="text-md text-muted-foreground font-medium line-clamp-1">{item.content}</p>
+                                                <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{item.content}</p>
                                             </div>
                                             <div className="flex flex-col">
                                                 <Separator />
@@ -155,11 +159,11 @@ export default function VaultIDPage() {
                                 {vaultItems?.identities?.map((item) => (
                                     <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                         <div className="flex gap-3 p-2">
-                                            <div className="w-[75px] h-[50px] flex items-center justify-center bg-background rounded-full">
+                                            <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-full">
                                                 <IdCard className="size-[70%] text-primary" />
                                             </div>
                                             <div className="size-full flex flex-col items-start justify-center">
-                                                <h1 className="text-primary font-bold">{item.name}</h1>
+                                                <h1 className="font-bold">{item.name}</h1>
                                                 <p className="font-mono text-sm">{item.phoneNumber}</p>
                                             </div>
                                         </div>
@@ -173,7 +177,9 @@ export default function VaultIDPage() {
                 <div className="flex-1 h-full flex items-center justify-center overflow-y-auto">
                     {vaultItemsLoading ? <div>Loading...</div> : !selectedItem ? (
                         <div className="flex flex-col items-center gap-1">
-                            <SvgCircle size={80} />
+                            <SvgCircle>
+                                <LayoutList size={80} className="text-primary relative z-10" />
+                            </SvgCircle>
                             <h1 className="text-2xl font-semibold text-foreground mt-2">No item selected</h1>
                             <p className="text-muted-foreground text-center">Select an item to view details.</p>
                         </div>

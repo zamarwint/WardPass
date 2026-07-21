@@ -15,6 +15,7 @@ export default async function getIdentities({ vaultId }: { vaultId: string }) {
     const identities = await prisma.identityItem.findMany({
         where: {
             vaultId,
+            deletedAt: null
         },
         select: {
             id: true,

@@ -49,6 +49,7 @@ export type CreditCardItemMinAggregateOutputType = {
   country: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
   vaultId: string | null
 }
 
@@ -67,6 +68,7 @@ export type CreditCardItemMaxAggregateOutputType = {
   country: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
   vaultId: string | null
 }
 
@@ -85,6 +87,7 @@ export type CreditCardItemCountAggregateOutputType = {
   country: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   vaultId: number
   _all: number
 }
@@ -113,6 +116,7 @@ export type CreditCardItemMinAggregateInputType = {
   country?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   vaultId?: true
 }
 
@@ -131,6 +135,7 @@ export type CreditCardItemMaxAggregateInputType = {
   country?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   vaultId?: true
 }
 
@@ -149,6 +154,7 @@ export type CreditCardItemCountAggregateInputType = {
   country?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   vaultId?: true
   _all?: true
 }
@@ -254,6 +260,7 @@ export type CreditCardItemGroupByOutputType = {
   country: string
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   vaultId: string
   _count: CreditCardItemCountAggregateOutputType | null
   _avg: CreditCardItemAvgAggregateOutputType | null
@@ -295,6 +302,7 @@ export type CreditCardItemWhereInput = {
   country?: Prisma.StringFilter<"CreditCardItem"> | string
   createdAt?: Prisma.DateTimeFilter<"CreditCardItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CreditCardItem"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CreditCardItem"> | Date | string | null
   vaultId?: Prisma.StringFilter<"CreditCardItem"> | string
   vault?: Prisma.XOR<Prisma.VaultScalarRelationFilter, Prisma.VaultWhereInput>
 }
@@ -314,6 +322,7 @@ export type CreditCardItemOrderByWithRelationInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   vaultId?: Prisma.SortOrder
   vault?: Prisma.VaultOrderByWithRelationInput
 }
@@ -336,6 +345,7 @@ export type CreditCardItemWhereUniqueInput = Prisma.AtLeast<{
   country?: Prisma.StringFilter<"CreditCardItem"> | string
   createdAt?: Prisma.DateTimeFilter<"CreditCardItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CreditCardItem"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CreditCardItem"> | Date | string | null
   vaultId?: Prisma.StringFilter<"CreditCardItem"> | string
   vault?: Prisma.XOR<Prisma.VaultScalarRelationFilter, Prisma.VaultWhereInput>
 }, "id">
@@ -355,6 +365,7 @@ export type CreditCardItemOrderByWithAggregationInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   vaultId?: Prisma.SortOrder
   _count?: Prisma.CreditCardItemCountOrderByAggregateInput
   _avg?: Prisma.CreditCardItemAvgOrderByAggregateInput
@@ -381,6 +392,7 @@ export type CreditCardItemScalarWhereWithAggregatesInput = {
   country?: Prisma.StringWithAggregatesFilter<"CreditCardItem"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CreditCardItem"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CreditCardItem"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CreditCardItem"> | Date | string | null
   vaultId?: Prisma.StringWithAggregatesFilter<"CreditCardItem"> | string
 }
 
@@ -399,6 +411,7 @@ export type CreditCardItemCreateInput = {
   country: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   vault: Prisma.VaultCreateNestedOneWithoutCreditCardItemsInput
 }
 
@@ -417,6 +430,7 @@ export type CreditCardItemUncheckedCreateInput = {
   country: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   vaultId: string
 }
 
@@ -435,6 +449,7 @@ export type CreditCardItemUpdateInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vault?: Prisma.VaultUpdateOneRequiredWithoutCreditCardItemsNestedInput
 }
 
@@ -453,6 +468,7 @@ export type CreditCardItemUncheckedUpdateInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vaultId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -471,6 +487,7 @@ export type CreditCardItemCreateManyInput = {
   country: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   vaultId: string
 }
 
@@ -489,6 +506,7 @@ export type CreditCardItemUpdateManyMutationInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CreditCardItemUncheckedUpdateManyInput = {
@@ -506,6 +524,7 @@ export type CreditCardItemUncheckedUpdateManyInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vaultId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -534,6 +553,7 @@ export type CreditCardItemCountOrderByAggregateInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   vaultId?: Prisma.SortOrder
 }
 
@@ -556,6 +576,7 @@ export type CreditCardItemMaxOrderByAggregateInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   vaultId?: Prisma.SortOrder
 }
 
@@ -574,6 +595,7 @@ export type CreditCardItemMinOrderByAggregateInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   vaultId?: Prisma.SortOrder
 }
 
@@ -646,6 +668,7 @@ export type CreditCardItemCreateWithoutVaultInput = {
   country: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type CreditCardItemUncheckedCreateWithoutVaultInput = {
@@ -663,6 +686,7 @@ export type CreditCardItemUncheckedCreateWithoutVaultInput = {
   country: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type CreditCardItemCreateOrConnectWithoutVaultInput = {
@@ -709,6 +733,7 @@ export type CreditCardItemScalarWhereInput = {
   country?: Prisma.StringFilter<"CreditCardItem"> | string
   createdAt?: Prisma.DateTimeFilter<"CreditCardItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CreditCardItem"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"CreditCardItem"> | Date | string | null
   vaultId?: Prisma.StringFilter<"CreditCardItem"> | string
 }
 
@@ -727,6 +752,7 @@ export type CreditCardItemCreateManyVaultInput = {
   country: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type CreditCardItemUpdateWithoutVaultInput = {
@@ -744,6 +770,7 @@ export type CreditCardItemUpdateWithoutVaultInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CreditCardItemUncheckedUpdateWithoutVaultInput = {
@@ -761,6 +788,7 @@ export type CreditCardItemUncheckedUpdateWithoutVaultInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type CreditCardItemUncheckedUpdateManyWithoutVaultInput = {
@@ -778,6 +806,7 @@ export type CreditCardItemUncheckedUpdateManyWithoutVaultInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -797,6 +826,7 @@ export type CreditCardItemSelect<ExtArgs extends runtime.Types.Extensions.Intern
   country?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   vaultId?: boolean
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["creditCardItem"]>
@@ -816,6 +846,7 @@ export type CreditCardItemSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   country?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   vaultId?: boolean
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["creditCardItem"]>
@@ -835,6 +866,7 @@ export type CreditCardItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   country?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   vaultId?: boolean
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["creditCardItem"]>
@@ -854,10 +886,11 @@ export type CreditCardItemSelectScalar = {
   country?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   vaultId?: boolean
 }
 
-export type CreditCardItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "itemType" | "cardNumber" | "cardHolderName" | "expiryDate" | "cvv" | "billingAddress1" | "billingAddress2" | "zipCode" | "city" | "state" | "country" | "createdAt" | "updatedAt" | "vaultId", ExtArgs["result"]["creditCardItem"]>
+export type CreditCardItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "itemType" | "cardNumber" | "cardHolderName" | "expiryDate" | "cvv" | "billingAddress1" | "billingAddress2" | "zipCode" | "city" | "state" | "country" | "createdAt" | "updatedAt" | "deletedAt" | "vaultId", ExtArgs["result"]["creditCardItem"]>
 export type CreditCardItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }
@@ -888,6 +921,7 @@ export type $CreditCardItemPayload<ExtArgs extends runtime.Types.Extensions.Inte
     country: string
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
     vaultId: string
   }, ExtArgs["result"]["creditCardItem"]>
   composites: {}
@@ -1327,6 +1361,7 @@ export interface CreditCardItemFieldRefs {
   readonly country: Prisma.FieldRef<"CreditCardItem", 'String'>
   readonly createdAt: Prisma.FieldRef<"CreditCardItem", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CreditCardItem", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"CreditCardItem", 'DateTime'>
   readonly vaultId: Prisma.FieldRef<"CreditCardItem", 'String'>
 }
     

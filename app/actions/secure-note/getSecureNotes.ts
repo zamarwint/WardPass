@@ -16,6 +16,7 @@ export default async function getSecureNotes({ vaultId }: { vaultId: string }) {
     const secureNotes = await prisma.secureNoteItem.findMany({
         where: {
             vaultId,
+            deletedAt: null
         },
         select: {
             id: true,

@@ -1200,6 +1200,7 @@ export const LoginItemScalarFieldEnum = {
   note: 'note',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   vaultId: 'vaultId'
 } as const
 
@@ -1213,6 +1214,7 @@ export const SecureNoteItemScalarFieldEnum = {
   content: 'content',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   vaultId: 'vaultId'
 } as const
 
@@ -1234,6 +1236,7 @@ export const CreditCardItemScalarFieldEnum = {
   country: 'country',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   vaultId: 'vaultId'
 } as const
 
@@ -1270,6 +1273,7 @@ export const IdentityItemScalarFieldEnum = {
   other: 'other',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt',
   vaultId: 'vaultId'
 } as const
 

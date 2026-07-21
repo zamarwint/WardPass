@@ -11,17 +11,18 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon, PenIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
-import { useRouter } from "next/navigation";
 import { CreditCardItem } from "@/lib/types/VaultItemType";
 import updateCreditCard from "@/app/actions/credit-card/updateCreditCard";
+import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
 
 export default function UpdateCreditCardItem({ creditCardItem, cancel }: { creditCardItem: CreditCardItem, cancel: () => void }) {
-    const router = useRouter();
+    const queryClient = useQueryClient();
+
     const [cardHolderName, setCardHolderName] = useState<string>(creditCardItem.cardHolderName!)
     const [cardNumber, setCardNumber] = useState<string>(creditCardItem.cardNumber!)
     const [cvv, setCvv] = useState<number>(creditCardItem.cvv!)
@@ -42,7 +43,10 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
             toast.dismiss();
             toast.success("Credit card item updated successfully");
             cancel();
-            router.refresh();
+            queryClient.invalidateQueries({
+                queryKey: ["vaultItems", creditCardItem.vaultId],
+                refetchType: 'active'
+            });
         },
         onError: () => {
             toast.dismiss();
@@ -65,8 +69,8 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-center justify-center border-r border-muted z-999 px-8 gap-8 bg-background overflow-y-scroll">
+            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100 cursor-pointer" onClick={cancel}></div>
+            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Update Credit Card</FieldLegend>
                     <FieldDescription>Update {creditCardItem.cardHolderName}.</FieldDescription>
@@ -79,16 +83,16 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
                     </Field>
                     <Field>
                         <FieldLabel>Card Number</FieldLabel>
-                        <Input type="text" placeholder="Card Number" id="cardNumber" value={cardNumber} onChange={(e) => { setCardNumber(e.target.value) }} className="h-12" />
+                        <PasswordInput placeholder="Card Number" id="cardNumber" value={cardNumber} onChange={(e) => { setCardNumber(e.target.value) }} className="h-12" maxLength={16} />
                     </Field>
                     <Field>
                         <FieldLabel>CVV</FieldLabel>
-                        <Input type="text" placeholder="Username" id="cvv" value={cvv} onChange={(e) => { setCvv(Number(e.target.value)) }} className="h-12" />
+                        <PasswordInput placeholder="CVV" id="cvv" value={cvv} onChange={(e) => { setCvv(Number(e.target.value)) }} className="h-12" maxLength={3} />
                     </Field>
 
                     <Field>
                         <FieldLabel>Expiry Date</FieldLabel>
-                        <Input type="text" placeholder="Expiry Date" id="expiryDate" value={expiryDate} onChange={(e) => { setExpiryDate(e.target.value) }} className="h-12" />
+                        <PasswordInput placeholder="Expiry Date" id="expiryDate" value={expiryDate} onChange={(e) => { setExpiryDate(e.target.value) }} className="h-12" maxLength={5} />
                     </Field>
 
                     <Field>

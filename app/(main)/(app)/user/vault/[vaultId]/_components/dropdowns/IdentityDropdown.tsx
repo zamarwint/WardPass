@@ -9,7 +9,7 @@ import {
 import { EllipsisVertical, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import UpdateIdentityItem from "../update/UpdateIdentityItem";
-import DeleteIdentityItemDialog from "../delete/DeleteIdentityItemDialog";
+import TrashIdentityItemDialog from "../trash/TrashIdentityItemDialog";
 import { IdentityItem } from "@/lib/types/VaultItemType";
 
 export default function IdentityDropdown({ open, onOpenChange, identityItem }: { open: boolean, onOpenChange: (open: boolean) => void, identityItem: IdentityItem }) {
@@ -29,12 +29,12 @@ export default function IdentityDropdown({ open, onOpenChange, identityItem }: {
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenDeleteIdentity(!openDeleteIdentity)}>
                         <TrashIcon size={20} className="mr-2" />
-                        <span>Delete</span>
+                        <span>Trash</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
             {openUpdateIdentity && <UpdateIdentityItem identityItem={identityItem} cancel={() => { setOpenUpdateIdentity(false) }} />}
-            <DeleteIdentityItemDialog open={openDeleteIdentity} onOpenChange={setOpenDeleteIdentity} identityItem={identityItem} />
+            <TrashIdentityItemDialog open={openDeleteIdentity} onOpenChange={setOpenDeleteIdentity} identityItem={identityItem} />
         </>
     )
 }

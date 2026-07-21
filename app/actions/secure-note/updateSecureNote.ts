@@ -19,14 +19,12 @@ export default async function updateSecureNote({
 
     const updatedSecureNote = await prisma.secureNoteItem.update({
         select: {
-            id: true,
             title: true,
             content: true,
         },
         where: {
             id: id,
-            vaultId: vaultId,
-            title: title
+            vaultId: vaultId
         },
         data: {
             title,

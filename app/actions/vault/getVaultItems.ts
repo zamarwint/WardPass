@@ -12,25 +12,37 @@ export async function getVaultItems(vaultId: string) {
     const vaultItems = await prisma.vault.findUnique({
         where: {
             userId: session?.user.id,
-            id: vaultId,
+            id: vaultId
         },
         include: {
             loginItems: {
+                where: {
+                    deletedAt: null,
+                },
                 orderBy: {
                     name: "asc",
                 }
             },
             secureNoteItems: {
+                where: {
+                    deletedAt: null,
+                },
                 orderBy: {
                     title: "asc",
                 }
             },
             creditCardItems: {
+                where: {
+                    deletedAt: null,
+                },
                 orderBy: {
                     cardHolderName: "asc",
                 }
             },
             identities: {
+                where: {
+                    deletedAt: null,
+                },
                 orderBy: {
                     name: "asc",
                 }

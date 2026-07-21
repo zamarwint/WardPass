@@ -7,6 +7,11 @@ import { useRouter } from "next/navigation";
 
 export default function NotFoundPage() {
     const router = useRouter();
+
+    const handleBackButton = () => {
+        router.push("/");
+    }
+
     return (
         <motion.div className="flex flex-col w-screen h-screen items-center justify-center gap-4 font-geist text-center">
             <TriangleAlert size={128} className="text-primary" />
@@ -23,8 +28,8 @@ export default function NotFoundPage() {
                     />
                 </svg>
             </div>
-            <p className="text-muted-foreground">We&aps;re sorry, the page you requested could not be found. Please go back to the homepage.</p>
-            <Button variant="default" size="lg" className="px-8 py-6 font-geist" onClick={() => router.push("/")}>Back to Homepage</Button>
+            <p className="text-muted-foreground">We are sorry, the page you requested could not be found. Please go back to the homepage.</p>
+            <Button variant="default" size="lg" className="px-8 py-6 font-geist" onClick={handleBackButton}>Back to Homepage</Button>
         </motion.div>
     )
 }

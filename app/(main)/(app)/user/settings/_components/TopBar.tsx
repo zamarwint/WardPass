@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ExternalLink } from "lucide-react";
 import { motion } from "motion/react"
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,12 +29,13 @@ const navigationLinks = [
         path: "/user/settings/export"
     },
     {
-        label: "Support",
+        label: "Contact Us",
         path: "/contact"
     },
     {
         label: "Donate",
-        path: "https://paypal.me/zamarwint"
+        path: "https://paypal.me/zamarwint",
+        isExternal: true
     },
     {
         label: "Other Apps",
@@ -51,10 +53,11 @@ export default function TopBar() {
             </div>
             <motion.div className="flex items-center justify-start gap-4 pt-6">
                 {navigationLinks.map((link, key) => (
-                    <Link key={key} href={link.path}>
+                    <Link key={key} href={link.path} target={link.isExternal ? "_blank" : "_self"} rel={link.isExternal ? "noopener noreferrer" : undefined}>
                         <Button variant="link" size="lg" className={pathName === link.path ?
                             "text-primary underline underline-offset-13" : "text-muted-foreground hover:text-primary underline-offset-13 transition-underline duration-300"}>
                             <p>{link.label}</p>
+                            {link.isExternal && <ExternalLink className="size-4" />}
                         </Button>
                     </Link>
                 ))}

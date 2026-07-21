@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 export default function SecureNoteItem({ secureNoteItem }: { secureNoteItem: SecureNoteItem }) {
     return (
-        <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background">
+        <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background overflow-y-scroll">
             <FieldSet>
                 <FieldTitle className="text-primary text-6xl font-bold">{secureNoteItem.title}</FieldTitle>
                 <FieldDescription className="text-muted-foreground text-xl">View your <span className="font-bold">{secureNoteItem.itemType}</span> details.</FieldDescription>
@@ -28,11 +28,11 @@ export default function SecureNoteItem({ secureNoteItem }: { secureNoteItem: Sec
                 </Field>
                 <Field>
                     <FieldLabel>Note</FieldLabel>
-                    <Textarea placeholder="Note" id="note" value={secureNoteItem.content!} readOnly className="min-h-[300px]" />
+                    <Textarea placeholder="Note" id="note" value={secureNoteItem.content!} readOnly className="min-h-75" />
                 </Field>
             </FieldGroup>
 
-            <FieldSet>
+            <FieldGroup>
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <FieldLabel>Created At</FieldLabel>
@@ -46,7 +46,7 @@ export default function SecureNoteItem({ secureNoteItem }: { secureNoteItem: Sec
                         <FieldDescription>{secureNoteItem.updatedAt?.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</FieldDescription>
                     </FieldContent>
                 </Field>
-            </FieldSet>
+            </FieldGroup>
         </Field>
     )
 }

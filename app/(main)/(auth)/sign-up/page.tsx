@@ -217,7 +217,7 @@ export default function SignUpPage() {
                 </div>
             </div>
             <DotPattern />
-            {showEmailVerification && <VerifyEmailComponent currentUserEmail={currentEmail} cancel={() => setShowEmailVerification(!showEmailVerification)} />}
+            {showEmailVerification && <VerifyEmailComponent currentUserEmail={currentEmail} type="Sign Up" cancel={() => setShowEmailVerification(!showEmailVerification)} />}
         </>
     )
 }

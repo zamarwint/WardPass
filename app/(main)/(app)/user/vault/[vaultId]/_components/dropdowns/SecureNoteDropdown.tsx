@@ -9,7 +9,7 @@ import {
 import { EllipsisVertical, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import UpdateSecureNoteItem from "../update/UpdateSecureNoteItem";
-import DeleteSecureNoteItemDialog from "../delete/DeleteSecureNoteItemDialog";
+import TrashSecureNoteItemDialog from "../trash/TrashSecureNoteItemDialog";
 import { SecureNoteItem } from "@/lib/types/VaultItemType";
 
 export default function SecureNoteDropdown({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: SecureNoteItem }) {
@@ -29,12 +29,12 @@ export default function SecureNoteDropdown({ open, onOpenChange, secureNoteItem 
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenDeleteSecureNote(!openDeleteSecureNote)}>
                         <TrashIcon size={20} className="mr-2" />
-                        <span>Delete</span>
+                        <span>Trash</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
             {openUpdateSecureNote && <UpdateSecureNoteItem secureNoteItem={secureNoteItem} cancel={() => { setOpenUpdateSecureNote(false) }} />}
-            <DeleteSecureNoteItemDialog open={openDeleteSecureNote} onOpenChange={setOpenDeleteSecureNote} secureNoteItem={secureNoteItem} />
+            <TrashSecureNoteItemDialog open={openDeleteSecureNote} onOpenChange={setOpenDeleteSecureNote} secureNoteItem={secureNoteItem} />
         </>
     )
 }

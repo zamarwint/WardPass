@@ -47,7 +47,7 @@ export default function Profile() {
 
     if (error) toast.error(error.message);
 
-    const [newName, setNewName] = useState<string>(data?.user?.name || "");
+    const [newName, setNewName] = useState<string | undefined>(data?.user?.name);
     const [newImage, setNewImage] = useState(data?.user.image);
     const [nameChangePending, startNameChangeTransition] = useTransition();
     const [imageChangePending, startImageChangeTransition] = useTransition();

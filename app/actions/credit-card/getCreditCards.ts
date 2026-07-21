@@ -15,6 +15,7 @@ export default async function getCreditCards({ vaultId }: { vaultId: string }) {
     const creditCards = await prisma.creditCardItem.findMany({
         where: {
             vaultId,
+            deletedAt: null
         },
         select: {
             id: true,

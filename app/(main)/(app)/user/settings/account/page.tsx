@@ -21,6 +21,7 @@ import {
     AlertDialogCancel
 } from "@/components/ui/alert-dialog"
 import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
+import SignOut from "../../_components/SignOut";
 
 export default function AccountPage() {
     const { isPending, data, error } = GetAuthSession();
@@ -184,6 +185,17 @@ export default function AccountPage() {
                             </>
                         )}</Button>
                     </FieldGroup>
+                </FieldGroup>
+
+                <FieldGroup>
+                    <FieldSeparator />
+                    <Field>
+                        <FieldLabel className="text-xl text-foreground">Sign out</FieldLabel>
+                        <FieldDescription>Sign out of this session.</FieldDescription>
+                    </Field>
+                    <Field className="w-fit">
+                        <SignOut />
+                    </Field>
                 </FieldGroup>
 
                 <FieldGroup>

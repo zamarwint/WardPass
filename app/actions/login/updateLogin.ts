@@ -37,8 +37,7 @@ export default async function updateLogin({
         },
         where: {
             id: id,
-            vaultId: vaultId,
-            name: name
+            vaultId: vaultId
         },
         data: {
             name,

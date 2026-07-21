@@ -9,7 +9,7 @@ import {
 import { EllipsisVertical, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import UpdateCreditCardItem from "../update/UpdateCreditCardItem";
-import DeleteCreditCardItemDialog from "../delete/DeleteCreditCardItemDialog";
+import TrashCreditCardItemDialog from "../trash/TrashCreditCardItemDialog";
 import { CreditCardItem } from "@/lib/types/VaultItemType";
 
 export default function CreditCardDropdown({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: CreditCardItem }) {
@@ -29,12 +29,12 @@ export default function CreditCardDropdown({ open, onOpenChange, creditCardItem 
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenDeleteCreditCard(!openDeleteCreditCard)}>
                         <TrashIcon size={20} className="mr-2" />
-                        <span>Delete</span>
+                        <span>Trash</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
             {openUpdateCreditCard && <UpdateCreditCardItem creditCardItem={creditCardItem} cancel={() => { setOpenUpdateCreditCard(false) }} />}
-            <DeleteCreditCardItemDialog open={openDeleteCreditCard} onOpenChange={setOpenDeleteCreditCard} creditCardItem={creditCardItem} />
+            <TrashCreditCardItemDialog open={openDeleteCreditCard} onOpenChange={setOpenDeleteCreditCard} creditCardItem={creditCardItem} />
         </>
     )
 }

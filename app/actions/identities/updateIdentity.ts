@@ -94,10 +94,7 @@ export default async function updateIdentity({
         },
         where: {
             id: id,
-            vaultId: vaultId,
-            name,
-            email,
-            phoneNumber
+            vaultId: vaultId
         },
         data: {
             name,

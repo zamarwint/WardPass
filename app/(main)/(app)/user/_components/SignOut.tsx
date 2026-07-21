@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/utils/auth-client";;
-import { Loader2Icon, LockKeyhole } from "lucide-react";
+import { Loader2Icon, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
-export default function SignOut({ buttonText }: { buttonText: string }) {
+export default function SignOut() {
     const [signOutPending, startSignOutTransition] = useTransition();
     const router = useRouter();
 
@@ -32,16 +32,16 @@ export default function SignOut({ buttonText }: { buttonText: string }) {
     }
 
     return (
-        <Button disabled={signOutPending} variant="ghost" size="lg" className="w-full flex justify-start" onClick={signOut}>
+        <Button disabled={signOutPending} variant="secondary" size="lg" className="cursor-pointer h-12 w-fit px-10" onClick={signOut}>
             {signOutPending ? (
                 <>
                     <Loader2Icon className="size-4 animate-spin" />
-                    <span>Loading...</span>
+                    <span>Signing you out...</span>
                 </>
             ) : (
                 <>
-                    <LockKeyhole size="lg" />
-                    <span>{buttonText}</span>
+                    <LogOut size="lg" />
+                    <span>Sign out</span>
                 </>
             )}
         </Button>

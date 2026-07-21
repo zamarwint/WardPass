@@ -13,15 +13,15 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
-import { useRouter } from "next/navigation";
 
 export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
-    const router = useRouter();
+    const queryClient = useQueryClient();
+
     const [name, setName] = useState<string>("")
     const [url, setUrl] = useState<string>("")
     const [username, setUsername] = useState<string>("")
@@ -38,7 +38,10 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
             toast.dismiss();
             toast.success("Login item created successfully");
             cancel();
-            router.refresh();
+            queryClient.invalidateQueries({
+                queryKey: ["vaultItems", vaultId],
+                refetchType: 'active'
+            });
         },
         onError: () => {
             toast.dismiss();
@@ -61,15 +64,15 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-center justify-center border-r border-muted z-999 px-8 gap-8 bg-background overflow-y-scroll">
+            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100 cursor-pointer" onClick={cancel}></div>
+            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Create Login Item</FieldLegend>
                     <FieldDescription>Create a new login item.</FieldDescription>
                 </FieldSet>
 
-                <FieldGroup>
-                    <FieldSeparator />
+                <FieldSeparator />
+                <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
                     <Field>
                         <FieldLabel>Name</FieldLabel>
                         <Input type="text" placeholder="Name of login item" id="name" value={name} onChange={(e) => { setName(e.target.value) }} className="h-12" />
@@ -97,9 +100,9 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
                         <FieldLabel>Note</FieldLabel>
                         <Input type="text" placeholder="Note" id="note" value={note} onChange={(e) => { setNote(e.target.value) }} className="h-12" />
                     </Field>
-                    <FieldSeparator />
                 </FieldGroup>
 
+                <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
                     <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !name || !email || !password}>

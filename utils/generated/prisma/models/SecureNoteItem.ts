@@ -31,6 +31,7 @@ export type SecureNoteItemMinAggregateOutputType = {
   content: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
   vaultId: string | null
 }
 
@@ -41,6 +42,7 @@ export type SecureNoteItemMaxAggregateOutputType = {
   content: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
   vaultId: string | null
 }
 
@@ -51,6 +53,7 @@ export type SecureNoteItemCountAggregateOutputType = {
   content: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   vaultId: number
   _all: number
 }
@@ -63,6 +66,7 @@ export type SecureNoteItemMinAggregateInputType = {
   content?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   vaultId?: true
 }
 
@@ -73,6 +77,7 @@ export type SecureNoteItemMaxAggregateInputType = {
   content?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   vaultId?: true
 }
 
@@ -83,6 +88,7 @@ export type SecureNoteItemCountAggregateInputType = {
   content?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   vaultId?: true
   _all?: true
 }
@@ -166,6 +172,7 @@ export type SecureNoteItemGroupByOutputType = {
   content: string
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   vaultId: string
   _count: SecureNoteItemCountAggregateOutputType | null
   _min: SecureNoteItemMinAggregateOutputType | null
@@ -197,6 +204,7 @@ export type SecureNoteItemWhereInput = {
   content?: Prisma.StringFilter<"SecureNoteItem"> | string
   createdAt?: Prisma.DateTimeFilter<"SecureNoteItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SecureNoteItem"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"SecureNoteItem"> | Date | string | null
   vaultId?: Prisma.StringFilter<"SecureNoteItem"> | string
   vault?: Prisma.XOR<Prisma.VaultScalarRelationFilter, Prisma.VaultWhereInput>
 }
@@ -208,6 +216,7 @@ export type SecureNoteItemOrderByWithRelationInput = {
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   vaultId?: Prisma.SortOrder
   vault?: Prisma.VaultOrderByWithRelationInput
 }
@@ -222,6 +231,7 @@ export type SecureNoteItemWhereUniqueInput = Prisma.AtLeast<{
   content?: Prisma.StringFilter<"SecureNoteItem"> | string
   createdAt?: Prisma.DateTimeFilter<"SecureNoteItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SecureNoteItem"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"SecureNoteItem"> | Date | string | null
   vaultId?: Prisma.StringFilter<"SecureNoteItem"> | string
   vault?: Prisma.XOR<Prisma.VaultScalarRelationFilter, Prisma.VaultWhereInput>
 }, "id">
@@ -233,6 +243,7 @@ export type SecureNoteItemOrderByWithAggregationInput = {
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   vaultId?: Prisma.SortOrder
   _count?: Prisma.SecureNoteItemCountOrderByAggregateInput
   _max?: Prisma.SecureNoteItemMaxOrderByAggregateInput
@@ -249,6 +260,7 @@ export type SecureNoteItemScalarWhereWithAggregatesInput = {
   content?: Prisma.StringWithAggregatesFilter<"SecureNoteItem"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SecureNoteItem"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"SecureNoteItem"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SecureNoteItem"> | Date | string | null
   vaultId?: Prisma.StringWithAggregatesFilter<"SecureNoteItem"> | string
 }
 
@@ -259,6 +271,7 @@ export type SecureNoteItemCreateInput = {
   content: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   vault: Prisma.VaultCreateNestedOneWithoutSecureNoteItemsInput
 }
 
@@ -269,6 +282,7 @@ export type SecureNoteItemUncheckedCreateInput = {
   content: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   vaultId: string
 }
 
@@ -279,6 +293,7 @@ export type SecureNoteItemUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vault?: Prisma.VaultUpdateOneRequiredWithoutSecureNoteItemsNestedInput
 }
 
@@ -289,6 +304,7 @@ export type SecureNoteItemUncheckedUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vaultId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -299,6 +315,7 @@ export type SecureNoteItemCreateManyInput = {
   content: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
   vaultId: string
 }
 
@@ -309,6 +326,7 @@ export type SecureNoteItemUpdateManyMutationInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SecureNoteItemUncheckedUpdateManyInput = {
@@ -318,6 +336,7 @@ export type SecureNoteItemUncheckedUpdateManyInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   vaultId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -338,6 +357,7 @@ export type SecureNoteItemCountOrderByAggregateInput = {
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   vaultId?: Prisma.SortOrder
 }
 
@@ -348,6 +368,7 @@ export type SecureNoteItemMaxOrderByAggregateInput = {
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   vaultId?: Prisma.SortOrder
 }
 
@@ -358,6 +379,7 @@ export type SecureNoteItemMinOrderByAggregateInput = {
   content?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   vaultId?: Prisma.SortOrder
 }
 
@@ -410,6 +432,7 @@ export type SecureNoteItemCreateWithoutVaultInput = {
   content: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type SecureNoteItemUncheckedCreateWithoutVaultInput = {
@@ -419,6 +442,7 @@ export type SecureNoteItemUncheckedCreateWithoutVaultInput = {
   content: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type SecureNoteItemCreateOrConnectWithoutVaultInput = {
@@ -457,6 +481,7 @@ export type SecureNoteItemScalarWhereInput = {
   content?: Prisma.StringFilter<"SecureNoteItem"> | string
   createdAt?: Prisma.DateTimeFilter<"SecureNoteItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SecureNoteItem"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"SecureNoteItem"> | Date | string | null
   vaultId?: Prisma.StringFilter<"SecureNoteItem"> | string
 }
 
@@ -467,6 +492,7 @@ export type SecureNoteItemCreateManyVaultInput = {
   content: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type SecureNoteItemUpdateWithoutVaultInput = {
@@ -476,6 +502,7 @@ export type SecureNoteItemUpdateWithoutVaultInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SecureNoteItemUncheckedUpdateWithoutVaultInput = {
@@ -485,6 +512,7 @@ export type SecureNoteItemUncheckedUpdateWithoutVaultInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SecureNoteItemUncheckedUpdateManyWithoutVaultInput = {
@@ -494,6 +522,7 @@ export type SecureNoteItemUncheckedUpdateManyWithoutVaultInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -505,6 +534,7 @@ export type SecureNoteItemSelect<ExtArgs extends runtime.Types.Extensions.Intern
   content?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   vaultId?: boolean
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["secureNoteItem"]>
@@ -516,6 +546,7 @@ export type SecureNoteItemSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   content?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   vaultId?: boolean
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["secureNoteItem"]>
@@ -527,6 +558,7 @@ export type SecureNoteItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   content?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   vaultId?: boolean
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["secureNoteItem"]>
@@ -538,10 +570,11 @@ export type SecureNoteItemSelectScalar = {
   content?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
   vaultId?: boolean
 }
 
-export type SecureNoteItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "itemType" | "title" | "content" | "createdAt" | "updatedAt" | "vaultId", ExtArgs["result"]["secureNoteItem"]>
+export type SecureNoteItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "itemType" | "title" | "content" | "createdAt" | "updatedAt" | "deletedAt" | "vaultId", ExtArgs["result"]["secureNoteItem"]>
 export type SecureNoteItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vault?: boolean | Prisma.VaultDefaultArgs<ExtArgs>
 }
@@ -564,6 +597,7 @@ export type $SecureNoteItemPayload<ExtArgs extends runtime.Types.Extensions.Inte
     content: string
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
     vaultId: string
   }, ExtArgs["result"]["secureNoteItem"]>
   composites: {}
@@ -995,6 +1029,7 @@ export interface SecureNoteItemFieldRefs {
   readonly content: Prisma.FieldRef<"SecureNoteItem", 'String'>
   readonly createdAt: Prisma.FieldRef<"SecureNoteItem", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"SecureNoteItem", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"SecureNoteItem", 'DateTime'>
   readonly vaultId: Prisma.FieldRef<"SecureNoteItem", 'String'>
 }
     

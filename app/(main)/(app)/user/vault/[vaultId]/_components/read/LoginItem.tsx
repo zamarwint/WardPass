@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/field"
 
 import { Input } from "@/components/ui/input"
-import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
 import type { LoginItem } from "@/lib/types/VaultItemType";
+import PasswordCopyInput from "../../../../_components/PasswordCopyInput";
 
 export default function LoginItem({ loginItem }: { loginItem: LoginItem }) {
     return (
-        <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background">
+        <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background overflow-y-scroll">
             <FieldSet>
                 <FieldTitle className="text-primary text-6xl font-bold">{loginItem.name}</FieldTitle>
                 <FieldDescription className="text-muted-foreground text-xl">View your <span className="font-bold">{loginItem.itemType}</span> details.</FieldDescription>
@@ -42,7 +42,7 @@ export default function LoginItem({ loginItem }: { loginItem: LoginItem }) {
 
                 <Field>
                     <FieldLabel>Password</FieldLabel>
-                    <PasswordInput disabled placeholder="Password" id="password" value={loginItem.password!} readOnly className="h-12" />
+                    <PasswordCopyInput placeholder="Password" id="password" value={loginItem.password!} readOnly className="h-12" />
                 </Field>
 
                 <Field>
@@ -51,7 +51,7 @@ export default function LoginItem({ loginItem }: { loginItem: LoginItem }) {
                 </Field>
             </FieldGroup>
 
-            <FieldSet>
+            <FieldGroup>
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <FieldLabel>Created At</FieldLabel>
@@ -65,7 +65,7 @@ export default function LoginItem({ loginItem }: { loginItem: LoginItem }) {
                         <FieldDescription>{loginItem.updatedAt?.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</FieldDescription>
                     </FieldContent>
                 </Field>
-            </FieldSet>
+            </FieldGroup>
         </Field>
     )
 }

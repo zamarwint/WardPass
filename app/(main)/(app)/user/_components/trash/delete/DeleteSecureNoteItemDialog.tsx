@@ -11,18 +11,20 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { SecureNoteItem } from "@/lib/types/VaultItemType"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import deleteSecureNote from "@/app/actions/secure-note/deleteSecureNote";
+import { Trash2Icon } from "lucide-react";
 
-export default function DeleteSecureNoteItemDialog({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: SecureNoteItem }) {
-    const router = useRouter();
+export default function DeleteSecureNoteItemDialog({ secureNoteItem }: { secureNoteItem: SecureNoteItem }) {
+    const queryClient = useQueryClient();
+
     const [secureNoteNameConfirm, setSecureNoteNameConfirm] = useState<string>("");
 
     const { mutate, error, isPending } = useMutation({
@@ -34,14 +36,14 @@ export default function DeleteSecureNoteItemDialog({ open, onOpenChange, secureN
         onSuccess: () => {
             toast.dismiss();
             toast.success("Secure Note deleted successfully!");
-            onOpenChange(false);
-            router.refresh();
+            queryClient.invalidateQueries({
+                queryKey: ["deleteVaultItems", secureNoteItem.vaultId],
+                refetchType: 'active'
+            });
         },
         onError: () => {
             toast.dismiss();
             toast.error("There was an error deleting your Secure Note. Please try again later." + error);
-            onOpenChange(false);
-            router.refresh();
         }
     });
 
@@ -50,7 +52,10 @@ export default function DeleteSecureNoteItemDialog({ open, onOpenChange, secureN
     }
 
     return (
-        <AlertDialog open={open} onOpenChange={onOpenChange}>
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="icon"><Trash2Icon className="text-destructive" /></Button>
+            </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete <span className="font-bold">{secureNoteItem.title}</span></AlertDialogTitle>

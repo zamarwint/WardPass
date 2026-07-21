@@ -46,7 +46,7 @@ export default function DeleteVault({ open, onOpenChange, vault }: { open: boole
                 <AlertDialogHeader>
                     <AlertDialogTitle className="font-bold">Delete {vault.name}</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to delete the <span className="font-bold">{vault.name}</span> vault? This action is irreversible.
+                        Are you sure you want to delete the <span className="font-bold">{vault.name}</span> vault? This action is irreversible and will not be moved to the trash.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div>
@@ -64,7 +64,7 @@ export default function DeleteVault({ open, onOpenChange, vault }: { open: boole
                                 <span>Deleting...</span>
                             </>
                         ) : (
-                            <span>Delete Vault</span>
+                            <span>Permanently Delete Vault</span>
                         )}
                     </Button>
                 </AlertDialogFooter>

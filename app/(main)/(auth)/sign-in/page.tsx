@@ -13,6 +13,7 @@ import { useState, useTransition } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import VerifyEmailComponent from "../_components/EmailVerification";
 
 export default function SignInPage() {
     const router = useRouter();
@@ -20,6 +21,7 @@ export default function SignInPage() {
     const [emailPending, startEmailTransition] = useTransition()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showEmailToReset, setShowEmailToReset] = useState<boolean>(false)
 
     const signInWithGoogle = async () => {
         startGoogleTransition(async () => {
@@ -144,7 +146,7 @@ export default function SignInPage() {
 
                         <FieldDescription>
                             Forgot your Password?
-                            <Link href="/reset-password" className="mx-2">Reset Password</Link>
+                            <Button variant="link" onClick={() => setShowEmailToReset(!showEmailToReset)}>Reset Password</Button>
                         </FieldDescription>
                     </FieldSet>
                 </div>
@@ -154,6 +156,7 @@ export default function SignInPage() {
                 </div>
             </div>
             <DotPattern />
+            {showEmailToReset && <VerifyEmailComponent currentUserEmail={email} type='Reset Password' cancel={() => setShowEmailToReset(!showEmailToReset)} />}
         </>
     )
 }

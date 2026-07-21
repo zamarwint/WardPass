@@ -11,6 +11,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
+    AlertDialogTrigger
 } from "@/components/ui/alert-dialog"
 import { CreditCardItem } from "@/lib/types/VaultItemType"
 import { Label } from "@/components/ui/label"
@@ -18,14 +19,15 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import deleteCreditCard from "@/app/actions/credit-card/deleteCreditCard";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Trash2Icon } from "lucide-react";
 
-export default function DeleteCreditCardItemDialog({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: CreditCardItem }) {
-    const router = useRouter();
+export default function DeleteCreditCardItemDialog({ creditCardItem }: { creditCardItem: CreditCardItem }) {
+    const queryClient = useQueryClient();
+
     const [creditCardNameConfirm, setCreditCardNameConfirm] = useState<string>("");
 
-    const { mutate, data, isPending } = useMutation({
+    const { mutate, error, isPending } = useMutation({
         mutationFn: () => deleteCreditCard({ id: creditCardItem.id as string, vaultId: creditCardItem.vaultId as string, cardHolderName: creditCardItem.cardHolderName as string, cardNumber: creditCardItem.cardNumber as string }),
         onMutate: () => {
             toast.dismiss();
@@ -33,15 +35,15 @@ export default function DeleteCreditCardItemDialog({ open, onOpenChange, creditC
         },
         onSuccess: () => {
             toast.dismiss();
-            toast.success("Credit Card Item deleted successfully!" + data);
-            onOpenChange(false);
-            router.refresh();
+            toast.success("Credit Card Item deleted successfully!");
+            queryClient.invalidateQueries({
+                queryKey: ["deleteVaultItems", creditCardItem.vaultId],
+                refetchType: 'active'
+            });
         },
         onError: () => {
             toast.dismiss();
-            toast.error("There was an error deleting your Login Item. Please try again later.");
-            onOpenChange(false);
-            router.refresh();
+            toast.error("There was an error deleting your Credit Card Item. Please try again later." + error);
         }
     });
 
@@ -50,7 +52,10 @@ export default function DeleteCreditCardItemDialog({ open, onOpenChange, creditC
     }
 
     return (
-        <AlertDialog open={open} onOpenChange={onOpenChange}>
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="icon"><Trash2Icon className="text-destructive" /></Button>
+            </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Delete <span className="font-bold">{creditCardItem.cardHolderName}</span></AlertDialogTitle>

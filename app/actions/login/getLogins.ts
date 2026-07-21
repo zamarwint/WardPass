@@ -16,6 +16,7 @@ export default async function getLogins({ vaultId }: { vaultId: string }) {
     const logins = await prisma.loginItem.findMany({
         where: {
             vaultId,
+            deletedAt: null
         },
         select: {
             id: true,

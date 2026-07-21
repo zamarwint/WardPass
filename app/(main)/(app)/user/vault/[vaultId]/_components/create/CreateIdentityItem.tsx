@@ -9,18 +9,18 @@ import {
     FieldLegend,
     FieldSeparator,
     FieldSet,
+    FieldTitle,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
-import { useRouter } from "next/navigation";
 import createIdentity from "@/app/actions/identities/createIdentity";
 
 export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
-    const router = useRouter();
+    const queryClient = useQueryClient();
 
     // Personal details
     const [name, setName] = useState<string>("")
@@ -93,7 +93,10 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
             toast.dismiss();
             toast.success("Identity item added successfully");
             cancel();
-            router.refresh();
+            queryClient.invalidateQueries({
+                queryKey: ["vaultItems", vaultId],
+                refetchType: 'active'
+            });
         },
         onError: () => {
             toast.dismiss();
@@ -116,129 +119,154 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-center justify-start border-r border-muted z-999 px-8 gap-8 bg-background overflow-y-scroll">
+            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100 cursor-pointer" onClick={cancel}></div>
+            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Create Identity Item</FieldLegend>
                     <FieldDescription>Create a new Identity item.</FieldDescription>
                 </FieldSet>
 
-                <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
+                <FieldGroup className="hidden lg:flex flex-col gap-4 w-full">
                     {/* Personal details */}
-                    <Field>
-                        <FieldLabel>Name</FieldLabel>
-                        <Input type="text" placeholder="Name of identity item" id="name" value={name} onChange={(e) => { setName(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Email</FieldLabel>
-                        <Input type="email" placeholder="Email" id="email" value={email} onChange={(e) => { setEmail(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Phone Number</FieldLabel>
-                        <Input type="tel" placeholder="+1 234 567 890" id="phoneNumber" value={phoneNumber} onChange={(e) => { setPhoneNumber(e.target.value) }} className="h-12" />
-                    </Field>
+
+                    <FieldTitle className="text-2xl font-semibold">Personal Details</FieldTitle>
+                    <FieldSeparator />
+
+                    <FieldGroup className="hidden lg:grid grid-cols-2">
+                        <Field>
+                            <FieldLabel>Name</FieldLabel>
+                            <Input type="text" placeholder="Name of identity item" id="name" value={name} onChange={(e) => { setName(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Email</FieldLabel>
+                            <Input type="email" placeholder="Email" id="email" value={email} onChange={(e) => { setEmail(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Phone Number</FieldLabel>
+                            <Input type="tel" placeholder="+1 234 567 890" id="phoneNumber" value={phoneNumber} onChange={(e) => { setPhoneNumber(e.target.value) }} className="h-12" />
+                        </Field>
+                    </FieldGroup>
 
                     {/* Organization details */}
-                    <Field>
-                        <FieldLabel>Organization Name</FieldLabel>
-                        <Input type="text" placeholder="Organization Name" id="organizationName" value={organizationName} onChange={(e) => { setOrganizationName(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Address Line 1</FieldLabel>
-                        <Input type="text" placeholder="Address Line 1" id="address1" value={address1} onChange={(e) => { setAddress1(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Address Line 2</FieldLabel>
-                        <Input type="text" placeholder="Address Line 2" id="address2" value={address2} onChange={(e) => { setAddress2(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>ZIP Code</FieldLabel>
-                        <Input type="text" placeholder="ZIP Code" id="zipCode" value={zipCode} onChange={(e) => { setZipCode(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>City</FieldLabel>
-                        <Input type="text" placeholder="City" id="city" value={city} onChange={(e) => { setCity(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>State</FieldLabel>
-                        <Input type="text" placeholder="State" id="state" value={state} onChange={(e) => { setState(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Country</FieldLabel>
-                        <Input type="text" placeholder="Country" id="country" value={country} onChange={(e) => { setCountry(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Floor</FieldLabel>
-                        <Input type="text" placeholder="Floor" id="floor" value={floor} onChange={(e) => { setFloor(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>County</FieldLabel>
-                        <Input type="text" placeholder="County" id="county" value={county} onChange={(e) => { setCounty(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>PO Box</FieldLabel>
-                        <Input type="text" placeholder="PO Box" id="poBox" value={poBox} onChange={(e) => { setPoBox(e.target.value) }} className="h-12" />
-                    </Field>
+                    <FieldTitle className="text-2xl font-semibold pt-8">Organization Details</FieldTitle>
+                    <FieldSeparator />
+
+                    <FieldGroup className="hidden lg:grid grid-cols-2">
+                        <Field>
+                            <FieldLabel>Organization Name</FieldLabel>
+                            <Input type="text" placeholder="Organization Name" id="organizationName" value={organizationName} onChange={(e) => { setOrganizationName(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Address Line 1</FieldLabel>
+                            <Input type="text" placeholder="Address Line 1" id="address1" value={address1} onChange={(e) => { setAddress1(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Address Line 2</FieldLabel>
+                            <Input type="text" placeholder="Address Line 2" id="address2" value={address2} onChange={(e) => { setAddress2(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>ZIP Code</FieldLabel>
+                            <Input type="text" placeholder="ZIP Code" id="zipCode" value={zipCode} onChange={(e) => { setZipCode(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>City</FieldLabel>
+                            <Input type="text" placeholder="City" id="city" value={city} onChange={(e) => { setCity(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>State</FieldLabel>
+                            <Input type="text" placeholder="State" id="state" value={state} onChange={(e) => { setState(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Country</FieldLabel>
+                            <Input type="text" placeholder="Country" id="country" value={country} onChange={(e) => { setCountry(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Floor</FieldLabel>
+                            <Input type="text" placeholder="Floor" id="floor" value={floor} onChange={(e) => { setFloor(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>County</FieldLabel>
+                            <Input type="text" placeholder="County" id="county" value={county} onChange={(e) => { setCounty(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>PO Box</FieldLabel>
+                            <Input type="text" placeholder="PO Box" id="poBox" value={poBox} onChange={(e) => { setPoBox(e.target.value) }} className="h-12" />
+                        </Field>
+                    </FieldGroup>
 
                     {/* ID details */}
-                    <Field>
-                        <FieldLabel>Social Security Number</FieldLabel>
-                        <Input type="text" placeholder="Social Security Number" id="socialSecurityNumber" value={socialSecurityNumber} onChange={(e) => { setSocialSecurityNumber(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Passport Number</FieldLabel>
-                        <Input type="text" placeholder="Passport Number" id="passportNumber" value={passportNumber} onChange={(e) => { setPassportNumber(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>License Number</FieldLabel>
-                        <Input type="text" placeholder="License Number" id="licenseNumber" value={licenseNumber} onChange={(e) => { setLicenseNumber(e.target.value) }} className="h-12" />
-                    </Field>
+                    <FieldTitle className="text-2xl font-semibold pt-8">ID Details</FieldTitle>
+                    <FieldSeparator />
+
+                    <FieldGroup className="hidden lg:grid grid-cols-2">
+                        <Field>
+                            <FieldLabel>Social Security Number</FieldLabel>
+                            <Input type="text" placeholder="Social Security Number" id="socialSecurityNumber" value={socialSecurityNumber} onChange={(e) => { setSocialSecurityNumber(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Passport Number</FieldLabel>
+                            <Input type="text" placeholder="Passport Number" id="passportNumber" value={passportNumber} onChange={(e) => { setPassportNumber(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>License Number</FieldLabel>
+                            <Input type="text" placeholder="License Number" id="licenseNumber" value={licenseNumber} onChange={(e) => { setLicenseNumber(e.target.value) }} className="h-12" />
+                        </Field>
+                    </FieldGroup>
 
                     {/* Work details */}
-                    <Field>
-                        <FieldLabel>Company Name</FieldLabel>
-                        <Input type="text" placeholder="Company Name" id="companyName" value={companyName} onChange={(e) => { setCompanyName(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Occupation</FieldLabel>
-                        <Input type="text" placeholder="Occupation" id="occupation" value={occupation} onChange={(e) => { setOccupation(e.target.value) }} className="h-12" />
-                    </Field>
+                    <FieldTitle className="text-2xl font-semibold pt-8">Work Details</FieldTitle>
+                    <FieldSeparator />
+
+                    <FieldGroup className="hidden lg:grid grid-cols-2">
+                        <Field>
+                            <FieldLabel>Company Name</FieldLabel>
+                            <Input type="text" placeholder="Company Name" id="companyName" value={companyName} onChange={(e) => { setCompanyName(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Occupation</FieldLabel>
+                            <Input type="text" placeholder="Occupation" id="occupation" value={occupation} onChange={(e) => { setOccupation(e.target.value) }} className="h-12" />
+                        </Field>
+                    </FieldGroup>
 
                     {/* Social details */}
-                    <Field>
-                        <FieldLabel>X</FieldLabel>
-                        <Input type="text" placeholder="X" id="x" value={x} onChange={(e) => { setX(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Linkedin</FieldLabel>
-                        <Input type="text" placeholder="Linkedin" id="linkedin" value={linkedin} onChange={(e) => { setLinkedin(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Instagram</FieldLabel>
-                        <Input type="text" placeholder="Instagram" id="instagram" value={instagram} onChange={(e) => { setInstagram(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Tiktok</FieldLabel>
-                        <Input type="text" placeholder="Tiktok" id="tiktok" value={tiktok} onChange={(e) => { setTiktok(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Facebook</FieldLabel>
-                        <Input type="text" placeholder="Facebook" id="facebook" value={facebook} onChange={(e) => { setFacebook(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Github</FieldLabel>
-                        <Input type="text" placeholder="Github" id="github" value={github} onChange={(e) => { setGithub(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Other</FieldLabel>
-                        <Input type="text" placeholder="Other" id="other" value={other} onChange={(e) => { setOther(e.target.value) }} className="h-12" />
-                    </Field>
-                </FieldGroup>
+                    <FieldTitle className="text-2xl font-semibold pt-8">Social Details</FieldTitle>
+                    <FieldSeparator />
 
+                    <FieldGroup className="hidden lg:grid grid-cols-2">
+                        <Field>
+                            <FieldLabel>X</FieldLabel>
+                            <Input type="text" placeholder="X" id="x" value={x} onChange={(e) => { setX(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Linkedin</FieldLabel>
+                            <Input type="text" placeholder="Linkedin" id="linkedin" value={linkedin} onChange={(e) => { setLinkedin(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Instagram</FieldLabel>
+                            <Input type="text" placeholder="Instagram" id="instagram" value={instagram} onChange={(e) => { setInstagram(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Tiktok</FieldLabel>
+                            <Input type="text" placeholder="Tiktok" id="tiktok" value={tiktok} onChange={(e) => { setTiktok(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Facebook</FieldLabel>
+                            <Input type="text" placeholder="Facebook" id="facebook" value={facebook} onChange={(e) => { setFacebook(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Github</FieldLabel>
+                            <Input type="text" placeholder="Github" id="github" value={github} onChange={(e) => { setGithub(e.target.value) }} className="h-12" />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Other</FieldLabel>
+                            <Input type="text" placeholder="Other" id="other" value={other} onChange={(e) => { setOther(e.target.value) }} className="h-12" />
+                        </Field>
+                    </FieldGroup>
+                </FieldGroup>
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !name || !email || !phoneNumber || !organizationName || !address1 || !zipCode || !city}>
+                    <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !name || !email || !phoneNumber || !organizationName || !address1 || !zipCode || !city || !country}>
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />
