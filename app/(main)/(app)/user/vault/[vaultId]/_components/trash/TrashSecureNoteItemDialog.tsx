@@ -12,16 +12,16 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { SecureNoteItem } from "@/lib/types/VaultItemType"
+import { VaultItem } from "@/lib/types/VaultType"
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { trashSecureNote } from "@/app/actions/secure-note/trashSecureNote";
+import { trashVaultItem } from "@/app/actions/vault-item/trashVaultItem";
 
-export default function TrashSecureNoteItemDialog({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: SecureNoteItem }) {
+export default function TrashSecureNoteItemDialog({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: VaultItem }) {
     const queryClient = useQueryClient();
 
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => trashSecureNote(secureNoteItem.id!),
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => trashVaultItem(secureNoteItem.id!),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Moving Secure Note to Trash...");
@@ -35,9 +35,9 @@ export default function TrashSecureNoteItemDialog({ open, onOpenChange, secureNo
                 refetchType: 'active'
             });
         },
-        onError: () => {
+        onError: (err) => {
             toast.dismiss();
-            toast.error("There was an error moving your Secure Note to Trash. Please try again later." + error);
+            toast.error("There was an error moving your Secure Note to Trash. Please try again later." + err);
             onOpenChange(false);
         }
     });
@@ -50,9 +50,9 @@ export default function TrashSecureNoteItemDialog({ open, onOpenChange, secureNo
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Move <span className="font-bold">{secureNoteItem.title}</span> to Trash</AlertDialogTitle>
+                    <AlertDialogTitle>Move <span className="font-bold">{JSON.parse(secureNoteItem.encryptedData!).title}</span> to Trash</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to move <span className="font-bold">{secureNoteItem.title}</span> to Trash?
+                        Are you sure you want to move <span className="font-bold">{JSON.parse(secureNoteItem.encryptedData!).title}</span> to Trash?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

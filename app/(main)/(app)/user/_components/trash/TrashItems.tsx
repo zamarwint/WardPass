@@ -6,7 +6,7 @@ import { getTrashedItemsInAllVaults } from "@/app/actions/getTrashedItems";
 import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { VaultItem } from "@/lib/types/VaultType";
+import { VaultItem, VaultItemType } from "@/lib/types/VaultType";
 import { Separator } from "@/components/ui/separator";
 import DeleteLoginItemDialog from "./delete/DeleteLoginItemDialog";
 import DeleteSecureNoteItemDialog from "./delete/DeleteSecureNoteItemDialog";
@@ -22,8 +22,9 @@ export default function TrashItems() {
 
     const [selectedItem, setSelectedItem] = useState<VaultItem | null>(null);
 
-    const { data: trashedItems, isPending: trashedItemsLoading } = useQuery({
-        queryKey: ["trashedItems"],
+    // GET CURRENT VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
+    const { data: trashedItems, isLoading: trashedItemsLoading } = useQuery({
+        queryKey: ["trashedItems", session?.user?.id],
         queryFn: () => getTrashedItemsInAllVaults(session?.user?.id as string),
         refetchOnMount: true,
         refetchOnReconnect: true,
@@ -44,38 +45,35 @@ export default function TrashItems() {
                 <div className="w-1/3 h-full border-r border-muted flex flex-col items-center justify-start overflow-hidden">
                     <Separator className="bg-muted" />
                     <div className="w-[90%] mt-4 flex-1 overflow-y-auto pb-8" onDoubleClick={unSelectItems}>
-                        {trashedItemsLoading ? <div>Loading...</div> : (trashedItems?.loginItems?.length === 0 &&
-                            trashedItems?.secureNoteItems?.length === 0 &&
-                            trashedItems?.creditCardItems?.length === 0 &&
-                            trashedItems?.identities?.length === 0) ?
+                        {trashedItemsLoading ? <div>Loading...</div> : (trashedItems?.vaultItems?.length === 0) ?
                             <div className="flex flex-col items-center justify-center size-full gap-1">
                                 <h1 className="text-lg font-medium font-geist text-muted-foreground mt-2">No trashed items.</h1>
                             </div>
                             : <div className="size-full text-left mt-4">
-                                {trashedItems?.loginItems?.map((item) => (
-                                    <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                {trashedItems?.vaultItems?.map((item) => (
+                                    item.itemType === VaultItemType.LOGIN && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                         <div className="flex gap-3 p-2">
                                             <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-xl">
                                                 <Globe className="size-[80%] text-primary" />
                                             </div>
                                             <div className="size-full flex flex-col items-start justify-center">
-                                                <h1 className="text-primary font-bold">{item.name}</h1>
-                                                <p className="font-mono text-sm">{item.email}</p>
+                                                <h1 className="text-primary font-bold">{JSON.parse(item.encryptedData!).name}</h1>
+                                                <p className="font-mono text-sm">{JSON.parse(item.encryptedData!).email}</p>
                                             </div>
                                         </div>
                                         {selectedItem?.id === item.id && <RestoreLoginItemDialog loginItem={item} />}
                                         {selectedItem?.id === item.id && <DeleteLoginItemDialog loginItem={item} />}
                                     </div>
                                 ))}
-                                {trashedItems?.secureNoteItems?.map((item) => (
-                                    <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                {trashedItems?.vaultItems?.map((item) => (
+                                    item.itemType === VaultItemType.SECURE_NOTE && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                         <div className="flex flex-col gap-3 p-2 w-[90%]">
                                             <div className="size-full flex flex-col items-start justify-center gap-2">
                                                 <div className="flex items-center gap-2">
                                                     <NotebookPen className="size=[80%] text-primary" />
-                                                    <h1 className="font-bold">{item.title}</h1>
+                                                    <h1 className="font-bold">{JSON.parse(item.encryptedData!).title}</h1>
                                                 </div>
-                                                <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{item.content}</p>
+                                                <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{JSON.parse(item.encryptedData!).content}</p>
                                             </div>
                                             <div className="flex flex-col">
                                                 <Separator />
@@ -89,28 +87,28 @@ export default function TrashItems() {
                                         {selectedItem?.id === item.id && <DeleteSecureNoteItemDialog secureNoteItem={item} />}
                                     </div>
                                 ))}
-                                {trashedItems?.creditCardItems?.map((item) => (
-                                    <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                {trashedItems?.vaultItems?.map((item) => (
+                                    item.itemType === VaultItemType.CREDIT_CARD && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                         <div className="flex flex-col gap-2 p-2 w-full">
                                             <CreditCard className="size=[80%] text-primary" />
                                             <div className="size-full flex flex-col items-start justify-center gap-1">
-                                                <h1 className="font-bold">{item.cardHolderName}</h1>
-                                                <p className="text-md text-muted-foreground font-medium line-clamp-1">{item.billingAddress1}</p>
+                                                <h1 className="font-bold">{JSON.parse(item.encryptedData!).cardHolderName}</h1>
+                                                <p className="text-md text-muted-foreground font-medium line-clamp-1">{JSON.parse(item.encryptedData!).billingAddress1}</p>
                                             </div>
                                         </div>
                                         {selectedItem?.id === item.id && <RestoreCreditCardItemDialog creditCardItem={item} />}
                                         {selectedItem?.id === item.id && <DeleteCreditCardItemDialog creditCardItem={item} />}
                                     </div>
                                 ))}
-                                {trashedItems?.identities?.map((item) => (
-                                    <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                {trashedItems?.vaultItems?.map((item) => (
+                                    item.itemType === VaultItemType.IDENTITY && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                         <div className="flex gap-3 p-2">
                                             <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-full">
                                                 <IdCard className="size-[70%] text-primary" />
                                             </div>
                                             <div className="size-full flex flex-col items-start justify-center">
-                                                <h1 className="font-bold">{item.name}</h1>
-                                                <p className="font-mono text-sm">{item.phoneNumber}</p>
+                                                <h1 className="font-bold">{JSON.parse(item.encryptedData!).name}</h1>
+                                                <p className="font-mono text-sm">{JSON.parse(item.encryptedData!).phoneNumber}</p>
                                             </div>
                                         </div>
                                         {selectedItem?.id === item.id && <RestoreIdentityItemDialog identityItem={item} />}

@@ -13,17 +13,17 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { CreditCardItem } from "@/lib/types/VaultItemType"
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { restoreCreditCard } from "@/app/actions/credit-card/trashCreditCard";
 import { ArchiveRestore } from "lucide-react";
+import { VaultItem } from "@/lib/types/VaultType";
+import { restoreVaultItem } from "@/app/actions/vault-item/trashVaultItem";
 
-export default function RestoreCreditCardItemDialog({ creditCardItem }: { creditCardItem: CreditCardItem }) {
+export default function RestoreCreditCardItemDialog({ creditCardItem }: { creditCardItem: VaultItem }) {
     const queryClient = useQueryClient();
 
     const { mutate, error, isPending } = useMutation({
-        mutationFn: () => restoreCreditCard(creditCardItem.id!),
+        mutationFn: () => restoreVaultItem(creditCardItem.id!),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Restoring Credit Card Item...");
@@ -53,9 +53,9 @@ export default function RestoreCreditCardItemDialog({ creditCardItem }: { credit
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Restore <span className="font-bold">{creditCardItem.cardHolderName}</span></AlertDialogTitle>
+                    <AlertDialogTitle>Restore <span className="font-bold">{JSON.parse(creditCardItem.encryptedData!).cardHolderName}</span></AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to restore <span className="font-bold">{creditCardItem.cardHolderName}</span>?
+                        Are you sure you want to restore <span className="font-bold">{JSON.parse(creditCardItem.encryptedData!).cardHolderName}</span>?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

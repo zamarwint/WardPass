@@ -1,5 +1,9 @@
 "use client";
 
+import { useVaultStore } from "@/stores/vault";
+import { generateSalt, deriveKey, toBase64 } from "@/lib/crypto/argon2";
+import { generateVaultKey, encryptVaultKey, createVerificationHash } from "@/lib/crypto/aes";
+
 import {
     Dialog,
     DialogClose,
@@ -30,21 +34,43 @@ export default function CreateVault() {
     const [vaultColor, setVaultColor] = useState<string>("");
     const [open, setOpen] = useState<boolean>(false);
 
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => createVault(vaultName, selectedIcon as string, vaultColor),
+    const { mutate, isPending } = useMutation({
+        mutationFn: async () => {
+            const masterPassword = useVaultStore.getState().masterPassword;
+            if (!masterPassword) {
+                throw new Error("Master password not found in session. Please sign in again or unlock your vault.");
+            }
+
+            const salt = generateSalt();
+            const derivedKey = await deriveKey(masterPassword, salt);
+            const vaultKey = generateVaultKey();
+            const { encryptedKey, keyIv } = encryptVaultKey(vaultKey, derivedKey);
+            const { hash: verificationHash, hashIv } = createVerificationHash(vaultKey);
+
+            return createVault(
+                vaultName,
+                selectedIcon as string,
+                vaultColor,
+                toBase64(salt),
+                encryptedKey,
+                keyIv,
+                verificationHash,
+                hashIv
+            );
+        },
         onMutate: () => {
             toast.dismiss();
-            toast.loading("Creating vault...");
+            toast.loading("Generating encryption keys and creating vault...");
         },
         onSuccess: () => {
             toast.dismiss();
             setOpen(false);
             toast.success("Vault created successfully!");
         },
-        onError: () => {
+        onError: (err) => {
             toast.dismiss();
             setOpen(false);
-            toast.error("There was an error creating your vault. Please try again later." + error);
+            toast.error(err.message || "There was an error creating your vault. Please try again later.");
         }
     });
 

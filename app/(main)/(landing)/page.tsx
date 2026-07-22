@@ -98,7 +98,7 @@ export default function Page() {
           <div className="flex flex-col items-center justify-center space-y-6">
             <p className="uppercase tracking-widest font-bold">Certified Security Protocols</p>
             <Link href="https://gdpr-info.eu/" target="_blank">
-              <Image src="/security-badges.svg" alt="Security Badges" width={1440} height={190} className="w-full max-w-[800px] h-auto" loading="eager" />
+              <Image src="/security-badges.svg" alt="Security Badges" width={1440} height={190} className="w-full max-w-200 h-auto" loading="eager" />
             </Link>
           </div>
         </div>

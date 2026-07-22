@@ -2,29 +2,31 @@
 
 import { prisma } from '@/utils/db';
 import { getUserSession } from '../getSession';
+import { toast } from 'sonner';
+import { redirect } from 'next/navigation';
 
-export default async function deleteLogin({
+export default async function deleteVaultItem({
     id,
-    vaultId,
-    name
+    vaultId
 }: {
     id: string,
-    vaultId: string,
-    name: string
+    vaultId: string
 }) {
     const session = await getUserSession();
 
-    if (!session) return;
+    if (!session) {
+        toast.error("You must be logged in to delete items from vaults.");
+        redirect("/login");
+    }
 
-    const deletedLogin = await prisma.loginItem.delete({
+    const deletedVaultItem = await prisma.vaultItem.delete({
         where: {
             id: id,
-            vaultId: vaultId,
-            name: name
-        },
+            vaultId: vaultId
+        }
     })
 
     // // UPDATING STATE FROM THE SERVER ACTION AFTER CREATING THE LOGIN ITEM. ONLY WORKS WITH DIALOGS, NOT DIVS, NOT ALERT DIALOGS.
     // revalidatePath(`/user/vault/${vaultId}`);
-    return deletedLogin;
+    return deletedVaultItem;
 }

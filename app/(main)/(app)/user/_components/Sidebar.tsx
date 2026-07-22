@@ -8,14 +8,7 @@ import { LockSideButton, SideButton, VaultSideButton } from "./SideButton"
 import { getVaults } from "@/app/actions/vault/getVaults";
 
 export default async function Sidebar() {
-    const vaults = getVaults().then((vaults) => {
-        if (!vaults || vaults.length === 0) {
-            return <div className="text-muted-foreground text-center text-sm">No vaults found.</div>
-        }
-        return vaults.map((vault) => (
-            <VaultSideButton key={vault.id} vault={vault} />
-        ))
-    })
+    const vaults = await getVaults();
 
     return (
         <div
@@ -31,7 +24,11 @@ export default async function Sidebar() {
                 <Separator className="my-2" />
             </div>
             <div className="w-full flex flex-col gap-2 flex-1 overflow-y-auto">
-                {vaults}
+                {!vaults || vaults.length === 0 ? (
+                    <div className="text-muted-foreground text-center text-sm">No vaults found.</div>
+                ) : vaults.map((vault) => (
+                    <VaultSideButton key={vault.id} vault={vault} />
+                ))}
             </div>
             <div className="flex flex-col items-start justify-start gap-1">
                 <LockSideButton disabled={true} />
@@ -44,5 +41,5 @@ export default async function Sidebar() {
                 </div>
             </div>
         </div>
-    )
+    );
 }

@@ -3,13 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import VaultDropdown from "./vault/VaultDropdown";
 import { LockIcon } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useVaultStore } from "@/stores/vault";
+import VaultDropdown from "./vault/VaultDropdown";
+import { Vault } from "@/lib/types/VaultType";
 
-export function VaultSideButton({ vault }: { vault: { id: string, name: string, slug: string, icon: string, iconColor: string | null } }) {
+export function VaultSideButton({ vault }: { vault: Vault }) {
     const pathName = usePathname();
     const vaultLink = `/user/vault/${vault.id}`;
     const [open, setOpen] = useState<boolean>(false);
@@ -28,10 +30,17 @@ export function VaultSideButton({ vault }: { vault: { id: string, name: string, 
 }
 
 export function LockSideButton({ disabled = false }: { disabled?: boolean }) {
+    const router = useRouter();
+
+    const handleLock = () => {
+        useVaultStore.getState().lock();
+        router.push("/user/vault"); // Or just show the unlock modal
+    };
+
     return (
-        <Button disabled={disabled} variant={"ghost"} size="lg" className="w-full flex justify-start">
+        <Button disabled={disabled} variant={"ghost"} size="lg" className="w-full flex justify-start" onClick={handleLock}>
             <LockIcon className="w-4 h-4" />
-            <span>Lock Vaults (Coming soon)</span>
+            <span>Lock Vaults</span>
         </Button>
     )
 }

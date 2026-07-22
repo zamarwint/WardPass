@@ -10,9 +10,9 @@ import { EllipsisVertical, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import UpdateCreditCardItem from "../update/UpdateCreditCardItem";
 import TrashCreditCardItemDialog from "../trash/TrashCreditCardItemDialog";
-import { CreditCardItem } from "@/lib/types/VaultItemType";
+import { VaultItem } from "@/lib/types/VaultType";
 
-export default function CreditCardDropdown({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: CreditCardItem }) {
+export default function CreditCardDropdown({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: VaultItem }) {
     const [openUpdateCreditCard, setOpenUpdateCreditCard] = useState(false);
     const [openDeleteCreditCard, setOpenDeleteCreditCard] = useState(false);
 

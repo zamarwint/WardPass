@@ -16,8 +16,11 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
-import createCreditCard from "@/app/actions/credit-card/createCreditCard";
+import createVaultItem from "@/app/actions/vault-item/createVaultItem";
 import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
+import { encryptData } from "@/lib/crypto/aes";
+import { useVaultStore } from "@/stores/vault";
+import { VaultItemType } from "@/lib/types/VaultType";
 
 export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
     const queryClient = useQueryClient();
@@ -33,8 +36,16 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
     const [state, setState] = useState<string>("")
     const [country, setCountry] = useState<string>("")
 
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => createCreditCard({ vaultId, cardHolderName, cardNumber, cvv, expiryDate, billingAddress1, billingAddress2, zipCode, city, state, country }),
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => {
+            const vaultKey = useVaultStore.getState().getVaultKey();
+            const payload = JSON.stringify({
+                cardHolderName, cardNumber, cvv, expiryDate,
+                billingAddress1, billingAddress2, zipCode, city, state, country
+            });
+            const { ciphertext, iv } = encryptData(payload, vaultKey);
+            return createVaultItem({ vaultId, encryptedData: ciphertext, iv, itemType: VaultItemType.CREDIT_CARD });
+        },
         onMutate: () => {
             toast.loading("Adding credit card item...")
         },
@@ -47,9 +58,9 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
                 refetchType: 'active'
             });
         },
-        onError: () => {
+        onError: (err) => {
             toast.dismiss();
-            toast.error("Failed to add credit card item." + error?.message)
+            toast.error("Failed to add credit card item." + err)
         }
     })
 

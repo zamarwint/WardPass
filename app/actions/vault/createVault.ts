@@ -4,7 +4,16 @@ import { prisma } from "@/utils/db";
 import { getUserSession } from "../getSession";
 import { revalidatePath } from "next/cache";
 
-export async function createVault(name: string, icon: string, iconColor: string) {
+export async function createVault(
+    name: string, 
+    icon: string, 
+    iconColor: string,
+    salt: string,
+    encryptedKey: string,
+    keyIv: string,
+    verificationHash: string,
+    hashIv: string
+) {
     const session = await getUserSession();
 
     if (!session) return;
@@ -16,6 +25,11 @@ export async function createVault(name: string, icon: string, iconColor: string)
             slug,
             icon,
             iconColor,
+            salt,
+            encryptedKey,
+            keyIv,
+            verificationHash,
+            hashIv,
             userId: session.user.id
         }
     })

@@ -12,16 +12,16 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { LoginItem } from "@/lib/types/VaultItemType"
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { trashLogin } from "@/app/actions/login/trashLogin";
+import { VaultItem } from "@/lib/types/VaultType";
+import { trashVaultItem } from "@/app/actions/vault-item/trashVaultItem";
 
-export default function TrashLoginItemDialog({ open, onOpenChange, loginItem }: { open: boolean, onOpenChange: (open: boolean) => void, loginItem: LoginItem }) {
+export default function TrashLoginItemDialog({ open, onOpenChange, loginItem }: { open: boolean, onOpenChange: (open: boolean) => void, loginItem: VaultItem }) {
     const queryClient = useQueryClient();
 
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => trashLogin(loginItem.id!),
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => trashVaultItem(loginItem.id!),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Moving Login Item to Trash...");
@@ -35,9 +35,9 @@ export default function TrashLoginItemDialog({ open, onOpenChange, loginItem }: 
                 refetchType: 'active'
             });
         },
-        onError: () => {
+        onError: (err) => {
             toast.dismiss();
-            toast.error("There was an error moving your Login Item to Trash. Please try again later." + error);
+            toast.error("There was an error moving your Login Item to Trash. Please try again later." + err);
             onOpenChange(false);
         }
     });
@@ -50,9 +50,9 @@ export default function TrashLoginItemDialog({ open, onOpenChange, loginItem }: 
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Move <span className="font-bold">{loginItem.name}</span> to Trash</AlertDialogTitle>
+                    <AlertDialogTitle>Move <span className="font-bold">{JSON.parse(loginItem.encryptedData!).name}</span> to Trash</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to move <span className="font-bold">{loginItem.name}</span> to Trash?
+                        Are you sure you want to move <span className="font-bold">{JSON.parse(loginItem.encryptedData!).name}</span> to Trash?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

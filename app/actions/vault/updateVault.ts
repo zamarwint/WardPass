@@ -4,7 +4,7 @@ import { prisma } from "@/utils/db";
 import { getUserSession } from "../getSession";
 import { revalidatePath } from "next/cache";
 
-export async function editVault(vaultId: string, name?: string, icon?: string, iconColor?: string) {
+export async function updateVault(vaultId: string, name?: string, slug?: string, icon?: string, iconColor?: string) {
     const session = await getUserSession();
 
     if (!session) return;
@@ -16,6 +16,7 @@ export async function editVault(vaultId: string, name?: string, icon?: string, i
         },
         data: {
             name,
+            slug,
             icon,
             iconColor
         }

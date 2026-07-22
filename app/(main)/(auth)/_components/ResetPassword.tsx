@@ -10,25 +10,25 @@ import { Loader2Icon, X } from "lucide-react";
 import { WebsiteCredentialCard } from "@/app/_components/UICards";
 import { DotPattern } from "@/components/ui/dot-pattern";
 
-export default function VerifyEmailComponent({ currentUserEmail, cancel }: { currentUserEmail: string, cancel: () => void }) {
-    const [verificationPending, StartVerificationTransition] = useTransition();
+export default function ResetPasswordComponent({ currentUserEmail, cancel }: { currentUserEmail: string, cancel: () => void }) {
+    const [resetPasswordPending, StartResetPasswordTransition] = useTransition();
 
-    const handleResendVerification = async () => {
-        StartVerificationTransition(async () => {
-            await authClient.sendVerificationEmail({
+    const handleResendPasswordResetEmail = async () => {
+        StartResetPasswordTransition(async () => {
+            await authClient.requestPasswordReset({
                 email: currentUserEmail,
-                callbackURL: "/",
+                redirectTo: process.env.NEXT_PUBLIC_APP_URL + '/reset-password',
                 fetchOptions: {
                     onRequest: () => {
-                        toast.loading("Sending email verification...");
+                        toast.loading("Sending reset password email...");
                     },
                     onSuccess: () => {
                         toast.dismiss();
-                        toast.success("Success. Check your email.");
+                        toast.success("Success. Check your email to reset your password.");
                     },
                     onError: () => {
                         toast.dismiss();
-                        toast.error("Failed to send verification email");
+                        toast.error("Failed to send reset password email");
                     }
                 }
             })
@@ -38,22 +38,22 @@ export default function VerifyEmailComponent({ currentUserEmail, cancel }: { cur
     return (
         <>
             <div className="bg-background flex items-center justify-center w-screen h-screen z-999 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                {/* EMAIL VERIFICATION CARD */}
+                {/* RESET PASSWORD CARD */}
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-12 border-r border-foreground/5">
                     <Link href="/" className="font-bold text-3xl tracking-tighter text-primary uppercase">WARDPASS</Link>
                     <FieldSet>
-                        <FieldTitle className="text-8xl font-bold text-center">Verify Email to Sign Up</FieldTitle>
-                        <FieldDescription className="text-center text-xl">Check your email for a <span className="font-bold">verification link</span></FieldDescription>
+                        <FieldTitle className="text-8xl font-bold text-center">Reset Password</FieldTitle>
+                        <FieldDescription className="text-center text-xl">Check your email for a <span className="font-bold">reset link</span></FieldDescription>
                     </FieldSet>
                     <FieldSet>
-                        <Button size="lg" className="text-md px-6 py-7" onClick={handleResendVerification}>
-                            {verificationPending ? (
+                        <Button size="lg" className="text-md px-6 py-7" onClick={handleResendPasswordResetEmail}>
+                            {resetPasswordPending ? (
                                 <>
                                     <Loader2Icon className="animate-spin" />
-                                    <span>Resending...</span>
+                                    <span>Sending reset email...</span>
                                 </>
                             ) : (
-                                <span>Resend verification email</span>
+                                <span>Resend reset password email</span>
                             )}
                         </Button>
                     </FieldSet>

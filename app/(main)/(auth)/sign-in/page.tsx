@@ -13,7 +13,8 @@ import { useState, useTransition } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import VerifyEmailComponent from "../_components/EmailVerification";
+import ResetPasswordComponent from "../_components/ResetPassword";
+import { useVaultStore } from "@/stores/vault";
 
 export default function SignInPage() {
     const router = useRouter();
@@ -27,7 +28,7 @@ export default function SignInPage() {
         startGoogleTransition(async () => {
             await authClient.signIn.social({
                 provider: "google",
-                callbackURL: "/user/vault",
+                callbackURL: process.env.NEXT_PUBLIC_APP_URL + "/user/vault",
                 fetchOptions: {
                     onRequest: () => {
                         toast.loading("Signing you up with Google...");
@@ -35,7 +36,7 @@ export default function SignInPage() {
                     onSuccess: () => {
                         toast.dismiss();
                         toast.success("Successfully signed in!")
-                        router.push("/user/vault"); // CALLBACK URL WILL ONLY WORK IF THE USER VERIFIES THEIR EMAIL, TODO ADD EMAIL VERIFICATION.
+                        router.push("/user/vault");
                     },
                     onError: (error) => {
                         toast.error("Internal server error. Please try again.")
@@ -71,6 +72,9 @@ export default function SignInPage() {
                     toast.loading("Signing you in...");
                 },
                 onSuccess: () => {
+                    // Store the master password in memory to unlock vaults later
+                    useVaultStore.getState().setMasterPassword(password);
+
                     //redirect to the user vault page
                     toast.dismiss();
                     toast.success("Success!");
@@ -122,8 +126,8 @@ export default function SignInPage() {
                             </Field>
 
                             <Field>
-                                <FieldLabel htmlFor="password" className="text-muted-foreground">Password</FieldLabel>
-                                <PasswordInput id="password" required placeholder="************" className="h-12" onChange={(e) => setPassword(e.target.value)} />
+                                <FieldLabel htmlFor="master-password" className="text-muted-foreground">Master Password</FieldLabel>
+                                <PasswordInput id="master-password" required placeholder="************" className="h-12" onChange={(e) => setPassword(e.target.value)} />
                             </Field>
                         </FieldGroup>
 
@@ -156,7 +160,7 @@ export default function SignInPage() {
                 </div>
             </div>
             <DotPattern />
-            {showEmailToReset && <VerifyEmailComponent currentUserEmail={email} type='Reset Password' cancel={() => setShowEmailToReset(!showEmailToReset)} />}
+            {showEmailToReset && <ResetPasswordComponent currentUserEmail={email} cancel={() => setShowEmailToReset(!showEmailToReset)} />}
         </>
     )
 }

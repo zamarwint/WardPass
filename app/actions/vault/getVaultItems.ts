@@ -15,38 +15,14 @@ export async function getVaultItems(vaultId: string) {
             id: vaultId
         },
         include: {
-            loginItems: {
+            vaultItems: {
                 where: {
-                    deletedAt: null,
+                    deletedAt: null
                 },
                 orderBy: {
-                    name: "asc",
+                    updatedAt: "asc"
                 }
-            },
-            secureNoteItems: {
-                where: {
-                    deletedAt: null,
-                },
-                orderBy: {
-                    title: "asc",
-                }
-            },
-            creditCardItems: {
-                where: {
-                    deletedAt: null,
-                },
-                orderBy: {
-                    cardHolderName: "asc",
-                }
-            },
-            identities: {
-                where: {
-                    deletedAt: null,
-                },
-                orderBy: {
-                    name: "asc",
-                }
-            },
+            }
         },
     })
 

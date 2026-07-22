@@ -10,8 +10,9 @@ import { EllipsisVertical, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import EditVault from "./EditVault";
 import DeleteVault from "./DeleteVault";
+import { Vault } from "@/lib/types/VaultType";
 
-export default function VaultDropdown({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: { id: string, name: string, slug: string, icon: string, iconColor: string | null } }) {
+export default function VaultDropdown({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: Vault }) {
     const [openEditVault, setOpenEditVault] = useState(false);
     const [openDeleteVault, setOpenDeleteVault] = useState(false);
 

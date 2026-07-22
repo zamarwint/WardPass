@@ -1,5 +1,3 @@
-import { CreditCardItem, IdentityItem, LoginItem, SecureNoteItem } from "./VaultItemType"
-
 export type Vault = {
     id: string
     name: string
@@ -7,21 +5,36 @@ export type Vault = {
     icon: string
     iconColor: string | null
 
-    createdAt: Date | null
-    updatedAt: Date | null
-    userId: string | null
+    // Decrypted vault metadata
+    salt: string | null
+    encryptedKey: string | null
+    keyIv: string | null
+    verificationHash: string | null
+    hashIv: string | null
 
-    loginItems?: LoginItem[]
-    secureNoteItems?: SecureNoteItem[]
-    creditCardItems?: CreditCardItem[]
-    identities?: IdentityItem[]
+    createdAt: Date
+    updatedAt: Date
+    userId: string
+
+    vaultItems?: VaultItem[]
 }
 
-export enum VaultItemEnum {
-    LOGIN,
-    SECURE_NOTE,
-    CREDIT_CARD,
-    IDENTITY
+export type VaultItem = {
+    id: string
+    itemType: VaultItemType
+    encryptedData: string | null
+    iv: string | null
+
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
+
+    vaultId: string
 }
 
-export type VaultItem = LoginItem | SecureNoteItem | CreditCardItem | IdentityItem;
+export enum VaultItemType {
+    LOGIN = "LOGIN",
+    SECURE_NOTE = "SECURE_NOTE",
+    CREDIT_CARD = "CREDIT_CARD",
+    IDENTITY = "IDENTITY"
+}

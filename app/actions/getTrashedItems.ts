@@ -2,7 +2,7 @@
 
 import { prisma } from '@/utils/db';
 import { getUserSession } from './getSession';
-import { CreditCardItem, IdentityItem, LoginItem, SecureNoteItem } from '@/lib/types/VaultItemType';
+import { VaultItem } from '@/lib/types/VaultType';
 
 export async function getTrashedItemsInAllVaults(userId: string) {
     const session = await getUserSession();
@@ -14,28 +14,7 @@ export async function getTrashedItemsInAllVaults(userId: string) {
         },
         select: {
             id: true,
-            loginItems: {
-                where: {
-                    deletedAt: {
-                        not: null
-                    }
-                }
-            },
-            secureNoteItems: {
-                where: {
-                    deletedAt: {
-                        not: null
-                    }
-                }
-            },
-            creditCardItems: {
-                where: {
-                    deletedAt: {
-                        not: null
-                    }
-                }
-            },
-            identities: {
+            vaultItems: {
                 where: {
                     deletedAt: {
                         not: null
@@ -45,22 +24,12 @@ export async function getTrashedItemsInAllVaults(userId: string) {
         },
     })
 
-    const allLoginItems: LoginItem[] = [];
-    const allSecureNoteItems: SecureNoteItem[] = [];
-    const allCreditCardItems: CreditCardItem[] = [];
-    const allIdentities: IdentityItem[] = [];
-
+    const allVaultItems: VaultItem[] = [];
     trashedItems.forEach((item) => {
-        allLoginItems.push(...item.loginItems as LoginItem[]);
-        allSecureNoteItems.push(...item.secureNoteItems as SecureNoteItem[]);
-        allCreditCardItems.push(...item.creditCardItems as CreditCardItem[]);
-        allIdentities.push(...item.identities as IdentityItem[]);
+        allVaultItems.push(...item.vaultItems as VaultItem[]);
     });
 
     return {
-        loginItems: allLoginItems,
-        secureNoteItems: allSecureNoteItems,
-        creditCardItems: allCreditCardItems,
-        identities: allIdentities,
+        vaultItems: allVaultItems,
     };
 }

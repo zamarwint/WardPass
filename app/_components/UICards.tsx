@@ -3,7 +3,7 @@ import { CardSim, Copy, CopyIcon, Eye, GlobeIcon, LandmarkIcon } from "lucide-re
 export function PaymentCard({ withoutHeader = false }: { withoutHeader?: boolean }) {
     if (withoutHeader) {
         return (
-            <div className="w-full max-w-[380px] aspect-[1.586/1] bg-card rounded-xl p-6 relative overflow-hidden flex flex-col justify-between border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20">
+            <div className="w-full max-w-95 aspect-[1.586/1] bg-card rounded-xl p-6 relative overflow-hidden flex flex-col justify-between border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20">
                 {/* Top Row */}
                 <div className="flex justify-between items-start z-10">
                     <div className="flex flex-col gap-3">
@@ -43,7 +43,7 @@ export function PaymentCard({ withoutHeader = false }: { withoutHeader?: boolean
     return (
         <div className="group flex flex-col justify-center items-center p-4 md:p-8 bg-background border border-neutral-200 dark:border-neutral-800 rounded-xl w-fit">
             <div className="text-sm mb-6 uppercase tracking-widest w-full text-center">Payment Card</div>
-            <div className="w-full max-w-[380px] aspect-[1.586/1] bg-card/10 rounded-xl p-6 relative overflow-hidden flex flex-col justify-between border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20">
+            <div className="w-full max-w-95 aspect-[1.586/1] bg-card/10 rounded-xl p-6 relative overflow-hidden flex flex-col justify-between border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20">
                 {/* Top Row */}
                 <div className="flex justify-between items-start z-10">
                     <div className="flex flex-col gap-3">
@@ -84,7 +84,7 @@ export function PaymentCard({ withoutHeader = false }: { withoutHeader?: boolean
 export function WebsiteCredentialCard({ withoutHeader = false }: { withoutHeader?: boolean }) {
     if (withoutHeader) {
         return (
-            <div className="w-full max-w-[380px] bg-card rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20 relative overflow-hidden">
+            <div className="w-full max-w-95 bg-card rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20 relative overflow-hidden">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-card border border-neutral-200 dark:border-neutral-800 shrink-0">
@@ -131,7 +131,7 @@ export function WebsiteCredentialCard({ withoutHeader = false }: { withoutHeader
     return (
         <div className="group flex flex-col justify-center items-center p-4 md:p-8 bg-background border border-neutral-200 dark:border-neutral-800 rounded-xl w-fit">
             <div className="text-sm mb-6 uppercase tracking-widest w-full text-center">Website Credential</div>
-            <div className="w-full max-w-[380px] bg-card/10 rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20 relative overflow-hidden">
+            <div className="w-full max-w-95 bg-card/10 rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20 relative overflow-hidden">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-card border border-neutral-200 dark:border-neutral-800 shrink-0">

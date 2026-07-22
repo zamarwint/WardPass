@@ -16,6 +16,7 @@ export async function getVaultUnique(vaultId: string) {
         select: {
             id: true,
             name: true,
+            slug: true,
             icon: true,
             iconColor: true
         }

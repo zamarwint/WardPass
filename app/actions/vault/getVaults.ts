@@ -18,6 +18,14 @@ export async function getVaults() {
             slug: true,
             icon: true,
             iconColor: true,
+            encryptedKey: true,
+            keyIv: true,
+            verificationHash: true,
+            hashIv: true,
+            salt: true,
+            userId: true,
+            createdAt: true,
+            updatedAt: true
         },
         orderBy: {
             name: "asc",

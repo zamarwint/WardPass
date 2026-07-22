@@ -17,7 +17,6 @@ export const metadata: Metadata = {
     title: "Select Vault",
 };
 
-
 export default async function VaultSelectionPage() {
     const vaults = getVaults().then((vaults) => {
         if (!vaults || vaults.length === 0) {

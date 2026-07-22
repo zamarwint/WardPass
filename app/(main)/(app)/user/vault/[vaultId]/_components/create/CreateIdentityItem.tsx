@@ -17,9 +17,12 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
-import createIdentity from "@/app/actions/identities/createIdentity";
+import createVaultItem from "@/app/actions/vault-item/createVaultItem";
+import { encryptData } from "@/lib/crypto/aes";
+import { useVaultStore } from "@/stores/vault";
+import { VaultItemType } from "@/lib/types/VaultType";
 
-export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
+export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
     const queryClient = useQueryClient();
 
     // Personal details
@@ -57,35 +60,19 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
     const [github, setGithub] = useState<string>("")
     const [other, setOther] = useState<string>("")
 
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => createIdentity({
-            vaultId,
-            name,
-            email,
-            phoneNumber,
-            organizationName,
-            address1,
-            address2,
-            zipCode,
-            city,
-            state,
-            country,
-            floor,
-            county,
-            poBox,
-            socialSecurityNumber,
-            passportNumber,
-            licenseNumber,
-            companyName,
-            occupation,
-            x,
-            linkedin,
-            instagram,
-            tiktok,
-            facebook,
-            github,
-            other
-        }),
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => {
+            const vaultKey = useVaultStore.getState().getVaultKey();
+            const payload = JSON.stringify({
+                name, email, phoneNumber, organizationName, address1, address2,
+                zipCode, city, state, country, floor, county, poBox,
+                socialSecurityNumber, passportNumber, licenseNumber,
+                companyName, occupation, x, linkedin, instagram,
+                tiktok, facebook, github, other
+            });
+            const { ciphertext, iv } = encryptData(payload, vaultKey);
+            return createVaultItem({ vaultId, encryptedData: ciphertext, iv, itemType: VaultItemType.IDENTITY });
+        },
         onMutate: () => {
             toast.loading("Adding identity item...")
         },
@@ -98,9 +85,9 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
                 refetchType: 'active'
             });
         },
-        onError: () => {
+        onError: (err) => {
             toast.dismiss();
-            toast.error("Failed to add identity item." + error?.message)
+            toast.error("Failed to add identity item." + err)
         }
     })
 

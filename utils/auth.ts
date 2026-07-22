@@ -78,25 +78,7 @@ export const auth = betterAuth({
                 console.log('Deleting all data from the vaults...');
 
                 vaults.forEach(async (vault) => {
-                    await prisma.loginItem.deleteMany({
-                        where: {
-                            vaultId: vault.id,
-                        }
-                    });
-
-                    await prisma.secureNoteItem.deleteMany({
-                        where: {
-                            vaultId: vault.id,
-                        }
-                    });
-
-                    await prisma.creditCardItem.deleteMany({
-                        where: {
-                            vaultId: vault.id,
-                        }
-                    });
-
-                    await prisma.identityItem.deleteMany({
+                    await prisma.vaultItem.deleteMany({
                         where: {
                             vaultId: vault.id,
                         }

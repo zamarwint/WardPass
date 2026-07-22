@@ -133,11 +133,11 @@ export default function SignUpPage() {
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="password">Password</FieldLabel>
+                                        <FieldLabel htmlFor="master-password">Master Password</FieldLabel>
                                         <div className="relative">
                                             <Input
                                                 {...field}
-                                                id="password"
+                                                id="master-password"
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="************"
                                                 aria-invalid={fieldState.invalid}
@@ -171,10 +171,10 @@ export default function SignUpPage() {
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
+                                        <FieldLabel htmlFor="confirmMasterPassword">Confirm Master Password</FieldLabel>
                                         <PasswordInput
                                             {...field}
-                                            id="confirmPassword"
+                                            id="confirmMasterPassword"
                                             type="password"
                                             placeholder="************"
                                             aria-invalid={fieldState.invalid}
@@ -217,7 +217,7 @@ export default function SignUpPage() {
                 </div>
             </div>
             <DotPattern />
-            {showEmailVerification && <VerifyEmailComponent currentUserEmail={currentEmail} type="Sign Up" cancel={() => setShowEmailVerification(!showEmailVerification)} />}
+            {showEmailVerification && <VerifyEmailComponent currentUserEmail={currentEmail} cancel={() => setShowEmailVerification(!showEmailVerification)} />}
         </>
     )
 }

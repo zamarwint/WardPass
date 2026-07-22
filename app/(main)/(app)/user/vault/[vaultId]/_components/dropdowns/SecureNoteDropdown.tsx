@@ -10,9 +10,9 @@ import { EllipsisVertical, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import UpdateSecureNoteItem from "../update/UpdateSecureNoteItem";
 import TrashSecureNoteItemDialog from "../trash/TrashSecureNoteItemDialog";
-import { SecureNoteItem } from "@/lib/types/VaultItemType";
+import { VaultItem } from "@/lib/types/VaultType";
 
-export default function SecureNoteDropdown({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: SecureNoteItem }) {
+export default function SecureNoteDropdown({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: VaultItem }) {
     const [openUpdateSecureNote, setOpenUpdateSecureNote] = useState(false);
     const [openDeleteSecureNote, setOpenDeleteSecureNote] = useState(false);
 

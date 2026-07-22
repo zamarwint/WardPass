@@ -57,6 +57,12 @@ interface VaultState {
     // ── State ───────────────────────────────────────────────────────────────────
 
     /**
+     * Temporarily store the user's master password after login, so we can
+     * derive KEKs for their vaults. Cleared when locked.
+     */
+    masterPassword: string | null;
+
+    /**
      * The 32-byte AES-256 vault key, held in a Uint8Array.
      * null at all times when the vault is locked.
      *
@@ -87,6 +93,11 @@ interface VaultState {
      * @param vaultKey  The plaintext 32-byte vault key from decryptVaultKey().
      */
     unlock: (vaultKey: Uint8Array) => void;
+
+    /**
+     * Set the master password in memory after login.
+     */
+    setMasterPassword: (password: string) => void;
 
     /**
      * Lock the vault.
@@ -167,9 +178,15 @@ function scheduleInactivityLock(): void {
 // ─── Zustand store ────────────────────────────────────────────────────────────
 
 export const useVaultStore = create<VaultState>()((set, get) => ({
+    masterPassword: null,
     vaultKey: null,
     isUnlocked: false,
     unlockedAt: null,
+
+    // ── setMasterPassword ──────────────────────────────────────────────────────
+    setMasterPassword: (password: string) => {
+        set({ masterPassword: password });
+    },
 
     // ── unlock ─────────────────────────────────────────────────────────────────
     unlock: (vaultKey: Uint8Array) => {
@@ -199,6 +216,7 @@ export const useVaultStore = create<VaultState>()((set, get) => ({
         }
 
         set({
+            masterPassword: null,
             vaultKey: null,
             isUnlocked: false,
             unlockedAt: null,

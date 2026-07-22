@@ -12,16 +12,16 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { CreditCardItem } from "@/lib/types/VaultItemType"
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { trashCreditCard } from "@/app/actions/credit-card/trashCreditCard";
+import { trashVaultItem } from "@/app/actions/vault-item/trashVaultItem";
+import { VaultItem } from "@/lib/types/VaultType";
 
-export default function TrashCreditCardItemDialog({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: CreditCardItem }) {
+export default function TrashCreditCardItemDialog({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: VaultItem }) {
     const queryClient = useQueryClient();
 
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => trashCreditCard(creditCardItem.id!),
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => trashVaultItem(creditCardItem.id!),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Moving Credit Card Item to Trash...");
@@ -35,9 +35,9 @@ export default function TrashCreditCardItemDialog({ open, onOpenChange, creditCa
                 refetchType: 'active'
             });
         },
-        onError: () => {
+        onError: (err) => {
             toast.dismiss();
-            toast.error("There was an error moving your Credit Card Item to Trash. Please try again later." + error);
+            toast.error("There was an error moving your Credit Card Item to Trash. Please try again later." + err);
             onOpenChange(false);
 
         }
@@ -51,9 +51,9 @@ export default function TrashCreditCardItemDialog({ open, onOpenChange, creditCa
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Move <span className="font-bold">{creditCardItem.cardHolderName}</span> to Trash</AlertDialogTitle>
+                    <AlertDialogTitle>Move <span className="font-bold">{JSON.parse(creditCardItem.encryptedData!).cardHolderName}</span> to Trash</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to move <span className="font-bold">{creditCardItem.cardHolderName}</span> to Trash?
+                        Are you sure you want to move <span className="font-bold">{JSON.parse(creditCardItem.encryptedData!).cardHolderName}</span> to Trash?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

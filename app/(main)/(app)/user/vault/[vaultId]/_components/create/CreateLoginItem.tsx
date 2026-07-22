@@ -1,7 +1,9 @@
 "use client";
 
 import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
-import createLogin from "@/app/actions/login/createLogin";
+import createVaultItem from "@/app/actions/vault-item/createVaultItem";
+import { encryptData } from "@/lib/crypto/aes";
+import { useVaultStore } from "@/stores/vault";
 import { Button } from "@/components/ui/button";
 import {
     Field,
@@ -18,6 +20,7 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
+import { VaultItemType } from "@/lib/types/VaultType";
 
 export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
     const queryClient = useQueryClient();
@@ -29,23 +32,28 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
     const [password, setPassword] = useState<string>("")
     const [note, setNote] = useState<string>("")
 
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => createLogin({ vaultId, name, url, username, email, password, note }),
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => {
+            const vaultKey = useVaultStore.getState().getVaultKey();
+            const payload = JSON.stringify({ name, url, username, email, password, note });
+            const { ciphertext, iv } = encryptData(payload, vaultKey);
+            return createVaultItem({ vaultId, encryptedData: ciphertext, iv, itemType: VaultItemType.LOGIN });
+        },
         onMutate: () => {
             toast.loading("Creating login item...")
         },
         onSuccess: () => {
             toast.dismiss();
             toast.success("Login item created successfully");
-            cancel();
             queryClient.invalidateQueries({
                 queryKey: ["vaultItems", vaultId],
                 refetchType: 'active'
             });
+            cancel();
         },
-        onError: () => {
+        onError: (err) => {
             toast.dismiss();
-            toast.error("Failed to create login item." + error?.message)
+            toast.error("Failed to create login item." + err)
         }
     })
 

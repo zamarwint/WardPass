@@ -43,22 +43,7 @@ export type Verification = Prisma.VerificationModel
  */
 export type Vault = Prisma.VaultModel
 /**
- * Model LoginItem
+ * Model VaultItem
  * 
  */
-export type LoginItem = Prisma.LoginItemModel
-/**
- * Model SecureNoteItem
- * 
- */
-export type SecureNoteItem = Prisma.SecureNoteItemModel
-/**
- * Model CreditCardItem
- * 
- */
-export type CreditCardItem = Prisma.CreditCardItemModel
-/**
- * Model IdentityItem
- * 
- */
-export type IdentityItem = Prisma.IdentityItemModel
+export type VaultItem = Prisma.VaultItemModel

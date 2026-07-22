@@ -16,8 +16,11 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
-import createSecureNote from "@/app/actions/secure-note/createSecureNote";
+import createVaultItem from "@/app/actions/vault-item/createVaultItem";
 import { Textarea } from "@/components/ui/textarea";
+import { encryptData } from "@/lib/crypto/aes";
+import { useVaultStore } from "@/stores/vault";
+import { VaultItemType } from "@/lib/types/VaultType";
 
 export default function CreateSecureNoteItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
     const queryClient = useQueryClient();
@@ -36,8 +39,13 @@ export default function CreateSecureNoteItem({ vaultId, cancel }: { vaultId: str
         }
     };
 
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => createSecureNote({ vaultId, title, content }),
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => {
+            const vaultKey = useVaultStore.getState().getVaultKey();
+            const payload = JSON.stringify({ title, content });
+            const { ciphertext, iv } = encryptData(payload, vaultKey);
+            return createVaultItem({ vaultId, encryptedData: ciphertext, iv, itemType: VaultItemType.SECURE_NOTE });
+        },
         onMutate: () => {
             toast.loading("Creating secure note item...")
         },
@@ -50,9 +58,9 @@ export default function CreateSecureNoteItem({ vaultId, cancel }: { vaultId: str
                 refetchType: 'active'
             });
         },
-        onError: () => {
+        onError: (err) => {
             toast.dismiss();
-            toast.error("Failed to create secure note item." + error?.message)
+            toast.error("Failed to create secure note item." + err)
         }
     })
 

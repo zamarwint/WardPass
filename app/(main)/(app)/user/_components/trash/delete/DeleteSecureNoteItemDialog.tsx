@@ -13,22 +13,22 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { SecureNoteItem } from "@/lib/types/VaultItemType"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import deleteSecureNote from "@/app/actions/secure-note/deleteSecureNote";
 import { Trash2Icon } from "lucide-react";
+import { VaultItem } from "@/lib/types/VaultType";
+import deleteVaultItem from "@/app/actions/vault-item/deleteVaultItem";
 
-export default function DeleteSecureNoteItemDialog({ secureNoteItem }: { secureNoteItem: SecureNoteItem }) {
+export default function DeleteSecureNoteItemDialog({ secureNoteItem }: { secureNoteItem: VaultItem }) {
     const queryClient = useQueryClient();
 
     const [secureNoteNameConfirm, setSecureNoteNameConfirm] = useState<string>("");
 
     const { mutate, error, isPending } = useMutation({
-        mutationFn: () => deleteSecureNote({ id: secureNoteItem.id as string, vaultId: secureNoteItem.vaultId as string, title: secureNoteItem.title as string }),
+        mutationFn: () => deleteVaultItem({ id: secureNoteItem.id as string, vaultId: secureNoteItem.vaultId as string }),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Deleting Secure Note...");
@@ -58,13 +58,13 @@ export default function DeleteSecureNoteItemDialog({ secureNoteItem }: { secureN
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Delete <span className="font-bold">{secureNoteItem.title}</span></AlertDialogTitle>
+                    <AlertDialogTitle>Delete <span className="font-bold">{JSON.parse(secureNoteItem.encryptedData!).title}</span></AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to delete <span className="font-bold">{secureNoteItem.title?.slice(0, 30)}?</span>
+                        Are you sure you want to delete <span className="font-bold">{JSON.parse(secureNoteItem.encryptedData!).title?.slice(0, 30)}?</span>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div>
-                    <Label className="mt-2" htmlFor="secureNoteNameConfirm">Type in<span className="font-bold">{secureNoteItem.title?.toLowerCase()}</span>to confirm</Label>
+                    <Label className="mt-2" htmlFor="secureNoteNameConfirm">Type in<span className="font-bold">{JSON.parse(secureNoteItem.encryptedData!).title?.toLowerCase()}</span>to confirm</Label>
                     <Input placeholder="type in secure note name to confirm" className="h-12 mt-3" id="secureNoteNameConfirm" value={secureNoteNameConfirm} onChange={(e) => setSecureNoteNameConfirm(e.target.value)} />
                 </div>
                 <AlertDialogFooter>
@@ -72,7 +72,7 @@ export default function DeleteSecureNoteItemDialog({ secureNoteItem }: { secureN
                         <Button variant="outline">Cancel</Button>
                     </AlertDialogCancel>
                     <AlertDialogAction asChild>
-                        <Button disabled={secureNoteNameConfirm.toLowerCase() !== secureNoteItem.title?.toLowerCase() || isPending} variant="destructive" className="font-bold" onClick={handleSubmit}>Delete</Button>
+                        <Button disabled={secureNoteNameConfirm.toLowerCase() !== JSON.parse(secureNoteItem.encryptedData!).title?.toLowerCase() || isPending} variant="destructive" className="font-bold" onClick={handleSubmit}>Delete</Button>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

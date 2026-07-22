@@ -13,17 +13,17 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { LoginItem } from "@/lib/types/VaultItemType"
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { restoreLogin } from "@/app/actions/login/trashLogin";
 import { ArchiveRestore } from "lucide-react";
+import { VaultItem } from "@/lib/types/VaultType";
+import { restoreVaultItem } from "@/app/actions/vault-item/trashVaultItem";
 
-export default function RestoreLoginItemDialog({ loginItem }: { loginItem: LoginItem }) {
+export default function RestoreLoginItemDialog({ loginItem }: { loginItem: VaultItem }) {
     const queryClient = useQueryClient();
 
     const { mutate, error, isPending } = useMutation({
-        mutationFn: () => restoreLogin(loginItem.id!),
+        mutationFn: () => restoreVaultItem(loginItem.id!),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Restoring Login Item...");
@@ -53,9 +53,9 @@ export default function RestoreLoginItemDialog({ loginItem }: { loginItem: Login
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Restore <span className="font-bold">{loginItem.name}</span></AlertDialogTitle>
+                    <AlertDialogTitle>Restore <span className="font-bold">{JSON.parse(loginItem.encryptedData!).name}</span></AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to restore <span className="font-bold">{loginItem.name}</span>?
+                        Are you sure you want to restore <span className="font-bold">{JSON.parse(loginItem.encryptedData!).name}</span>?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

@@ -83,28 +83,27 @@ model Vault {
   icon      String
   iconColor String?
 
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  userId          String
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  loginItems      LoginItem[]
-  secureNoteItems SecureNoteItem[]
-  creditCardItems CreditCardItem[]
-  identities      IdentityItem[]
+  salt             String?
+  encryptedKey     String?
+  keyIv            String?
+  verificationHash String?
+  hashIv           String?
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  userId     String
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vaultItems VaultItem[]
 
   @@index([userId])
   @@map("vault")
 }
 
-model LoginItem {
-  id       String  @id @default(cuid())
-  itemType String  @default("LOGIN")
-  name     String
-  url      String?
-  username String?
-  email    String
-  password String
-  note     String?
+model VaultItem {
+  id            String  @id @default(cuid())
+  itemType      String
+  encryptedData String?
+  iv            String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -113,94 +112,5 @@ model LoginItem {
   vault     Vault     @relation(fields: [vaultId], references: [id], onDelete: Cascade)
 
   @@index([vaultId])
-  @@map("loginItem")
-}
-
-model SecureNoteItem {
-  id       String @id @default(cuid())
-  itemType String @default("SECURE_NOTE")
-  title    String
-  content  String
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-  vaultId   String
-  vault     Vault     @relation(fields: [vaultId], references: [id], onDelete: Cascade)
-
-  @@index([vaultId])
-  @@map("secureNoteItem")
-}
-
-model CreditCardItem {
-  id              String  @id @default(cuid())
-  itemType        String  @default("CREDIT_CARD")
-  cardNumber      String
-  cardHolderName  String
-  expiryDate      String
-  cvv             Int
-  billingAddress1 String
-  billingAddress2 String?
-  zipCode         String
-  city            String
-  state           String?
-  country         String
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-  vaultId   String
-  vault     Vault     @relation(fields: [vaultId], references: [id], onDelete: Cascade)
-
-  @@index([vaultId])
-  @@map("creditCardItem")
-}
-
-model IdentityItem {
-  id       String @id @default(cuid())
-  itemType String @default("IDENTITY")
-
-  // Personal Details
-  name        String
-  email       String
-  phoneNumber String
-
-  // Address Details
-  organizationName String
-  address1         String
-  address2         String?
-  zipCode          String
-  city             String
-  state            String?
-  country          String
-  floor            String?
-  county           String?
-  poBox            String?
-
-  // ID Details
-  socialSecurityNumber String?
-  passportNumber       String?
-  licenseNumber        String?
-
-  // Work Details
-  companyName String?
-  occupation  String?
-
-  // Social Details
-  x         String?
-  linkedin  String?
-  instagram String?
-  tiktok    String?
-  facebook  String?
-  github    String?
-  other     String?
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-  vaultId   String
-  vault     Vault     @relation(fields: [vaultId], references: [id], onDelete: Cascade)
-
-  @@index([vaultId])
-  @@map("identityItem")
+  @@map("vaultItem")
 }

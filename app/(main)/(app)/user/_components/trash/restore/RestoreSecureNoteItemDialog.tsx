@@ -13,17 +13,17 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { SecureNoteItem } from "@/lib/types/VaultItemType"
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { restoreSecureNote } from "@/app/actions/secure-note/trashSecureNote";
 import { ArchiveRestore } from "lucide-react";
+import { VaultItem } from "@/lib/types/VaultType";
+import { restoreVaultItem } from "@/app/actions/vault-item/trashVaultItem";
 
-export default function RestoreSecureNoteItemDialog({ secureNoteItem }: { secureNoteItem: SecureNoteItem }) {
+export default function RestoreSecureNoteItemDialog({ secureNoteItem }: { secureNoteItem: VaultItem }) {
     const queryClient = useQueryClient();
 
     const { mutate, error, isPending } = useMutation({
-        mutationFn: () => restoreSecureNote(secureNoteItem.id!),
+        mutationFn: () => restoreVaultItem(secureNoteItem.id!),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Restoring Secure Note...");
@@ -53,9 +53,9 @@ export default function RestoreSecureNoteItemDialog({ secureNoteItem }: { secure
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Restore <span className="font-bold">{secureNoteItem.title}</span></AlertDialogTitle>
+                    <AlertDialogTitle>Restore <span className="font-bold">{JSON.parse(secureNoteItem.encryptedData!).title}</span></AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to restore <span className="font-bold">{secureNoteItem.title}</span>?
+                        Are you sure you want to restore <span className="font-bold">{JSON.parse(secureNoteItem.encryptedData!).title}</span>?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

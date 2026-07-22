@@ -19,7 +19,7 @@ import { DynamicIcon, IconName } from 'lucide-react/dynamic';
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
-import { editVault } from "@/app/actions/vault/editVault";
+import { updateVault } from "@/app/actions/vault/updateVault";
 
 const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
 
@@ -28,8 +28,8 @@ export default function EditVault({ open, onOpenChange, vault }: { open: boolean
     const [vaultName, setVaultName] = useState<string>(vault.name);
     const [vaultColor, setVaultColor] = useState<string>(vault.iconColor!);
 
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => editVault(vault.id, vaultName, selectedIcon, vaultColor),
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => updateVault(vault.id, vaultName, selectedIcon, vaultColor),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Updating vault...");
@@ -39,9 +39,9 @@ export default function EditVault({ open, onOpenChange, vault }: { open: boolean
             toast.success("Vault updated successfully!");
             onOpenChange(false);
         },
-        onError: () => {
+        onError: (err) => {
             toast.dismiss();
-            toast.error("There was an error updating your vault. Please try again later." + error);
+            toast.error("There was an error updating your vault. Please try again later." + err);
             onOpenChange(false);
         }
     });
