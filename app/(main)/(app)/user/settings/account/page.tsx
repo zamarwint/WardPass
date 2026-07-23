@@ -20,11 +20,20 @@ import {
     AlertDialogTitle,
     AlertDialogCancel
 } from "@/components/ui/alert-dialog"
-import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
 import SignOut from "../../_components/SignOut";
+import { useQuery } from "@tanstack/react-query";
+import { getUserSession } from "@/app/actions/getSession";
 
 export default function AccountPage() {
-    const { isPending, data, error } = GetAuthSession();
+    const { isPending, data, error } = useQuery({
+        queryKey: ["get-session-settings"],
+        queryFn: () => getUserSession(),
+        refetchOnMount: true,
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+        staleTime: 1000 * 60 * 2,
+        gcTime: 1000 * 60 * 5
+    })
 
     const [newEmail, setNewEmail] = useState(data?.user.email as string)
     const [emailPending, startEmailChangeTransition] = useTransition();

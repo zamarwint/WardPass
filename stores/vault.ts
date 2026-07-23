@@ -1,148 +1,114 @@
 /**
  * stores/vault.ts
  *
- * Zustand vault store — manages the in-memory vault key and lock state.
+ * Zustand vault store — manages a KEYRING of in-memory vault keys.
  *
- * Security design
- * ───────────────
- *  • The vault key exists ONLY in memory (never in localStorage, sessionStorage,
- *    cookies, IndexedDB, or any form of persistent storage).
- *  • On lock(), the key bytes are zeroed out (fill(0)) before the reference is
- *    released. JavaScript's GC cannot guarantee when memory is freed, but
- *    zeroing eliminates the key value from any memory dump.
- *  • The store auto-locks after INACTIVITY_TIMEOUT_MS of no refreshActivity()
- *    calls. Call refreshActivity() on meaningful vault interactions (copy,
- *    open, edit) — not on every mouse move.
- *  • When the browser tab is hidden, a shorter HIDDEN_TAB_TIMEOUT_MS timer
- *    fires. If the user returns within that window, the timer is cancelled.
+ * Each vault has its own unique salt → derived key → vault key chain,
+ * so the store maps vaultId → vaultKey rather than holding a single key.
+ * Think of it as a physical keyring: one ring, one key per vault, each
+ * key labelled with the vault ID it opens.
  *
- * ⚠️  Never add the Zustand devtools middleware to this store in production.
- *     The Redux DevTools panel would expose the raw vault key bytes to anyone
- *     who opens the browser's developer tools.
- *
- * Install: npm install zustand
+ * Security rules (unchanged from single-vault version):
+ *  • Keys exist ONLY in memory — never written to any persistent storage.
+ *  • On lock, each key's bytes are zeroed (fill(0)) before the reference drops.
+ *  • All vaults auto-lock after INACTIVITY_TIMEOUT_MS of no activity.
+ *  • All vaults auto-lock after HIDDEN_TAB_TIMEOUT_MS when the tab is hidden.
+ *  • Never add devtools middleware — it would expose all keys in DevTools.
  */
 
 import { create } from "zustand";
 
 // ─── Auto-lock configuration ──────────────────────────────────────────────────
 
-/** Lock the vault after this period of no activity (ms). */
+/** Lock ALL vaults after this period of no activity (ms). */
 const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes
 
-/**
- * Lock the vault after the browser tab has been hidden for this long (ms).
- * Shorter than the inactivity timeout — tab hiding is a stronger signal
- * that the user has left their device unattended.
- */
+/** Lock ALL vaults if the browser tab stays hidden for this long (ms). */
 const HIDDEN_TAB_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Custom errors ────────────────────────────────────────────────────────────
 
-/**
- * Thrown by getVaultKey() when the vault is locked.
- * Catch this in components that read from the vault to redirect the user
- * to the unlock screen.
- */
 export class VaultLockedError extends Error {
-    constructor() {
+    constructor(vaultId: string) {
         super(
-            "Vault is locked. Unlock the vault with your master password first."
+            `Vault "${vaultId}" is locked. Unlock it with your master password first.`
         );
         this.name = "VaultLockedError";
     }
 }
 
+// ─── Store types ──────────────────────────────────────────────────────────────
+
 interface VaultState {
     // ── State ───────────────────────────────────────────────────────────────────
 
     /**
-     * Temporarily store the user's master password after login, so we can
-     * derive KEKs for their vaults. Cleared when locked.
-     */
-    masterPassword: string | null;
-
-    /**
-     * The 32-byte AES-256 vault key, held in a Uint8Array.
-     * null at all times when the vault is locked.
+     * Keyring: a map of vaultId → decrypted 32-byte vault key.
      *
-     * Access via getVaultKey() rather than reading this field directly —
-     * getVaultKey() throws a typed error if the vault is locked, making
-     * callsites explicit about handling the locked state.
+     * A vault is "unlocked" if and only if its ID exists as a key in this map.
+     * Using a plain Record (not Map) so Zustand's spread-based updates
+     * produce a new object reference, which React's useMemo can detect.
      */
-    vaultKey: Uint8Array | null;
-
-    /** Whether the vault is currently unlocked and the key is in memory. */
-    isUnlocked: boolean;
-
-    /**
-     * Unix timestamp (ms) when the vault was last unlocked.
-     * Useful for displaying "unlocked 4 minutes ago" in the UI.
-     * null when the vault is locked.
-     */
-    unlockedAt: number | null;
+    vaultKeys: Record<string, Uint8Array>;
 
     // ── Actions ─────────────────────────────────────────────────────────────────
 
     /**
-     * Unlock the vault by storing the decrypted vault key in memory.
+     * Add a vault's decrypted key to the keyring.
+     * Call after a successful decryptVaultKey() + verifyVaultKey() sequence.
      *
-     * Call this after a successful decryptVaultKey() + verifyVaultKey()
-     * sequence in the unlock form handler. Starts the inactivity timer.
-     *
-     * @param vaultKey  The plaintext 32-byte vault key from decryptVaultKey().
+     * @param vaultId  The vault's database ID (from the URL / route params).
+     * @param vaultKey The 32-byte plaintext vault key from decryptVaultKey().
      */
-    unlock: (vaultKey: Uint8Array) => void;
+    unlock: (vaultId: string, vaultKey: Uint8Array) => void;
 
     /**
-     * Set the master password in memory after login.
+     * Remove a single vault's key from the keyring and zero its bytes.
+     * Use when the user explicitly locks one vault while keeping others open.
+     *
+     * @param vaultId  The vault ID to lock.
      */
-    setMasterPassword: (password: string) => void;
+    lock: (vaultId: string) => void;
 
     /**
-     * Lock the vault.
-     *
-     * Zeros out the vault key bytes, clears all timers, and resets state.
-     * Safe to call even when already locked (idempotent).
+     * Zero and remove ALL vault keys from the keyring.
+     * Called by the auto-lock timers (inactivity, hidden tab).
      */
-    lock: () => void;
+    lockAll: () => void;
 
     /**
-     * Retrieve the in-memory vault key.
+     * Retrieve the in-memory key for a specific vault.
      *
-     * @throws VaultLockedError  if the vault is locked.
-     * @returns The 32-byte vault key Uint8Array.
-     *
-     * @example
-     * // In a vault item hook
-     * try {
-     *   const key = useVaultStore.getState().getVaultKey();
-     *   const decrypted = decryptData(item.encrypted_data, item.iv, key);
-     * } catch (error) {
-     *   if (error instanceof VaultLockedError) router.push("/vault/unlock");
-     * }
+     * @param vaultId  The vault ID whose key to retrieve.
+     * @throws VaultLockedError if that vault is not currently unlocked.
      */
-    getVaultKey: () => Uint8Array;
+    getVaultKey: (vaultId: string) => Uint8Array;
+
+    /**
+     * Check whether a specific vault is currently unlocked.
+     * Use this for the needsUnlock guard and conditional rendering.
+     *
+     * @param vaultId  The vault ID to check.
+     */
+    isVaultUnlocked: (vaultId: string) => boolean;
 
     /**
      * Reset the inactivity auto-lock timer.
-     *
-     * Call this on meaningful vault interactions — copying a password,
-     * opening an item, saving a new entry — not on continuous events like
-     * mouse move or scroll. Calling it when locked is a no-op.
+     * Call on meaningful vault interactions (copy, open item, save).
+     * A no-op when all vaults are locked.
      */
     refreshActivity: () => void;
+
+    // In VaultState interface — add these two:
+    masterPassword: string | null;
+    setMasterPassword: (password: string) => void;
 }
 
-// ─── Timer management (module-level, outside the store) ───────────────────────
-//
-// Timers live at module scope so they survive Zustand state updates.
-// A state update triggers re-renders but does not re-initialise this module.
+// ─── Timer management ─────────────────────────────────────────────────────────
 
 let inactivityTimer: ReturnType<typeof setTimeout> | null = null;
 let hiddenTabTimer: ReturnType<typeof setTimeout> | null = null;
 
-/** Cancel the inactivity timer if one is running. */
 function clearInactivityTimer(): void {
     if (inactivityTimer !== null) {
         clearTimeout(inactivityTimer);
@@ -150,7 +116,6 @@ function clearInactivityTimer(): void {
     }
 }
 
-/** Cancel the hidden-tab timer if one is running. */
 function clearHiddenTabTimer(): void {
     if (hiddenTabTimer !== null) {
         clearTimeout(hiddenTabTimer);
@@ -158,122 +123,104 @@ function clearHiddenTabTimer(): void {
     }
 }
 
-/** Cancel all running timers. */
 function clearAllTimers(): void {
     clearInactivityTimer();
     clearHiddenTabTimer();
 }
 
-/**
- * (Re)start the inactivity auto-lock timer.
- * Each call resets the 15-minute countdown from zero.
- */
 function scheduleInactivityLock(): void {
     clearInactivityTimer();
     inactivityTimer = setTimeout(() => {
-        useVaultStore.getState().lock();
+        useVaultStore.getState().lockAll();
     }, INACTIVITY_TIMEOUT_MS);
 }
 
-// ─── Zustand store ────────────────────────────────────────────────────────────
+// ─── Store ────────────────────────────────────────────────────────────────────
 
 export const useVaultStore = create<VaultState>()((set, get) => ({
-    masterPassword: null,
-    vaultKey: null,
-    isUnlocked: false,
-    unlockedAt: null,
-
-    // ── setMasterPassword ──────────────────────────────────────────────────────
-    setMasterPassword: (password: string) => {
-        set({ masterPassword: password });
-    },
+    vaultKeys: {},
 
     // ── unlock ─────────────────────────────────────────────────────────────────
-    unlock: (vaultKey: Uint8Array) => {
-        // Cancel any existing timers from a previous session.
-        clearAllTimers();
+    unlock: (vaultId: string, vaultKey: Uint8Array) => {
+        // Spread creates a new object reference → useMemo dependencies update.
+        set((state) => ({
+            vaultKeys: { ...state.vaultKeys, [vaultId]: vaultKey },
+        }));
 
-        set({
-            vaultKey,
-            isUnlocked: true,
-            unlockedAt: Date.now(),
-        });
-
-        // Start the inactivity countdown.
+        // (Re)start the inactivity timer on any unlock.
         scheduleInactivityLock();
     },
 
-    // ── lock ───────────────────────────────────────────────────────────────────
-    lock: () => {
+    // ── lock (single vault) ───────────────────────────────────────────────────
+    lock: (vaultId: string) => {
+        const { vaultKeys } = get();
+        const vaultKey = vaultKeys[vaultId];
+
+        if (vaultKey) {
+            vaultKey.fill(0); // Zero bytes before releasing reference
+        }
+
+        const remaining = { ...vaultKeys };
+        delete remaining[vaultId];
+
+        set({ vaultKeys: remaining });
+
+        // If no vaults remain unlocked, stop the inactivity timer.
+        if (Object.keys(remaining).length === 0) {
+            clearAllTimers();
+        }
+    },
+
+    // In create() — add the implementation:
+    masterPassword: null,
+    setMasterPassword: (password) => set({ masterPassword: password }),
+
+    // In lockAll() — clear it when everything locks:
+    // ── lockAll ───────────────────────────────────────────────────────────────
+    lockAll: () => {
         clearAllTimers();
-
-        // Zero out the vault key bytes before releasing the reference.
-        // This minimises the window during which the key value could be
-        // recovered from a memory snapshot.
-        const { vaultKey } = get();
-        if (vaultKey !== null) {
-            vaultKey.fill(0);
-        }
-
-        set({
-            masterPassword: null,
-            vaultKey: null,
-            isUnlocked: false,
-            unlockedAt: null,
-        });
+        Object.values(get().vaultKeys).forEach((key) => key.fill(0));
+        set({ vaultKeys: {}, masterPassword: null }); // ← add masterPassword: null
     },
 
-    // ── getVaultKey ────────────────────────────────────────────────────────────
-    getVaultKey: () => {
-        const { vaultKey, isUnlocked } = get();
-
-        if (!isUnlocked || vaultKey === null) {
-            throw new VaultLockedError();
-        }
-
-        return vaultKey;
+    // ── getVaultKey ───────────────────────────────────────────────────────────
+    getVaultKey: (vaultId: string) => {
+        const key = get().vaultKeys[vaultId];
+        if (!key) throw new VaultLockedError(vaultId);
+        return key;
     },
 
-    // ── refreshActivity ────────────────────────────────────────────────────────
+    // ── isVaultUnlocked ───────────────────────────────────────────────────────
+    isVaultUnlocked: (vaultId: string) => {
+        return vaultId in get().vaultKeys;
+    },
+
+    // ── refreshActivity ───────────────────────────────────────────────────────
     refreshActivity: () => {
-        // No-op when locked — no timer to reset.
-        if (!get().isUnlocked) return;
+        // No-op when no vaults are open.
+        if (Object.keys(get().vaultKeys).length === 0) return;
         scheduleInactivityLock();
     },
 }));
 
 // ─── Visibility-change auto-lock ─────────────────────────────────────────────
-//
-// When the user backgrounds the tab (switches apps, minimises, locks screen),
-// start a shorter countdown. If they return within HIDDEN_TAB_TIMEOUT_MS,
-// cancel the countdown. If they stay away longer, lock the vault.
-//
-// This prevents an attacker from walking up to an unattended machine and
-// seeing an unlocked vault just by switching browser tabs.
-//
-// Guard with typeof window to prevent this side effect running during
-// Next.js server-side rendering (where document is undefined).
 
 if (typeof window !== "undefined") {
     document.addEventListener("visibilitychange", () => {
-        const store = useVaultStore.getState();
+        const { vaultKeys, lockAll } = useVaultStore.getState();
+        const hasUnlockedVaults = Object.keys(vaultKeys).length > 0;
 
         if (document.hidden) {
-            // ── Tab went to background ────────────────────────────────────────────
-            // Only start the hidden timer if the vault is currently unlocked.
-            if (!store.isUnlocked) return;
+            if (!hasUnlockedVaults) return;
 
             hiddenTabTimer = setTimeout(() => {
-                useVaultStore.getState().lock();
+                useVaultStore.getState().lockAll();
             }, HIDDEN_TAB_TIMEOUT_MS);
         } else {
-            // ── Tab came back to foreground ───────────────────────────────────────
-            // Cancel the hidden-tab timer — the user returned in time.
             clearHiddenTabTimer();
 
-            // If the vault is still unlocked, reset the inactivity timer
-            // (the user returning counts as activity).
-            if (useVaultStore.getState().isUnlocked) {
+            // If vaults are still unlocked, reset the inactivity timer.
+            if (Object.keys(useVaultStore.getState().vaultKeys).length > 0) {
                 scheduleInactivityLock();
             }
         }

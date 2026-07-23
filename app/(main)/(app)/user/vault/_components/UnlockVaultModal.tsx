@@ -31,7 +31,7 @@ export function UnlockVaultModal({
         }
 
         setIsUnlocking(true);
-        toast.loading("Unlocking vault...");
+        toast.loading("Unlocking Wardpass...");
 
         try {
             // Delay to let UI render loading state before heavy CPU task
@@ -43,16 +43,17 @@ export function UnlockVaultModal({
 
             if (verifyVaultKey(vault.verificationHash!, vault.hashIv!, vaultKey)) {
                 useVaultStore.getState().setMasterPassword(password);
-                useVaultStore.getState().unlock(vaultKey);
+                // ✅ After creating the vault, unlock it immediately by passing its ID
+                useVaultStore.getState().unlock(vault.id, vaultKey);
                 toast.dismiss();
-                toast.success("Vault unlocked successfully!");
+                toast.success("WardPass vaults unlocked successfully!");
             } else {
                 toast.dismiss();
                 toast.error("Incorrect master password or corrupted data.");
             }
         } catch (error) {
             toast.dismiss();
-            toast.error("Failed to unlock vault. Please check your password.");
+            toast.error("Failed to unlock WardPass. Please check your password.");
             console.error(error);
         } finally {
             setIsUnlocking(false);
@@ -66,10 +67,10 @@ export function UnlockVaultModal({
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <LockIcon className="text-primary w-5 h-5" />
-                        Vault Locked
+                        WardPass Vaults Locked
                     </DialogTitle>
                     <DialogDescription>
-                        Your vault is locked. Please enter your master password to decrypt your data.
+                        Your WardPass vaults are locked. Please enter your master password to decrypt your data.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleUnlock} className="flex flex-col gap-4 mt-4">
@@ -91,7 +92,7 @@ export function UnlockVaultModal({
                                 Unlocking...
                             </>
                         ) : (
-                            "Unlock Vault"
+                            "Unlock WardPass Vaults"
                         )}
                     </Button>
                 </form>

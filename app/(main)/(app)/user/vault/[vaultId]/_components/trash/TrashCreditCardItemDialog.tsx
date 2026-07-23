@@ -15,13 +15,12 @@ import {
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { trashVaultItem } from "@/app/actions/vault-item/trashVaultItem";
-import { VaultItem } from "@/lib/types/VaultType";
 
-export default function TrashCreditCardItemDialog({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: VaultItem }) {
+export default function TrashCreditCardItemDialog({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: any }) {
     const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: () => trashVaultItem(creditCardItem.id!),
+        mutationFn: () => trashVaultItem(creditCardItem.id),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Moving Credit Card Item to Trash...");
@@ -51,9 +50,9 @@ export default function TrashCreditCardItemDialog({ open, onOpenChange, creditCa
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Move <span className="font-bold">{JSON.parse(creditCardItem.encryptedData!).cardHolderName}</span> to Trash</AlertDialogTitle>
+                    <AlertDialogTitle>Move <span className="font-bold">{creditCardItem.cardHolderName}</span> to Trash</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to move <span className="font-bold">{JSON.parse(creditCardItem.encryptedData!).cardHolderName}</span> to Trash?
+                        Are you sure you want to move <span className="font-bold">{creditCardItem.cardHolderName}</span> to Trash?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

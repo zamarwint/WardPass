@@ -20,15 +20,14 @@ import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2Icon } from "lucide-react";
 import deleteVaultItem from "@/app/actions/vault-item/deleteVaultItem";
-import { VaultItem } from "@/lib/types/VaultType";
 
-export default function DeleteIdentityItemDialog({ identityItem }: { identityItem: VaultItem }) {
+export default function DeleteIdentityItemDialog({ identityItem }: { identityItem: any }) {
     const queryClient = useQueryClient();
 
     const [identityNameConfirm, setIdentityNameConfirm] = useState<string>("");
 
     const { mutate, error, isPending } = useMutation({
-        mutationFn: () => deleteVaultItem({ id: identityItem.id as string, vaultId: identityItem.vaultId as string }),
+        mutationFn: () => deleteVaultItem({ id: identityItem.id, vaultId: identityItem.vaultId as string }),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Deleting Identity Item...");
@@ -37,7 +36,7 @@ export default function DeleteIdentityItemDialog({ identityItem }: { identityIte
             toast.dismiss();
             toast.success("Identity Item deleted successfully!");
             queryClient.invalidateQueries({
-                queryKey: ["deleteVaultItems", identityItem.vaultId],
+                queryKey: ["trashedItems"],
                 refetchType: 'active'
             });
         },
@@ -58,13 +57,13 @@ export default function DeleteIdentityItemDialog({ identityItem }: { identityIte
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Delete <span className="font-bold">{JSON.parse(identityItem.encryptedData!).name}</span></AlertDialogTitle>
+                    <AlertDialogTitle>Delete <span className="font-bold">{identityItem.name}</span></AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to delete <span className="font-bold">{JSON.parse(identityItem.encryptedData!).name}?</span>
+                        Are you sure you want to delete <span className="font-bold">{identityItem.name}?</span>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div>
-                    <Label className="mt-2" htmlFor="identityItemNameConfirm">Type in<span className="font-bold">{JSON.parse(identityItem.encryptedData!).name?.toLowerCase()}</span>to confirm</Label>
+                    <Label className="mt-2" htmlFor="identityItemNameConfirm">Type in<span className="font-bold">{identityItem.name?.toLowerCase()}</span>to confirm</Label>
                     <Input placeholder="type in identity item name to confirm" className="h-12 mt-3" id="identityItemNameConfirm" value={identityNameConfirm} onChange={(e) => setIdentityNameConfirm(e.target.value)} />
                 </div>
                 <AlertDialogFooter>
@@ -72,7 +71,7 @@ export default function DeleteIdentityItemDialog({ identityItem }: { identityIte
                         <Button variant="outline">Cancel</Button>
                     </AlertDialogCancel>
                     <AlertDialogAction asChild>
-                        <Button disabled={identityNameConfirm.toLowerCase() !== JSON.parse(identityItem.encryptedData!).name?.toLowerCase() || isPending} variant="destructive" className="font-bold" onClick={handleSubmit}>Delete</Button>
+                        <Button disabled={identityNameConfirm.toLowerCase() !== identityItem.name?.toLowerCase() || isPending} variant="destructive" className="font-bold" onClick={handleSubmit}>Delete</Button>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

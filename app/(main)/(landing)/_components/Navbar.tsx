@@ -8,9 +8,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 
 import { motion, useScroll } from "motion/react";
 import { ScrollToAnchor } from "@/lib/functions";
-import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
 import { ModeToggleIcon } from "@/app/_components/ThemeChange";
 import { toast } from "sonner";
+import { getUserSession } from "@/app/actions/getSession";
+import { useQuery } from "@tanstack/react-query";
 
 const navigationLinks = [
     {
@@ -36,7 +37,15 @@ export default function Navbar() {
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const pathName = usePathname();
-    const { isPending, data, error } = GetAuthSession();
+    const { isPending, data, error } = useQuery({
+        queryKey: ["get-session-nav"],
+        queryFn: () => getUserSession(),
+        refetchOnMount: true,
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+        staleTime: 1000 * 60 * 2,
+        gcTime: 1000 * 60 * 5
+    })
 
     if (error) toast.error("An error occured." + error.message);
 

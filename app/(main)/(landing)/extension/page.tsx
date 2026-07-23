@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "WardPass - Chrome Extension",
+    title: "Chrome Extension | WardPass",
 };
 
 export default function ChromeExtensionPage() {

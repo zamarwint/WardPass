@@ -1,8 +1,7 @@
-import VaultTopBar from "../_components/VaultTopBar"
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "WardPass - Vault",
+    title: "Vaults | WardPass",
 };
 
 export default function VaultIdLayout({
@@ -12,10 +11,7 @@ export default function VaultIdLayout({
 }>) {
     return (
         <div className="size-full flex flex-col items-center justify-center overflow-hidden">
-            <VaultTopBar />
-            <div className="flex-1 w-full overflow-hidden">
-                {children}
-            </div>
+            {children}
         </div>
     )
 }

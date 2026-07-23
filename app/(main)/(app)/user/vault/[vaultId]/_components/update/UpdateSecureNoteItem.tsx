@@ -17,16 +17,15 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { motion } from "motion/react"
 import updateVaultItem from "@/app/actions/vault-item/updateVaultItem";
-import { VaultItem } from "@/lib/types/VaultType";
 import { Textarea } from "@/components/ui/textarea";
 import { encryptData } from "@/lib/crypto/aes";
 import { useVaultStore } from "@/stores/vault";
 
-export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secureNoteItem: VaultItem, cancel: () => void }) {
+export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secureNoteItem: any, cancel: () => void }) {
     const queryClient = useQueryClient();
 
-    const [title, setTitle] = useState<string>(JSON.parse(secureNoteItem.encryptedData!).title)
-    const [content, setContent] = useState<string>(JSON.parse(secureNoteItem.encryptedData!).content)
+    const [title, setTitle] = useState<string>(secureNoteItem.title)
+    const [content, setContent] = useState<string>(secureNoteItem.content)
     const [characterLength, setCharacterLength] = useState<number>(content.length)
 
     const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -41,7 +40,7 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
 
     const { mutate, isPending } = useMutation({
         mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey();
+            const vaultKey = useVaultStore.getState().getVaultKey(secureNoteItem.vaultId);
             const payload = JSON.stringify({ title, content });
             const { ciphertext, iv } = encryptData(payload, vaultKey);
             return updateVaultItem({ id: secureNoteItem.id as string, vaultId: secureNoteItem.vaultId as string, encryptedData: ciphertext, iv });
@@ -83,7 +82,7 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
             <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Update Secure Note</FieldLegend>
-                    <FieldDescription>Update {JSON.parse(secureNoteItem.encryptedData!).title}.</FieldDescription>
+                    <FieldDescription>Update {secureNoteItem.title}.</FieldDescription>
                 </FieldSet>
 
                 <FieldGroup>
@@ -102,7 +101,7 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
 
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button disabled={isPending || !title || !content || (title == JSON.parse(secureNoteItem.encryptedData!).title && content == JSON.parse(secureNoteItem.encryptedData!).content)} onClick={handleSubmit} className="font-bold">
+                    <Button disabled={isPending || !title || !content || (title == secureNoteItem.title && content == secureNoteItem.content)} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

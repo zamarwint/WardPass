@@ -17,28 +17,27 @@ import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
 import { encryptData } from "@/lib/crypto/aes";
 import { useVaultStore } from "@/stores/vault";
 import updateVaultItem from "@/app/actions/vault-item/updateVaultItem";
-import { VaultItem } from "@/lib/types/VaultType";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Loader2Icon, PenIcon } from "lucide-react";
 
-export default function UpdateCreditCardItem({ creditCardItem, cancel }: { creditCardItem: VaultItem, cancel: () => void }) {
+export default function UpdateCreditCardItem({ creditCardItem, cancel }: { creditCardItem: any, cancel: () => void }) {
     const queryClient = useQueryClient();
 
-    const [cardHolderName, setCardHolderName] = useState<string>(JSON.parse(creditCardItem.encryptedData!).cardHolderName)
-    const [cardNumber, setCardNumber] = useState<string>(JSON.parse(creditCardItem.encryptedData!).cardNumber)
-    const [cvv, setCvv] = useState<number>(JSON.parse(creditCardItem.encryptedData!).cvv)
-    const [expiryDate, setExpiryDate] = useState<string>(JSON.parse(creditCardItem.encryptedData!).expiryDate)
-    const [billingAddress1, setBillingAddress1] = useState<string>(JSON.parse(creditCardItem.encryptedData!).billingAddress1)
-    const [billingAddress2, setBillingAddress2] = useState<string>(JSON.parse(creditCardItem.encryptedData!).billingAddress2)
-    const [zipCode, setZipCode] = useState<string>(JSON.parse(creditCardItem.encryptedData!).zipCode)
-    const [city, setCity] = useState<string>(JSON.parse(creditCardItem.encryptedData!).city)
-    const [state, setState] = useState<string>(JSON.parse(creditCardItem.encryptedData!).state)
-    const [country, setCountry] = useState<string>(JSON.parse(creditCardItem.encryptedData!).country)
+    const [cardHolderName, setCardHolderName] = useState<string>(creditCardItem.cardHolderName)
+    const [cardNumber, setCardNumber] = useState<string>(creditCardItem.cardNumber)
+    const [cvv, setCvv] = useState<number>(creditCardItem.cvv)
+    const [expiryDate, setExpiryDate] = useState<string>(creditCardItem.expiryDate)
+    const [billingAddress1, setBillingAddress1] = useState<string>(creditCardItem.billingAddress1)
+    const [billingAddress2, setBillingAddress2] = useState<string>(creditCardItem.billingAddress2)
+    const [zipCode, setZipCode] = useState<string>(creditCardItem.zipCode)
+    const [city, setCity] = useState<string>(creditCardItem.city)
+    const [state, setState] = useState<string>(creditCardItem.state)
+    const [country, setCountry] = useState<string>(creditCardItem.country)
 
     const { mutate, isPending } = useMutation({
         mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey();
+            const vaultKey = useVaultStore.getState().getVaultKey(creditCardItem.vaultId);
             const payload = JSON.stringify({
                 cardHolderName, cardNumber, cvv, expiryDate,
                 billingAddress1, billingAddress2, zipCode, city, state, country
@@ -83,7 +82,7 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
             <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Update Credit Card</FieldLegend>
-                    <FieldDescription>Update {JSON.parse(creditCardItem.encryptedData!).cardHolderName}.</FieldDescription>
+                    <FieldDescription>Update {creditCardItem.cardHolderName}.</FieldDescription>
                 </FieldSet>
 
                 <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
@@ -139,7 +138,7 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button disabled={isPending || !cardHolderName || !cardNumber || !cvv || !expiryDate || !billingAddress2 || !zipCode || !city || !country || (cardHolderName == JSON.parse(creditCardItem.encryptedData!).cardHolderName && cardNumber == JSON.parse(creditCardItem.encryptedData!).cardNumber && cvv == JSON.parse(creditCardItem.encryptedData!).cvv && expiryDate == JSON.parse(creditCardItem.encryptedData!).expiryDate && billingAddress1 == JSON.parse(creditCardItem.encryptedData!).billingAddress1 && billingAddress2 == JSON.parse(creditCardItem.encryptedData!).billingAddress2 && zipCode == JSON.parse(creditCardItem.encryptedData!).zipCode && city == JSON.parse(creditCardItem.encryptedData!).city && state == JSON.parse(creditCardItem.encryptedData!).state && country == JSON.parse(creditCardItem.encryptedData!).country)} onClick={handleSubmit} className="font-bold">
+                    <Button disabled={isPending || !cardHolderName || !cardNumber || !cvv || !expiryDate || !billingAddress2 || !zipCode || !city || !country || (cardHolderName == creditCardItem.cardHolderName && cardNumber == creditCardItem.cardNumber && cvv == creditCardItem.cvv && expiryDate == creditCardItem.expiryDate && billingAddress1 == creditCardItem.billingAddress1 && billingAddress2 == creditCardItem.billingAddress2 && zipCode == creditCardItem.zipCode && city == creditCardItem.city && state == creditCardItem.state && country == creditCardItem.country)} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

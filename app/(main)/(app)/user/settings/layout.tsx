@@ -2,9 +2,8 @@ import TopBar from "./_components/TopBar"
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Settings",
+    title: "Settings | WardPass",
 };
-
 
 export default function PageLayout({
     children,

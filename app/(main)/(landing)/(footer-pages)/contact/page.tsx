@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Contact WardPass",
+    title: "Contact | WardPass",
 };
 
 

@@ -38,7 +38,7 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
 
     const { mutate, isPending } = useMutation({
         mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey();
+            const vaultKey = useVaultStore.getState().getVaultKey(vaultId);
             const payload = JSON.stringify({
                 cardHolderName, cardNumber, cvv, expiryDate,
                 billingAddress1, billingAddress2, zipCode, city, state, country

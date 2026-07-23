@@ -16,14 +16,13 @@ import {
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArchiveRestore } from "lucide-react";
-import { VaultItem } from "@/lib/types/VaultType";
 import { restoreVaultItem } from "@/app/actions/vault-item/trashVaultItem";
 
-export default function RestoreLoginItemDialog({ loginItem }: { loginItem: VaultItem }) {
+export default function RestoreLoginItemDialog({ loginItem }: { loginItem: any }) {
     const queryClient = useQueryClient();
 
     const { mutate, error, isPending } = useMutation({
-        mutationFn: () => restoreVaultItem(loginItem.id!),
+        mutationFn: () => restoreVaultItem(loginItem.id),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Restoring Login Item...");
@@ -32,7 +31,7 @@ export default function RestoreLoginItemDialog({ loginItem }: { loginItem: Vault
             toast.dismiss();
             toast.success("Login Item restored successfully!");
             queryClient.invalidateQueries({
-                queryKey: ["restoreVaultItems", loginItem.vaultId],
+                queryKey: ["trashedItems"],
                 refetchType: 'active'
             });
         },
@@ -53,9 +52,9 @@ export default function RestoreLoginItemDialog({ loginItem }: { loginItem: Vault
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Restore <span className="font-bold">{JSON.parse(loginItem.encryptedData!).name}</span></AlertDialogTitle>
+                    <AlertDialogTitle>Restore <span className="font-bold">{loginItem.name}</span></AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to restore <span className="font-bold">{JSON.parse(loginItem.encryptedData!).name}</span>?
+                        Are you sure you want to restore <span className="font-bold">{loginItem.name}</span>?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

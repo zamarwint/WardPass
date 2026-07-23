@@ -1,20 +1,50 @@
+import { DynamicIcon, IconName } from 'lucide-react/dynamic';
+import Link from 'next/link';
+
+import {
+    Field,
+    FieldContent,
+    FieldDescription,
+    FieldSet,
+    FieldTitle,
+} from "@/components/ui/field"
+import { Button } from "@/components/ui/button";
+import { getVaults } from '@/app/actions/vault/getVaults';
 import type { Metadata } from "next";
-import TrashItems from "../_components/trash/TrashItems";
 
 export const metadata: Metadata = {
-    title: "Trash Bin",
+    title: "Trash Vault Selection",
 };
 
-export default function TrashPage() {
+export default async function TrashVaultSelectionPage() {
+    const vaults = getVaults().then((vaults) => {
+        if (!vaults || vaults.length === 0) {
+            return <FieldDescription>No vaults found.</FieldDescription>
+        }
+        return vaults.map((vault) => (
+            <Link key={vault.id} href={`/user/trash/${vault.id}`} className='w-full'>
+                <Button variant="secondary" size="lg" className="flex items-center p-5 w-full">
+                    <DynamicIcon name={vault.icon as IconName} size={32} />
+                    <span className="ml-1 text-md font-bold">{vault.name}</span>
+                </Button>
+            </Link>
+        ))
+    }).catch((err) => {
+        console.log(err)
+        return <FieldDescription>Error loading vaults. Please try again later.</FieldDescription>
+    })
+
     return (
-        <div className="flex-1 h-full flex flex-col items-center justify-center overflow-y-aut">
-            <div className="flex w-full self-start flex-col gap-6 py-10 px-10">
-                <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">
-                    <span>Trash</span>
-                </h1>
-                <p className="text-xl text-muted-foreground">Here are the entries that you have deleted. They will be permanently deleted after 30 days.</p>
-            </div>
-            <TrashItems />
-        </div>
+        <Field className='w-full h-full'>
+            <FieldContent className='font-geist flex flex-col items-center justify-center text-center w-full gap-12'>
+                <FieldSet className='flex flex-col items-center justify-center w-full gap-3'>
+                    <FieldTitle className='text-3xl font-bold'>Select Vault</FieldTitle>
+                    <FieldDescription>Choose an existing vault to view trash items.</FieldDescription>
+                </FieldSet>
+                <div className='flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3'>
+                    {vaults}
+                </div>
+            </FieldContent>
+        </Field>
     )
 }

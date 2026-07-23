@@ -21,16 +21,13 @@ const navigationLinks = [
         path: "/user/settings/security"
     },
     {
-        label: "Import",
-        path: "/user/settings/import"
-    },
-    {
-        label: "Export",
+        label: "Export Data",
         path: "/user/settings/export"
     },
     {
         label: "Contact Us",
-        path: "/contact"
+        path: "/contact",
+        isExternal: true
     },
     {
         label: "Donate",

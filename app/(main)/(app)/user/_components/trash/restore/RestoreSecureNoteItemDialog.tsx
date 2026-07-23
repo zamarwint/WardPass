@@ -16,14 +16,13 @@ import {
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArchiveRestore } from "lucide-react";
-import { VaultItem } from "@/lib/types/VaultType";
 import { restoreVaultItem } from "@/app/actions/vault-item/trashVaultItem";
 
-export default function RestoreSecureNoteItemDialog({ secureNoteItem }: { secureNoteItem: VaultItem }) {
+export default function RestoreSecureNoteItemDialog({ secureNoteItem }: { secureNoteItem: any }) {
     const queryClient = useQueryClient();
 
     const { mutate, error, isPending } = useMutation({
-        mutationFn: () => restoreVaultItem(secureNoteItem.id!),
+        mutationFn: () => restoreVaultItem(secureNoteItem.id),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Restoring Secure Note...");
@@ -32,7 +31,7 @@ export default function RestoreSecureNoteItemDialog({ secureNoteItem }: { secure
             toast.dismiss();
             toast.success("Secure Note restored successfully!");
             queryClient.invalidateQueries({
-                queryKey: ["restoreVaultItems", secureNoteItem.vaultId],
+                queryKey: ["trashedItems"],
                 refetchType: 'active'
             });
         },
@@ -53,9 +52,9 @@ export default function RestoreSecureNoteItemDialog({ secureNoteItem }: { secure
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Restore <span className="font-bold">{JSON.parse(secureNoteItem.encryptedData!).title}</span></AlertDialogTitle>
+                    <AlertDialogTitle>Restore <span className="font-bold">{secureNoteItem.title}</span></AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to restore <span className="font-bold">{JSON.parse(secureNoteItem.encryptedData!).title}</span>?
+                        Are you sure you want to restore <span className="font-bold">{secureNoteItem.title}</span>?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

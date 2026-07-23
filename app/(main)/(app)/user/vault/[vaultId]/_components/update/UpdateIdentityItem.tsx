@@ -21,48 +21,47 @@ import updateVaultItem from "@/app/actions/vault-item/updateVaultItem";
 import PasswordCopyInput from "../../../../_components/PasswordCopyInput";
 import { useVaultStore } from "@/stores/vault";
 import { encryptData } from "@/lib/crypto/aes";
-import { VaultItem } from "@/lib/types/VaultType";
 
-export default function UpdateIdentityItem({ identityItem, cancel }: { identityItem: VaultItem, cancel: () => void }) {
+export default function UpdateIdentityItem({ identityItem, cancel }: { identityItem: any, cancel: () => void }) {
     const queryClient = useQueryClient();
 
-    const [name, setName] = useState<string>(JSON.parse(identityItem.encryptedData!).name)
-    const [email, setEmail] = useState<string>(JSON.parse(identityItem.encryptedData!).email)
-    const [phoneNumber, setPhoneNumber] = useState<string>(JSON.parse(identityItem.encryptedData!).phoneNumber)
+    const [name, setName] = useState<string>(identityItem.name)
+    const [email, setEmail] = useState<string>(identityItem.email)
+    const [phoneNumber, setPhoneNumber] = useState<string>(identityItem.phoneNumber)
 
     // Organization Details
-    const [organizationName, setOrganizationName] = useState<string>(JSON.parse(identityItem.encryptedData!).organizationName!)
-    const [address1, setAddress1] = useState<string>(JSON.parse(identityItem.encryptedData!).address1!)
-    const [address2, setAddress2] = useState<string>(JSON.parse(identityItem.encryptedData!).address2 as string)
-    const [city, setCity] = useState<string>(JSON.parse(identityItem.encryptedData!).city!)
-    const [state, setState] = useState<string>(JSON.parse(identityItem.encryptedData!).state as string)
-    const [zipCode, setZipCode] = useState<string>(JSON.parse(identityItem.encryptedData!).zipCode!)
-    const [country, setCountry] = useState<string>(JSON.parse(identityItem.encryptedData!).country!)
-    const [floor, setFloor] = useState<string>(JSON.parse(identityItem.encryptedData!).floor as string)
-    const [county, setCounty] = useState<string>(JSON.parse(identityItem.encryptedData!).county as string)
-    const [poBox, setPoBox] = useState<string>(JSON.parse(identityItem.encryptedData!).poBox as string)
+    const [organizationName, setOrganizationName] = useState<string>(identityItem.organizationName!)
+    const [address1, setAddress1] = useState<string>(identityItem.address1!)
+    const [address2, setAddress2] = useState<string>(identityItem.address2 as string)
+    const [city, setCity] = useState<string>(identityItem.city!)
+    const [state, setState] = useState<string>(identityItem.state as string)
+    const [zipCode, setZipCode] = useState<string>(identityItem.zipCode!)
+    const [country, setCountry] = useState<string>(identityItem.country!)
+    const [floor, setFloor] = useState<string>(identityItem.floor as string)
+    const [county, setCounty] = useState<string>(identityItem.county as string)
+    const [poBox, setPoBox] = useState<string>(identityItem.poBox as string)
 
     // ID Details
-    const [socialSecurityNumber, setSocialSecurityNumber] = useState<string>(JSON.parse(identityItem.encryptedData!).socialSecurityNumber as string)
-    const [passportNumber, setPassportNumber] = useState<string>(JSON.parse(identityItem.encryptedData!).passportNumber as string)
-    const [licenseNumber, setLicenseNumber] = useState<string>(JSON.parse(identityItem.encryptedData!).licenseNumber as string)
+    const [socialSecurityNumber, setSocialSecurityNumber] = useState<string>(identityItem.socialSecurityNumber as string)
+    const [passportNumber, setPassportNumber] = useState<string>(identityItem.passportNumber as string)
+    const [licenseNumber, setLicenseNumber] = useState<string>(identityItem.licenseNumber as string)
 
     // Work Details
-    const [companyName, setCompanyName] = useState<string>(JSON.parse(identityItem.encryptedData!).companyName as string)
-    const [occupation, setOccupation] = useState<string>(JSON.parse(identityItem.encryptedData!).occupation as string)
+    const [companyName, setCompanyName] = useState<string>(identityItem.companyName as string)
+    const [occupation, setOccupation] = useState<string>(identityItem.occupation as string)
 
     // Social Details
-    const [x, setX] = useState<string>(JSON.parse(identityItem.encryptedData!).x as string)
-    const [linkedin, setLinkedin] = useState<string>(JSON.parse(identityItem.encryptedData!).linkedin as string)
-    const [instagram, setInstagram] = useState<string>(JSON.parse(identityItem.encryptedData!).instagram as string)
-    const [tiktok, setTiktok] = useState<string>(JSON.parse(identityItem.encryptedData!).tiktok as string)
-    const [facebook, setFacebook] = useState<string>(JSON.parse(identityItem.encryptedData!).facebook as string)
-    const [github, setGithub] = useState<string>(JSON.parse(identityItem.encryptedData!).github as string)
-    const [other, setOther] = useState<string>(JSON.parse(identityItem.encryptedData!).other as string)
+    const [x, setX] = useState<string>(identityItem.x as string)
+    const [linkedin, setLinkedin] = useState<string>(identityItem.linkedin as string)
+    const [instagram, setInstagram] = useState<string>(identityItem.instagram as string)
+    const [tiktok, setTiktok] = useState<string>(identityItem.tiktok as string)
+    const [facebook, setFacebook] = useState<string>(identityItem.facebook as string)
+    const [github, setGithub] = useState<string>(identityItem.github as string)
+    const [other, setOther] = useState<string>(identityItem.other as string)
 
     const { mutate, isPending } = useMutation({
         mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey();
+            const vaultKey = useVaultStore.getState().getVaultKey(identityItem.vaultId);
             const payload = JSON.stringify({ name, email, phoneNumber, organizationName, address1, address2, city, state, zipCode, country, floor, county, poBox, socialSecurityNumber, passportNumber, licenseNumber, companyName, occupation, x, linkedin, instagram, tiktok, facebook, github, other });
             const { ciphertext, iv } = encryptData(payload, vaultKey);
             return updateVaultItem({ id: identityItem.id as string, vaultId: identityItem.vaultId as string, encryptedData: ciphertext, iv });
@@ -103,7 +102,7 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
             <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Update Identity</FieldLegend>
-                    <FieldDescription>Update {JSON.parse(identityItem.encryptedData!).name}.</FieldDescription>
+                    <FieldDescription>Update {identityItem.name}.</FieldDescription>
                 </FieldSet>
 
                 <FieldGroup className="hidden lg:flex flex-col gap-4 w-full">
@@ -246,7 +245,7 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button disabled={isPending || !name || !email || !phoneNumber || !organizationName || !address1 || !zipCode || !city || !country || (name === JSON.parse(identityItem.encryptedData!).name && email === JSON.parse(identityItem.encryptedData!).email && phoneNumber === JSON.parse(identityItem.encryptedData!).phoneNumber && organizationName === JSON.parse(identityItem.encryptedData!).organizationName && address1 === JSON.parse(identityItem.encryptedData!).address1 && city === JSON.parse(identityItem.encryptedData!).city && zipCode === JSON.parse(identityItem.encryptedData!).zipCode && country === JSON.parse(identityItem.encryptedData!).country)} onClick={handleSubmit} className="font-bold">
+                    <Button disabled={isPending || !name || !email || !phoneNumber || (name === identityItem.name && email === identityItem.email && phoneNumber === identityItem.phoneNumber)} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

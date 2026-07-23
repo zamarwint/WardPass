@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Password Generator | WardPass",
+    title: "Trash | WardPass",
 };
 
-export default function PasswordGeneratorPageLayout({
+export default function PageLayout({
     children,
 }: Readonly<{
     children: React.ReactNode
 }>) {
     return (
-        <div className="py-30 mx-auto flex flex-col gap-10">
+        <div className="flex flex-col size-full overflow-y-auto">
             {children}
         </div>
     )

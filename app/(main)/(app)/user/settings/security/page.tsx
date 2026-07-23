@@ -10,15 +10,18 @@ import {
     FieldTitle,
 } from "@/components/ui/field"
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button";
-
 import { LockKeyholeIcon } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const autoLockOptions = [
+    { label: "Immediately", value: "1" },
+    { label: "1 minute", value: "60" },
+    { label: "5 minutes", value: "300" },
+    { label: "10 minutes", value: "600" },
+    { label: "20 minutes", value: "1200" },
+    { label: "30 minutes", value: "1800" },
+    { label: "1 hour", value: "3600" },
+]
 
 export default function SecurityPage() {
     return (
@@ -39,31 +42,18 @@ export default function SecurityPage() {
                 <Field>
                     <FieldTitle>Auto Lock after:</FieldTitle>
                     <FieldDescription>Set your preferred auto lock time.</FieldDescription>
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="lg">
-                                10 minutes
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                                1 minute
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                5 minutes
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                10 minutes
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                20 minutes
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                1 hour
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Select defaultValue={autoLockOptions[0].value}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select preferred lock time." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {autoLockOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value} className="cursor-pointer">
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </Field>
             </Field>
         </motion.div>

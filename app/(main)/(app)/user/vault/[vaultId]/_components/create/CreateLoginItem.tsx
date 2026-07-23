@@ -34,7 +34,7 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
 
     const { mutate, isPending } = useMutation({
         mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey();
+            const vaultKey = useVaultStore.getState().getVaultKey(vaultId);
             const payload = JSON.stringify({ name, url, username, email, password, note });
             const { ciphertext, iv } = encryptData(payload, vaultKey);
             return createVaultItem({ vaultId, encryptedData: ciphertext, iv, itemType: VaultItemType.LOGIN });

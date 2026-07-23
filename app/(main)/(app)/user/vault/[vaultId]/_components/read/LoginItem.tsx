@@ -11,43 +11,42 @@ import {
 
 import { Input } from "@/components/ui/input"
 import PasswordCopyInput from "../../../../_components/PasswordCopyInput";
-import { VaultItem } from "@/lib/types/VaultType";
 
-export default function LoginItem({ loginItem }: { loginItem: VaultItem }) {
+export default function LoginItem({ loginItem }: { loginItem: any }) {
     return (
         <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background overflow-y-scroll">
             <FieldSet>
-                <FieldTitle className="text-primary text-6xl font-bold">{JSON.parse(loginItem.encryptedData!).name}</FieldTitle>
+                <FieldTitle className="text-primary text-6xl font-bold">{loginItem.name}</FieldTitle>
                 <FieldDescription className="text-muted-foreground text-xl">View your <span className="font-bold">{loginItem.itemType}</span> details.</FieldDescription>
             </FieldSet>
 
             <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
                 <Field>
                     <FieldLabel>Name</FieldLabel>
-                    <Input type="text" placeholder="Name of login item" id="name" value={JSON.parse(loginItem.encryptedData!).name!} readOnly className="h-12" />
+                    <Input type="text" placeholder="Name of login item" id="name" value={loginItem.name} readOnly className="h-12" />
                 </Field>
                 <Field>
                     <FieldLabel>URL</FieldLabel>
-                    <Input type="text" placeholder="https://example.com" id="url" value={JSON.parse(loginItem.encryptedData!).url!} readOnly className="h-12" />
+                    <Input type="text" placeholder="https://example.com" id="url" value={loginItem.url} readOnly className="h-12" />
                 </Field>
                 <Field>
                     <FieldLabel>Username</FieldLabel>
-                    <Input type="text" placeholder="Username" id="username" value={JSON.parse(loginItem.encryptedData!).username!} readOnly className="h-12" />
+                    <Input type="text" placeholder="Username" id="username" value={loginItem.username} readOnly className="h-12" />
                 </Field>
 
                 <Field>
                     <FieldLabel>Email</FieldLabel>
-                    <Input type="email" placeholder="Email" id="email" value={JSON.parse(loginItem.encryptedData!).email!} readOnly className="h-12" />
+                    <Input type="email" placeholder="Email" id="email" value={loginItem.email} readOnly className="h-12" />
                 </Field>
 
                 <Field>
                     <FieldLabel>Password</FieldLabel>
-                    <PasswordCopyInput placeholder="Password" id="password" value={JSON.parse(loginItem.encryptedData!).password!} readOnly className="h-12" />
+                    <PasswordCopyInput placeholder="Password" id="password" value={loginItem.password} readOnly className="h-12" />
                 </Field>
 
                 <Field>
                     <FieldLabel>Note</FieldLabel>
-                    <Input type="text" placeholder="Note" id="note" value={JSON.parse(loginItem.encryptedData!).note!} readOnly className="h-12" />
+                    <Input type="text" placeholder="Note" id="note" value={loginItem.note} readOnly className="h-12" />
                 </Field>
             </FieldGroup>
 

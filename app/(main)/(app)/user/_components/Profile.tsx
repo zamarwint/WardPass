@@ -21,13 +21,14 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { GetAuthSession } from "@/lib/queries/GetSessionQuery";
 
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
+import { getUserSession } from "@/app/actions/getSession";
+import { useQuery } from "@tanstack/react-query";
 
 export function ProfileAvatar({ image, alt, fallback, size }: { image: string, alt: string, fallback: string, size: string }) {
     return (
@@ -43,11 +44,19 @@ export function ProfileAvatar({ image, alt, fallback, size }: { image: string, a
 }
 
 export default function Profile() {
-    const { isPending, data, error } = GetAuthSession();
+    const { isPending, data, error } = useQuery({
+        queryKey: ["get-session-profile"],
+        queryFn: () => getUserSession(),
+        refetchOnMount: true,
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+        staleTime: 1000 * 60 * 2,
+        gcTime: 1000 * 60 * 5
+    })
 
     if (error) toast.error(error.message);
 
-    const [newName, setNewName] = useState<string | undefined>(data?.user?.name);
+    const [newName, setNewName] = useState<string>(data?.user?.name as string);
     const [newImage, setNewImage] = useState(data?.user.image);
     const [nameChangePending, startNameChangeTransition] = useTransition();
     const [imageChangePending, startImageChangeTransition] = useTransition();
@@ -101,7 +110,7 @@ export default function Profile() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline" size="lg" className="w-full flex justify-start py-7">
+                <Button variant="ghost" size="lg" className="w-full flex justify-start py-7">
                     {isPending ? (
                         <>
                             <Loader2Icon className="size-4 animate-spin" />

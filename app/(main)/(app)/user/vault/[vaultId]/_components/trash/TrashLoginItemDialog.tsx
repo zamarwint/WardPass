@@ -14,10 +14,9 @@ import {
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { VaultItem } from "@/lib/types/VaultType";
 import { trashVaultItem } from "@/app/actions/vault-item/trashVaultItem";
 
-export default function TrashLoginItemDialog({ open, onOpenChange, loginItem }: { open: boolean, onOpenChange: (open: boolean) => void, loginItem: VaultItem }) {
+export default function TrashLoginItemDialog({ open, onOpenChange, loginItem }: { open: boolean, onOpenChange: (open: boolean) => void, loginItem: any }) {
     const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
@@ -50,9 +49,9 @@ export default function TrashLoginItemDialog({ open, onOpenChange, loginItem }: 
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Move <span className="font-bold">{JSON.parse(loginItem.encryptedData!).name}</span> to Trash</AlertDialogTitle>
+                    <AlertDialogTitle>Move <span className="font-bold">{loginItem.name}</span> to Trash</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to move <span className="font-bold">{JSON.parse(loginItem.encryptedData!).name}</span> to Trash?
+                        Are you sure you want to move <span className="font-bold">{loginItem.name}</span> to Trash?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

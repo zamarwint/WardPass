@@ -33,19 +33,19 @@ export function LockSideButton({ disabled = false }: { disabled?: boolean }) {
     const router = useRouter();
 
     const handleLock = () => {
-        useVaultStore.getState().lock();
-        router.push("/user/vault"); // Or just show the unlock modal
+        useVaultStore.getState().lockAll();
+        router.push("/user/vault"); // Show the unlock modal
     };
 
     return (
-        <Button disabled={disabled} variant={"ghost"} size="lg" className="w-full flex justify-start" onClick={handleLock}>
+        <Button disabled={disabled} variant={"ghost"} size="lg" className="w-full flex justify-start mb-2" onClick={handleLock}>
             <LockIcon className="w-4 h-4" />
-            <span>Lock Vaults</span>
+            <span>Lock WardPass</span>
         </Button>
     )
 }
 
-export function SideButton({ Icon, href, hrefExact = false, text, disabled = false, className }: { Icon: React.ReactNode, href: string, hrefExact: boolean, text: string, disabled?: boolean, className?: string }) {
+export function LinkSideButton({ Icon, href, hrefExact = false, text, disabled = false, className }: { Icon: React.ReactNode, href: string, hrefExact: boolean, text: string, disabled?: boolean, className?: string }) {
     const pathName = usePathname();
 
     return (

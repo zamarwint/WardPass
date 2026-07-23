@@ -16,14 +16,13 @@ import {
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArchiveRestore } from "lucide-react";
-import { VaultItem } from "@/lib/types/VaultType";
 import { restoreVaultItem } from "@/app/actions/vault-item/trashVaultItem";
 
-export default function RestoreCreditCardItemDialog({ creditCardItem }: { creditCardItem: VaultItem }) {
+export default function RestoreCreditCardItemDialog({ creditCardItem }: { creditCardItem: any }) {
     const queryClient = useQueryClient();
 
     const { mutate, error, isPending } = useMutation({
-        mutationFn: () => restoreVaultItem(creditCardItem.id!),
+        mutationFn: () => restoreVaultItem(creditCardItem.id),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Restoring Credit Card Item...");
@@ -32,7 +31,7 @@ export default function RestoreCreditCardItemDialog({ creditCardItem }: { credit
             toast.dismiss();
             toast.success("Credit Card Item restored successfully!");
             queryClient.invalidateQueries({
-                queryKey: ["restoreVaultItems", creditCardItem.vaultId],
+                queryKey: ["trashedItems"],
                 refetchType: 'active'
             });
         },
@@ -53,9 +52,9 @@ export default function RestoreCreditCardItemDialog({ creditCardItem }: { credit
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Restore <span className="font-bold">{JSON.parse(creditCardItem.encryptedData!).cardHolderName}</span></AlertDialogTitle>
+                    <AlertDialogTitle>Restore <span className="font-bold">{creditCardItem.cardHolderName}</span></AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to restore <span className="font-bold">{JSON.parse(creditCardItem.encryptedData!).cardHolderName}</span>?
+                        Are you sure you want to restore <span className="font-bold">{creditCardItem.cardHolderName}</span>?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

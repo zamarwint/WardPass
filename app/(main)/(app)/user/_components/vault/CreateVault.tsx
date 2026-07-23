@@ -34,20 +34,26 @@ export default function CreateVault() {
     const [vaultColor, setVaultColor] = useState<string>("");
     const [open, setOpen] = useState<boolean>(false);
 
+    // ✅ Master password lives in local state — form input only
+    const [masterPassword, setMasterPassword] = useState<string>("");
+
     const { mutate, isPending } = useMutation({
         mutationFn: async () => {
-            const masterPassword = useVaultStore.getState().masterPassword;
+            // ✅ Read directly from local state, not the Zustand store
             if (!masterPassword) {
-                throw new Error("Master password not found in session. Please sign in again or unlock your vault.");
+                throw new Error("Please enter your master password.");
             }
 
             const salt = generateSalt();
             const derivedKey = await deriveKey(masterPassword, salt);
             const vaultKey = generateVaultKey();
+
             const { encryptedKey, keyIv } = encryptVaultKey(vaultKey, derivedKey);
             const { hash: verificationHash, hashIv } = createVerificationHash(vaultKey);
 
-            return createVault(
+            // ✅ After vault is created, unlock it immediately so the user
+            //    doesn't have to re-enter their password right away
+            const result = await createVault(
                 vaultName,
                 selectedIcon as string,
                 vaultColor,
@@ -57,6 +63,11 @@ export default function CreateVault() {
                 verificationHash,
                 hashIv
             );
+
+            // ✅ After creating the vault, unlock it immediately by passing its ID
+            useVaultStore.getState().unlock(result!.id, vaultKey);
+
+            return result;
         },
         onMutate: () => {
             toast.dismiss();
@@ -64,6 +75,7 @@ export default function CreateVault() {
         },
         onSuccess: () => {
             toast.dismiss();
+            setMasterPassword("")
             setOpen(false);
             toast.success("Vault created successfully!");
         },
@@ -110,9 +122,13 @@ export default function CreateVault() {
                     <Label htmlFor="vaultColor">Enter Vault Color</Label>
                     <Input id="vaultColor" placeholder="e.g. red, green, blue" value={vaultColor} onChange={(e) => setVaultColor(e.target.value)} />
                 </div>
+                <div className="flex flex-col gap-3">
+                    <Label htmlFor="masterPassword">Enter Master Password</Label>
+                    <Input type="password" id="masterPassword" placeholder="Enter your master password to create vault" value={masterPassword} onChange={(e) => setMasterPassword(e.target.value)} />
+                </div>
                 <DialogFooter className="font-geist">
                     <DialogClose className="text-md mr-1">Cancel</DialogClose>
-                    <Button disabled={isPending || !vaultName || !selectedIcon || !vaultColor} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
+                    <Button disabled={isPending || !vaultName || !selectedIcon || !vaultColor || !masterPassword} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

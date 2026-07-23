@@ -15,13 +15,12 @@ import {
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { trashVaultItem } from "@/app/actions/vault-item/trashVaultItem";
-import { VaultItem } from "@/lib/types/VaultType";
 
-export default function TrashIdentityItemDialog({ open, onOpenChange, identityItem }: { open: boolean, onOpenChange: (open: boolean) => void, identityItem: VaultItem }) {
+export default function TrashIdentityItemDialog({ open, onOpenChange, identityItem }: { open: boolean, onOpenChange: (open: boolean) => void, identityItem: any }) {
     const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: () => trashVaultItem(identityItem.id!),
+        mutationFn: () => trashVaultItem(identityItem.id),
         onMutate: () => {
             toast.dismiss();
             toast.loading("Moving Identity Item to Trash...");
@@ -51,9 +50,9 @@ export default function TrashIdentityItemDialog({ open, onOpenChange, identityIt
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Move <span className="font-bold">{JSON.parse(identityItem.encryptedData!).name}</span> to Trash</AlertDialogTitle>
+                    <AlertDialogTitle>Move <span className="font-bold">{identityItem.name}</span> to Trash</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to move <span className="font-bold">{JSON.parse(identityItem.encryptedData!).name}</span> to Trash?
+                        Are you sure you want to move <span className="font-bold">{identityItem.name}</span> to Trash?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

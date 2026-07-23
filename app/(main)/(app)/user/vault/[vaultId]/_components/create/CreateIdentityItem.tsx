@@ -62,7 +62,7 @@ export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: strin
 
     const { mutate, isPending } = useMutation({
         mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey();
+            const vaultKey = useVaultStore.getState().getVaultKey(vaultId);
             const payload = JSON.stringify({
                 name, email, phoneNumber, organizationName, address1, address2,
                 zipCode, city, state, country, floor, county, poBox,
@@ -253,7 +253,7 @@ export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: strin
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !name || !email || !phoneNumber || !organizationName || !address1 || !zipCode || !city || !country}>
+                    <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !name || !email || !phoneNumber}>
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

@@ -39,8 +39,10 @@ import IdentityDropdown from "./_components/dropdowns/IdentityDropdown";
 // THE PURPOSE OF THIS PAGE IS TO DISPLAY ALL THE VAULT ITEMS IN A LIST ON THE LEFT SIDE, AND WHEN SELECTED, DISPLAY THE ITEM DETAILS ON THE RIGHT SIDE. 
 // LIKE LOGIN ITEMS, SECURE NOTE ITEMS, CREDIT CARD ITEMS, AND IDENTITY ITEMS
 export default function VaultIDPage() {
-    const { vaultId } = useParams();
-    const [selectedItem, setSelectedItem] = useState<VaultItem | null>(null);
+    const params = useParams();
+    const vaultId = params.vaultId as string;
+
+    const [selectedItem, setSelectedItem] = useState<any>(null);
 
     // DROPDOWN
     const [openDropdown, setOpenDropdown] = useState<boolean>(false);
@@ -72,22 +74,21 @@ export default function VaultIDPage() {
 
     // AUTO-UNLOCK
     useEffect(() => {
-        if (!vaultItems || store.isUnlocked || !store.masterPassword) return;
+        if (!vaultItems || store.isVaultUnlocked(vaultId) || !store.masterPassword) return;
 
         let isMounted = true;
         const autoUnlock = async () => {
             setIsAutoUnlocking(true);
             try {
-                // Yield to allow UI to show loading state
                 await new Promise((resolve) => setTimeout(resolve, 50));
                 const saltBytes = fromBase64(vaultItems.salt!);
                 const derivedKey = await deriveKey(store.masterPassword!, saltBytes);
                 const vaultKey = decryptVaultKey(vaultItems.encryptedKey!, vaultItems.keyIv!, derivedKey);
 
                 if (verifyVaultKey(vaultItems.verificationHash!, vaultItems.hashIv!, vaultKey) && isMounted) {
-                    store.unlock(vaultKey);
+                    store.unlock(vaultId, vaultKey); // ← vaultId added
                 } else {
-                    store.setMasterPassword(""); // invalid password
+                    store.setMasterPassword("");
                 }
             } catch (err) {
                 console.error("Auto unlock failed", err);
@@ -99,19 +100,21 @@ export default function VaultIDPage() {
 
         autoUnlock();
         return () => { isMounted = false; };
-    }, [vaultItems, store.isUnlocked, store.masterPassword, store]);
+    }, [vaultItems, vaultId, store.vaultKeys, store.masterPassword]);
 
     if (vaultItemsError) {
         toast.error("There was an error loading your vault. Please try refreshing the page." + vaultItemsError?.message);
         redirect("/user/vault");
     }
 
-    const needsUnlock = vaultItems && !store.isUnlocked && !isAutoUnlocking;
+    // ✅ isVaultUnlocked(id) replaces the old boolean store.isUnlocked
+    const needsUnlock = vaultItems && !store.isVaultUnlocked(vaultId) && !isAutoUnlocking;
 
     const decryptedVaultItems = useMemo(() => {
-        if (!vaultItems || !store.isUnlocked) return null;
+        if (!vaultItems || !store.isVaultUnlocked(vaultId)) return null;
         try {
-            const key = store.getVaultKey();
+            // ✅ getVaultKey now takes the vaultId
+            const key = store.getVaultKey(vaultId);
             const decryptItem = (item: VaultItem) => {
                 if (!item.encryptedData || !item.iv) return item;
                 const json = decryptData(item.encryptedData, item.iv, key);
@@ -119,13 +122,15 @@ export default function VaultIDPage() {
             };
             return {
                 ...vaultItems,
-                vaultItems: vaultItems.vaultItems?.map(decryptItem)
+                vaultItems: vaultItems.vaultItems?.map(decryptItem),
             };
         } catch (err) {
             console.error("Failed to decrypt items", err);
             return null;
         }
-    }, [vaultItems, store]);
+        // ✅ Depend on store.vaultKeys (the whole Record) — a new object
+        //    reference is produced on every unlock/lock, so React sees the change
+    }, [vaultItems, vaultId, store.vaultKeys]);
 
     return (
         <>
@@ -162,72 +167,76 @@ export default function VaultIDPage() {
                     </DropdownMenu>
                     <Separator className="bg-muted" />
                     <div className="w-[90%] mt-4 flex-1 overflow-y-auto pb-8" onDoubleClick={unSelectItems}>
-                        {vaultItemsLoading ? <div>Loading...</div> : (!decryptedVaultItems || decryptedVaultItems.vaultItems!.length === 0) ?
-                            <div className="text-muted-foreground mt-4 text-center">No items found. Create a new item to continue.</div>
-                            : <div className="size-full text-left mt-4">
-                                {decryptedVaultItems.vaultItems?.map((item: VaultItem) => (
-                                    item.itemType === 'LOGIN' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                        <div className="flex gap-3 p-2">
-                                            <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-xl">
-                                                <Globe className="size-[80%] text-primary" />
-                                            </div>
-                                            <div className="size-full flex flex-col items-start justify-center">
-                                                <h1 className="text-primary font-bold">{JSON.parse(item.encryptedData!).name}</h1>
-                                                <p className="font-mono text-sm">{JSON.parse(item.encryptedData!).email}</p>
-                                            </div>
-                                        </div>
-                                        {selectedItem?.id === item.id && <LoginDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} loginItem={item} />}
-                                    </div>
-                                ))}
-                                {decryptedVaultItems.vaultItems?.map((item: VaultItem) => (
-                                    item.itemType === 'SECURE_NOTE' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                        <div className="flex flex-col gap-3 p-2 w-[90%]">
-                                            <div className="size-full flex flex-col items-start justify-center gap-2">
-                                                <div className="flex items-center gap-2">
-                                                    <NotebookPen className="size=[80%] text-primary" />
-                                                    <h1 className="font-bold">{JSON.parse(item.encryptedData!).title}</h1>
+                        {vaultItemsLoading ? (
+                            <div>Loading...</div>
+                        ) : (!decryptedVaultItems || decryptedVaultItems.vaultItems!.length === 0) ?
+                            (
+                                <div className="text-muted-foreground mt-4 text-center">No items found. Create a new item to continue.</div>
+                            ) : (
+                                <div className="size-full text-left mt-4">
+                                    {decryptedVaultItems.vaultItems?.map((item) => (
+                                        item.itemType === 'LOGIN' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                            <div className="flex gap-3 p-2">
+                                                <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-xl">
+                                                    <Globe className="size-[80%] text-primary" />
                                                 </div>
-                                                <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{JSON.parse(item.encryptedData!).content}</p>
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <Separator />
-                                                <div className="flex items-center justify-between w-full pt-2">
-                                                    <p className="text-xs font-medium text-muted-foreground">LAST UPDATED</p>
-                                                    <p className="text-xs font-mono text-muted-foreground">{item.updatedAt?.toDateString()}</p>
+                                                <div className="size-full flex flex-col items-start justify-center">
+                                                    <h1 className="text-primary font-bold">{item.name}</h1>
+                                                    <p className="font-mono text-sm">{item.url}</p>
                                                 </div>
                                             </div>
+                                            {selectedItem?.id === item.id && <LoginDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} loginItem={item} />}
                                         </div>
-                                        {selectedItem?.id === item.id && <SecureNoteDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} secureNoteItem={item} />}
-                                    </div>
-                                ))}
-                                {decryptedVaultItems.vaultItems?.map((item: VaultItem) => (
-                                    item.itemType === 'CREDIT_CARD' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                        <div className="flex flex-col gap-2 p-2 w-full">
-                                            <CreditCard className="size=[80%] text-primary" />
-                                            <div className="size-full flex flex-col items-start justify-center gap-1">
-                                                <h1 className="font-bold">{JSON.parse(item.encryptedData!).cardHolderName}</h1>
-                                                <p className="text-md text-muted-foreground font-medium line-clamp-1">{JSON.parse(item.encryptedData!).billingAddress1}</p>
+                                    ))}
+                                    {decryptedVaultItems.vaultItems?.map((item) => (
+                                        item.itemType === 'SECURE_NOTE' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                            <div className="flex flex-col gap-3 p-2 w-[90%]">
+                                                <div className="size-full flex flex-col items-start justify-center gap-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <NotebookPen className="size=[80%] text-primary" />
+                                                        <h1 className="font-bold">{item.title}</h1>
+                                                    </div>
+                                                    <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{item.content}</p>
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <Separator />
+                                                    <div className="flex items-center justify-between w-full pt-2">
+                                                        <p className="text-xs font-medium text-muted-foreground">LAST UPDATED</p>
+                                                        <p className="text-xs font-mono text-muted-foreground">{item.updatedAt?.toDateString()}</p>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            {selectedItem?.id === item.id && <SecureNoteDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} secureNoteItem={item} />}
                                         </div>
-                                        {selectedItem?.id === item.id && <CreditCardDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} creditCardItem={item} />}
-                                    </div>
-                                ))}
-                                {decryptedVaultItems.vaultItems?.map((item: VaultItem) => (
-                                    item.itemType === 'IDENTITY' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                        <div className="flex gap-3 p-2">
-                                            <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-full">
-                                                <IdCard className="size-[70%] text-primary" />
+                                    ))}
+                                    {decryptedVaultItems.vaultItems?.map((item) => (
+                                        item.itemType === 'CREDIT_CARD' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                            <div className="flex flex-col gap-2 p-2 w-full">
+                                                <CreditCard className="size=[80%] text-primary" />
+                                                <div className="size-full flex flex-col items-start justify-center gap-1">
+                                                    <h1 className="font-bold">{item.cardHolderName}</h1>
+                                                    <p className="text-md text-muted-foreground font-medium line-clamp-1">{item.cardNumber}</p>
+                                                </div>
                                             </div>
-                                            <div className="size-full flex flex-col items-start justify-center">
-                                                <h1 className="font-bold">{JSON.parse(item.encryptedData!).name}</h1>
-                                                <p className="font-mono text-sm">{JSON.parse(item.encryptedData!).phoneNumber}</p>
-                                            </div>
+                                            {selectedItem?.id === item.id && <CreditCardDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} creditCardItem={item} />}
                                         </div>
-                                        {selectedItem?.id === item.id && <IdentityDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} identityItem={item} />}
-                                    </div>
-                                ))}
-                            </div>
-                        }
+                                    ))}
+                                    {decryptedVaultItems.vaultItems?.map((item) => (
+                                        item.itemType === 'IDENTITY' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                            <div className="flex gap-3 p-2">
+                                                <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-full">
+                                                    <IdCard className="size-[70%] text-primary" />
+                                                </div>
+                                                <div className="size-full flex flex-col items-start justify-center">
+                                                    <h1 className="font-bold">{item.name}</h1>
+                                                    <p className="font-mono text-sm">{item.phoneNumber}</p>
+                                                </div>
+                                            </div>
+                                            {selectedItem?.id === item.id && <IdentityDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} identityItem={item} />}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                     </div>
                 </div>
                 <div className="flex-1 h-full flex items-center justify-center overflow-y-auto">
@@ -241,10 +250,10 @@ export default function VaultIDPage() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center size-full">
-                            {selectedItem?.itemType === "LOGIN" && <LoginItem loginItem={selectedItem as VaultItem} />}
-                            {selectedItem?.itemType === "SECURE_NOTE" && <SecureNoteItem secureNoteItem={selectedItem as VaultItem} />}
-                            {selectedItem?.itemType === "CREDIT_CARD" && <CreditCardItem creditCardItem={selectedItem as VaultItem} />}
-                            {selectedItem?.itemType === "IDENTITY" && <IdentityItem identityItem={selectedItem as VaultItem} />}
+                            {selectedItem?.itemType === "LOGIN" && <LoginItem loginItem={selectedItem} />}
+                            {selectedItem?.itemType === "SECURE_NOTE" && <SecureNoteItem secureNoteItem={selectedItem} />}
+                            {selectedItem?.itemType === "CREDIT_CARD" && <CreditCardItem creditCardItem={selectedItem} />}
+                            {selectedItem?.itemType === "IDENTITY" && <IdentityItem identityItem={selectedItem} />}
                         </div>
                     )}
                 </div>

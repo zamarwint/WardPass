@@ -41,7 +41,7 @@ export default function CreateSecureNoteItem({ vaultId, cancel }: { vaultId: str
 
     const { mutate, isPending } = useMutation({
         mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey();
+            const vaultKey = useVaultStore.getState().getVaultKey(vaultId);
             const payload = JSON.stringify({ title, content });
             const { ciphertext, iv } = encryptData(payload, vaultKey);
             return createVaultItem({ vaultId, encryptedData: ciphertext, iv, itemType: VaultItemType.SECURE_NOTE });
