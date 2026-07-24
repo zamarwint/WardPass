@@ -18,8 +18,10 @@ import { deleteVault } from "@/app/actions/vault/deleteVault";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function DeleteVault({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: { id: string, name: string, slug: string, icon: string, iconColor: string | null } }) {
+    const queryClient = useQueryClient();
     const [vaultNameConfirm, setVaultNameConfirm] = useState<string>("");
 
     const { mutate, isPending } = useMutation({
@@ -31,6 +33,10 @@ export default function DeleteVault({ open, onOpenChange, vault }: { open: boole
         onSuccess: () => {
             toast.dismiss();
             toast.success("Vault deleted successfully!");
+            queryClient.invalidateQueries({
+                queryKey: ["vaults"],
+                refetchType: 'active'
+            });
             onOpenChange(false);
         },
         onError: (err) => {

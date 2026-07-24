@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/avatar"
 import { getUserSession } from "@/app/actions/getSession";
 import { useQuery } from "@tanstack/react-query";
+import { cn } from "@/lib/utils";
 
 export function ProfileAvatar({ image, alt, fallback, size }: { image: string, alt: string, fallback: string, size: string }) {
     return (
@@ -43,7 +44,7 @@ export function ProfileAvatar({ image, alt, fallback, size }: { image: string, a
     )
 }
 
-export default function Profile() {
+export default function Profile({ collapsed }: { collapsed: boolean }) {
     const { isPending, data, error } = useQuery({
         queryKey: ["get-session-profile"],
         queryFn: () => getUserSession(),
@@ -114,20 +115,24 @@ export default function Profile() {
                     {isPending ? (
                         <>
                             <Loader2Icon className="size-4 animate-spin" />
-                            <span>Loading...</span>
+                            <span className={cn("font-semibold", collapsed ? "hidden" : "block")}>Loading...</span>
                         </>
                     ) : (
-                        <motion.div className="flex items-center justify-between gap-2 w-full">
+                        <motion.div className="w-full flex items-center justify-between gap-2">
                             <div className="flex items-center justify-center gap-2">
                                 <ProfileAvatar size="size-8" image={data?.user.image as string} alt={data?.user.name || "Profile picture"} fallback={`${data?.user.name.split(" ")[0][0]}${data?.user.name.split(" ")[1][0]}`} />
-                                <div className="flex flex-col items-start justify-start">
-                                    <div className="font-semibold">{data ? data.user.name : "Name"}</div>
-                                    <div className="font-normal text-muted-foreground">{data ? data.user.email : "Email"}</div>
+                                {!collapsed && (
+                                    <div className="flex flex-col items-start justify-start">
+                                        <div className="font-semibold">{data ? data.user.name : "Name"}</div>
+                                        <div className="font-normal text-muted-foreground">{data ? data.user.email : "Email"}</div>
+                                    </div>
+                                )}
+                            </div>
+                            {!collapsed ? (
+                                <div>
+                                    <SquarePen />
                                 </div>
-                            </div>
-                            <div>
-                                <SquarePen />
-                            </div>
+                            ) : null}
                         </motion.div>
                     )}
                 </Button>
@@ -144,8 +149,8 @@ export default function Profile() {
                         <motion.div className="flex flex-col items-center justify-center gap-2">
                             <ProfileAvatar size="size-32" image={data?.user.image as string} alt={data?.user.name || "Profile picture"} fallback={`${data?.user.name.split(" ")[0][0]}${data?.user.name.split(" ")[1][0]}`} />
                             <motion.div className="flex items-center justify-center gap-2">
-                                <Button>Edit Image</Button>
-                                <Button variant="destructive">Remove Image</Button>
+                                <Button disabled>Edit Image</Button>
+                                <Button variant="destructive" disabled>Remove Image</Button>
                             </motion.div>
                         </motion.div>
                         <Separator />

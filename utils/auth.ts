@@ -36,6 +36,15 @@ export const auth = betterAuth({
         },
         async afterEmailVerification(user) {
             console.log(`User ${user.email} has been successfully verified.`);
+
+            // Create Settings
+            const createSettings = await prisma.settings.create({
+                data: {
+                    userId: user.id,
+                }
+            });
+
+            console.log('Created settings: ' + createSettings.id);
             redirect('/user/vault');
         }
     },

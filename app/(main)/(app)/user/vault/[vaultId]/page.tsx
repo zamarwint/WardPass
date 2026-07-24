@@ -182,7 +182,7 @@ export default function VaultIDPage() {
                                                 </div>
                                                 <div className="size-full flex flex-col items-start justify-center">
                                                     <h1 className="text-primary font-bold">{item.name}</h1>
-                                                    <p className="font-mono text-sm">{item.url}</p>
+                                                    <p className="font-mono text-sm">{item.email}</p>
                                                 </div>
                                             </div>
                                             {selectedItem?.id === item.id && <LoginDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} loginItem={item} />}

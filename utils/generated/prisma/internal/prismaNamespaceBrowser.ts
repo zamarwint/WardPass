@@ -56,7 +56,8 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Vault: 'Vault',
-  VaultItem: 'VaultItem'
+  VaultItem: 'VaultItem',
+  Settings: 'Settings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -164,6 +165,18 @@ export const VaultItemScalarFieldEnum = {
 } as const
 
 export type VaultItemScalarFieldEnum = (typeof VaultItemScalarFieldEnum)[keyof typeof VaultItemScalarFieldEnum]
+
+
+export const SettingsScalarFieldEnum = {
+  id: 'id',
+  autoLockTimeInMinutes: 'autoLockTimeInMinutes',
+  hiddenTabTimeoutInMinutes: 'hiddenTabTimeoutInMinutes',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SettingsScalarFieldEnum = (typeof SettingsScalarFieldEnum)[keyof typeof SettingsScalarFieldEnum]
 
 
 export const SortOrder = {

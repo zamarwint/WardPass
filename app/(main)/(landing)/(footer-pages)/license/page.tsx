@@ -16,7 +16,7 @@ export default function LicensePage() {
             <div className="flex flex-col items-center justify-center text-center gap-12">
                 <div className="flex flex-col gap-6">
                     <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">License</h1>
-                    <div className="text-xl text-muted-foreground flex items-center">
+                    <div className="text-xl text-muted-foreground flex items-center justify-center">
                         <span>WardPass is open-source, under the</span>
                         <Link href="https://opensource.org/license/mit/" target="_blank" rel="noopener noreferrer" className={`font-bold text-foreground hover:text-primary flex items-center justify-center gap-1.5 mx-2 ${LineAnimationClass}`}>
                             MIT License

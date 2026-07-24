@@ -389,7 +389,8 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Vault: 'Vault',
-  VaultItem: 'VaultItem'
+  VaultItem: 'VaultItem',
+  Settings: 'Settings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "vault" | "vaultItem"
+    modelProps: "user" | "session" | "account" | "verification" | "vault" | "vaultItem" | "settings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -853,6 +854,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Settings: {
+      payload: Prisma.$SettingsPayload<ExtArgs>
+      fields: Prisma.SettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.SettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
+        }
+        findMany: {
+          args: Prisma.SettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>[]
+        }
+        create: {
+          args: Prisma.SettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
+        }
+        createMany: {
+          args: Prisma.SettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.SettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
+        }
+        update: {
+          args: Prisma.SettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.SettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.SettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.SettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSettings>
+        }
+        groupBy: {
+          args: Prisma.SettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SettingsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -983,6 +1058,18 @@ export const VaultItemScalarFieldEnum = {
 export type VaultItemScalarFieldEnum = (typeof VaultItemScalarFieldEnum)[keyof typeof VaultItemScalarFieldEnum]
 
 
+export const SettingsScalarFieldEnum = {
+  id: 'id',
+  autoLockTimeInMinutes: 'autoLockTimeInMinutes',
+  hiddenTabTimeoutInMinutes: 'hiddenTabTimeoutInMinutes',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SettingsScalarFieldEnum = (typeof SettingsScalarFieldEnum)[keyof typeof SettingsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1059,6 +1146,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1177,6 +1278,7 @@ export type GlobalOmitConfig = {
   verification?: Prisma.VerificationOmit
   vault?: Prisma.VaultOmit
   vaultItem?: Prisma.VaultItemOmit
+  settings?: Prisma.SettingsOmit
 }
 
 /* Types for Logging */

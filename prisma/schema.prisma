@@ -24,6 +24,8 @@ model User {
   accounts      Account[]
   vaults        Vault[]
 
+  settings Settings?
+
   @@unique([email])
   @@map("user")
 }
@@ -113,4 +115,17 @@ model VaultItem {
 
   @@index([vaultId])
   @@map("vaultItem")
+}
+
+model Settings {
+  id                        String @id @default(cuid())
+  autoLockTimeInMinutes     Int    @default(15)
+  hiddenTabTimeoutInMinutes Int    @default(5)
+
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
 }
