@@ -1,22 +1,25 @@
 "use client";
 
 import { authClient } from "@/utils/auth-client";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { FieldDescription, FieldSet, FieldTitle } from "@/components/ui/field";
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldTitle } from "@/components/ui/field";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader2Icon, X } from "lucide-react";
 import { WebsiteCredentialCard } from "@/app/_components/UICards";
 import { DotPattern } from "@/components/ui/dot-pattern";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
-export default function ResetPasswordComponent({ currentUserEmail, cancel }: { currentUserEmail: string, cancel: () => void }) {
+export default function ResetPasswordComponent({ cancel }: { cancel: () => void }) {
     const [resetPasswordPending, StartResetPasswordTransition] = useTransition();
+    const [email, setEmail] = useState("");
 
     const handleResendPasswordResetEmail = async () => {
         StartResetPasswordTransition(async () => {
             await authClient.requestPasswordReset({
-                email: currentUserEmail,
+                email: email,
                 redirectTo: process.env.NEXT_PUBLIC_APP_URL + '/reset-password',
                 fetchOptions: {
                     onRequest: () => {
@@ -41,11 +44,24 @@ export default function ResetPasswordComponent({ currentUserEmail, cancel }: { c
                 {/* RESET PASSWORD CARD */}
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-12 border-r border-foreground/5">
                     <Link href="/" className="font-bold text-3xl tracking-tighter text-primary uppercase">WARDPASS</Link>
+
                     <FieldSet>
-                        <FieldTitle className="text-8xl font-bold text-center">Reset Password</FieldTitle>
-                        <FieldDescription className="text-center text-xl">Check your email for a <span className="font-bold">reset link</span></FieldDescription>
+                        <FieldGroup className="w-xl">
+                            <Field className="space-y-2">
+                                <FieldTitle className="text-7xl font-bold text-center">Reset Password</FieldTitle>
+                                {!email && <FieldDescription className="text-center text-xl">Enter your email address to receive a password reset link.</FieldDescription>}
+                            </Field>
+
+                            <Separator className="mt-4" />
+
+                            <Field>
+                                <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
+                                <Input type="email" id="email" required placeholder="e.g. alexpeart@gmail.com" className="h-12" onChange={(e) => setEmail(e.target.value)} />
+                            </Field>
+                        </FieldGroup>
                     </FieldSet>
                     <FieldSet>
+                        {email && <FieldDescription className="text-center text-xl">Check your email for a <span className="font-bold">reset link afterwards.</span></FieldDescription>}
                         <Button size="lg" className="text-md px-6 py-7" onClick={handleResendPasswordResetEmail}>
                             {resetPasswordPending ? (
                                 <>

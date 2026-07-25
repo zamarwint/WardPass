@@ -11,8 +11,9 @@ import {
 
 import { Input } from "@/components/ui/input"
 import PasswordCopyInput from "../../../../_components/PasswordCopyInput";
+import { LoginJSON } from "@/lib/types/VaultItemType";
 
-export default function LoginItem({ loginItem }: { loginItem: any }) {
+export default function LoginItem({ loginItem }: { loginItem: LoginJSON }) {
     return (
         <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background overflow-y-scroll">
             <FieldSet>

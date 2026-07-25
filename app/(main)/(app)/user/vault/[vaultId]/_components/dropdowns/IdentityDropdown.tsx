@@ -10,9 +10,9 @@ import { EllipsisVertical, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import UpdateIdentityItem from "../update/UpdateIdentityItem";
 import TrashIdentityItemDialog from "../trash/TrashIdentityItemDialog";
-import { VaultItem } from "@/lib/types/VaultType";
+import { IdentityJSON } from "@/lib/types/VaultItemType";
 
-export default function IdentityDropdown({ open, onOpenChange, identityItem }: { open: boolean, onOpenChange: (open: boolean) => void, identityItem: VaultItem }) {
+export default function IdentityDropdown({ open, onOpenChange, identityItem }: { open: boolean, onOpenChange: (open: boolean) => void, identityItem: IdentityJSON }) {
     const [openUpdateIdentity, setOpenUpdateIdentity] = useState(false);
     const [openDeleteIdentity, setOpenDeleteIdentity] = useState(false);
 
@@ -25,7 +25,7 @@ export default function IdentityDropdown({ open, onOpenChange, identityItem }: {
                 <DropdownMenuContent className="font-geist">
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUpdateIdentity(!openUpdateIdentity)}>
                         <PencilIcon size={20} className="mr-2" />
-                        <span>Edit</span>
+                        <span>Update</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenDeleteIdentity(!openDeleteIdentity)}>
                         <TrashIcon size={20} className="mr-2" />

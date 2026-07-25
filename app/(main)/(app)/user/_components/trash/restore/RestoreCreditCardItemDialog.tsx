@@ -13,33 +13,12 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArchiveRestore } from "lucide-react";
-import { restoreVaultItem } from "@/app/actions/vault-item/trashVaultItem";
+import { CreditCardJSON } from "@/lib/types/VaultItemType";
+import { useRestoreVaultItemMutation } from "@/lib/mutations/ItemMutations";
 
-export default function RestoreCreditCardItemDialog({ creditCardItem }: { creditCardItem: any }) {
-    const queryClient = useQueryClient();
-
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => restoreVaultItem(creditCardItem.id),
-        onMutate: () => {
-            toast.dismiss();
-            toast.loading("Restoring Credit Card Item...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Credit Card Item restored successfully!");
-            queryClient.invalidateQueries({
-                queryKey: ["trashedItems"],
-                refetchType: 'active'
-            });
-        },
-        onError: () => {
-            toast.dismiss();
-            toast.error("There was an error restoring your Credit Card Item. Please try again later." + error);
-        }
-    });
+export default function RestoreCreditCardItemDialog({ creditCardItem }: { creditCardItem: CreditCardJSON }) {
+    const { mutate, isPending } = useRestoreVaultItemMutation(creditCardItem.id);
 
     const handleSubmit = () => {
         mutate();

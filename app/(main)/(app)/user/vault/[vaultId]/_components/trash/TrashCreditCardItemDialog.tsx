@@ -12,35 +12,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { trashVaultItem } from "@/app/actions/vault-item/trashVaultItem";
+import { CreditCardJSON } from "@/lib/types/VaultItemType";
+import { useTrashVaultItemMutation } from "@/lib/mutations/ItemMutations";
 
-export default function TrashCreditCardItemDialog({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: any }) {
-    const queryClient = useQueryClient();
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => trashVaultItem(creditCardItem.id),
-        onMutate: () => {
-            toast.dismiss();
-            toast.loading("Moving Credit Card Item to Trash...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Credit Card Item moved to Trash successfully!");
-            onOpenChange(false);
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", creditCardItem.vaultId],
-                refetchType: 'active'
-            });
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("There was an error moving your Credit Card Item to Trash. Please try again later." + err);
-            onOpenChange(false);
-
-        }
-    });
+export default function TrashCreditCardItemDialog({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: CreditCardJSON }) {
+    const { mutate, isPending } = useTrashVaultItemMutation(creditCardItem.id, creditCardItem.vaultId, onOpenChange);
 
     const handleSubmit = () => {
         mutate();

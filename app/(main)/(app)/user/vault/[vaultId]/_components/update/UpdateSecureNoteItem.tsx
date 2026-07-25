@@ -11,19 +11,14 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2Icon, PenIcon } from "lucide-react";
+import { Loader2Icon, PenIcon, X } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { motion } from "motion/react"
-import updateVaultItem from "@/app/actions/vault-item/updateVaultItem";
 import { Textarea } from "@/components/ui/textarea";
-import { encryptData } from "@/lib/crypto/aes";
-import { useVaultStore } from "@/stores/vault";
+import { SecureNoteJSON } from "@/lib/types/VaultItemType";
+import { useUpdateVaultItem } from "@/lib/mutations/CoreUpdateMutations";
 
-export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secureNoteItem: any, cancel: () => void }) {
-    const queryClient = useQueryClient();
-
+export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secureNoteItem: SecureNoteJSON, cancel: () => void }) {
     const [title, setTitle] = useState<string>(secureNoteItem.title)
     const [content, setContent] = useState<string>(secureNoteItem.content)
     const [characterLength, setCharacterLength] = useState<number>(content.length)
@@ -38,30 +33,8 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
         }
     };
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey(secureNoteItem.vaultId);
-            const payload = JSON.stringify({ title, content });
-            const { ciphertext, iv } = encryptData(payload, vaultKey);
-            return updateVaultItem({ id: secureNoteItem.id as string, vaultId: secureNoteItem.vaultId as string, encryptedData: ciphertext, iv });
-        },
-        onMutate: () => {
-            toast.loading("Updating secure note item...")
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Secure note item updated successfully");
-            cancel();
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", secureNoteItem.vaultId],
-                refetchType: 'active'
-            });
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("Failed to update secure note item." + err)
-        }
-    })
+    const data = { title, content };
+    const { mutate, isPending } = useUpdateVaultItem(secureNoteItem.id, secureNoteItem.vaultId, data, cancel)
 
     const handleSubmit = () => {
         mutate();
@@ -101,7 +74,7 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
 
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button disabled={isPending || !title || !content || (title == secureNoteItem.title && content == secureNoteItem.content)} onClick={handleSubmit} className="font-bold">
+                    <Button disabled={isPending || !title || !content || (title === secureNoteItem.title && content === secureNoteItem.content)} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />
@@ -116,6 +89,7 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
                     </Button>
                 </Field>
             </Field>
+            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
         </motion.div>
     )
 }

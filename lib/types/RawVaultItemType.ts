@@ -1,7 +1,4 @@
-import { VaultItem } from "./VaultType"
-
-// Vault Item JSON Types with the VaultItem Type attached.
-export type LoginJSON = VaultItem & {
+export type LoginJSON = {
     name: string
     url?: string
     username?: string
@@ -10,12 +7,12 @@ export type LoginJSON = VaultItem & {
     note?: string
 }
 
-export type SecureNoteJSON = VaultItem & {
+export type SecureNoteJSON = {
     title: string
     content: string
 }
 
-export type CreditCardJSON = VaultItem & {
+export type CreditCardJSON = {
     cardNumber: string
     cardHolderName: string
     expiryDate: string
@@ -28,7 +25,7 @@ export type CreditCardJSON = VaultItem & {
     country: string
 }
 
-export type IdentityJSON = VaultItem & {
+export type IdentityJSON = {
     // PERSONAL DETAILS
     name: string
     email: string

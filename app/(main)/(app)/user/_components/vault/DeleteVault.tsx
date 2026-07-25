@@ -11,40 +11,15 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { Button } from "../../../../../../components/ui/button";
-import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
-import { deleteVault } from "@/app/actions/vault/deleteVault";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useDeleteVaultMutation } from "@/lib/mutations/VaultMutations";
 
 export default function DeleteVault({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: { id: string, name: string, slug: string, icon: string, iconColor: string | null } }) {
-    const queryClient = useQueryClient();
     const [vaultNameConfirm, setVaultNameConfirm] = useState<string>("");
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => deleteVault(vault.id),
-        onMutate: () => {
-            toast.dismiss();
-            toast.loading("Deleting vault...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Vault deleted successfully!");
-            queryClient.invalidateQueries({
-                queryKey: ["vaults"],
-                refetchType: 'active'
-            });
-            onOpenChange(false);
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("There was an error deleting your vault. Please try again later." + err);
-            onOpenChange(false);
-        }
-    });
+    const { mutate, isPending } = useDeleteVaultMutation(vault.id, onOpenChange);
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>

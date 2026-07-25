@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/field"
 
 import { Input } from "@/components/ui/input"
+import { IdentityJSON } from "@/lib/types/VaultItemType";
 
-export default function IdentityItem({ identityItem }: { identityItem: any }) {
+export default function IdentityItem({ identityItem }: { identityItem: IdentityJSON }) {
     return (
         <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background overflow-y-scroll">
             <FieldSet>

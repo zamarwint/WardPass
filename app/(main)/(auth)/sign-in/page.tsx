@@ -160,7 +160,7 @@ export default function SignInPage() {
                 </div>
             </div>
             <DotPattern />
-            {showEmailToReset && <ResetPasswordComponent currentUserEmail={email} cancel={() => setShowEmailToReset(!showEmailToReset)} />}
+            {showEmailToReset && <ResetPasswordComponent cancel={() => setShowEmailToReset(!showEmailToReset)} />}
         </>
     )
 }

@@ -8,29 +8,19 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { getVaults } from "@/app/actions/vault/getVaults";
 import { toast } from "sonner";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Vault } from "@/lib/types/VaultType";
+import { useGetVaults } from "@/lib/queries/VaultQueries";
 // import { processCSV } from "@/lib/functions";
 
 export default function ImportPage() {
     const router = useRouter();
 
     // GET CURRENT VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
-    const { data: vaults, isLoading, error } = useQuery({
-        queryKey: ["vaults"],
-        queryFn: () => getVaults(),
-        refetchOnMount: true,
-        refetchOnReconnect: true,
-        refetchOnWindowFocus: true,
-        staleTime: 1000 * 60 * 2,
-        gcTime: 1000 * 60 * 5,
-        enabled: true
-    })
+    const { data: vaults, isLoading, error } = useGetVaults();
 
     if (error) {
         toast.error("There was an error loading your vaults. Please try refreshing the page." + error?.message);

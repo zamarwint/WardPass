@@ -14,10 +14,10 @@ import { Loader2Icon, LockKeyholeIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import updateSettings from "@/app/actions/settings/updateSettings";
 import { toast } from "sonner";
-import getSettings from "@/app/actions/settings/getSettings";
+import { useGetSettings } from "@/lib/queries/SettingsQueries";
 
 const autoLockOptions = [
     { label: "1 minute", value: "1" },
@@ -43,15 +43,8 @@ const hiddenTabTimeoutOptions = [
 ]
 
 export default function SecurityPage() {
-    const { data: autoLockData } = useQuery({
-        queryKey: ["settings", "autoLock"],
-        queryFn: () => getSettings()
-    })
-
-    const { data: hiddenTabTimeoutData } = useQuery({
-        queryKey: ["settings", "hiddenTabTimeout"],
-        queryFn: () => getSettings()
-    })
+    const { data: autoLockData } = useGetSettings();
+    const { data: hiddenTabTimeoutData } = useGetSettings();
 
     const [selectedAutoLock, setSelectedAutoLock] = useState(autoLockData?.autoLockTimeInMinutes.toString());
     const [selectedHiddenTabTimeout, setSelectedHiddenTabTimeout] = useState(hiddenTabTimeoutData?.hiddenTabTimeoutInMinutes.toString());

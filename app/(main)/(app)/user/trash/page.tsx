@@ -9,18 +9,21 @@ import {
     FieldTitle,
 } from "@/components/ui/field"
 import { Button } from "@/components/ui/button";
-import { getVaults } from '@/app/actions/vault/getVaults';
 import type { Metadata } from "next";
+import { getVaultsAsync } from '@/lib/queries/VaultQueries';
 
 export const metadata: Metadata = {
     title: "Trash Vault Selection",
 };
 
 export default async function TrashVaultSelectionPage() {
-    const vaults = getVaults().then((vaults) => {
-        if (!vaults || vaults.length === 0) {
-            return <FieldDescription>No vaults found.</FieldDescription>
-        }
+    const vaults = await getVaultsAsync();
+
+    if (!vaults || vaults.length === 0) {
+        return <FieldDescription>No vaults found.</FieldDescription>
+    }
+
+    const VaultList = () => {
         return vaults.map((vault) => (
             <Link key={vault.id} href={`/user/trash/${vault.id}`} className='w-full'>
                 <Button variant="secondary" size="lg" className="flex items-center p-5 w-full">
@@ -29,10 +32,7 @@ export default async function TrashVaultSelectionPage() {
                 </Button>
             </Link>
         ))
-    }).catch((err) => {
-        console.log(err)
-        return <FieldDescription>Error loading vaults. Please try again later.</FieldDescription>
-    })
+    }
 
     return (
         <Field className='w-full h-full'>
@@ -42,7 +42,7 @@ export default async function TrashVaultSelectionPage() {
                     <FieldDescription>Choose an existing vault to view trash items.</FieldDescription>
                 </FieldSet>
                 <div className='flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3'>
-                    {vaults}
+                    {VaultList()}
                 </div>
             </FieldContent>
         </Field>

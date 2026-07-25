@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useVaultStore } from "@/stores/vault";
 import VaultDropdown from "./vault/VaultDropdown";
 import { Vault } from "@/lib/types/VaultType";
+import { SvgCircle } from "../vault/_components/SVG";
 
 export function VaultSideButton({ vault, collapsed }: { vault: Vault, collapsed: boolean }) {
     const pathName = usePathname();
@@ -19,7 +20,9 @@ export function VaultSideButton({ vault, collapsed }: { vault: Vault, collapsed:
     return (
         <div key={vault.id} className={cn("flex items-center justify-between w-full p-1", pathName.startsWith(vaultLink) ? "btn-primary" : "btn-ghost")}>
             <Link href={vaultLink} className={cn("w-full p-2 flex items-center gap-2", collapsed ? "justify-center" : "justify-start")}>
-                <DynamicIcon name={vault.icon as IconName} size={16} color={vault.iconColor || 'white'} />
+                <SvgCircle size="w-8 h-8">
+                    <DynamicIcon name={vault.icon as IconName} size={16} color={vault.iconColor || 'white'} />
+                </SvgCircle>
                 {!collapsed && <span className="text-sm font-semibold">{vault.name}</span>}
             </Link>
             {!collapsed && (
@@ -35,8 +38,8 @@ export function LockSideButton({ disabled = false, collapsed }: { disabled?: boo
     const router = useRouter();
 
     const handleLock = () => {
-        useVaultStore.getState().lockAll();
-        router.push("/user/vault"); // Show the unlock modal
+        router.push("/user/vault");
+        useVaultStore.getState().lockAll(); // Shows the unlock modal
     };
 
     return (

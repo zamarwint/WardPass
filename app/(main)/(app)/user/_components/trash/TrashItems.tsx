@@ -2,8 +2,6 @@
 
 import { CreditCard, Globe, IdCard, NotebookPen, Trash2Icon } from "lucide-react";
 import { SvgCircle } from "../../vault/_components/SVG";
-import { getVaultWithTrashedItems } from "@/app/actions/getVaultWithTrashedItems";
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { VaultItem, VaultItemType } from "@/lib/types/VaultType";
 import { Separator } from "@/components/ui/separator";
@@ -22,23 +20,17 @@ import { toast } from "sonner";
 import { redirect } from "next/navigation";
 import { useVaultStore } from "@/stores/vault";
 import { UnlockVaultModal } from "../../vault/_components/UnlockVaultModal";
+import { CreditCardJSON, IdentityJSON, LoginJSON, SecureNoteJSON } from "@/lib/types/VaultItemType";
+import { useGetVaultWithTrashedItems } from "@/lib/queries/VaultQueries";
 
 export default function TrashItems({ vaultId }: { vaultId: string }) {
-    const [selectedItem, setSelectedItem] = useState<any>(null);
+    const [selectedItem, setSelectedItem] = useState<SecureNoteJSON | CreditCardJSON | IdentityJSON | LoginJSON | null>(null);
 
     const store = useVaultStore();
     const [isAutoUnlocking, setIsAutoUnlocking] = useState(false);
 
     // GET CURRENT VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
-    const { data: trashedItems, isLoading: trashedItemsLoading, error: trashedItemsError } = useQuery({
-        queryKey: ["trashedItems"],
-        queryFn: () => getVaultWithTrashedItems(vaultId),
-        refetchOnMount: true,
-        refetchOnReconnect: true,
-        refetchOnWindowFocus: true,
-        staleTime: 1000 * 60 * 2,
-        gcTime: 1000 * 60 * 5
-    })
+    const { data: trashedItems, isLoading: trashedItemsLoading, error: trashedItemsError } = useGetVaultWithTrashedItems(vaultId);
 
     // UNSELECT ITEMS
     const unSelectItems = () => {

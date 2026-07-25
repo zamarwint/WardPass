@@ -13,33 +13,12 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArchiveRestore } from "lucide-react";
-import { restoreVaultItem } from "@/app/actions/vault-item/trashVaultItem";
+import { LoginJSON } from "@/lib/types/VaultItemType";
+import { useRestoreVaultItemMutation } from "@/lib/mutations/ItemMutations";
 
-export default function RestoreLoginItemDialog({ loginItem }: { loginItem: any }) {
-    const queryClient = useQueryClient();
-
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => restoreVaultItem(loginItem.id),
-        onMutate: () => {
-            toast.dismiss();
-            toast.loading("Restoring Login Item...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Login Item restored successfully!");
-            queryClient.invalidateQueries({
-                queryKey: ["trashedItems"],
-                refetchType: 'active'
-            });
-        },
-        onError: () => {
-            toast.dismiss();
-            toast.error("There was an error restoring your Login Item. Please try again later." + error);
-        }
-    });
+export default function RestoreLoginItemDialog({ loginItem }: { loginItem: LoginJSON }) {
+    const { mutate, isPending } = useRestoreVaultItemMutation(loginItem.id);
 
     const handleSubmit = () => {
         mutate();

@@ -12,35 +12,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { trashVaultItem } from "@/app/actions/vault-item/trashVaultItem";
+import { IdentityJSON } from "@/lib/types/VaultItemType";
+import { useTrashVaultItemMutation } from "@/lib/mutations/ItemMutations";
 
-export default function TrashIdentityItemDialog({ open, onOpenChange, identityItem }: { open: boolean, onOpenChange: (open: boolean) => void, identityItem: any }) {
-    const queryClient = useQueryClient();
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => trashVaultItem(identityItem.id),
-        onMutate: () => {
-            toast.dismiss();
-            toast.loading("Moving Identity Item to Trash...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Identity Item moved to Trash successfully!");
-            onOpenChange(false);
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", identityItem.vaultId],
-                refetchType: 'active'
-            });
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("There was an error moving your Identity Item to Trash. Please try again later." + err);
-            onOpenChange(false);
-
-        }
-    });
+export default function TrashIdentityItemDialog({ open, onOpenChange, identityItem }: { open: boolean, onOpenChange: (open: boolean) => void, identityItem: IdentityJSON }) {
+    const { mutate, isPending } = useTrashVaultItemMutation(identityItem.id, identityItem.vaultId, onOpenChange);
 
     const handleSubmit = () => {
         mutate();

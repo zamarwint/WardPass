@@ -11,57 +11,30 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { toast } from "sonner";
 import { motion } from "motion/react"
 import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
-import { encryptData } from "@/lib/crypto/aes";
-import { useVaultStore } from "@/stores/vault";
-import updateVaultItem from "@/app/actions/vault-item/updateVaultItem";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Loader2Icon, PenIcon } from "lucide-react";
+import { Loader2Icon, PenIcon, X } from "lucide-react";
+import { CreditCardJSON } from "@/lib/types/VaultItemType";
+import { useUpdateVaultItem } from "@/lib/mutations/CoreUpdateMutations";
 
-export default function UpdateCreditCardItem({ creditCardItem, cancel }: { creditCardItem: any, cancel: () => void }) {
-    const queryClient = useQueryClient();
-
+export default function UpdateCreditCardItem({ creditCardItem, cancel }: { creditCardItem: CreditCardJSON, cancel: () => void }) {
     const [cardHolderName, setCardHolderName] = useState<string>(creditCardItem.cardHolderName)
     const [cardNumber, setCardNumber] = useState<string>(creditCardItem.cardNumber)
-    const [cvv, setCvv] = useState<number>(creditCardItem.cvv)
+    const [cvv, setCvv] = useState<string>(creditCardItem.cvv.toString())
     const [expiryDate, setExpiryDate] = useState<string>(creditCardItem.expiryDate)
     const [billingAddress1, setBillingAddress1] = useState<string>(creditCardItem.billingAddress1)
-    const [billingAddress2, setBillingAddress2] = useState<string>(creditCardItem.billingAddress2)
+    const [billingAddress2, setBillingAddress2] = useState<string>(creditCardItem.billingAddress2!)
     const [zipCode, setZipCode] = useState<string>(creditCardItem.zipCode)
     const [city, setCity] = useState<string>(creditCardItem.city)
-    const [state, setState] = useState<string>(creditCardItem.state)
+    const [state, setState] = useState<string>(creditCardItem.state!)
     const [country, setCountry] = useState<string>(creditCardItem.country)
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey(creditCardItem.vaultId);
-            const payload = JSON.stringify({
-                cardHolderName, cardNumber, cvv, expiryDate,
-                billingAddress1, billingAddress2, zipCode, city, state, country
-            });
-            const { ciphertext, iv } = encryptData(payload, vaultKey);
-            return updateVaultItem({ id: creditCardItem.id as string, vaultId: creditCardItem.vaultId as string, encryptedData: ciphertext, iv });
-        },
-        onMutate: () => {
-            toast.loading("Updating credit card item...")
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Credit card item updated successfully");
-            cancel();
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", creditCardItem.vaultId],
-                refetchType: 'active'
-            });
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("Failed to update credit card item." + err)
-        }
-    })
+    const data = {
+        cardHolderName, cardNumber, cvv: Number(cvv), expiryDate,
+        billingAddress1, billingAddress2, zipCode, city, state, country
+    };
+    const { mutate, isPending } = useUpdateVaultItem(creditCardItem.id, creditCardItem.vaultId, data, cancel)
 
     const handleSubmit = () => {
         mutate();
@@ -96,7 +69,7 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
                     </Field>
                     <Field>
                         <FieldLabel>CVV</FieldLabel>
-                        <PasswordInput placeholder="CVV" id="cvv" value={cvv} onChange={(e) => { setCvv(Number(e.target.value)) }} className="h-12" maxLength={3} />
+                        <Input type="number" placeholder="CVV" id="cvv" value={cvv} onChange={(e) => { setCvv(e.target.value) }} className="h-12" maxLength={3} />
                     </Field>
 
                     <Field>
@@ -138,7 +111,7 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button disabled={isPending || !cardHolderName || !cardNumber || !cvv || !expiryDate || !billingAddress2 || !zipCode || !city || !country || (cardHolderName == creditCardItem.cardHolderName && cardNumber == creditCardItem.cardNumber && cvv == creditCardItem.cvv && expiryDate == creditCardItem.expiryDate && billingAddress1 == creditCardItem.billingAddress1 && billingAddress2 == creditCardItem.billingAddress2 && zipCode == creditCardItem.zipCode && city == creditCardItem.city && state == creditCardItem.state && country == creditCardItem.country)} onClick={handleSubmit} className="font-bold">
+                    <Button disabled={isPending || !cardHolderName || !cardNumber || !cvv || !expiryDate || !billingAddress2 || !zipCode || !city || !country || (cardHolderName === creditCardItem.cardHolderName && cardNumber === creditCardItem.cardNumber && cvv === creditCardItem.cvv.toString() && expiryDate === creditCardItem.expiryDate && billingAddress1 === creditCardItem.billingAddress1 && billingAddress2 === creditCardItem.billingAddress2 && zipCode === creditCardItem.zipCode && city === creditCardItem.city && state === creditCardItem.state && country === creditCardItem.country)} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />
@@ -153,6 +126,7 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
                     </Button>
                 </Field>
             </Field>
+            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
         </motion.div>
     )
 }

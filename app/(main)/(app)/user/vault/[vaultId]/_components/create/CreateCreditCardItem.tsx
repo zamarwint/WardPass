@@ -11,23 +11,17 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2Icon, PlusIcon } from "lucide-react";
+import { Loader2Icon, PlusIcon, X } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { motion } from "motion/react"
-import createVaultItem from "@/app/actions/vault-item/createVaultItem";
 import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
-import { encryptData } from "@/lib/crypto/aes";
-import { useVaultStore } from "@/stores/vault";
 import { VaultItemType } from "@/lib/types/VaultType";
+import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
 
 export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
-    const queryClient = useQueryClient();
-
     const [cardHolderName, setCardHolderName] = useState<string>("")
     const [cardNumber, setCardNumber] = useState<string>("")
-    const [cvv, setCvv] = useState<number>(0)
+    const [cvv, setCvv] = useState<string>("")
     const [expiryDate, setExpiryDate] = useState<string>("")
     const [billingAddress1, setBillingAddress1] = useState<string>("")
     const [billingAddress2, setBillingAddress2] = useState<string>("")
@@ -36,33 +30,11 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
     const [state, setState] = useState<string>("")
     const [country, setCountry] = useState<string>("")
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey(vaultId);
-            const payload = JSON.stringify({
-                cardHolderName, cardNumber, cvv, expiryDate,
-                billingAddress1, billingAddress2, zipCode, city, state, country
-            });
-            const { ciphertext, iv } = encryptData(payload, vaultKey);
-            return createVaultItem({ vaultId, encryptedData: ciphertext, iv, itemType: VaultItemType.CREDIT_CARD });
-        },
-        onMutate: () => {
-            toast.loading("Adding credit card item...")
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Credit card item added successfully");
-            cancel();
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", vaultId],
-                refetchType: 'active'
-            });
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("Failed to add credit card item." + err)
-        }
-    })
+    const data = {
+        cardHolderName, cardNumber, cvv: Number(cvv), expiryDate,
+        billingAddress1, billingAddress2, zipCode, city, state, country
+    };
+    const { mutate, isPending } = useCreateVaultItem(vaultId, data, cancel, VaultItemType.CREDIT_CARD);
 
     const handleSubmit = () => {
         mutate();
@@ -97,7 +69,7 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
                     </Field>
                     <Field>
                         <FieldLabel>CVV</FieldLabel>
-                        <PasswordInput placeholder="123" id="cvv" value={cvv} onChange={(e) => { setCvv(Number(e.target.value)) }} className="h-12" maxLength={3} />
+                        <Input type="number" placeholder="123" id="cvv" value={cvv} onChange={(e) => { setCvv(e.target.value) }} className="h-12" maxLength={3} />
                     </Field>
 
                     <Field>
@@ -154,6 +126,7 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
                     </Button>
                 </Field>
             </Field>
+            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
         </motion.div>
     )
 }

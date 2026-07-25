@@ -9,6 +9,14 @@ const passwordSchema = z
     .regex(/[0-9]/, "Password must contain at least one number")
     .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character");
 
+export const resetPasswordSchema = z.object({
+    password: passwordSchema,
+    confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+});
+
 export const signUpSchema = z
     .object({
         name: z.string().min(2, "Name must be at least 2 characters."),

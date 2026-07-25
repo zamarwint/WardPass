@@ -16,35 +16,13 @@ import {
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2Icon } from "lucide-react";
-import deleteVaultItem from "@/app/actions/vault-item/deleteVaultItem";
+import { LoginJSON } from "@/lib/types/VaultItemType";
+import { useDeleteVaultItemMutation } from "@/lib/mutations/ItemMutations";
 
-export default function DeleteLoginItemDialog({ loginItem }: { loginItem: any }) {
-    const queryClient = useQueryClient();
-
+export default function DeleteLoginItemDialog({ loginItem }: { loginItem: LoginJSON }) {
     const [loginNameConfirm, setLoginNameConfirm] = useState<string>("");
-
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => deleteVaultItem({ id: loginItem.id, vaultId: loginItem.vaultId as string }),
-        onMutate: () => {
-            toast.dismiss();
-            toast.loading("Deleting Login Item...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Login Item deleted successfully!");
-            queryClient.invalidateQueries({
-                queryKey: ["trashedItems"],
-                refetchType: 'active'
-            });
-        },
-        onError: () => {
-            toast.dismiss();
-            toast.error("There was an error deleting your Login Item. Please try again later." + error);
-        }
-    });
+    const { mutate, isPending } = useDeleteVaultItemMutation(loginItem.id, loginItem.vaultId);
 
     const handleSubmit = () => {
         mutate();

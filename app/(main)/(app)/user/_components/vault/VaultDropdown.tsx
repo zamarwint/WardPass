@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { EllipsisVertical, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
-import EditVault from "./EditVault";
+import UpdateVault from "./UpdateVault";
 import DeleteVault from "./DeleteVault";
 import { Vault } from "@/lib/types/VaultType";
 
 export default function VaultDropdown({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: Vault }) {
-    const [openEditVault, setOpenEditVault] = useState(false);
+    const [openUpdateVault, setOpenUpdateVault] = useState(false);
     const [openDeleteVault, setOpenDeleteVault] = useState(false);
 
     return (
@@ -23,9 +23,9 @@ export default function VaultDropdown({ open, onOpenChange, vault }: { open: boo
                     <EllipsisVertical size={16} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="font-geist">
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenEditVault(!openEditVault)}>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUpdateVault(!openUpdateVault)}>
                         <PencilIcon size={20} className="mr-2" />
-                        <span>Edit</span>
+                        <span>Update</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenDeleteVault(!openDeleteVault)}>
                         <TrashIcon size={20} className="mr-2" />
@@ -33,7 +33,7 @@ export default function VaultDropdown({ open, onOpenChange, vault }: { open: boo
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <EditVault open={openEditVault} onOpenChange={setOpenEditVault} vault={vault} />
+            <UpdateVault open={openUpdateVault} onOpenChange={setOpenUpdateVault} vault={vault} />
             <DeleteVault open={openDeleteVault} onOpenChange={setOpenDeleteVault} vault={vault} />
         </>
     )

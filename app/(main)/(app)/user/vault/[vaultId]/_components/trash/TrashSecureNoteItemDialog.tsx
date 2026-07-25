@@ -12,34 +12,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { trashVaultItem } from "@/app/actions/vault-item/trashVaultItem";
+import { SecureNoteJSON } from "@/lib/types/VaultItemType";
+import { useTrashVaultItemMutation } from "@/lib/mutations/ItemMutations";
 
-export default function TrashSecureNoteItemDialog({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: any }) {
-    const queryClient = useQueryClient();
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => trashVaultItem(secureNoteItem.id!),
-        onMutate: () => {
-            toast.dismiss();
-            toast.loading("Moving Secure Note to Trash...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Secure Note moved to Trash successfully!");
-            onOpenChange(false);
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", secureNoteItem.vaultId],
-                refetchType: 'active'
-            });
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("There was an error moving your Secure Note to Trash. Please try again later." + err);
-            onOpenChange(false);
-        }
-    });
+export default function TrashSecureNoteItemDialog({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: SecureNoteJSON }) {
+    const { mutate, isPending } = useTrashVaultItemMutation(secureNoteItem.id, secureNoteItem.vaultId, onOpenChange);
 
     const handleSubmit = () => {
         mutate();

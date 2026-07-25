@@ -10,9 +10,9 @@ import { EllipsisVertical, PencilIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import UpdateLoginItem from "../update/UpdateLoginItem";
 import TrashLoginItemDialog from "../trash/TrashLoginItemDialog";
-import { VaultItem } from "@/lib/types/VaultType";
+import { LoginJSON } from "@/lib/types/VaultItemType";
 
-export default function LoginDropdown({ open, onOpenChange, loginItem }: { open: boolean, onOpenChange: (open: boolean) => void, loginItem: VaultItem }) {
+export default function LoginDropdown({ open, onOpenChange, loginItem }: { open: boolean, onOpenChange: (open: boolean) => void, loginItem: LoginJSON }) {
     const [openUpdateLogin, setOpenUpdateLogin] = useState(false);
     const [openDeleteLogin, setOpenDeleteLogin] = useState(false);
 
@@ -25,7 +25,7 @@ export default function LoginDropdown({ open, onOpenChange, loginItem }: { open:
                 <DropdownMenuContent className="font-geist">
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUpdateLogin(!openUpdateLogin)}>
                         <PencilIcon size={20} className="mr-2" />
-                        <span>Edit</span>
+                        <span>Update</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenDeleteLogin(!openDeleteLogin)}>
                         <TrashIcon size={20} className="mr-2" />

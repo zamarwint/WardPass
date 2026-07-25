@@ -10,18 +10,24 @@ import {
     FieldTitle,
 } from "@/components/ui/field"
 import { Button } from "@/components/ui/button";
-import { getVaults } from '@/app/actions/vault/getVaults';
 import type { Metadata } from "next";
+import { getVaultsAsync } from '@/lib/queries/VaultQueries';
 
 export const metadata: Metadata = {
     title: "Select Vault",
 };
 
 export default async function VaultSelectionPage() {
-    const vaults = getVaults().then((vaults) => {
-        if (!vaults || vaults.length === 0) {
-            return <FieldDescription>No vaults found. Create one above.</FieldDescription>
-        }
+    const maxVaults = 3;
+    const vaults = await getVaultsAsync();
+    const vaultCount = vaults!.length;
+    const canCreateVault = vaultCount < maxVaults;
+
+    if (!vaults || vaults.length === 0) {
+        return <FieldDescription>No vaults found. Create one above.</FieldDescription>
+    }
+
+    const ShowVaults = () => {
         return vaults.map((vault) => (
             <Link key={vault.id} href={`/user/vault/${vault.id}`} className='w-full'>
                 <Button size="lg" className="flex items-center p-5 w-full">
@@ -30,10 +36,8 @@ export default async function VaultSelectionPage() {
                 </Button>
             </Link>
         ))
-    }).catch((err) => {
-        console.log(err)
-        return <FieldDescription>Error loading vaults. Please try again later.</FieldDescription>
-    })
+    }
+
 
     return (
         <Field className='w-full h-full'>
@@ -43,8 +47,10 @@ export default async function VaultSelectionPage() {
                     <FieldDescription>Choose an existing vault or create a new one to continue.</FieldDescription>
                 </FieldSet>
                 <div className='flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3'>
-                    <CreateVault />
-                    {vaults}
+                    {canCreateVault ? <CreateVault /> : (
+                        <FieldDescription>You can only have {maxVaults} vaults. Please delete one to create a new one.</FieldDescription>
+                    )}
+                    {ShowVaults()}
                 </div>
             </FieldContent>
         </Field>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -11,6 +10,8 @@ import { toast } from "sonner";
 import { deriveKey, fromBase64 } from "@/lib/crypto/argon2";
 import { decryptVaultKey, verifyVaultKey } from "@/lib/crypto/aes";
 import { Vault } from "@/lib/types/VaultType";
+import { Separator } from "@/components/ui/separator";
+import { SvgCircle } from "./SVG";
 
 export function UnlockVaultModal({
     open,
@@ -61,42 +62,44 @@ export function UnlockVaultModal({
         }
     };
 
-    return (
-        <Dialog open={open}>
-            <DialogContent className="font-geist" showCloseButton>
-                <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <LockIcon className="text-primary w-5 h-5" />
-                        WardPass Vaults Locked
-                    </DialogTitle>
-                    <DialogDescription>
-                        Your WardPass vaults are locked. Please enter your master password to decrypt your data.
-                    </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleUnlock} className="flex flex-col gap-4 mt-4">
-                    <div className="flex flex-col gap-2">
-                        <Label htmlFor="masterPassword">Master Password</Label>
-                        <Input
-                            id="masterPassword"
-                            type="password"
-                            placeholder="Enter your master password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            autoFocus
-                        />
+    return open ? (
+        <div className="size-full bg-background/70 backdrop-blur-lg absolute inset-0 z-50 flex flex-col gap-6 items-center justify-center">
+            <div className="flex items-center justify-center">
+                <div className="flex flex-col items-center gap-6">
+                    <SvgCircle>
+                        <LockIcon className="text-primary w-10 h-10" />
+                    </SvgCircle>
+                    <div className="flex flex-col items-center gap-1 text-center">
+                        <h1 className="text-2xl font-bold">WardPass Vaults Locked</h1>
+                        <p className="text-muted-foreground w-xl">Your WardPass vaults are locked. Please enter your master password to decrypt your data.</p>
                     </div>
-                    <Button type="submit" disabled={isUnlocking} className="w-full mt-2">
-                        {isUnlocking ? (
-                            <>
-                                <Loader2Icon className="w-4 h-4 mr-2 animate-spin" />
-                                Unlocking...
-                            </>
-                        ) : (
-                            "Unlock WardPass Vaults"
-                        )}
-                    </Button>
-                </form>
-            </DialogContent>
-        </Dialog>
-    );
+                </div>
+            </div>
+            <form onSubmit={handleUnlock} className="flex flex-col mt-4 min-w-lg max-w-full">
+                <div className="flex flex-col gap-2">
+                    <Label htmlFor="masterPassword">Master Password</Label>
+                    <Input
+                        id="masterPassword"
+                        type="password"
+                        placeholder="Enter your master password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoFocus
+                        className="h-12"
+                    />
+                    <Separator className="mb-2" />
+                </div>
+                <Button type="submit" disabled={isUnlocking} className="w-full h-12">
+                    {isUnlocking ? (
+                        <>
+                            <Loader2Icon className="w-4 h-4 mr-2 animate-spin" />
+                            Unlocking...
+                        </>
+                    ) : (
+                        "Unlock WardPass Vaults"
+                    )}
+                </Button>
+            </form>
+        </div>
+    ) : null;
 }

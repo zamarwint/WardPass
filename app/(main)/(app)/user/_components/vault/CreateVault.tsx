@@ -1,9 +1,5 @@
 "use client";
 
-import { useVaultStore } from "@/stores/vault";
-import { generateSalt, deriveKey, toBase64 } from "@/lib/crypto/argon2";
-import { generateVaultKey, encryptVaultKey, createVerificationHash } from "@/lib/crypto/aes";
-
 import {
     Dialog,
     DialogClose,
@@ -21,16 +17,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { DynamicIcon, IconName } from 'lucide-react/dynamic';
-import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { createVault } from "@/app/actions/vault/createVault";
 import { Loader2Icon } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useCreateVault } from "@/lib/mutations/CoreCreateMutations";
 
 const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
 
 export default function CreateVault() {
-    const queryClient = useQueryClient();
     const [selectedIcon, setSelectedIcon] = useState<IconName>();
     const [vaultName, setVaultName] = useState<string>("");
     const [vaultColor, setVaultColor] = useState<string>("");
@@ -38,59 +30,7 @@ export default function CreateVault() {
 
     // ✅ Master password lives in local state — form input only
     const [masterPassword, setMasterPassword] = useState<string>("");
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: async () => {
-            // ✅ Read directly from local state, not the Zustand store
-            if (!masterPassword) {
-                throw new Error("Please enter your master password.");
-            }
-
-            const salt = generateSalt();
-            const derivedKey = await deriveKey(masterPassword, salt);
-            const vaultKey = generateVaultKey();
-
-            const { encryptedKey, keyIv } = encryptVaultKey(vaultKey, derivedKey);
-            const { hash: verificationHash, hashIv } = createVerificationHash(vaultKey);
-
-            // ✅ After vault is created, unlock it immediately so the user
-            //    doesn't have to re-enter their password right away
-            const result = await createVault(
-                vaultName,
-                selectedIcon as string,
-                vaultColor,
-                toBase64(salt),
-                encryptedKey,
-                keyIv,
-                verificationHash,
-                hashIv
-            );
-
-            // ✅ After creating the vault, unlock it immediately by passing its ID
-            useVaultStore.getState().unlock(result!.id, vaultKey);
-
-            return result;
-        },
-        onMutate: () => {
-            toast.dismiss();
-            toast.loading("Generating encryption keys and creating vault...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            setMasterPassword("")
-            setOpen(false);
-            queryClient.invalidateQueries({
-                queryKey: ["vaults"],
-                refetchType: 'active'
-            });
-            toast.success("Vault created successfully!");
-        },
-        onError: (err) => {
-            toast.dismiss();
-            setOpen(false);
-            toast.error(err.message || "There was an error creating your vault. Please try again later.");
-        }
-    });
+    const { mutate, isPending } = useCreateVault(vaultName, selectedIcon!, vaultColor, masterPassword, setMasterPassword, setOpen);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>

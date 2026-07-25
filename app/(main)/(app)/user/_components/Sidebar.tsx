@@ -5,11 +5,10 @@ import Profile from "./Profile";
 
 import { Separator } from "@/components/ui/separator";
 import { LockSideButton, LinkSideButton, VaultSideButton, CollapseSideButton } from "./SideButton"
-import { getVaults } from "@/app/actions/vault/getVaults";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useGetVaults } from "@/lib/queries/VaultQueries";
 
 export default function Sidebar() {
     return (
@@ -21,16 +20,7 @@ export function SidebarContent() {
     const [collapsed, setCollapsed] = useState<boolean>(false);
 
     // GET CURRENT VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
-    const { data: vaults, isLoading, error } = useQuery({
-        queryKey: ["vaults"],
-        queryFn: () => getVaults(),
-        refetchOnMount: true,
-        refetchOnReconnect: true,
-        refetchOnWindowFocus: true,
-        staleTime: 1000 * 60 * 2,
-        gcTime: 1000 * 60 * 5,
-        enabled: true
-    })
+    const { data: vaults, isLoading, error } = useGetVaults();
 
     if (error) {
         toast.error("There was an error loading your vaults. Please try refreshing the page." + error?.message);

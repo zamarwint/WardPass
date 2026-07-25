@@ -1,9 +1,6 @@
 "use client";
 
 import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
-import createVaultItem from "@/app/actions/vault-item/createVaultItem";
-import { encryptData } from "@/lib/crypto/aes";
-import { useVaultStore } from "@/stores/vault";
 import { Button } from "@/components/ui/button";
 import {
     Field,
@@ -15,16 +12,13 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2Icon, PlusIcon } from "lucide-react";
+import { Loader2Icon, PlusIcon, X } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { motion } from "motion/react"
 import { VaultItemType } from "@/lib/types/VaultType";
+import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
 
 export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
-    const queryClient = useQueryClient();
-
     const [name, setName] = useState<string>("")
     const [url, setUrl] = useState<string>("")
     const [username, setUsername] = useState<string>("")
@@ -32,30 +26,8 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
     const [password, setPassword] = useState<string>("")
     const [note, setNote] = useState<string>("")
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey(vaultId);
-            const payload = JSON.stringify({ name, url, username, email, password, note });
-            const { ciphertext, iv } = encryptData(payload, vaultKey);
-            return createVaultItem({ vaultId, encryptedData: ciphertext, iv, itemType: VaultItemType.LOGIN });
-        },
-        onMutate: () => {
-            toast.loading("Creating login item...")
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Login item created successfully");
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", vaultId],
-                refetchType: 'active'
-            });
-            cancel();
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("Failed to create login item." + err)
-        }
-    })
+    const data = { name, url, username, email, password, note };
+    const { mutate, isPending } = useCreateVaultItem(vaultId, data, cancel, VaultItemType.LOGIN);
 
     const handleSubmit = () => {
         mutate();
@@ -128,6 +100,7 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
                     </Button>
                 </Field>
             </Field>
+            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
         </motion.div>
     )
 }

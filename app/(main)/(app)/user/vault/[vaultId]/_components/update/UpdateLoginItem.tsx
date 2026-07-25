@@ -1,7 +1,6 @@
 "use client";
 
 import { PasswordInput } from "@/app/(main)/(auth)/_components/PasswordInput";
-import updateVaultItem from "@/app/actions/vault-item/updateVaultItem";
 import { Button } from "@/components/ui/button";
 import {
     Field,
@@ -13,48 +12,22 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2Icon, PenIcon } from "lucide-react";
+import { Loader2Icon, PenIcon, X } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { motion } from "motion/react"
-import { encryptData } from "@/lib/crypto/aes";
-import { useVaultStore } from "@/stores/vault";
+import { LoginJSON } from "@/lib/types/VaultItemType";
+import { useUpdateVaultItem } from "@/lib/mutations/CoreUpdateMutations";
 
-export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: any, cancel: () => void }) {
-    const queryClient = useQueryClient();
-
+export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: LoginJSON, cancel: () => void }) {
     const [name, setName] = useState<string>(loginItem.name)
-    const [url, setUrl] = useState<string>(loginItem.url)
-    const [username, setUsername] = useState<string>(loginItem.username)
+    const [url, setUrl] = useState<string>(loginItem.url!)
+    const [username, setUsername] = useState<string>(loginItem.username!)
     const [email, setEmail] = useState<string>(loginItem.email)
     const [password, setPassword] = useState<string>(loginItem.password)
-    const [note, setNote] = useState<string>(loginItem.note)
+    const [note, setNote] = useState<string>(loginItem.note!)
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey(loginItem.vaultId);
-            const payload = JSON.stringify({ name, url, username, email, password, note });
-            const { ciphertext, iv } = encryptData(payload, vaultKey);
-            return updateVaultItem({ id: loginItem.id as string, vaultId: loginItem.vaultId as string, encryptedData: ciphertext, iv });
-        },
-        onMutate: () => {
-            toast.loading("Updating login item...")
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Login item updated successfully");
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", loginItem.vaultId],
-                refetchType: 'active'
-            });
-            cancel();
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("Failed to update login item." + err)
-        }
-    })
+    const data = { name, url, username, email, password, note };
+    const { mutate, isPending } = useUpdateVaultItem(loginItem.id, loginItem.vaultId, data, cancel);
 
     const handleSubmit = () => {
         mutate();
@@ -112,7 +85,7 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: any,
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button disabled={isPending || !name || !email || !password || (name == loginItem.name && url == loginItem.url && username == loginItem.username && email == loginItem.email && password == loginItem.password && note == loginItem.note)} onClick={handleSubmit} className="font-bold">
+                    <Button disabled={isPending || !name || !email || !password || (name === loginItem.name && url === loginItem.url && username === loginItem.username && email === loginItem.email && password === loginItem.password && note === loginItem.note)} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />
@@ -127,6 +100,7 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: any,
                     </Button>
                 </Field>
             </Field>
+            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
         </motion.div>
     )
 }

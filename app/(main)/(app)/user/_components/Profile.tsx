@@ -27,9 +27,8 @@ import {
     AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar"
-import { getUserSession } from "@/app/actions/getSession";
-import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
+import { useGetSession } from "@/lib/queries/SessionQueries";
 
 export function ProfileAvatar({ image, alt, fallback, size }: { image: string, alt: string, fallback: string, size: string }) {
     return (
@@ -45,15 +44,7 @@ export function ProfileAvatar({ image, alt, fallback, size }: { image: string, a
 }
 
 export default function Profile({ collapsed }: { collapsed: boolean }) {
-    const { isPending, data, error } = useQuery({
-        queryKey: ["get-session-profile"],
-        queryFn: () => getUserSession(),
-        refetchOnMount: true,
-        refetchOnReconnect: true,
-        refetchOnWindowFocus: true,
-        staleTime: 1000 * 60 * 2,
-        gcTime: 1000 * 60 * 5
-    })
+    const { isPending, data, error } = useGetSession();
 
     if (error) toast.error(error.message);
 
@@ -145,7 +136,7 @@ export default function Profile({ collapsed }: { collapsed: boolean }) {
                     </DialogDescription>
                     <div className="flex flex-col gap-4 items-center justify-center">
                         <Separator />
-                        <DialogTitle className="self-start">Change your profile picture.</DialogTitle>
+                        <DialogTitle className="self-start text-muted-foreground">Change your profile picture (Coming soon).</DialogTitle>
                         <motion.div className="flex flex-col items-center justify-center gap-2">
                             <ProfileAvatar size="size-32" image={data?.user.image as string} alt={data?.user.name || "Profile picture"} fallback={`${data?.user.name.split(" ")[0][0]}${data?.user.name.split(" ")[1][0]}`} />
                             <motion.div className="flex items-center justify-center gap-2">

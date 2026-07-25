@@ -16,35 +16,13 @@ import {
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2Icon } from "lucide-react";
-import deleteVaultItem from "@/app/actions/vault-item/deleteVaultItem";
+import { CreditCardJSON } from "@/lib/types/VaultItemType";
+import { useDeleteVaultItemMutation } from "@/lib/mutations/ItemMutations";
 
-export default function DeleteCreditCardItemDialog({ creditCardItem }: { creditCardItem: any }) {
-    const queryClient = useQueryClient();
-
+export default function DeleteCreditCardItemDialog({ creditCardItem }: { creditCardItem: CreditCardJSON }) {
     const [creditCardNameConfirm, setCreditCardNameConfirm] = useState<string>("");
-
-    const { mutate, error, isPending } = useMutation({
-        mutationFn: () => deleteVaultItem({ id: creditCardItem.id, vaultId: creditCardItem.vaultId as string }),
-        onMutate: () => {
-            toast.dismiss();
-            toast.loading("Deleting Credit Card Item...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Credit Card Item deleted successfully!");
-            queryClient.invalidateQueries({
-                queryKey: ["trashedItems"],
-                refetchType: 'active'
-            });
-        },
-        onError: () => {
-            toast.dismiss();
-            toast.error("There was an error deleting your Credit Card Item. Please try again later." + error);
-        }
-    });
+    const { mutate, isPending } = useDeleteVaultItemMutation(creditCardItem.id, creditCardItem.vaultId);
 
     const handleSubmit = () => {
         mutate();

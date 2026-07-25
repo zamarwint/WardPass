@@ -12,19 +12,14 @@ import {
     FieldTitle,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2Icon, PenIcon } from "lucide-react";
+import { Loader2Icon, PenIcon, X } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { motion } from "motion/react"
-import updateVaultItem from "@/app/actions/vault-item/updateVaultItem";
 import PasswordCopyInput from "../../../../_components/PasswordCopyInput";
-import { useVaultStore } from "@/stores/vault";
-import { encryptData } from "@/lib/crypto/aes";
+import { IdentityJSON } from "@/lib/types/VaultItemType";
+import { useUpdateVaultItem } from "@/lib/mutations/CoreUpdateMutations";
 
-export default function UpdateIdentityItem({ identityItem, cancel }: { identityItem: any, cancel: () => void }) {
-    const queryClient = useQueryClient();
-
+export default function UpdateIdentityItem({ identityItem, cancel }: { identityItem: IdentityJSON, cancel: () => void }) {
     const [name, setName] = useState<string>(identityItem.name)
     const [email, setEmail] = useState<string>(identityItem.email)
     const [phoneNumber, setPhoneNumber] = useState<string>(identityItem.phoneNumber)
@@ -32,56 +27,39 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
     // Organization Details
     const [organizationName, setOrganizationName] = useState<string>(identityItem.organizationName!)
     const [address1, setAddress1] = useState<string>(identityItem.address1!)
-    const [address2, setAddress2] = useState<string>(identityItem.address2 as string)
+    const [address2, setAddress2] = useState<string>(identityItem.address2!)
     const [city, setCity] = useState<string>(identityItem.city!)
-    const [state, setState] = useState<string>(identityItem.state as string)
+    const [state, setState] = useState<string>(identityItem.state!)
     const [zipCode, setZipCode] = useState<string>(identityItem.zipCode!)
     const [country, setCountry] = useState<string>(identityItem.country!)
-    const [floor, setFloor] = useState<string>(identityItem.floor as string)
-    const [county, setCounty] = useState<string>(identityItem.county as string)
-    const [poBox, setPoBox] = useState<string>(identityItem.poBox as string)
+    const [floor, setFloor] = useState<string>(identityItem.floor!)
+    const [county, setCounty] = useState<string>(identityItem.county!)
+    const [poBox, setPoBox] = useState<string>(identityItem.poBox!)
 
     // ID Details
-    const [socialSecurityNumber, setSocialSecurityNumber] = useState<string>(identityItem.socialSecurityNumber as string)
-    const [passportNumber, setPassportNumber] = useState<string>(identityItem.passportNumber as string)
-    const [licenseNumber, setLicenseNumber] = useState<string>(identityItem.licenseNumber as string)
+    const [socialSecurityNumber, setSocialSecurityNumber] = useState<string>(identityItem.socialSecurityNumber!)
+    const [passportNumber, setPassportNumber] = useState<string>(identityItem.passportNumber!)
+    const [licenseNumber, setLicenseNumber] = useState<string>(identityItem.licenseNumber!)
 
     // Work Details
-    const [companyName, setCompanyName] = useState<string>(identityItem.companyName as string)
-    const [occupation, setOccupation] = useState<string>(identityItem.occupation as string)
+    const [companyName, setCompanyName] = useState<string>(identityItem.companyName!)
+    const [occupation, setOccupation] = useState<string>(identityItem.occupation!)
 
     // Social Details
-    const [x, setX] = useState<string>(identityItem.x as string)
-    const [linkedin, setLinkedin] = useState<string>(identityItem.linkedin as string)
-    const [instagram, setInstagram] = useState<string>(identityItem.instagram as string)
-    const [tiktok, setTiktok] = useState<string>(identityItem.tiktok as string)
-    const [facebook, setFacebook] = useState<string>(identityItem.facebook as string)
-    const [github, setGithub] = useState<string>(identityItem.github as string)
-    const [other, setOther] = useState<string>(identityItem.other as string)
+    const [x, setX] = useState<string>(identityItem.x!)
+    const [linkedin, setLinkedin] = useState<string>(identityItem.linkedin!)
+    const [instagram, setInstagram] = useState<string>(identityItem.instagram!)
+    const [tiktok, setTiktok] = useState<string>(identityItem.tiktok!)
+    const [facebook, setFacebook] = useState<string>(identityItem.facebook!)
+    const [github, setGithub] = useState<string>(identityItem.github!)
+    const [other, setOther] = useState<string>(identityItem.other!)
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey(identityItem.vaultId);
-            const payload = JSON.stringify({ name, email, phoneNumber, organizationName, address1, address2, city, state, zipCode, country, floor, county, poBox, socialSecurityNumber, passportNumber, licenseNumber, companyName, occupation, x, linkedin, instagram, tiktok, facebook, github, other });
-            const { ciphertext, iv } = encryptData(payload, vaultKey);
-            return updateVaultItem({ id: identityItem.id as string, vaultId: identityItem.vaultId as string, encryptedData: ciphertext, iv });
-        }, onMutate: () => {
-            toast.loading("Updating identity item...")
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Identity item updated successfully");
-            cancel();
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", identityItem.vaultId],
-                refetchType: 'active'
-            });
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("Failed to update identity item." + err)
-        }
-    })
+    const data = {
+        name, email, phoneNumber, organizationName, address1, address2, city, state,
+        zipCode, country, floor, county, poBox, socialSecurityNumber, passportNumber,
+        licenseNumber, companyName, occupation, x, linkedin, instagram, tiktok, facebook, github, other
+    };
+    const { mutate, isPending } = useUpdateVaultItem(identityItem.id, identityItem.vaultId, data, cancel);
 
     const handleSubmit = () => {
         mutate();
@@ -260,6 +238,7 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
                     </Button>
                 </Field>
             </Field>
+            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
         </motion.div>
     )
 }

@@ -3,8 +3,12 @@ import { getCookie } from "@/app/actions/cookie/getCookie";
 
 export function GetCookieQuery(name: string) {
     return useQuery({
-        queryKey: ["get-cookie"],
+        queryKey: ['get-cookie'],
         queryFn: () => getCookie(name),
-        refetchOnWindowFocus: false,
+        refetchOnMount: true,
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+        staleTime: 1000 * 60 * 2,
+        gcTime: 1000 * 60 * 5
     })
 }

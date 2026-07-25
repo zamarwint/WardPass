@@ -11,20 +11,14 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2Icon, PlusIcon } from "lucide-react";
+import { Loader2Icon, PlusIcon, X } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { motion } from "motion/react"
-import createVaultItem from "@/app/actions/vault-item/createVaultItem";
 import { Textarea } from "@/components/ui/textarea";
-import { encryptData } from "@/lib/crypto/aes";
-import { useVaultStore } from "@/stores/vault";
 import { VaultItemType } from "@/lib/types/VaultType";
+import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
 
 export default function CreateSecureNoteItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
-    const queryClient = useQueryClient();
-
     const [title, setTitle] = useState<string>("")
     const [content, setContent] = useState<string>("")
     const [characterLength, setCharacterLength] = useState<number>(content.length)
@@ -39,30 +33,8 @@ export default function CreateSecureNoteItem({ vaultId, cancel }: { vaultId: str
         }
     };
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => {
-            const vaultKey = useVaultStore.getState().getVaultKey(vaultId);
-            const payload = JSON.stringify({ title, content });
-            const { ciphertext, iv } = encryptData(payload, vaultKey);
-            return createVaultItem({ vaultId, encryptedData: ciphertext, iv, itemType: VaultItemType.SECURE_NOTE });
-        },
-        onMutate: () => {
-            toast.loading("Creating secure note item...")
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Secure note item created successfully");
-            cancel();
-            queryClient.invalidateQueries({
-                queryKey: ["vaultItems", vaultId],
-                refetchType: 'active'
-            });
-        },
-        onError: (err) => {
-            toast.dismiss();
-            toast.error("Failed to create secure note item." + err)
-        }
-    })
+    const data = { title, content };
+    const { mutate, isPending } = useCreateVaultItem(vaultId, data, cancel, VaultItemType.SECURE_NOTE);
 
     const handleSubmit = () => {
         mutate();
@@ -117,6 +89,7 @@ export default function CreateSecureNoteItem({ vaultId, cancel }: { vaultId: str
                     </Button>
                 </Field>
             </Field>
+            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
         </motion.div>
     )
 }

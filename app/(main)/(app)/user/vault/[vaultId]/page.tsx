@@ -6,8 +6,6 @@ import { redirect, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CreditCard, Globe, IdCard, LayoutList, NotebookPen, PlusIcon } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { getVaultItems } from "@/app/actions/vault/getVaultItems";
 import { useState, useEffect, useMemo } from "react";
 import { VaultItem } from "@/lib/types/VaultType";
 import { useVaultStore } from "@/stores/vault";
@@ -35,6 +33,8 @@ import CreateCreditCardItem from "./_components/create/CreateCreditCardItem";
 import CreateIdentityItem from "./_components/create/CreateIdentityItem";
 import CreditCardDropdown from "./_components/dropdowns/CreditCardDropdown";
 import IdentityDropdown from "./_components/dropdowns/IdentityDropdown";
+import { CreditCardJSON, IdentityJSON, LoginJSON, SecureNoteJSON } from "@/lib/types/VaultItemType";
+import { useGetVaultItems } from "@/lib/queries/VaultQueries";
 
 // THE PURPOSE OF THIS PAGE IS TO DISPLAY ALL THE VAULT ITEMS IN A LIST ON THE LEFT SIDE, AND WHEN SELECTED, DISPLAY THE ITEM DETAILS ON THE RIGHT SIDE. 
 // LIKE LOGIN ITEMS, SECURE NOTE ITEMS, CREDIT CARD ITEMS, AND IDENTITY ITEMS
@@ -42,7 +42,7 @@ export default function VaultIDPage() {
     const params = useParams();
     const vaultId = params.vaultId as string;
 
-    const [selectedItem, setSelectedItem] = useState<any>(null);
+    const [selectedItem, setSelectedItem] = useState<SecureNoteJSON | CreditCardJSON | IdentityJSON | LoginJSON | null>(null);
 
     // DROPDOWN
     const [openDropdown, setOpenDropdown] = useState<boolean>(false);
@@ -62,15 +62,7 @@ export default function VaultIDPage() {
     const [isAutoUnlocking, setIsAutoUnlocking] = useState(false);
 
     // GET CURRENT VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
-    const { data: vaultItems, isLoading: vaultItemsLoading, error: vaultItemsError } = useQuery({
-        queryKey: ["vaultItems", vaultId],
-        queryFn: () => getVaultItems(vaultId as string),
-        refetchOnMount: true,
-        refetchOnReconnect: true,
-        refetchOnWindowFocus: true,
-        staleTime: 1000 * 60 * 2,
-        gcTime: 1000 * 60 * 5
-    })
+    const { data: vaultItems, isLoading: vaultItemsLoading, error: vaultItemsError } = useGetVaultItems(vaultId);
 
     // AUTO-UNLOCK
     useEffect(() => {
@@ -153,7 +145,7 @@ export default function VaultIDPage() {
                 <div className="w-1/3 h-full border-r border-muted flex flex-col items-center justify-start overflow-hidden">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="lg" className="w-[80%] my-8 py-6 text-md rounded-xl">
+                            <Button disabled={vaultItems && vaultItems.vaultItems!.length >= 3} variant="outline" size="lg" className="w-[80%] my-8 py-6 text-md rounded-xl">
                                 <PlusIcon size={24} className="text-primary mr-2" />
                                 <span className="text-foreground">Add New Item</span>
                             </Button>
@@ -166,14 +158,14 @@ export default function VaultIDPage() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Separator className="bg-muted" />
-                    <div className="w-[90%] mt-4 flex-1 overflow-y-auto pb-8" onDoubleClick={unSelectItems}>
+                    <div className="w-full mt-4 flex-1 overflow-y-auto pb-8 flex items-center justify-center" onDoubleClick={unSelectItems}>
                         {vaultItemsLoading ? (
                             <div>Loading...</div>
                         ) : (!decryptedVaultItems || decryptedVaultItems.vaultItems!.length === 0) ?
                             (
-                                <div className="text-muted-foreground mt-4 text-center">No items found. Create a new item to continue.</div>
+                                <div className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
                             ) : (
-                                <div className="size-full text-left mt-4">
+                                <div className="size-full text-left mt-4 w-[90%]">
                                     {decryptedVaultItems.vaultItems?.map((item) => (
                                         item.itemType === 'LOGIN' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                             <div className="flex gap-3 p-2">
@@ -250,10 +242,10 @@ export default function VaultIDPage() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center size-full">
-                            {selectedItem?.itemType === "LOGIN" && <LoginItem loginItem={selectedItem} />}
-                            {selectedItem?.itemType === "SECURE_NOTE" && <SecureNoteItem secureNoteItem={selectedItem} />}
-                            {selectedItem?.itemType === "CREDIT_CARD" && <CreditCardItem creditCardItem={selectedItem} />}
-                            {selectedItem?.itemType === "IDENTITY" && <IdentityItem identityItem={selectedItem} />}
+                            {selectedItem?.itemType === "LOGIN" && <LoginItem loginItem={selectedItem as LoginJSON} />}
+                            {selectedItem?.itemType === "SECURE_NOTE" && <SecureNoteItem secureNoteItem={selectedItem as SecureNoteJSON} />}
+                            {selectedItem?.itemType === "CREDIT_CARD" && <CreditCardItem creditCardItem={selectedItem as CreditCardJSON} />}
+                            {selectedItem?.itemType === "IDENTITY" && <IdentityItem identityItem={selectedItem as IdentityJSON} />}
                         </div>
                     )}
                 </div>
