@@ -1,39 +1,75 @@
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { auth } from "@/utils/auth";
+import { betterFetch } from "@better-fetch/fetch"; // ✅ already installed with better-auth
+
+// Mirror your BetterAuth session shape
+type BetterAuthSession = {
+    session: {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
+        expiresAt: Date;
+        token: string;
+        ipAddress?: string | null | undefined;
+        userAgent?: string | null | undefined;
+    };
+    user: {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        email: string;
+        emailVerified: boolean;
+        name: string;
+        image?: string | null | undefined;
+    };
+};
+
+const PROTECTED = ["/user"];
+const AUTH_PAGES = ["/sign-in", "/sign-up"];
 
 export async function proxy(request: NextRequest) {
-    const session = await auth.api.getSession({
-        headers: await headers()
-    })
-
     const { pathname } = request.nextUrl;
 
-    // Clone the headers object to avoid modifying the original
-    const requestHeaders = new Headers(request.headers);
+    // betterFetch is just a thin wrapper around native fetch — safe in edge runtime.
+    // It calls your /api/auth/get-session route handler, which runs in Node.js
+    // and is where Prisma actually does the database lookup.
+    const { data: session } = await betterFetch<BetterAuthSession>(
+        "/api/auth/get-session",
+        {
+            baseURL: request.nextUrl.origin, // e.g. https://your-site.netlify.app
+            headers: {
+                // Forward the user's cookies so BetterAuth can find the session token
+                cookie: request.headers.get("cookie") ?? "",
+            },
+        }
+    );
 
-    // Set custom headers for pathname, search, and full URL
-    requestHeaders.set('x-pathname', request.nextUrl.pathname);
+    // AUTH AND PROTECTED PAGES
+    const isProtected = PROTECTED.some((r) => pathname.startsWith(r));
+    const isAuthPage = AUTH_PAGES.some((r) => pathname.startsWith(r));
 
-    // THE AUTH PAGES
-    const isAuthPage = pathname === '/sign-in' || pathname === '/sign-up';
+    // // Clone the headers object to avoid modifying the original
+    // const requestHeaders = new Headers(request.headers);
+
+    // // Set custom headers for pathname, search, and full URL
+    // requestHeaders.set('x-pathname', request.nextUrl.pathname);
 
     // CHECKS IF THERE'S A SESSION OR NOT. IF NO SESSION, REDIRECT TO LOGIN OR SIGN UP, IF SESSION, REDIRECT TO USER VAULTS.
+    // Unauthenticated user hitting a protected route → send to login
+    if (isProtected && !session) {
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+
+    // Authenticated user hitting login/signup → send to app
     if (isAuthPage && session) {
-        return NextResponse.redirect(new URL('/user/vault', request.url));
+        return NextResponse.redirect(new URL("/user/vault", request.url));
     }
 
-    if (!session && !isAuthPage) {
-        return NextResponse.redirect(new URL('/sign-in', request.url));
-    }
-
-    return NextResponse.next({
-        request: {
-            headers: requestHeaders,
-        },
-    });
+    return NextResponse.next();
 }
 
 export const config = {
-    matcher: ['/sign-in', '/sign-up', '/user/:path*'], // Specify the routes the middleware applies to
+    // The regex pattern /((?!api|_next/static|_next/image|favicon.ico).*)/ is used in Next.js middleware configuration to exclude specific routes from processing.
+    // It ensures that requests for API endpoints, static assets, images, and the favicon bypass the middleware logic, improving performance and preventing errors.
+    matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"]
 };
