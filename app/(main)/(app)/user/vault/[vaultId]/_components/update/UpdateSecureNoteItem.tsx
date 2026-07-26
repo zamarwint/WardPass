@@ -51,7 +51,7 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100 cursor-pointer" onClick={cancel}></div>
+            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
             <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Update Secure Note</FieldLegend>

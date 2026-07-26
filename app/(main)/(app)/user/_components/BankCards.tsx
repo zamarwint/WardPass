@@ -4,7 +4,7 @@ import Image from "next/image";
 export function BankCard1() {
     return (
         // <!-- Card 1: Unmasked (Active) -->
-        <div className="bg-card rounded-xl border hover:border-primary p-8 flex flex-col relative group transition-all duration-300 shadow-[0_0_15px_rgba(234,234,0,0.15)] overflow-hidden">
+        <div className="bg-card rounded-xl border hover:border-primary p-8 flex flex-col relative group transition-all duration-300 shadow-[0_0_15px_rgba(234,234,0,0.15)] overflow-hidden cursor-pointer">
             {/* <!-- CRUD Toolbar --> */}
             <div className="absolute top-4 right-4 flex gap-2 opacity-100 z-10">
                 <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-[#1A1A1A] transition-colors" title="Hide Details">
@@ -55,7 +55,7 @@ export function BankCard1() {
 export function BankCard2() {
     return (
         // <!-- Card 2: Masked with Hover State on Reveal -->
-        <div className="bg-card rounded-xl border p-8 flex flex-col relative group hover:border-primary transition-all duration-300 overflow-hidden">
+        <div className="bg-card rounded-xl border p-8 flex flex-col relative group hover:border-primary transition-all duration-300 overflow-hidden cursor-pointer">
             {/* <!-- CRUD Toolbar --> */}
             <div className="absolute top-4 right-4 flex gap-2 opacity-100 z-10">
                 {/* <!-- Hovered Reveal Button --> */}
@@ -126,7 +126,7 @@ export function BankCard2() {
 export function BankCard3() {
     return (
         // <!-- Card 3: Masked (Standard) -->
-        <div className="bg-card rounded-xl border p-8 flex flex-col relative group hover:border-primary transition-all duration-300 overflow-hidden">
+        <div className="bg-card rounded-xl border p-8 flex flex-col relative group hover:border-primary transition-all duration-300 overflow-hidden cursor-pointer">
             {/* <!-- CRUD Toolbar --> */}
             <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-foreground hover:bg-primary hover:text-background transition-colors" title="Reveal Details">

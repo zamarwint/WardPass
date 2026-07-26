@@ -20,6 +20,10 @@ export function useDeleteVaultItemMutation(id: string, vaultId: string) {
                 queryKey: ["trashedItems"],
                 refetchType: 'active'
             });
+            queryClient.invalidateQueries({
+                queryKey: ["vaultItems"],
+                refetchType: 'active'
+            });
         },
         onError: (error) => {
             toast.dismiss();
@@ -43,6 +47,10 @@ export function useRestoreVaultItemMutation(id: string) {
             toast.success("Item restored successfully!");
             queryClient.invalidateQueries({
                 queryKey: ["trashedItems"],
+                refetchType: 'active'
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["vaultItems"],
                 refetchType: 'active'
             });
         },
@@ -69,6 +77,10 @@ export function useTrashVaultItemMutation(id: string, vaultId: string, onOpenCha
             onOpenChange(false);
             queryClient.invalidateQueries({
                 queryKey: ["vaultItems", vaultId],
+                refetchType: 'active'
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["trashedItems"],
                 refetchType: 'active'
             });
         },

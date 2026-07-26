@@ -100,7 +100,7 @@ export default function SignInPage() {
 
                         <Field>
                             <FieldTitle className="text-muted-foreground">Continue with Google</FieldTitle>
-                            <Button variant="outline" size="lg" disabled={googlePending} onClick={signInWithGoogle}>
+                            <Button variant="outline" size="lg" disabled={googlePending} onClick={signInWithGoogle} className="h-12">
                                 {googlePending ? (
                                     <>
                                         <Loader2Icon className="size-4 animate-spin" />
@@ -132,7 +132,7 @@ export default function SignInPage() {
                         </FieldGroup>
 
                         <Field orientation="horizontal">
-                            <Button disabled={emailPending} variant="default" size="lg" className="w-full" onClick={signInWithEmail}>
+                            <Button disabled={emailPending} variant="default" size="lg" className="w-full h-12" onClick={signInWithEmail}>
                                 {emailPending ? (
                                     <>
                                         <Loader2Icon className="size-4 animate-spin" />

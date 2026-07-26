@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldSeparator } from "@/components/ui/field";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { LineAnimationClass } from "@/app/_components/LineAnimation";
 
@@ -16,15 +16,13 @@ export default function LicensePage() {
             <div className="flex flex-col items-center justify-center text-center gap-12">
                 <div className="flex flex-col gap-6">
                     <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">License</h1>
-                    <div className="text-xl text-muted-foreground flex items-center justify-center">
+                    <p className="text-muted-foreground">
                         <span>WardPass is open-source, under the</span>
-                        <Link href="https://opensource.org/license/mit/" target="_blank" rel="noopener noreferrer" className={`font-bold text-foreground hover:text-primary flex items-center justify-center gap-1.5 mx-2 ${LineAnimationClass}`}>
-                            MIT License
+                        <Link href="https://opensource.org/license/mit/" target="_blank" rel="noopener noreferrer" className={`font-bold text-foreground hover:text-primary ml-1.5 flex gap-2 items-center justify-center ${LineAnimationClass}`}>
+                            MIT License.
                         </Link>
-                        <ExternalLink size={16} className="text-foreground" />
-                        .
-                    </div>
-                    <Field className="max-w-lg md:max-w-xl text-muted-foreground prose text-md">
+                    </p>
+                    <Field className="text-muted-foreground prose text-md px-4 md:max-w-xl md:px-0">
                         <FieldDescription className="text-center">
                             Copyright. 2026. WardPass and ZWint Co.
                         </FieldDescription>

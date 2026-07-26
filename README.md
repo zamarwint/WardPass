@@ -15,7 +15,7 @@ It's very simple. **Here are the instructions:**
 
 ## Try it
 
-Visit [the website.](https://wardpass.netlify.app/)
+Visit [the website.](https://wardpass.pages.dev/)
 
 Try WardPass today! Available under the MIT License.
 

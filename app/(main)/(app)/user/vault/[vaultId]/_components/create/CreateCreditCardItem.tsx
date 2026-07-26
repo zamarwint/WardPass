@@ -51,7 +51,7 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100 cursor-pointer" onClick={cancel}></div>
+            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
             <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
                 <FieldSet>
                     <FieldLegend>Create Credit Card Item</FieldLegend>
@@ -69,7 +69,7 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
                     </Field>
                     <Field>
                         <FieldLabel>CVV</FieldLabel>
-                        <Input type="number" placeholder="123" id="cvv" value={cvv} onChange={(e) => { setCvv(e.target.value) }} className="h-12" maxLength={3} />
+                        <PasswordInput placeholder="123" id="cvv" value={cvv} onChange={(e) => { setCvv(e.target.value) }} className="h-12" maxLength={3} />
                     </Field>
 
                     <Field>

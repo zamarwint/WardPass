@@ -59,10 +59,10 @@ export function useCreateVault(vaultName: string, selectedIcon: string, vaultCol
             });
             toast.success("Vault created successfully!");
         },
-        onError: (err) => {
+        onError: (error) => {
             toast.dismiss();
             setOpen(false);
-            toast.error(err.message || "There was an error creating your vault. Please try again later.");
+            toast.error(error.message || "There was an error creating your vault. Please try again later.");
         }
     });
 }
@@ -90,9 +90,9 @@ export function useCreateVaultItem(vaultId: string, data: CreditCardJSON | Ident
                 refetchType: 'active'
             });
         },
-        onError: (err) => {
+        onError: (error) => {
             toast.dismiss();
-            toast.error("Failed to add vault item. " + err)
+            toast.error("Failed to add vault item. " + error)
         }
     })
 }

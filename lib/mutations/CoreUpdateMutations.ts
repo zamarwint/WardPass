@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { deriveKey, generateSalt, toBase64 } from "../crypto/argon2";
-import { createVerificationHash, encryptData, encryptVaultKey, generateVaultKey } from "../crypto/aes";
+import { createVerificationHash, encryptData, encryptVaultKey } from "../crypto/aes";
 import { updateVault } from "@/app/actions/vault/updateVault";
 import { useVaultStore } from "@/stores/vault";
 import { toast } from "sonner";
@@ -24,7 +24,13 @@ export function useUpdateVault(vaultId: string, vaultName: string, selectedIcon:
             const saltBytes = generateSalt();
             const salt = toBase64(saltBytes);
             const derivedKey = await deriveKey(masterPassword, saltBytes);
-            const vaultKey = generateVaultKey();
+
+            // ⚠️ CRITICAL: Reuse the EXISTING vault key — do NOT generate a new one.
+            // All vault items are encrypted with this key. Generating a new key
+            // would make every existing item permanently undecryptable.
+            // The vault is already unlocked (user is editing it), so the key
+            // is available in the in-memory store.
+            const vaultKey = useVaultStore.getState().getVaultKey(vaultId);
 
             const { encryptedKey, keyIv } = encryptVaultKey(vaultKey, derivedKey);
             const { hash: verificationHash, hashIv } = createVerificationHash(vaultKey);
@@ -62,9 +68,9 @@ export function useUpdateVault(vaultId: string, vaultName: string, selectedIcon:
                 refetchType: 'active'
             });
         },
-        onError: (err) => {
+        onError: (error) => {
             toast.dismiss();
-            toast.error("There was an error updating your vault. Please try again later." + err);
+            toast.error("There was an error updating your vault. Please try again later." + error);
             onOpenChange(false);
         }
     });

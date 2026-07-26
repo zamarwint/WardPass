@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 
 export async function updateVault(
     vaultId: string,
-    name?: string,
+    name: string,
     icon?: string,
     iconColor?: string,
     salt?: string,
@@ -19,7 +19,7 @@ export async function updateVault(
 
     if (!session) return;
 
-    const slug = name!.toLowerCase().replace(/\s/g, '-');
+    const slug = name.toLowerCase().replace(/\s/g, '-');
     const vault = await prisma.vault.update({
         where: {
             userId: session.user.id,

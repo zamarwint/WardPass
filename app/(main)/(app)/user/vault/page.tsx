@@ -47,9 +47,7 @@ export default async function VaultSelectionPage() {
                     <FieldDescription>Choose an existing vault or create a new one to continue.</FieldDescription>
                 </FieldSet>
                 <div className='flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3'>
-                    {canCreateVault ? <CreateVault /> : (
-                        <FieldDescription>You can only have {maxVaults} vaults. Please delete one to create a new one.</FieldDescription>
-                    )}
+                    {canCreateVault ? <CreateVault disabled={false} /> : <CreateVault disabled={true} />}
                     {ShowVaults()}
                 </div>
             </FieldContent>

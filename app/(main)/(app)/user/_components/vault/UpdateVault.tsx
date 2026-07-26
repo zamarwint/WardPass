@@ -68,7 +68,7 @@ export default function UpdateVault({ open, onOpenChange, vault }: { open: boole
                 </div>
                 <div className="flex flex-col gap-3">
                     <Label htmlFor="masterPassword">Update Master Password</Label>
-                    <Input type="password" id="masterPassword" placeholder="Enter your master password to create vault" value={masterPassword} onChange={(e) => setMasterPassword(e.target.value)} />
+                    <Input type="password" id="masterPassword" placeholder="Enter your master password to update vault" value={masterPassword} onChange={(e) => setMasterPassword(e.target.value)} />
                 </div>
                 <DialogFooter className="font-geist">
                     <DialogClose className="text-md mr-1">Cancel</DialogClose>

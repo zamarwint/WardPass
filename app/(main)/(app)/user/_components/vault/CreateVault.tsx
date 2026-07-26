@@ -22,7 +22,7 @@ import { useCreateVault } from "@/lib/mutations/CoreCreateMutations";
 
 const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
 
-export default function CreateVault() {
+export default function CreateVault({ disabled }: { disabled: boolean }) {
     const [selectedIcon, setSelectedIcon] = useState<IconName>();
     const [vaultName, setVaultName] = useState<string>("");
     const [vaultColor, setVaultColor] = useState<string>("");
@@ -35,7 +35,7 @@ export default function CreateVault() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="secondary" size="lg" className="p-5 w-full">Create Vault <Lucide.PlusIcon size="16" /></Button>
+                <Button disabled={disabled} variant="secondary" size="lg" className="p-5 w-full">{!disabled ? <>Create Vault <Lucide.PlusIcon size="16" /></> : <> Vault Limit Reached <Lucide.XIcon size="16" /></>}</Button>
             </DialogTrigger>
             <DialogContent className="font-geist">
                 <DialogHeader>

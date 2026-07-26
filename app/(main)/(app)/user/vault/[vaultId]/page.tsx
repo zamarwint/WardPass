@@ -5,7 +5,7 @@ import { redirect, useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { CreditCard, Globe, IdCard, LayoutList, NotebookPen, PlusIcon } from "lucide-react";
+import { CreditCard, Globe, IdCard, LayoutList, NotebookPen, PlusIcon, XIcon } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { VaultItem } from "@/lib/types/VaultType";
 import { useVaultStore } from "@/stores/vault";
@@ -34,7 +34,7 @@ import CreateIdentityItem from "./_components/create/CreateIdentityItem";
 import CreditCardDropdown from "./_components/dropdowns/CreditCardDropdown";
 import IdentityDropdown from "./_components/dropdowns/IdentityDropdown";
 import { CreditCardJSON, IdentityJSON, LoginJSON, SecureNoteJSON } from "@/lib/types/VaultItemType";
-import { useGetVaultItems } from "@/lib/queries/VaultQueries";
+import { useGetVaultItems, useGetVaultWithTrashedItems } from "@/lib/queries/VaultQueries";
 
 // THE PURPOSE OF THIS PAGE IS TO DISPLAY ALL THE VAULT ITEMS IN A LIST ON THE LEFT SIDE, AND WHEN SELECTED, DISPLAY THE ITEM DETAILS ON THE RIGHT SIDE. 
 // LIKE LOGIN ITEMS, SECURE NOTE ITEMS, CREDIT CARD ITEMS, AND IDENTITY ITEMS
@@ -61,8 +61,12 @@ export default function VaultIDPage() {
     const store = useVaultStore();
     const [isAutoUnlocking, setIsAutoUnlocking] = useState(false);
 
-    // GET CURRENT VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
+    // GET CURRENT VAULT ITEMS AND TRASHED VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
+    // CHECKING TO SEE IF VAULT ITEM LIMIT IS REACHED IN BOTH THE CURRENT VAULT AND THE TRASH.
     const { data: vaultItems, isLoading: vaultItemsLoading, error: vaultItemsError } = useGetVaultItems(vaultId);
+    const { data: trashedItems, isLoading: trashedItemsLoading, error: trashedItemsError } = useGetVaultWithTrashedItems(vaultId);
+
+    const isVaultLimit = vaultItems && trashedItems && (vaultItems.vaultItems!.length + trashedItems.vaultItems!.length) >= 3
 
     // AUTO-UNLOCK
     useEffect(() => {
@@ -94,7 +98,7 @@ export default function VaultIDPage() {
         return () => { isMounted = false; };
     }, [vaultItems, vaultId, store.vaultKeys, store.masterPassword]);
 
-    if (vaultItemsError) {
+    if (vaultItemsError || trashedItemsError) {
         toast.error("There was an error loading your vault. Please try refreshing the page." + vaultItemsError?.message);
         redirect("/user/vault");
     }
@@ -145,9 +149,25 @@ export default function VaultIDPage() {
                 <div className="w-1/3 h-full border-r border-muted flex flex-col items-center justify-start overflow-hidden">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button disabled={vaultItems && vaultItems.vaultItems!.length >= 3} variant="outline" size="lg" className="w-[80%] my-8 py-6 text-md rounded-xl">
-                                <PlusIcon size={24} className="text-primary mr-2" />
-                                <span className="text-foreground">Add New Item</span>
+                            <Button disabled={isVaultLimit || (vaultItemsLoading || trashedItemsLoading)} variant="outline" size="lg" className="w-[80%] my-8 py-6 text-md rounded-xl">
+                                {
+                                    vaultItemsLoading || trashedItemsLoading ? (
+                                        <>
+                                            Loading...
+                                        </>
+                                    ) : isVaultLimit ? (
+                                        <>
+                                            <XIcon size={24} className="text-foreground mr-2" />
+                                            Vault Item Limit Reached
+                                        </>
+                                    ) : (
+
+                                        <>
+                                            <PlusIcon size={24} className="text-primary mr-2" />
+                                            Add New Item
+                                        </>
+                                    )
+                                }
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
@@ -159,7 +179,7 @@ export default function VaultIDPage() {
                     </DropdownMenu>
                     <Separator className="bg-muted" />
                     <div className="w-full mt-4 flex-1 overflow-y-auto pb-8 flex items-center justify-center" onDoubleClick={unSelectItems}>
-                        {vaultItemsLoading ? (
+                        {vaultItemsLoading || trashedItemsLoading ? (
                             <div>Loading...</div>
                         ) : (!decryptedVaultItems || decryptedVaultItems.vaultItems!.length === 0) ?
                             (
@@ -232,7 +252,7 @@ export default function VaultIDPage() {
                     </div>
                 </div>
                 <div className="flex-1 h-full flex items-center justify-center overflow-y-auto">
-                    {vaultItemsLoading ? <div>Loading...</div> : !selectedItem ? (
+                    {vaultItemsLoading || trashedItemsLoading ? <div>Loading...</div> : !selectedItem ? (
                         <div className="flex flex-col items-center gap-1">
                             <SvgCircle>
                                 <LayoutList size={80} className="text-primary relative z-10" />

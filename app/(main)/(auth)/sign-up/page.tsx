@@ -189,7 +189,7 @@ export default function SignUpPage() {
                             />
                         </FieldGroup>
 
-                        <Button type="submit" variant="default" size="lg" className="w-full" disabled={form.formState.isSubmitting || emailPending}>
+                        <Button type="submit" variant="default" size="lg" className="w-full h-12" disabled={form.formState.isSubmitting || emailPending}>
                             {emailPending ? (
                                 <>
                                     <Loader2Icon className="size-4 animate-spin" />

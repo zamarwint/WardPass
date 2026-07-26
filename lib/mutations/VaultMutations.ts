@@ -21,9 +21,9 @@ export function useDeleteVaultMutation(vaultId: string, onOpenChange: (open: boo
             });
             onOpenChange(false);
         },
-        onError: (err) => {
+        onError: (error) => {
             toast.dismiss();
-            toast.error("There was an error deleting your vault. Please try again later." + err);
+            toast.error("There was an error deleting your vault. Please try again later." + error);
             onOpenChange(false);
         }
     });
