@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DynamicIcon, IconName } from "lucide-react/dynamic";
 import { ChevronsLeft, LockIcon } from "lucide-react";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useVaultStore } from "@/stores/vault";
@@ -16,17 +15,18 @@ export function VaultSideButton({ vault, collapsed }: { vault: Vault, collapsed:
     const pathName = usePathname();
     const vaultLink = `/user/vault/${vault.id}`;
     const [open, setOpen] = useState<boolean>(false);
+    const router = useRouter();
 
     return (
-        <div key={vault.id} className={cn("flex items-center justify-between w-full p-1", pathName.startsWith(vaultLink) ? "btn-primary" : "btn-ghost")}>
-            <Link href={vaultLink} className={cn("w-full p-2 flex items-center gap-2", collapsed ? "justify-center" : "justify-start")}>
+        <div className={cn(`w-full flex items-center justify-between gap-2 px-2 py-4 cursor-pointer ${pathName.startsWith(vaultLink) ? "btn-primary" : "btn-ghost"}`, collapsed ? "justify-center" : "justify-start")}>
+            <div onClick={() => router.push(vaultLink)} className="flex items-center flex-1 gap-2 px-1">
                 <SvgCircle size="w-8 h-8">
                     <DynamicIcon name={vault.icon as IconName} size={16} color={vault.iconColor || 'white'} />
                 </SvgCircle>
                 {!collapsed && <span className="text-sm font-semibold">{vault.name}</span>}
-            </Link>
+            </div>
             {!collapsed && (
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex items-center">
                     <VaultDropdown open={open} onOpenChange={setOpen} vault={vault} />
                 </div>
             )}
@@ -52,14 +52,15 @@ export function LockSideButton({ disabled = false, collapsed }: { disabled?: boo
 
 export function LinkSideButton({ Icon, href, hrefExact = false, text, disabled = false, className, collapsed }: { Icon: React.ReactNode, href: string, hrefExact: boolean, text: string, disabled?: boolean, className?: string, collapsed: boolean }) {
     const pathName = usePathname();
+    const router = useRouter();
 
     return (
-        <Link href={href} className={cn("w-full", className)}>
+        <div onClick={() => router.push(href)} className={cn("w-full", className)}>
             <Button disabled={disabled} variant={hrefExact ? pathName === href ? "default" : "ghost" : pathName.startsWith(href) ? "default" : "ghost"} size="lg" className={cn("w-full flex items-center", collapsed ? "justify-center" : "justify-start")}>
                 {Icon}
                 {!collapsed && <span className="text-sm font-semibold">{text}</span>}
             </Button>
-        </Link>
+        </div>
     )
 }
 

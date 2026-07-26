@@ -1,8 +1,10 @@
-import { ChevronsLeftRightEllipsis, EyeOff, Server, Share2Icon, ShieldEllipsis, Smartphone } from "lucide-react"
+import { ChevronsLeftRightEllipsis, CircleAlert, EyeOff, Server, Share2Icon, ShieldEllipsis, Smartphone } from "lucide-react"
 import { PaymentCard } from "@/app/_components/UICards";
 import Link from "next/link";
 import Image from "next/image";
-import Hero from "./_components/Hero";;
+import Hero from "./_components/Hero";
+import { Button } from "@/components/ui/button";
+import { getUserSession } from "@/app/actions/getSession";
 
 const features = [
   {
@@ -87,7 +89,9 @@ function SecurityDecoration() {
   )
 }
 
-export default function Page() {
+export default async function Page() {
+  const data = await getUserSession();
+
   return (
     <main className="grow font-geist">
       <Hero />
@@ -182,9 +186,20 @@ export default function Page() {
           <div className="p-12 text-center max-w-4xl mx-auto border border-foreground/20 hover:border-primary/50 bg-card">
             <h2 className="text-2xl md:text-4xl font-bold font-geist mb-6">Ready to secure your assets?</h2>
             <p className="mb-10 max-w-2xl mx-auto text-muted-foreground">Join thousands of power users who trust WardPass with their most sensitive digital credentials.</p>
-            <Link href="sign-up" className="btn-primary px-10 py-4 inline-block uppercase tracking-wider hover:bg-primary/80">
-              Initialize Vault
-            </Link>
+            <Button disabled={!data} className="tracking-wider uppercase py-8 px-10" size="lg">
+              <Link href={data?.user ? '/user/vault' : '/sign-up'}>
+                {!data ? (
+                  <>
+                    <CircleAlert className="mr-2 h-4 w-4" />
+                    <span>Error!</span>
+                  </>
+                ) : data?.user ? (
+                  <span>Back to Dashboard</span>
+                ) : (
+                  <span>Try WardPass</span>
+                )}
+              </Link>
+            </Button>
           </div>
         </div>
       </section >

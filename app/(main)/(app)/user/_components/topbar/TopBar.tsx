@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import Search from "./Search";
 import { BugPlay, CircleQuestionMark } from "lucide-react";
@@ -21,10 +20,10 @@ export default function TopBar() {
     return (
         <>
             <div className="font-geist flex items-center justify-between w-full p-0.5 bg-card/40 backdrop:blur-sm border-b border-muted">
-                <Link className="flex items-center justify-center text-primary px-5 gap-0.5" href="/">
+                <div className="flex items-center justify-center text-primary px-5 gap-0.5 cursor-pointer" onClick={() => router.push('/')}>
                     <Image src="/../../../icon.png" alt="logo" width={0} height={0} className="w-8 h-8" loading="eager" />
                     <span className="text-xl tracking-tighter font-bold">WARDPASS</span>
-                </Link>
+                </div>
                 <Search />
                 <Button size="icon" variant="ghost" onClick={handleBugPlayClick} className="mr-2">
                     <BugPlay size={32} className="text-muted-foreground" />

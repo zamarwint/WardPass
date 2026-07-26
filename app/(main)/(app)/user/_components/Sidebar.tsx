@@ -39,11 +39,13 @@ export function SidebarContent() {
                     <LinkSideButton hrefExact={true} href="/user/vault" text="All Vaults" Icon={<Vault />} collapsed={collapsed} />
                     <Separator className="my-2" />
                 </div>
-                <div className="w-full flex flex-col items-center justify-start gap-2 flex-1 overflow-y-auto">
+                <div className="w-full flex flex-col items-start justify-start flex-1 overflow-y-auto">
                     {!vaults || vaults.length === 0 ? (
                         <div className="text-muted-foreground text-center text-sm">{collapsed ? "+" : "No vaults found."}</div>
                     ) : vaults.map((vault) => (
-                        <VaultSideButton key={vault.id} vault={vault} collapsed={collapsed} />
+                        <div key={vault.id} className="w-full flex items-center justify-start">
+                            <VaultSideButton vault={vault} collapsed={collapsed} />
+                        </div>
                     ))}
                 </div>
                 <div className="w-full flex flex-col items-start justify-start gap-1">
