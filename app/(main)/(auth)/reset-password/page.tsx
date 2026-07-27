@@ -61,7 +61,7 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen w-screen">
+        <div className="flex flex-col items-center justify-center min-h-screen w-screen z-999">
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FieldSet className="w-xl">
                     <Field>

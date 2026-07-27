@@ -3,6 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
 import { sendEmail } from "@/lib/sendEmail";
 import { redirect } from "next/navigation";
+import createSettings from "@/app/actions/settings/createSettings";
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -36,15 +37,9 @@ export const auth = betterAuth({
         },
         async afterEmailVerification(user) {
             console.log(`User ${user.email} has been successfully verified.`);
+            const createUserSettings = await createSettings(user.id);
 
-            // Create Settings
-            const createSettings = await prisma.settings.create({
-                data: {
-                    userId: user.id,
-                }
-            });
-
-            console.log('Created settings: ' + createSettings.id);
+            console.log(`Created settings: ${createUserSettings.id}, For user ${user.email}`);
             redirect('/user/vault');
         }
     },

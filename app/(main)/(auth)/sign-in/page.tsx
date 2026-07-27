@@ -90,7 +90,7 @@ export default function SignInPage() {
 
     return (
         <>
-            <div className="flex items-center justify-center w-screen h-screen z-999">
+            <div className="flex items-center justify-center w-screen h-screen z-998">
                 {/* SIGN IN CARD */}
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-10 border-r border-foreground/5">
                     <Link href="/" className="font-bold text-3xl tracking-tighter text-primary uppercase">WARDPASS</Link>
