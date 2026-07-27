@@ -39,7 +39,7 @@ export function SidebarContent() {
                     <LinkSideButton hrefExact={true} href="/user/vault" text="All Vaults" Icon={<Vault />} collapsed={collapsed} />
                     <Separator className="my-2" />
                 </div>
-                <div className="w-full flex flex-col items-start justify-start flex-1 overflow-y-auto">
+                <div className="w-full flex flex-col items-center justify-start flex-1 overflow-y-auto">
                     {!vaults || vaults.length === 0 ? (
                         <div className="text-muted-foreground text-center text-sm">{collapsed ? "+" : "No vaults found."}</div>
                     ) : vaults.map((vault) => (

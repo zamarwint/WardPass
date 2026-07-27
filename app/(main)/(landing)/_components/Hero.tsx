@@ -22,7 +22,7 @@ export default function Hero() {
                             The Password Management Solution, <br /><span className="text-primary">You Deserve.</span>
                         </h1>
                         <p className="mb-10 max-w-xl">
-                            Deploy a high-performance digital vault engineered for power users. Zero-knowledge architecture meets uncompromising speed. Your data remains an impenetrable asset.
+                            Create strong, unique passwords in seconds and keep your online accounts better protected. Our password management solution helps you reduce security risks, avoid reused passwords, and take control of your digital security with a fast, simple, and reliable experience.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto font-geist">
                             <Link href="/sign-up" className="font-bold btn-primary px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2">

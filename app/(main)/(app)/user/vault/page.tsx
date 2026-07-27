@@ -23,12 +23,10 @@ export default async function VaultSelectionPage() {
     const vaultCount = vaults!.length;
     const canCreateVault = vaultCount < maxVaults;
 
-    if (!vaults || vaults.length === 0) {
-        return <FieldDescription>No vaults found. Create one above.</FieldDescription>
-    }
+    const noVaults = !vaults || vaults.length === 0;
 
     const ShowVaults = () => {
-        return vaults.map((vault) => (
+        return vaults!.map((vault) => (
             <Link key={vault.id} href={`/user/vault/${vault.id}`} className='w-full'>
                 <Button size="lg" className="flex items-center p-5 w-full">
                     <DynamicIcon name={vault.icon as IconName} size={32} />
@@ -44,7 +42,11 @@ export default async function VaultSelectionPage() {
             <FieldContent className='font-geist flex flex-col items-center justify-center text-center w-full gap-12'>
                 <FieldSet className='flex flex-col items-center justify-center w-full gap-3'>
                     <FieldTitle className='text-3xl font-bold'>Select Vault</FieldTitle>
-                    <FieldDescription>Choose an existing vault or create a new one to continue.</FieldDescription>
+                    {noVaults ? (
+                        <FieldDescription>No vaults found. Create one below.</FieldDescription>
+                    ) : (
+                        <FieldDescription>Choose an existing vault or create a new one below to continue.</FieldDescription>
+                    )}
                 </FieldSet>
                 <div className='flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3'>
                     {canCreateVault ? <CreateVault disabled={false} /> : <CreateVault disabled={true} />}

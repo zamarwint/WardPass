@@ -115,7 +115,7 @@ export default async function Page() {
           <div className="w-64 md:w-2/6 text-center md:text-left flex flex-col gap-15">
             <h2 className="text-2xl md:text-8xl font-bold text-primary">What is WardPass?</h2>
             <div className="flex flex-col gap-8 text-xl">
-              <p>WardPass is a secure password management solution. With WardPass, you can easily organize your passwords into different folders, and use them when you want to sign in to any service.</p>
+              <p>WardPass is a secure password management solution. With WardPass, you can easily organize your passwords into different folders called <b>Vaults</b>, and use them when you want to sign in to any service.</p>
             </div>
           </div>
           <div className="flex gap-4">
