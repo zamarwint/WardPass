@@ -1,17 +1,30 @@
-import { CardSim, Copy, CopyIcon, Eye, GlobeIcon, LandmarkIcon } from "lucide-react"
+"use client";
+
+import { CardSim, CheckIcon, CopyIcon, Eye, EyeOff, GlobeIcon, LandmarkIcon } from "lucide-react"
+import { useState } from "react"
 
 export function PaymentCard({ withoutHeader = false }: { withoutHeader?: boolean }) {
+    // PLAY AROUND WITH THE UI CARDS
+    const [isCopied, setIsCopied] = useState(false);
+
+    const copyFakeCardNumber = async () => {
+        const fakeCardNumber = "[CARD NUMBER] 4242-4242-4242-4242 | If you would like to support this development, please buy us a coffee.";
+        await navigator.clipboard.writeText(fakeCardNumber);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+    };
+
     if (withoutHeader) {
         return (
-            <div className="w-full max-w-95 aspect-[1.586/1] bg-card rounded-xl p-6 relative overflow-hidden flex flex-col justify-between border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20">
+            <div className="group w-full max-w-95 aspect-[1.586/1] bg-card rounded-xl p-6 relative overflow-hidden flex flex-col justify-between border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20">
                 {/* Top Row */}
                 <div className="flex justify-between items-start z-10">
                     <div className="flex flex-col gap-3">
                         <span className="text-primary text-3xl"><LandmarkIcon /> </span>
                         <span className="text-4xl"><CardSim color="gray" /> </span>
                     </div>
-                    <button aria-label="Copy Card Number" className="text-primary hover:brightness-110 transition-all opacity-0 group-hover:opacity-100 p-2 -mr-2 -mt-2 rounded hover:bg-neutral-450 dark:hover:bg-neutral-900">
-                        <span><CopyIcon /> </span>
+                    <button onClick={copyFakeCardNumber} aria-label="Copy Card Number" className="text-primary hover:brightness-110 transition-all opacity-0 group-hover:opacity-100 p-2 -mr-2 -mt-2 rounded hover:bg-neutral-450 dark:hover:bg-neutral-900">
+                        <span>{isCopied ? <CheckIcon /> : <CopyIcon />} </span>
                     </button>
                 </div>
                 {/* Middle Row: Number */}
@@ -50,8 +63,8 @@ export function PaymentCard({ withoutHeader = false }: { withoutHeader?: boolean
                         <span className="text-primary text-3xl"><LandmarkIcon /> </span>
                         <span className="text-4xl"><CardSim color="gray" /> </span>
                     </div>
-                    <button aria-label="Copy Card Number" className="text-primary hover:brightness-110 transition-all opacity-0 group-hover:opacity-100 p-2 -mr-2 -mt-2 rounded hover:bg-neutral-450 dark:hover:bg-neutral-900">
-                        <span><CopyIcon /> </span>
+                    <button onClick={copyFakeCardNumber} aria-label="Copy Card Number" className="text-primary hover:brightness-110 transition-all opacity-0 group-hover:opacity-100 p-2 -mr-2 -mt-2 rounded hover:bg-neutral-450 dark:hover:bg-neutral-900">
+                        <span>{isCopied ? <CheckIcon /> : <CopyIcon />} </span>
                     </button>
                 </div>
                 {/* Middle Row: Number */}
@@ -82,6 +95,30 @@ export function PaymentCard({ withoutHeader = false }: { withoutHeader?: boolean
 }
 
 export function WebsiteCredentialCard({ withoutHeader = false }: { withoutHeader?: boolean }) {
+    // PLAY AROUND WITH THE UI CARDS
+    const [isCopiedEmail, setIsCopiedEmail] = useState(false);
+    const [isCopiedPassword, setIsCopiedPassword] = useState(false);
+    const [seePassword, setSeePassword] = useState(false);
+
+    const copyFakeEmail = async () => {
+        const fakeEmail = "[EMAIL_ADDRESS] How much stars would you rate WardPass? Let us know by giving a review!";
+        await navigator.clipboard.writeText(fakeEmail);
+        setIsCopiedEmail(true);
+        setTimeout(() => setIsCopiedEmail(false), 2000);
+    };
+
+    const copyFakePassword = async () => {
+        const fakePassword = "[PASSWORD]: follow&^Us1421OnAll1.?>Platforms | Are you enjoying WardPass? Invite a friend!";
+        await navigator.clipboard.writeText(fakePassword);
+        setIsCopiedPassword(true);
+        setTimeout(() => setIsCopiedPassword(false), 2000);
+    };
+
+    const setPassword = async () => {
+        setSeePassword(!seePassword);
+        setTimeout(() => setSeePassword(false), 5000);
+    }
+
     if (withoutHeader) {
         return (
             <div className="w-full max-w-95 bg-card rounded-xl p-6 border border-neutral-200 dark:border-neutral-800 transition-all duration-300 hover:shadow-xl/30 hover:shadow-primary/20 relative overflow-hidden">
@@ -96,27 +133,27 @@ export function WebsiteCredentialCard({ withoutHeader = false }: { withoutHeader
                     </div>
                 </div>
                 {/* Fields */}
-                <div className="space-y-4 relative z-10">
-                    <div className="relative">
+                <div className="space-y-4 relative z-10 space-x-10">
+                    <div className="group/field relative w-full">
                         <label className="block text-muted-foreground mb-1 ml-1 opacity-70">Username / Email</label>
                         <div className="flex items-center justify-between bg-card border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 group-hover/field:border-outline transition-colors">
                             <span className="font-mono truncate pr-4">alex.thorne@gmail.com</span>
-                            <button aria-label="Copy Email" className="text-primary opacity-0 group-hover/field:opacity-100 hover:brightness-110 transition-all shrink-0">
-                                <span className="text-lg">content_copy</span>
+                            <button onClick={copyFakeEmail} aria-label="Copy Email" className="text-primary opacity-0 group-hover/field:opacity-100 hover:brightness-110 transition-all shrink-0">
+                                <span>{isCopiedEmail ? <CheckIcon /> : <CopyIcon />} </span>
                             </button>
                         </div>
                     </div>
                     {/* Password */}
-                    <div className="group/field relative">
+                    <div className="group/field relative w-full">
                         <label className="block text-muted-foreground mb-1 ml-1 opacity-70">Password</label>
                         <div className="flex items-center justify-between bg-card border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 group-hover/field:border-outline transition-colors">
-                            <span className="font-mono tracking-widest text-lg leading-none mt-1">••••••••••••</span>
+                            <span className="font-mono tracking-widest text-base leading-none mt-1">{seePassword ? "follow&^Us1421OnAll1.?>Platforms" : "••••••••••••"}</span>
                             <div className="flex items-center gap-2 shrink-0">
-                                <button aria-label="Toggle Visibility" className="hover:text-primary transition-colors opacity-0 group-hover/field:opacity-100">
-                                    <span className="text-lg"><Eye /> </span>
+                                <button onClick={setPassword} aria-label="Toggle Visibility" className="hover:text-primary transition-colors opacity-0 group-hover/field:opacity-100">
+                                    <span>{seePassword ? <EyeOff /> : <Eye />} </span>
                                 </button>
-                                <button aria-label="Copy Password" className="text-primary opacity-0 group-hover/field:opacity-100 hover:brightness-110 transition-all">
-                                    <span className="text-lg"><Copy /> </span>
+                                <button onClick={copyFakePassword} aria-label="Copy Password" className="text-primary opacity-0 group-hover/field:opacity-100 hover:brightness-110 transition-all">
+                                    <span>{isCopiedPassword ? <CheckIcon /> : <CopyIcon />} </span>
                                 </button>
                             </div>
                         </div>
@@ -143,27 +180,27 @@ export function WebsiteCredentialCard({ withoutHeader = false }: { withoutHeader
                     </div>
                 </div>
                 {/* Fields */}
-                <div className="space-y-4 relative z-10">
-                    <div className="relative">
+                <div className="space-y-4 relative z-10 space-x-10">
+                    <div className="group/field relative w-full">
                         <label className="block text-muted-foreground mb-1 ml-1 opacity-70">Username / Email</label>
                         <div className="flex items-center justify-between bg-card border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 group-hover/field:border-outline transition-colors">
                             <span className="font-mono truncate pr-4">alex.thorne@gmail.com</span>
-                            <button aria-label="Copy Email" className="text-primary opacity-0 group-hover/field:opacity-100 hover:brightness-110 transition-all shrink-0">
-                                <span className="text-lg">content_copy</span>
+                            <button onClick={copyFakeEmail} aria-label="Copy Email" className="text-primary opacity-0 group-hover/field:opacity-100 hover:brightness-110 transition-all shrink-0">
+                                <span>{isCopiedEmail ? <CheckIcon /> : <CopyIcon />} </span>
                             </button>
                         </div>
                     </div>
                     {/* Password */}
-                    <div className="group/field relative">
+                    <div className="group/field relative w-full">
                         <label className="block text-muted-foreground mb-1 ml-1 opacity-70">Password</label>
                         <div className="flex items-center justify-between bg-card border border-neutral-200 dark:border-neutral-800 rounded-xl p-3 group-hover/field:border-outline transition-colors">
-                            <span className="font-mono tracking-widest text-lg leading-none mt-1">••••••••••••</span>
+                            <span className="font-mono tracking-widest text-base leading-none mt-1">{seePassword ? "follow&^Us1421OnAll1.?>Platforms" : "••••••••••••"}</span>
                             <div className="flex items-center gap-2 shrink-0">
-                                <button aria-label="Toggle Visibility" className="hover:text-primary transition-colors opacity-0 group-hover/field:opacity-100">
-                                    <span className="text-lg"><Eye /> </span>
+                                <button onClick={setPassword} aria-label="Toggle Visibility" className="hover:text-primary transition-colors opacity-0 group-hover/field:opacity-100">
+                                    <span>{seePassword ? <EyeOff /> : <Eye />} </span>
                                 </button>
-                                <button aria-label="Copy Password" className="text-primary opacity-0 group-hover/field:opacity-100 hover:brightness-110 transition-all">
-                                    <span className="text-lg"><Copy /> </span>
+                                <button onClick={copyFakePassword} aria-label="Copy Password" className="text-primary opacity-0 group-hover/field:opacity-100 hover:brightness-110 transition-all">
+                                    <span>{isCopiedPassword ? <CheckIcon /> : <CopyIcon />} </span>
                                 </button>
                             </div>
                         </div>

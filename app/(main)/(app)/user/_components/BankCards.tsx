@@ -1,19 +1,46 @@
-import { EyeOff, MousePointer2, Pencil, Trash2 } from "lucide-react";
+'use client';
+
+import { useState } from "react";
+import { Eye, EyeOff, MousePointer2, Pencil, Trash2, X } from "lucide-react";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 export function BankCard1() {
+    const [cardNumber, setCardNumber] = useState<string>("4111 2222 3333 4444");
+    const [showCardNumber, setShowCardNumber] = useState<boolean>(false);
+    const [editCardNumber, setEditCardNumber] = useState<boolean>(false);
+
+    const toggleCardNumber = () => {
+        setShowCardNumber(!showCardNumber);
+        setTimeout(() => {
+            setShowCardNumber(false);
+        }, 5000);
+    }
+
+    const toggleEditCardNumber = () => {
+        setEditCardNumber(!editCardNumber);
+    }
+
+    const deleteCardNumber = () => {
+        if (editCardNumber) setCardNumber("");
+        else {
+            toast.error('Please click edit button to edit the card number before deleting.')
+        };
+    }
+
     return (
         // <!-- Card 1: Unmasked (Active) -->
         <div className="bg-card rounded-xl border hover:border-primary p-8 flex flex-col relative group transition-all duration-300 shadow-[0_0_15px_rgba(234,234,0,0.15)] overflow-hidden cursor-pointer">
             {/* <!-- CRUD Toolbar --> */}
             <div className="absolute top-4 right-4 flex gap-2 opacity-100 z-10">
-                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-[#1A1A1A] transition-colors" title="Hide Details">
-                    <span className="text-[18px]"><EyeOff /></span>
+                <button onClick={toggleCardNumber} className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-primary transition-colors" title="Hide Details">
+                    <span className="text-[18px]">{showCardNumber ? <EyeOff /> : <Eye />}</span>
                 </button>
-                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-background transition-colors" title="Edit">
-                    <span className="text-[18px]"><Pencil /></span>
+                <button onClick={toggleEditCardNumber} className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-primary transition-colors" title="Edit">
+                    <span className="text-[18px]">{editCardNumber ? <X /> : <Pencil />}</span>
                 </button>
-                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-primary flex items-center justify-center text-primary hover:bg-primary hover:text-background transition-colors" title="Delete">
+                <button onClick={deleteCardNumber} className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-primary transition-colors" title="Delete">
                     <span className="text-[18px]"><Trash2 /></span>
                 </button>
             </div>
@@ -27,7 +54,7 @@ export function BankCard1() {
                     </div>
                 </div>
                 <div className="font-mono text-[22px] tracking-[0.15em] text-foreground mb-4 tabular-nums shadow-sm">
-                    4111 2222 3333 4444
+                    <Input type="text" value={editCardNumber ? cardNumber : showCardNumber ? cardNumber : "•••• •••• •••• ••••"} readOnly={!editCardNumber} className="border-none" onChange={(e) => setCardNumber(e.target.value)} maxLength={20} />
                 </div>
                 <div className="flex justify-between items-end font-mono text-mono text-foreground">
                     <div>
@@ -59,15 +86,15 @@ export function BankCard2() {
             {/* <!-- CRUD Toolbar --> */}
             <div className="absolute top-4 right-4 flex gap-2 opacity-100 z-10">
                 {/* <!-- Hovered Reveal Button --> */}
-                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary hover:bg-primary hover:text-background flex items-center justify-center text-primary shadow-[0_0_8px_rgba(234,234,0,0.4)] transition-all cursor-pointer relative" title="Reveal Details">
+                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-primary shadow-[0_0_8px_rgba(234,234,0,0.4)] transition-all cursor-pointer relative" title="Reveal Details">
                     <span className="text-[18px]"><EyeOff /></span>
                     {/* <!-- Simulated Cursor --> */}
                     <span className="absolute -bottom-4 -right-4 text-primary fill z-50 transform -rotate-12 pointer-events-none drop-shadow-md text-[20px]"><MousePointer2 /></span>
                 </button>
-                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary hover:bg-primary hover:text-background flex items-center justify-center text-primary transition-colors" title="Edit">
+                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-primary transition-colors" title="Edit">
                     <span className="text-[18px]"><Pencil /></span>
                 </button>
-                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary hover:bg-primary hover:text-background flex items-center justify-center text-primary transition-colors" title="Delete">
+                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-primary transition-colors" title="Delete">
                     <span className="text-[18px]"><Trash2 /></span>
                 </button>
             </div>
@@ -129,13 +156,13 @@ export function BankCard3() {
         <div className="bg-card rounded-xl border p-8 flex flex-col relative group hover:border-primary transition-all duration-300 overflow-hidden cursor-pointer">
             {/* <!-- CRUD Toolbar --> */}
             <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-foreground hover:bg-primary hover:text-background transition-colors" title="Reveal Details">
+                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-foreground flex items-center justify-center text-foreground transition-colors" title="Reveal Details">
                     <span className="text-[18px]"><EyeOff /></span>
                 </button>
-                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-foreground hover:bg-primary hover:text-background transition-colors" title="Edit">
+                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-foreground flex items-center justify-center text-foreground transition-colors" title="Edit">
                     <span className="text-[18px]"><Pencil /></span>
                 </button>
-                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-primary flex items-center justify-center text-foreground hover:bg-primary hover:text-background transition-colors" title="Delete">
+                <button className="w-8 h-8 rounded dark:bg-[#1a1c1c] bg-white border border-background hover:border-foreground flex items-center justify-center text-foreground transition-colors" title="Delete">
                     <span className="text-[18px]"><Trash2 /></span>
                 </button>
             </div>

@@ -9,6 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useGetVaults } from "@/lib/queries/VaultQueries";
+import { motion } from "motion/react";
 
 export default function Sidebar() {
     return (
@@ -28,11 +29,25 @@ export function SidebarContent() {
 
     return (
         isLoading ? (
-            <div className="h-screen px-4 py-8 bg-card/40 backdrop:blur-sm w-xs flex flex-col justify-between border-r border-muted">
+            <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{
+                    duration: 1,
+                }}
+                className="h-screen px-4 py-8 bg-card/40 backdrop:blur-sm w-xs flex flex-col justify-between border-r border-muted">
                 Loading...
-            </div>
+            </motion.div>
         ) : (
-            <div
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    hidden: { opacity: 0, x: -100 },
+                    visible: { opacity: 1, x: 0 },
+                }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
                 className={cn("size-full px-4 py-4 bg-card/40 flex flex-col justify-between items-center border-r border-muted", collapsed ? "w-fit" : "w-xs")}
             >
                 <div className="flex flex-col items-center justify-center w-full">
@@ -61,7 +76,7 @@ export function SidebarContent() {
                         <LinkSideButton hrefExact={false} href="/user/trash" text="Trash" Icon={<Trash />} collapsed={collapsed} />
                     </div>
                 </div>
-            </div>
+            </motion.div>
         )
     )
 }

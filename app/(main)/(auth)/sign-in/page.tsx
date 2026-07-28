@@ -140,7 +140,7 @@ export default function SignInPage() {
                                     </>
                                 ) : (
                                     <>
-                                        <LockKeyholeOpen /> UNLOCK VAULT
+                                        <LockKeyholeOpen /> UNLOCK WARDPASS
                                     </>
                                 )}
                             </Button>

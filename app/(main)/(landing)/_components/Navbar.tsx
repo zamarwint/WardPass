@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link"
-import { Loader2Icon, Menu, X } from "lucide-react"
+import { ExternalLink, Loader2Icon, Menu, X } from "lucide-react"
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -11,6 +11,7 @@ import { ScrollToAnchor } from "@/lib/functions";
 import { ModeToggleIcon } from "@/app/_components/ThemeChange";
 import { toast } from "sonner";
 import { useGetSession } from "@/lib/queries/SessionQueries";
+import { cn } from "@/lib/utils";
 
 const navigationLinks = [
     {
@@ -28,6 +29,11 @@ const navigationLinks = [
     {
         label: "Chrome Extension",
         path: "/extension"
+    },
+    {
+        label: "Donate",
+        path: "https://buymeacoffee.com/zamfcs",
+        isExternal: true
     },
 ];
 
@@ -83,11 +89,14 @@ export default function Navbar() {
         >
             <motion.div className="flex justify-between items-center w-full px-4 md:px-10 py-4 mx-auto">
                 {/* DESKTOP MENU */}
-                <div className="hidden lg:flex items-center gap-8 w-full">
+                <div className="hidden lg:flex items-center gap-8 w-fit">
                     <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
-                    <nav className="hidden md:flex items-center gap-6">
+                    <nav className="hidden md:flex items-center justify-center gap-6 w-full">
                         {navigationLinks.map((link, index) => (
-                            <Link key={index} className={pathName === link.path ? "text-primary border-b-2 border-primary pb-1 opacity-80 transition-all " : "hover:text-primary hover:border-b-2 hover:border-primary hover:pb-1 hover:opacity-80 transition-all"} href={link.path}>{link.label}</Link>
+                            <Link key={index} className={cn("transition-all flex items-center", pathName === link.path ? "text-primary border-b-2 border-primary pb-1 opacity-80" : "hover:text-primary hover:border-b-2 hover:border-primary hover:pb-1 hover:opacity-80")} href={link.path}>
+                                {link.label}
+                                {link.isExternal && <ExternalLink size={16} className="ml-2" />}
+                            </Link>
                         ))}
                     </nav>
                 </div>
@@ -111,24 +120,28 @@ export default function Navbar() {
                             : "hidden"
                     }
                 >
-                    {open &&
-                        navigationLinks.map((link, index) => (
-                            <Link
-                                key={index}
-                                href={link.path}
-                                className={
-                                    pathName === link.path
-                                        ? `block transition w-full h-fit p-5 bg-primary text-primary-foreground`
-                                        : "block transition w-full h-fit p-5 bg-background"
-                                }
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
+                    <div className="w-full">
+                        {open &&
+                            navigationLinks.map((link, index) => (
+                                <Link
+                                    key={index}
+                                    href={link.path}
+                                    className={cn("flex transition w-full h-fit p-5 items-center",
+                                        pathName === link.path
+                                            ? `bg-primary text-primary-foreground`
+                                            : "bg-background"
+                                    )}
+                                >
+                                    {link.label}
+                                    {link.isExternal && <ExternalLink size={16} className="ml-2" />}
+                                </Link>
+                            ))}
+                    </div>
+                    <div className="size-full backdrop-blur-md bg-transparent"></div>
                 </div>
 
                 {/* LOGIN AND SIGN-UP (DESKTOP ONLY) */}
-                <div className="hidden lg:flex items-center justify-end gap-4 w-full">
+                <div className="hidden lg:flex items-center justify-end gap-4 w-fit">
                     {isPending ? (
                         <>
                             <Loader2Icon className="size-4 animate-spin" />

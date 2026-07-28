@@ -31,7 +31,7 @@ const navigationLinks = [
     },
     {
         label: "Donate",
-        path: "https://paypal.me/zamarwint",
+        path: "https://buymeacoffee.com/zamfcs",
         isExternal: true
     },
     {

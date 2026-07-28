@@ -197,7 +197,7 @@ export default function SignUpPage() {
                                 </>
                             ) : (
                                 <>
-                                    <ShieldPlus /> INITIALIZE VAULT
+                                    <ShieldPlus /> INITIALIZE WARDPASS
                                 </>
                             )}
                         </Button>

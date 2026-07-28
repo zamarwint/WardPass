@@ -26,7 +26,7 @@ export default function PlaygroundCard({ open, setOpen }: { open: boolean, setOp
     return (
         <div className={`size-full bg-black/70 backdrop-blur-xs absolute flex items-center justify-center z-999 ${cn(open ? "block" : "hidden")}`}>
             <button onClick={setOpen} className="absolute top-4 right-4 z-10">
-                <X size={32} className="text-foreground" />
+                <X size={32} className="text-white" />
             </button>
             <Carousel className="w-full max-w-md mx-auto px-2" setApi={setApi}>
                 <CarouselContent>
@@ -36,7 +36,7 @@ export default function PlaygroundCard({ open, setOpen }: { open: boolean, setOp
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />
-                <div className="absolute mt-2 z-10 text-muted-foreground">
+                <div className="absolute mt-2 z-10 text-white">
                     Slide {current} / {count}
                 </div>
             </Carousel>
