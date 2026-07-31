@@ -6,8 +6,9 @@ import {
     Field,
     FieldContent,
     FieldDescription,
+    FieldLegend,
+    FieldSeparator,
     FieldSet,
-    FieldTitle,
 } from "@/components/ui/field"
 import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
@@ -39,19 +40,22 @@ export default async function VaultSelectionPage() {
 
     return (
         <Field className='w-full h-full'>
-            <FieldContent className='font-geist flex flex-col items-center justify-center text-center w-full gap-12'>
-                <FieldSet className='flex flex-col items-center justify-center w-full gap-3'>
-                    <FieldTitle className='text-3xl font-bold'>Select Vault</FieldTitle>
-                    {noVaults ? (
-                        <FieldDescription>No vaults found. Create one below.</FieldDescription>
-                    ) : (
-                        <FieldDescription>Choose an existing vault or create a new one below to continue.</FieldDescription>
-                    )}
+            <FieldContent className='font-geist flex flex-col items-center justify-center text-center w-full'>
+                <FieldSet className='flex flex-col items-center justify-center size-full gap-3'>
+                    <Field className='flex flex-col items-center justify-center w-xl max-h-xl gap-3 text-3xl'>
+                        <FieldLegend className='font-bold text-center'>Select Vault</FieldLegend>
+                        {noVaults ? (
+                            <FieldDescription className='text-center'>No vaults found. Create one below.</FieldDescription>
+                        ) : (
+                            <FieldDescription className='text-center'>Choose an existing vault or create a new one below to continue.</FieldDescription>
+                        )}
+                        <FieldSeparator />
+                    </Field>
+                    <Field className='flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3'>
+                        {canCreateVault ? <CreateVault disabled={false} /> : <CreateVault disabled={true} />}
+                        {ShowVaults()}
+                    </Field>
                 </FieldSet>
-                <div className='flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3'>
-                    {canCreateVault ? <CreateVault disabled={false} /> : <CreateVault disabled={true} />}
-                    {ShowVaults()}
-                </div>
             </FieldContent>
         </Field>
     )
