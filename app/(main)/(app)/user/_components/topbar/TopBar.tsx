@@ -2,19 +2,21 @@
 
 import Image from "next/image";
 import Search from "./Search";
-import { BugPlay, CircleQuestionMark } from "lucide-react";
+import { BugPlay, CircleQuestionMark, OctagonAlert } from "lucide-react";
 import Notifications from "./Notifications";
 import PlaygroundCard from "../PlaygroundCard";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { EmailDeliveryNotWorkingBanner } from "@/app/_components/Banners";
 
 export default function TopBar() {
     const router = useRouter();
-    const [open, setOpen] = useState<boolean>(false);
+    const [openPlayground, setOpenPlayground] = useState<boolean>(false);
+    const [bannerOpen, setBannerOpen] = useState<boolean>(true);
 
     const handleBugPlayClick = () => {
-        setOpen((prev) => !prev);
+        setOpenPlayground((prev) => !prev);
     }
 
     return (
@@ -25,6 +27,10 @@ export default function TopBar() {
                     <span className="text-xl tracking-tighter font-bold">WARDPASS</span>
                 </div>
                 <Search />
+                <Button size="lg" variant="ghost" onClick={() => setBannerOpen(!bannerOpen)} className="mr-2">
+                    <OctagonAlert size={32} className="text-yellow-800 dark:text-yellow-300" />
+                    <span className="text-sm font-bold text-yellow-800 dark:text-yellow-300">URGENT NOTICE</span>
+                </Button>
                 <Button size="icon" variant="ghost" onClick={handleBugPlayClick} className="mr-2">
                     <BugPlay size={32} className="text-muted-foreground" />
                 </Button>
@@ -33,7 +39,8 @@ export default function TopBar() {
                     <CircleQuestionMark size={32} className="text-muted-foreground" />
                 </Button>
             </div>
-            <PlaygroundCard open={open} setOpen={() => setOpen(!open)} />
+            <PlaygroundCard open={openPlayground} setOpen={() => setOpenPlayground(!openPlayground)} />
+            <EmailDeliveryNotWorkingBanner open={bannerOpen} onOpenChange={() => setBannerOpen(!bannerOpen)} />
         </>
     );
 }

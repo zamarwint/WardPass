@@ -1,4 +1,3 @@
-import { EmailDeliveryNotWorkingAlert } from "@/app/_components/Banners"
 import Sidebar from "./_components/Sidebar"
 import TopBar from "./_components/topbar/TopBar"
 
@@ -9,7 +8,6 @@ export default function AppLayout({
 }>) {
     return (
         <div className="hidden lg:flex flex-col h-screen w-screen font-geist overflow-hidden">
-            <EmailDeliveryNotWorkingAlert />
             <TopBar />
             <div className="flex w-full h-full overflow-hidden">
                 <Sidebar />

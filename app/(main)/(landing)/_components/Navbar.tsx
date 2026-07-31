@@ -32,7 +32,7 @@ const navigationLinks = [
     },
     {
         label: "Donate",
-        path: "https://buymeacoffee.com/zamfcs",
+        path: "https://buymeacoffee.com/zwbless",
         isExternal: true
     },
 ];

@@ -3,6 +3,7 @@ import { ShieldCheck } from "lucide-react"
 import { MoveRight, MoveUpRight } from "lucide-react"
 import Link from "next/link";
 import Vault3DObject from "./Vault3DObject";
+import { Button } from "@/components/ui/button";
 
 export default function Hero() {
     return (
@@ -24,15 +25,19 @@ export default function Hero() {
                         <p className="mb-10 max-w-xl">
                             Create strong, unique passwords in seconds and keep your online accounts better protected. Our password management solution helps you reduce security risks, avoid reused passwords, and take control of your digital security with a fast, simple, and reliable experience.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto font-geist">
-                            <Link href="/sign-up" className="font-bold btn-primary px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2">
-                                Get Started for Free
-                                <span className="text-[18px]"><MoveRight /></span>
-                            </Link>
-                            <Link href="#about" className="font-bold btn-secondary px-8 py-4 text-center uppercase tracking-wider flex items-center justify-center gap-2">
-                                Learn More
-                                <span className="text-[18px]"><MoveUpRight /></span>
-                            </Link >
+                        <div className="flex flex-col sm:flex-row gap-4 font-geist w-full">
+                            <Button size="lg" className="h-full px-14 py-6">
+                                <Link href="/sign-up" className="font-bold text-center uppercase tracking-wider flex items-center justify-center gap-2">
+                                    Get Started for Free
+                                    <MoveRight />
+                                </Link>
+                            </Button>
+                            <Button size="lg" variant="secondary" className="h-full px-10 py-6">
+                                <Link href="#about" className="font-bold text-center uppercase tracking-wider flex items-center justify-center gap-2">
+                                    Learn More
+                                    <MoveUpRight />
+                                </Link>
+                            </Button>
                         </div>
                         <div className="mt-8 flex items-center gap-2 font-mono text-muted-foreground">
                             <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>

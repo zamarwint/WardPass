@@ -110,7 +110,7 @@ export default async function Page() {
 
 
       {/* ABOUT SECTION */}
-      <section id="about" className="border-y border-foreground/5 py-21 px-4 font-geist">
+      <section id="about" className="border-y border-foreground/5 w-full py-30 px-4 md:px-10 font-geist">
         <div className="flex flex-col md:flex-row mx-auto items-center justify-around gap-10 md:gap-0">
           <div className="w-64 md:w-2/6 text-center md:text-left flex flex-col gap-15">
             <h2 className="text-2xl md:text-8xl font-bold text-primary">What is WardPass?</h2>
