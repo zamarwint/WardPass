@@ -63,7 +63,7 @@ export function UnlockVaultModal({
     };
 
     return open ? (
-        <div className="size-full bg-background/70 backdrop-blur-lg absolute inset-0 z-50 flex flex-col gap-6 items-center justify-center">
+        <div className="size-full bg-background backdrop-blur-lg absolute inset-0 z-50 flex flex-col gap-6 items-center justify-center">
             <div className="flex items-center justify-center">
                 <div className="flex flex-col items-center gap-6">
                     <SvgCircle>

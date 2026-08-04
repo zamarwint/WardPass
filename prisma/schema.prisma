@@ -22,9 +22,13 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-  vaults        Vault[]
 
-  settings Settings?
+  role       String?
+  banned     Boolean?
+  banReason  String?
+  banExpires DateTime? @db.Timestamptz(3)
+
+  vaults Vault[]
 
   @@unique([email])
   @@map("user")
@@ -40,6 +44,8 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
 
   @@unique([token])
   @@index([userId])
@@ -115,17 +121,4 @@ model VaultItem {
 
   @@index([vaultId])
   @@map("vaultItem")
-}
-
-model Settings {
-  id                        String @id @default(cuid())
-  autoLockTimeInMinutes     Int    @default(15)
-  hiddenTabTimeoutInMinutes Int    @default(5)
-
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("settings")
 }

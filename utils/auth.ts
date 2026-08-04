@@ -3,13 +3,16 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
 import { sendEmail } from "@/lib/sendEmail";
 import { redirect } from "next/navigation";
-import createSettings from "@/app/actions/settings/createSettings";
+import { admin } from "better-auth/plugins"
 
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
     baseURL: process.env.BETTER_AUTH_URL,
+    plugins: [
+        admin()
+    ],
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: true,
@@ -37,9 +40,6 @@ export const auth = betterAuth({
         },
         async afterEmailVerification(user) {
             console.log(`User ${user.email} has been successfully verified.`);
-            const createUserSettings = await createSettings(user.id);
-
-            console.log(`Created settings: ${createUserSettings.id}, For user ${user.email}`);
             redirect('/user/vault');
         }
     },
@@ -78,28 +78,40 @@ export const auth = betterAuth({
                     }
                 })
 
-                console.log('Found ' + vaults.length + ' vaults for ' + name);
-                console.log('Deleting all data from the vaults...');
+                if (!vaults) {
+                    console.log('Successfully deleted all of' + name + ' vaults.');
+                } else {
+                    console.log('Found ' + vaults.length + ' vaults for ' + name);
+                    console.log('Deleting all data from the vaults...');
 
-                vaults.forEach(async (vault) => {
-                    await prisma.vaultItem.deleteMany({
+                    vaults.forEach(async (vault) => {
+                        await prisma.vaultItem.deleteMany({
+                            where: {
+                                vaultId: vault.id,
+                            }
+                        });
+                    })
+
+                    console.log('Deleted all data from the vaults, deleting user vaults...');
+
+                    const { count } = await prisma.vault.deleteMany({
                         where: {
-                            vaultId: vault.id,
+                            userId: id
                         }
-                    });
-                })
+                    })
 
-                console.log('Deleted all data from the vaults, deleting user vaults...');
-
-                const { count } = await prisma.vault.deleteMany({
-                    where: {
-                        userId: id
-                    }
-                })
-
-                console.log('Successfully deleted all of' + name + ' vaults. Total vaults: ' + count);
+                    console.log('Successfully deleted all of' + name + ' vaults. Total vaults: ' + count);
+                }
             }
-        }
+        },
+        additionalFields: {
+            role: {
+                type: "string",
+                defaultValue: 'user', // Sets default role
+                input: false, // Prevent users from setting their own role during signup
+                required: true,
+            },
+        },
     },
     socialProviders: {
         google: {

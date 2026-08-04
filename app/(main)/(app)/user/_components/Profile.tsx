@@ -114,8 +114,8 @@ export default function Profile({ collapsed }: { collapsed: boolean }) {
                                 <ProfileAvatar size="size-8" image={data?.user.image as string} alt={data?.user.name || "Profile picture"} fallback={`${data?.user.name.split(" ")[0][0]}${data?.user.name.split(" ")[1][0]}`} />
                                 {!collapsed && (
                                     <div className="flex flex-col items-start justify-start">
-                                        <div className="font-semibold">{data ? data.user.name : "Name"}</div>
-                                        <div className="font-normal text-muted-foreground">{data ? data.user.email : "Email"}</div>
+                                        <div className="font-semibold line-clamp-1">{data ? data.user.name : "Name"}</div>
+                                        <div className="font-normal text-muted-foreground line-clamp-1">{data ? data.user.email : "Email"}</div>
                                     </div>
                                 )}
                             </div>

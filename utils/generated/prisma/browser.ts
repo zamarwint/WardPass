@@ -47,8 +47,3 @@ export type Vault = Prisma.VaultModel
  * 
  */
 export type VaultItem = Prisma.VaultItemModel
-/**
- * Model Settings
- * 
- */
-export type Settings = Prisma.SettingsModel

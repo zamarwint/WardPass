@@ -12,20 +12,25 @@ type BetterAuthSession = {
         token: string;
         ipAddress?: string | null | undefined;
         userAgent?: string | null | undefined;
+        impersonatedBy?: string | null | undefined;
     };
     user: {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        email: string;
-        emailVerified: boolean;
-        name: string;
-        image?: string | null | undefined;
-    };
+        id: string,
+        name: string,
+        email: string,
+        emailVerified: boolean,
+        image: string | null | undefined,
+        createdAt: Date,
+        updatedAt: Date,
+        role: string,
+        banned: boolean | null,
+        banReason: string | null,
+        banExpires: Date | null,
+    }
 };
 
-const PROTECTED = ["/user"];
-const AUTH_PAGES = ["/sign-in", "/sign-up"];
+const PROTECTED = ['/user', '/user/admin'];
+const AUTH_PAGES = ['/sign-in', '/sign-up'];
 
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
@@ -44,8 +49,11 @@ export async function proxy(request: NextRequest) {
         }
     );
 
+    const isAdmin = session?.user.role.toLowerCase() === 'admin';
+
     // AUTH AND PROTECTED PAGES
     const isProtected = PROTECTED.some((r) => pathname.startsWith(r));
+    const isAdminPage = PROTECTED[1].startsWith(pathname);
     const isAuthPage = AUTH_PAGES.some((r) => pathname.startsWith(r));
 
     // // Clone the headers object to avoid modifying the original
@@ -62,6 +70,10 @@ export async function proxy(request: NextRequest) {
 
     // Authenticated user hitting login/signup → send to app
     if (isAuthPage && session) {
+        return NextResponse.redirect(new URL("/user/vault", request.url));
+    }
+
+    if (isAdminPage && !isAdmin && session) {
         return NextResponse.redirect(new URL("/user/vault", request.url));
     }
 

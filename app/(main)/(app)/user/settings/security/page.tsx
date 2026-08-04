@@ -10,14 +10,12 @@ import {
     FieldTitle,
 } from "@/components/ui/field"
 
-import { Loader2Icon, LockKeyholeIcon } from "lucide-react";
+import { LockKeyholeIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
-import updateSettings from "@/app/actions/settings/updateSettings";
 import { toast } from "sonner";
-import { useGetSettings } from "@/lib/queries/SettingsQueries";
+import { useSettingsStore } from "@/stores/settings";
 
 const autoLockOptions = [
     { label: "1 minute", value: "1" },
@@ -43,26 +41,27 @@ const hiddenTabTimeoutOptions = [
 ]
 
 export default function SecurityPage() {
-    const { data: autoLockData } = useGetSettings();
-    const { data: hiddenTabTimeoutData } = useGetSettings();
+    const {
+        autoLockTimeInMinutes,
+        hiddenTabTimeoutInMinutes,
+        setAutoLockTimeInMinutes,
+        setHiddenTabTimeoutInMinutes
+    } = useSettingsStore();
 
-    const [selectedAutoLock, setSelectedAutoLock] = useState(autoLockData?.autoLockTimeInMinutes.toString());
-    const [selectedHiddenTabTimeout, setSelectedHiddenTabTimeout] = useState(hiddenTabTimeoutData?.hiddenTabTimeoutInMinutes.toString());
+    const [selectedAutoLock, setSelectedAutoLock] = useState<string | undefined>();
+    const [selectedHiddenTabTimeout, setSelectedHiddenTabTimeout] = useState<string | undefined>();
 
-    const { mutate, isPending } = useMutation({
-        mutationFn: () => updateSettings(parseInt(selectedAutoLock!), parseInt(selectedHiddenTabTimeout!)),
-        onMutate: () => {
-            toast.loading("Saving settings...");
-        },
-        onSuccess: () => {
-            toast.dismiss();
-            toast.success("Settings updated successfully!");
-        },
-        onError: (error) => {
-            toast.dismiss();
-            toast.error("Failed to update settings." + error.message);
-        }
-    })
+    const displayAutoLock = selectedAutoLock ?? autoLockTimeInMinutes.toString();
+    const displayHiddenTab = selectedHiddenTabTimeout ?? hiddenTabTimeoutInMinutes.toString();
+
+    const handleSave = () => {
+        setAutoLockTimeInMinutes(parseInt(displayAutoLock));
+        setHiddenTabTimeoutInMinutes(parseInt(displayHiddenTab));
+        // Reset local selections so they track the store again
+        setSelectedAutoLock(undefined);
+        setSelectedHiddenTabTimeout(undefined);
+        toast.success("Settings updated successfully!");
+    };
 
     return (
         <motion.div className="pt-60 px-10 py-5">
@@ -83,8 +82,8 @@ export default function SecurityPage() {
                 <Field className="mb-6">
                     <FieldTitle>Auto Lock after:</FieldTitle>
                     <FieldDescription>Set your preferred auto lock time.</FieldDescription>
-                    <Select defaultValue={autoLockData?.autoLockTimeInMinutes?.toString()} onValueChange={(e) => setSelectedAutoLock(e)} value={selectedAutoLock}>
-                        <SelectTrigger disabled>
+                    <Select onValueChange={(e) => setSelectedAutoLock(e)} value={displayAutoLock}>
+                        <SelectTrigger>
                             <SelectValue placeholder="Select preferred lock time." />
                         </SelectTrigger>
                         <SelectContent>
@@ -100,8 +99,8 @@ export default function SecurityPage() {
                 <Field className="mb-4">
                     <FieldTitle>Hide vault after inactivity of:</FieldTitle>
                     <FieldDescription>Set the time it takes for the vault to automatically hide.</FieldDescription>
-                    <Select defaultValue={hiddenTabTimeoutData?.hiddenTabTimeoutInMinutes?.toString()} onValueChange={(e) => setSelectedHiddenTabTimeout(e)} value={selectedHiddenTabTimeout}>
-                        <SelectTrigger disabled>
+                    <Select onValueChange={(e) => setSelectedHiddenTabTimeout(e)} value={displayHiddenTab}>
+                        <SelectTrigger>
                             <SelectValue placeholder="Select preferred timeout period." />
                         </SelectTrigger>
                         <SelectContent>
@@ -117,18 +116,13 @@ export default function SecurityPage() {
                 <Field orientation="horizontal">
                     <Button
                         size="lg"
-                        onClick={() => mutate()}
-                        disabled
-                    // disabled={isPending || !autoLockData || !hiddenTabTimeoutData || (autoLockData.autoLockTimeInMinutes.toString() === selectedAutoLock && hiddenTabTimeoutData.hiddenTabTimeoutInMinutes.toString() === selectedHiddenTabTimeout)}
+                        onClick={handleSave}
+                        disabled={
+                            displayAutoLock === autoLockTimeInMinutes.toString() &&
+                            displayHiddenTab === hiddenTabTimeoutInMinutes.toString()
+                        }
                     >
-                        {isPending ? (
-                            <>
-                                <Loader2Icon className="size-4 animate-spin" />
-                                Saving...
-                            </>
-                        ) : (
-                            "Save changes (Coming soon)"
-                        )}
+                        Save changes
                     </Button>
                 </Field>
             </Field>

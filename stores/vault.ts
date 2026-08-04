@@ -17,14 +17,7 @@
  */
 
 import { create } from "zustand";
-
-// ─── Auto-lock configuration ──────────────────────────────────────────────────
-
-/** Lock ALL vaults after this period of no activity (ms). */
-const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes
-
-/** Lock ALL vaults if the browser tab stays hidden for this long (ms). */
-const HIDDEN_TAB_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+import { useSettingsStore } from "./settings";
 
 // ─── Custom errors ────────────────────────────────────────────────────────────
 
@@ -130,9 +123,10 @@ function clearAllTimers(): void {
 
 function scheduleInactivityLock(): void {
     clearInactivityTimer();
+    const inactivityMs = useSettingsStore.getState().autoLockTimeInMinutes * 60 * 1000;
     inactivityTimer = setTimeout(() => {
         useVaultStore.getState().lockAll();
-    }, INACTIVITY_TIMEOUT_MS);
+    }, inactivityMs);
 }
 
 // ─── Store ────────────────────────────────────────────────────────────────────
@@ -213,9 +207,10 @@ if (typeof window !== "undefined") {
         if (document.hidden) {
             if (!hasUnlockedVaults) return;
 
+            const hiddenMs = useSettingsStore.getState().hiddenTabTimeoutInMinutes * 60 * 1000;
             hiddenTabTimer = setTimeout(() => {
                 useVaultStore.getState().lockAll();
-            }, HIDDEN_TAB_TIMEOUT_MS);
+            }, hiddenMs);
         } else {
             clearHiddenTabTimer();
 

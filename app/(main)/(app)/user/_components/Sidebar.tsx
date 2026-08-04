@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, Trash, Upload, Vault } from "lucide-react";
+import { Settings, ShieldUser, Trash, Upload, Vault } from "lucide-react";
 import Profile from "./Profile";
 
 import { Separator } from "@/components/ui/separator";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useGetVaults } from "@/lib/queries/VaultQueries";
 import { motion } from "motion/react";
+import { useCheckAdminSession } from "@/lib/queries/SessionQueries";
 
 export default function Sidebar() {
     return (
@@ -21,14 +22,15 @@ export function SidebarContent() {
     const [collapsed, setCollapsed] = useState<boolean>(false);
 
     // GET CURRENT VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
-    const { data: vaults, isLoading, error } = useGetVaults();
+    const { data: vaults, isLoading: vaultsLoading, error: vaultsLoadingError } = useGetVaults();
+    const { data: admin, isLoading: adminLoading, error: adminLoadingError } = useCheckAdminSession();
 
-    if (error) {
-        toast.error("There was an error loading your vaults. Please try refreshing the page." + error?.message);
+    if (vaultsLoadingError || adminLoadingError) {
+        toast.error("There was an error loading your vaults or admin session. Please try refreshing the page." + vaultsLoadingError?.message || adminLoadingError?.message);
     }
 
     return (
-        isLoading ? (
+        vaultsLoading || adminLoading ? (
             <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -38,6 +40,18 @@ export function SidebarContent() {
                 }}
                 className="h-screen px-4 py-8 bg-card/40 backdrop:blur-sm w-xs flex flex-col justify-between border-r border-muted">
                 Loading...
+            </motion.div>
+        ) : vaultsLoadingError || adminLoadingError ? (
+            <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{
+                    duration: 1,
+                }}
+                className="h-screen px-4 py-8 bg-card/40 backdrop:blur-sm w-xs flex flex-col justify-between border-r border-muted">
+                {vaultsLoadingError && "There was an error loading your vaults. Please try refreshing the page." + vaultsLoadingError?.message}
+                {adminLoadingError && "There was an error loading your admin session. Please try refreshing the page." + adminLoadingError?.message}
             </motion.div>
         ) : (
             <motion.div
@@ -67,6 +81,7 @@ export function SidebarContent() {
                     <CollapseSideButton collapsed={collapsed} setIsCollapsed={setCollapsed} />
                     <Separator />
                     <LinkSideButton hrefExact={true} href="/user/import" text="Import Data" Icon={<Upload />} collapsed={collapsed} />
+                    {admin && <LinkSideButton hrefExact={false} href="/user/admin" text="Admin" Icon={<ShieldUser />} collapsed={collapsed} />}
                     <LockSideButton collapsed={collapsed} />
                     <Separator />
                     <Profile collapsed={collapsed} />

@@ -10,3 +10,15 @@ export const getUserSession = async () => {
 
     return session;
 }
+
+export const checkAdminSession = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (!session?.user) return null;
+
+    if (session.user.role !== 'admin') return null;
+
+    return true;
+}

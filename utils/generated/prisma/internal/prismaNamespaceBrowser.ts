@@ -56,8 +56,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Vault: 'Vault',
-  VaultItem: 'VaultItem',
-  Settings: 'Settings'
+  VaultItem: 'VaultItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -83,7 +82,11 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  role: 'role',
+  banned: 'banned',
+  banReason: 'banReason',
+  banExpires: 'banExpires'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -97,7 +100,8 @@ export const SessionScalarFieldEnum = {
   updatedAt: 'updatedAt',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
-  userId: 'userId'
+  userId: 'userId',
+  impersonatedBy: 'impersonatedBy'
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
@@ -165,18 +169,6 @@ export const VaultItemScalarFieldEnum = {
 } as const
 
 export type VaultItemScalarFieldEnum = (typeof VaultItemScalarFieldEnum)[keyof typeof VaultItemScalarFieldEnum]
-
-
-export const SettingsScalarFieldEnum = {
-  id: 'id',
-  autoLockTimeInMinutes: 'autoLockTimeInMinutes',
-  hiddenTabTimeoutInMinutes: 'hiddenTabTimeoutInMinutes',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SettingsScalarFieldEnum = (typeof SettingsScalarFieldEnum)[keyof typeof SettingsScalarFieldEnum]
 
 
 export const SortOrder = {
