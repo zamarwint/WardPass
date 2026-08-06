@@ -17,15 +17,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { DynamicIcon, IconName } from 'lucide-react/dynamic';
+import { RenderIcon } from "@/components/IconMap";
 import { Loader2Icon } from "lucide-react";
 import { Vault } from "@/lib/types/VaultType";
 import { useUpdateVault } from "@/lib/mutations/CoreUpdateMutations";
 
-const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
+const iconsToRender: string[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
 
 export default function UpdateVault({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: Vault }) {
-    const [selectedIcon, setSelectedIcon] = useState<IconName>(vault.icon as IconName);
+    const [selectedIcon, setSelectedIcon] = useState<string>(vault.icon);
     const [vaultName, setVaultName] = useState<string>(vault.name);
     const [vaultColor, setVaultColor] = useState<string>(vault.iconColor!);
 
@@ -55,9 +55,9 @@ export default function UpdateVault({ open, onOpenChange, vault }: { open: boole
                                 size="lg"
                                 className="w-fit flex justify-between text-lg font-bold"
                                 key={iconName}
-                                onClick={() => setSelectedIcon(iconName as IconName)}
+                                onClick={() => setSelectedIcon(iconName)}
                             >
-                                <DynamicIcon name={iconName as IconName} size={32} />
+                                <RenderIcon name={iconName} size={32} />
                             </Button>
                         ))}
                     </motion.div>

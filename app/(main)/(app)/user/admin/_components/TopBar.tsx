@@ -13,12 +13,8 @@ const navigationLinks = [
         path: "/user/admin",
     },
     {
-        label: "Users",
-        path: "/user/admin/users",
-    },
-    {
-        label: "Sessions",
-        path: "/user/admin/sessions"
+        label: "User Management",
+        path: "/user/admin/user-management",
     },
     {
         label: "Impersonation",

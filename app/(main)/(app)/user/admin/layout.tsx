@@ -2,7 +2,7 @@ import TopBar from "./_components/TopBar"
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Settings | WardPass",
+    title: "Admin Dashboard | WardPass",
 };
 
 export default function PageLayout({

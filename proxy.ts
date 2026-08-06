@@ -1,33 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { betterFetch } from "@better-fetch/fetch"; // ✅ already installed with better-auth
-
-// Mirror your BetterAuth session shape
-type BetterAuthSession = {
-    session: {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        expiresAt: Date;
-        token: string;
-        ipAddress?: string | null | undefined;
-        userAgent?: string | null | undefined;
-        impersonatedBy?: string | null | undefined;
-    };
-    user: {
-        id: string,
-        name: string,
-        email: string,
-        emailVerified: boolean,
-        image: string | null | undefined,
-        createdAt: Date,
-        updatedAt: Date,
-        role: string,
-        banned: boolean | null,
-        banReason: string | null,
-        banExpires: Date | null,
-    }
-};
+import { BetterAuthSessionType } from "@/lib/types/BetterAuthSessionType";
 
 const PROTECTED = ['/user', '/user/admin'];
 const AUTH_PAGES = ['/sign-in', '/sign-up'];
@@ -38,7 +11,7 @@ export async function proxy(request: NextRequest) {
     // betterFetch is just a thin wrapper around native fetch — safe in edge runtime.
     // It calls your /api/auth/get-session route handler, which runs in Node.js
     // and is where Prisma actually does the database lookup.
-    const { data: session } = await betterFetch<BetterAuthSession>(
+    const { data: session } = await betterFetch<BetterAuthSessionType>(
         "/api/auth/get-session",
         {
             baseURL: request.nextUrl.origin, // e.g. https://your-site.netlify.app

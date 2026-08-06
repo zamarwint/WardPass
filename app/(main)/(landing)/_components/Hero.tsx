@@ -2,8 +2,8 @@ import GridPattern from "@/components/ui/grid-pattern";
 import { ShieldCheck } from "lucide-react"
 import { MoveRight, MoveUpRight } from "lucide-react"
 import Link from "next/link";
-import Vault3DObject from "./Vault3DObject";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function Hero() {
     return (
@@ -44,7 +44,9 @@ export default function Hero() {
                             System Status: Operational &amp; Secure
                         </div>
                     </div>
-                    <Vault3DObject />
+                    <div className="size-fit flex items-center justify-center aspect-square">
+                        <Image src="/vault-image.svg" alt="Vault Image" width={1000} height={1000} className="w-auto h-auto object-cover object-center" loading='eager' draggable={false} />
+                    </div>
                 </div>
             </div>
         </section>

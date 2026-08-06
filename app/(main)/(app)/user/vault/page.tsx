@@ -1,4 +1,4 @@
-import { DynamicIcon, IconName } from 'lucide-react/dynamic';
+import { RenderIcon } from '@/components/IconMap';
 import Link from 'next/link';
 import CreateVault from './../_components/vault/CreateVault';
 
@@ -30,7 +30,7 @@ export default async function VaultSelectionPage() {
         return vaults!.map((vault) => (
             <Link key={vault.id} href={`/user/vault/${vault.id}`} className='w-full'>
                 <Button size="lg" className="flex items-center p-5 w-full">
-                    <DynamicIcon name={vault.icon as IconName} size={32} />
+                    <RenderIcon name={vault.icon} size={32} />
                     <span className="ml-1 text-md font-bold">{vault.name}</span>
                 </Button>
             </Link>

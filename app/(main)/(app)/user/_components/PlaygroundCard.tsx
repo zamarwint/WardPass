@@ -36,7 +36,7 @@ export default function PlaygroundCard({ open, setOpen }: { open: boolean, setOp
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />
-                <div className="absolute mt-2 z-10 text-white">
+                <div className="absolute mt-2 z-10">
                     Slide {current} / {count}
                 </div>
             </Carousel>

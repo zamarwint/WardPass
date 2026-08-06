@@ -2,7 +2,6 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./db";
 import { sendEmail } from "@/lib/sendEmail";
-import { redirect } from "next/navigation";
 import { admin } from "better-auth/plugins"
 
 export const auth = betterAuth({
@@ -40,7 +39,6 @@ export const auth = betterAuth({
         },
         async afterEmailVerification(user) {
             console.log(`User ${user.email} has been successfully verified.`);
-            redirect('/user/vault');
         }
     },
     user: {

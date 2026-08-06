@@ -1,9 +1,23 @@
-import 'dotenv/config'
-import { PrismaClient } from './generated/prisma/client'
-import { PrismaNeon } from '@prisma/adapter-neon'
+// lib/db/client.ts
+import { PrismaNeonHttp } from "@prisma/adapter-neon"; // ← no neon import needed
+import { PrismaClient } from "./generated/prisma/client";
 
-const adapter = new PrismaNeon({
-    connectionString: process.env.DATABASE_URL!,
-})
+const isDev = process.env.NODE_ENV === "development";
 
-export const prisma = new PrismaClient({ adapter })
+const prismaClientSingleton = () => {
+  // ✅ Pass the connection string directly + empty options object
+  const adapter = new PrismaNeonHttp(process.env.DATABASE_URL!, {});
+
+  return new PrismaClient({
+    adapter,
+    log: isDev ? ["error", "warn"] : ["error"],
+  });
+};
+
+declare global {
+  var prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>;
+}
+
+export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+
+if (isDev) globalThis.prismaGlobal = prisma;

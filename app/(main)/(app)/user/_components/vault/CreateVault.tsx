@@ -12,18 +12,17 @@ import {
 } from "@/components/ui/dialog"
 
 import { Button } from "../../../../../../components/ui/button";
-import * as Lucide from "lucide-react";
+import { Plus, X, Loader2Icon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { DynamicIcon, IconName } from 'lucide-react/dynamic';
-import { Loader2Icon } from "lucide-react";
+import { RenderIcon } from "@/components/IconMap";
 import { useCreateVault } from "@/lib/mutations/CoreCreateMutations";
 
-const iconsToRender: IconName[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
+const iconsToRender: string[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
 
 export default function CreateVault({ disabled }: { disabled: boolean }) {
-    const [selectedIcon, setSelectedIcon] = useState<IconName>();
+    const [selectedIcon, setSelectedIcon] = useState<string>();
     const [vaultName, setVaultName] = useState<string>("");
     const [vaultColor, setVaultColor] = useState<string>("");
     const [open, setOpen] = useState<boolean>(false);
@@ -35,7 +34,7 @@ export default function CreateVault({ disabled }: { disabled: boolean }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button disabled={disabled} variant="secondary" size="lg" className="p-5 w-full">{!disabled ? <>Create Vault <Lucide.PlusIcon size="16" /></> : <> Vault Limit Reached <Lucide.XIcon size="16" /></>}</Button>
+                <Button disabled={disabled} variant="secondary" size="lg" className="p-5 w-full">{!disabled ? <>Create Vault <Plus size="16" /></> : <> Vault Limit Reached <X size="16" /></>}</Button>
             </DialogTrigger>
             <DialogContent className="font-geist">
                 <DialogHeader>
@@ -57,9 +56,9 @@ export default function CreateVault({ disabled }: { disabled: boolean }) {
                                 size="lg"
                                 className="w-fit flex justify-between text-lg font-bold"
                                 key={iconName}
-                                onClick={() => setSelectedIcon(iconName as IconName)}
+                                onClick={() => setSelectedIcon(iconName)}
                             >
-                                <DynamicIcon name={iconName as IconName} size={32} />
+                                <RenderIcon name={iconName} size={32} />
                             </Button>
                         ))}
                     </div>
