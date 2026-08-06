@@ -17,12 +17,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { RenderIcon } from "@/components/IconMap";
+import { IconMap, RenderIcon } from "@/components/IconMap";
 import { Loader2Icon } from "lucide-react";
 import { Vault } from "@/lib/types/VaultType";
 import { useUpdateVault } from "@/lib/mutations/CoreUpdateMutations";
-
-const iconsToRender: string[] = ['user', 'lock', 'settings', 'credit-card', 'wallet', 'activity', 'alarm-check', 'alarm-clock', 'alarm-minus', 'alarm-plus', 'album', 'accessibility', 'anchor', 'apple', 'archive', 'archive-restore', 'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'arrow-right-from-line', 'arrow-right-to-line', 'arrow-left-from-line', 'arrow-left-to-line', 'badge', 'banana', 'bar-chart', 'bar-chart-3', 'battery-charging', 'at-sign', 'badge-alert', 'bell', 'fingerprint-pattern', 'heart-handshake', 'flag-off'];
 
 export default function UpdateVault({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: Vault }) {
     const [selectedIcon, setSelectedIcon] = useState<string>(vault.icon);
@@ -49,7 +47,7 @@ export default function UpdateVault({ open, onOpenChange, vault }: { open: boole
                 <div className="flex flex-col gap-3">
                     <Label htmlFor="vaultIcon">Update icon</Label>
                     <motion.div className="flex flex-wrap">
-                        {iconsToRender.map((iconName) => (
+                        {Object.keys(IconMap).map((iconName) => (
                             <Button
                                 variant={selectedIcon === iconName ? "default" : "ghost"}
                                 size="lg"

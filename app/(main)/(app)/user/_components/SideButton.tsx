@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { DynamicIcon, IconName } from "lucide-react/dynamic";
+import { RenderIcon } from "@/components/IconMap";
 import { ChevronsLeft, LockIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -21,7 +21,7 @@ export function VaultSideButton({ vault, collapsed }: { vault: Vault, collapsed:
         <div className={cn(`w-full flex items-center justify-between gap-2 px-2 py-4 cursor-pointer ${pathName.startsWith(vaultLink) ? "btn-primary" : "btn-ghost"}`, collapsed ? "justify-center" : "justify-start")}>
             <div onClick={() => router.push(vaultLink)} className="flex items-center flex-1 gap-2 px-1">
                 <SvgCircle size="w-8 h-8">
-                    <DynamicIcon name={vault.icon as IconName} size={16} color={vault.iconColor || 'white'} />
+                    <RenderIcon name={vault.icon} size={16} className={cn('', vault.iconColor ? `text-${vault.iconColor}` : 'text-white')} />
                 </SvgCircle>
                 {!collapsed && <span className="text-sm font-semibold">{vault.name}</span>}
             </div>

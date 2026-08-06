@@ -30,24 +30,10 @@ export function useCheckAdminSession() {
 }
 
 // ADMIN SESSION QUERIES
-export function useListUsers({
-    searchValue,
-    limit,
-    offset,
-    sortBy,
-    filterField,
-    filterValue,
-}: {
-    searchValue?: string,
-    limit?: number,
-    offset?: number,
-    sortBy?: string,
-    filterField?: string,
-    filterValue?: string,
-} = {}) {
+export function useListUsers({ limit }: { limit?: number }) {
     return useQuery({
-        queryKey: ['listUsers', searchValue, limit, offset, sortBy, filterField, filterValue],
-        queryFn: () => listUsers({ searchValue, limit, offset, sortBy, filterField, filterValue }),
+        queryKey: ['listUsers', limit],
+        queryFn: () => listUsers(limit),
         refetchOnMount: true,
         refetchOnReconnect: true,
         refetchOnWindowFocus: true,

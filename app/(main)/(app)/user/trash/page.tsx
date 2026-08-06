@@ -1,4 +1,4 @@
-import { DynamicIcon, IconName } from 'lucide-react/dynamic';
+import { RenderIcon } from '@/components/IconMap';
 import Link from 'next/link';
 
 import {
@@ -24,7 +24,7 @@ export default async function TrashVaultSelectionPage() {
         return vaults!.map((vault) => (
             <Link key={vault.id} href={`/user/trash/${vault.id}`} className='w-full'>
                 <Button variant="secondary" size="lg" className="flex items-center p-5 w-full">
-                    <DynamicIcon name={vault.icon as IconName} size={32} />
+                    <RenderIcon name={vault.icon} size={32} />
                     <span className="ml-1 text-md font-bold">{vault.name}</span>
                 </Button>
             </Link>
