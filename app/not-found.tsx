@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { TriangleAlert } from "lucide-react";
+import { MoveLeft, TriangleAlert } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 
@@ -9,7 +9,7 @@ export default function NotFoundPage() {
     const router = useRouter();
 
     const handleBackButton = () => {
-        router.push("/");
+        router.back();
     }
 
     return (
@@ -29,7 +29,10 @@ export default function NotFoundPage() {
                 </svg>
             </div>
             <p className="text-muted-foreground">We are sorry, the page you requested could not be found. Please go back to the homepage.</p>
-            <Button variant="default" size="lg" className="px-8 py-6 font-geist" onClick={handleBackButton}>Back to Homepage</Button>
+            <Button variant="default" size="lg" className="p-6 font-geist" onClick={handleBackButton}>
+                <MoveLeft />
+                <span>Go Back</span>
+            </Button>
         </motion.div>
     )
 }

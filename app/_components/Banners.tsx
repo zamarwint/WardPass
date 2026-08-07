@@ -3,6 +3,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Drawer, DrawerClose, DrawerContent } from "@/components/ui/drawer"
+import Link from "next/link"
 
 export function EmailDeliveryNotWorkingBanner({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
     return (
@@ -20,6 +21,7 @@ export function EmailDeliveryNotWorkingBanner({ open, onOpenChange }: { open: bo
                                     Our email delivery service is currently experiencing some issues. You can still use the service without email verification for now if you are signed in with Google.
                                 </p>
                                 <p className="text-background/80">However, you cannot currently create, delete, or edit any information on your account, nor can you sign up with email or reset your password.</p>
+                                <p className="text-background/80">If you so wish to modify your account, please contact <Link href='/contact' className="underline underline-offset-2 hover:text-white dark:hover:text-background">support via email.</Link></p>
                                 <p className="text-background/80">We apologize for the inconvenience, we are working to get this matter sorted out as soon as possible.</p>
                             </div>
                         </div>

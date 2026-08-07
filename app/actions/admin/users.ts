@@ -14,3 +14,17 @@ export async function listUsers(limit?: number) {
 
     return users;
 }
+
+export async function getUser({ userId }: { userId: string }) {
+    if (!userId) return null;
+
+    const data = await auth.api.getUser({
+        query: {
+            id: userId, // required
+        },
+        // This endpoint requires session cookies.
+        headers: await headers(),
+    });
+
+    return data;
+}

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
@@ -11,13 +13,12 @@ import {
 import { Bell } from "lucide-react"
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 
 export const ChangingPasswords = () => {
     return (
         <Dialog>
-            <DialogTrigger>
+            <DialogTrigger className="text-left px-2">
                 Tip: Changing Account and Vault Password
             </DialogTrigger>
             <DialogContent>
@@ -39,7 +40,7 @@ export const ChangingPasswords = () => {
 export const NumberOfVaultandVaultItems = () => {
     return (
         <Dialog>
-            <DialogTrigger>
+            <DialogTrigger className="text-left px-2">
                 NB: Number of Vaults and Vault Items
             </DialogTrigger>
             <DialogContent>
@@ -50,7 +51,7 @@ export const NumberOfVaultandVaultItems = () => {
                 </DialogDescription>
                 <DialogDescription>
                     We hope you understand. If you want more vaults and vault items, please consider supporting this project
-                    by donating monthly or yearly using the <Link href="https://www.buymeacoffee.com/zwbless">link</Link> provided.
+                    by donating monthly or yearly using the <Link href="#">link</Link> provided.
                     When you have done so, we will increase the number of vaults and vault items you can have accordingly.
                 </DialogDescription>
                 <DialogDescription>
@@ -73,11 +74,15 @@ export default function Notifications() {
             <DropdownMenuContent align="end" className="font-geist">
                 <DropdownMenuLabel>Recent Notifications</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <div className="text-sm">
-                    <ChangingPasswords />
-                    <Separator className="my-1" />
-                    <NumberOfVaultandVaultItems />
-                </div>
+                <DropdownMenuGroup className="text-sm">
+                    <DropdownMenuItem asChild>
+                        <ChangingPasswords />
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                        <NumberOfVaultandVaultItems />
+                    </DropdownMenuItem>
+                </DropdownMenuGroup>
             </DropdownMenuContent>
         </DropdownMenu>
     )

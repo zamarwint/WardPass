@@ -21,8 +21,11 @@ import { IconMap, RenderIcon } from "@/components/IconMap";
 import { Loader2Icon } from "lucide-react";
 import { Vault } from "@/lib/types/VaultType";
 import { useUpdateVault } from "@/lib/mutations/CoreUpdateMutations";
+import { useTheme } from "next-themes";
 
 export default function UpdateVault({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: Vault }) {
+    const { resolvedTheme } = useTheme();
+
     const [selectedIcon, setSelectedIcon] = useState<string>(vault.icon);
     const [vaultName, setVaultName] = useState<string>(vault.name);
     const [vaultColor, setVaultColor] = useState<string>(vault.iconColor!);
@@ -55,7 +58,7 @@ export default function UpdateVault({ open, onOpenChange, vault }: { open: boole
                                 key={iconName}
                                 onClick={() => setSelectedIcon(iconName)}
                             >
-                                <RenderIcon name={iconName} size={32} />
+                                <RenderIcon name={iconName} size={32} color={resolvedTheme === 'light' ? (selectedIcon === iconName ? 'white' : 'black') : (selectedIcon === iconName ? 'black' : 'white')} />
                             </Button>
                         ))}
                     </motion.div>

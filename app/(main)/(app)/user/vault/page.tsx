@@ -30,7 +30,7 @@ export default async function VaultSelectionPage() {
         return vaults!.map((vault) => (
             <Link key={vault.id} href={`/user/vault/${vault.id}`} className='w-full'>
                 <Button size="lg" className="flex items-center p-5 w-full">
-                    <RenderIcon name={vault.icon} size={32} />
+                    <RenderIcon name={vault.icon} size={32} color={vault.iconColor ? vault.iconColor : 'white'} />
                     <span className="ml-1 text-md font-bold">{vault.name}</span>
                 </Button>
             </Link>

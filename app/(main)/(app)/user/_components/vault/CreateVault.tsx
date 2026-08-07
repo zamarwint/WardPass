@@ -18,8 +18,11 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { IconMap, RenderIcon } from "@/components/IconMap";
 import { useCreateVault } from "@/lib/mutations/CoreCreateMutations";
+import { useTheme } from "next-themes";
 
 export default function CreateVault({ disabled }: { disabled: boolean }) {
+    const { resolvedTheme } = useTheme();
+
     const [selectedIcon, setSelectedIcon] = useState<string>();
     const [vaultName, setVaultName] = useState<string>("");
     const [vaultColor, setVaultColor] = useState<string>("");
@@ -56,7 +59,7 @@ export default function CreateVault({ disabled }: { disabled: boolean }) {
                                 key={iconName}
                                 onClick={() => setSelectedIcon(iconName)}
                             >
-                                <RenderIcon name={iconName} size={32} />
+                                <RenderIcon name={iconName} size={32} color={resolvedTheme === 'light' ? (selectedIcon === iconName ? 'white' : 'black') : (selectedIcon === iconName ? 'black' : 'white')} />
                             </Button>
                         ))}
                     </div>

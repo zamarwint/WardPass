@@ -4,44 +4,67 @@ import { motion } from "motion/react";
 import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field";
 import { useGetSession } from "@/lib/queries/SessionQueries";
 import { LoaderIcon, TriangleAlert } from "lucide-react";
-import { userData } from "@/lib/types/BetterAuthSessionType";
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Bar, BarChart, XAxis } from "recharts";
+
+import { type ChartConfig } from "@/components/ui/chart"
+import { useDBListUserSessions, useListUsers } from "@/lib/queries/AdminQueries";
+import { useTheme } from "next-themes";
 
 const AdminSessionsChart = () => {
+    const { resolvedTheme } = useTheme();
+    const { data: allSessionsData } = useDBListUserSessions();
+
+    const sessionChartData = Object.entries(
+        (allSessionsData ?? []).reduce((acc, session) => {
+            const key = session.ipAddress ?? "Unknown";
+            acc[key] = (acc[key] ?? 0) + 1;
+            return acc;
+        }, {} as Record<string, number>)
+    ).map(([ipAddress, count]) => ({ ipAddress, count }));
+
+    const sessionChartConfig = {
+        count: { label: "Sessions", color: resolvedTheme === "dark" ? "#ffff00" : "#8c8c00" },
+    } satisfies ChartConfig;
+
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Sessions Chart</CardTitle>
-                <CardDescription>Here is the sessions chart.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <p>Sessions Chart Content</p>
-            </CardContent>
-            <CardFooter>
-                <p>Sessions Chart Footer</p>
-            </CardFooter>
-        </Card>
-    )
-}
+        <ChartContainer config={sessionChartConfig} className="h-full w-full">
+            <BarChart accessibilityLayer data={sessionChartData}>
+                <XAxis dataKey="ipAddress" />
+                <Bar dataKey="count" fill={sessionChartConfig.count.color} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+            </BarChart>
+        </ChartContainer>
+    );
+};
 
 const AdminUsersChart = () => {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Users Chart</CardTitle>
-                <CardDescription>Here is the users chart.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <p>Users Chart Content</p>
-            </CardContent>
-            <CardFooter>
-                <p>Users Chart Footer</p>
-            </CardFooter>
-        </Card>
+    const { resolvedTheme } = useTheme();
+    const { data: allUsersData } = useListUsers({ limit: 10 });
 
-    )
-}
+    const userChartData = Object.entries(
+        (allUsersData?.users ?? []).reduce((acc, user) => {
+            const day = new Date(user.createdAt).toLocaleDateString();
+            acc[day] = (acc[day] ?? 0) + 1;
+            return acc;
+        }, {} as Record<string, number>)
+    ).map(([date, count]) => ({ date, count }));
+
+    const userChartConfig = {
+        count: { label: "Users", color: resolvedTheme === 'dark' ? "#ffff00" : "#8c8c00" },
+    } satisfies ChartConfig;
+
+    return (
+        <ChartContainer config={userChartConfig} className="h-full w-full">
+            <BarChart accessibilityLayer data={userChartData}>
+                <XAxis dataKey="date" />
+                <Bar dataKey="count" fill={userChartConfig.count.color} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+            </BarChart>
+        </ChartContainer>
+    );
+};
 
 const AdminAnalyticsPanel = ({ userSessionData }: { userSessionData: any }) => {
     return (
@@ -57,13 +80,18 @@ const AdminAnalyticsPanel = ({ userSessionData }: { userSessionData: any }) => {
                     <FieldSeparator />
                     <Field>
                         <FieldLabel>Sessions Chart</FieldLabel>
-                        <FieldDescription>Here is the sessions chart.</FieldDescription>
-                        <FieldContent className="my-[2vh]"><AdminSessionsChart /></FieldContent>
+                        <FieldDescription>All active sessions.</FieldDescription>
+                        <FieldContent className="my-[2vh] h-22 w-full">   {/* ← h-52 not min-h-50 */}
+                            <AdminSessionsChart />
+                        </FieldContent>
+
                     </Field>
                     <Field>
                         <FieldLabel>Users Chart</FieldLabel>
-                        <FieldDescription>Here is the users chart.</FieldDescription>
-                        <FieldContent className="my-[2vh]"><AdminUsersChart /></FieldContent>
+                        <FieldDescription>All active users.</FieldDescription>
+                        <FieldContent className="my-[2vh] h-22 w-full">
+                            <AdminUsersChart />
+                        </FieldContent>
                     </Field>
                 </FieldGroup>
             </FieldContent>
@@ -75,7 +103,7 @@ export default function GeneralSettingsPage() {
     const { isPending, data, error } = useGetSession();
 
     return (
-        <motion.div className="flex flex-col gap-10 items-start justify-start py-60 px-10">
+        <motion.div className="flex flex-col gap-10 items-start justify-start pt-60 px-10">
             {isPending ? (
                 <div className="flex items-center gap-2">
                     <LoaderIcon className="animate-spin" />

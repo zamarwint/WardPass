@@ -17,10 +17,6 @@ const navigationLinks = [
         path: "/user/admin/user-management",
     },
     {
-        label: "Impersonation",
-        path: "/user/admin/impersonation"
-    },
-    {
         label: "Contact Super Admin / Owner",
         path: "https://zamarwint.xyz/#contact",
         isExternal: true

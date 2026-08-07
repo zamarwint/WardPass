@@ -96,6 +96,7 @@ export default function SignUpPage() {
                                             aria-invalid={fieldState.invalid}
                                             className="h-12"
                                             autoComplete="off"
+                                            maxLength={31}
                                         />
                                         {fieldState.invalid && (
                                             <FieldError errors={[fieldState.error]} />

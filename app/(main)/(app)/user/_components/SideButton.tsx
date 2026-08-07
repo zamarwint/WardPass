@@ -21,7 +21,7 @@ export function VaultSideButton({ vault, collapsed }: { vault: Vault, collapsed:
         <div className={cn(`w-full flex items-center justify-between gap-2 px-2 py-4 cursor-pointer ${pathName.startsWith(vaultLink) ? "btn-primary" : "btn-ghost"}`, collapsed ? "justify-center" : "justify-start")}>
             <div onClick={() => router.push(vaultLink)} className="flex items-center flex-1 gap-2 px-1">
                 <SvgCircle size="w-8 h-8">
-                    <RenderIcon name={vault.icon} size={16} className={cn('', vault.iconColor ? `text-${vault.iconColor}` : 'text-white')} />
+                    <RenderIcon name={vault.icon} size={16} color={vault.iconColor ? vault.iconColor : 'white'} />
                 </SvgCircle>
                 {!collapsed && <span className="text-sm font-semibold">{vault.name}</span>}
             </div>

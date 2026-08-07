@@ -19,7 +19,7 @@ export const resetPasswordSchema = z.object({
 
 export const signUpSchema = z
     .object({
-        name: z.string().min(10, "Full name must be at least 10 characters."),
+        name: z.string().min(10, "Full name must be at least 10 characters.").max(30, "Full name must not exceed 30 characters."),
         email: z.email("Please enter a vaild email address"),
         password: passwordSchema,
         confirmPassword: z.string(),
