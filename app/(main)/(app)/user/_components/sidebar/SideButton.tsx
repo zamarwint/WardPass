@@ -7,9 +7,9 @@ import { ChevronsLeft, LockIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useVaultStore } from "@/stores/vault";
-import VaultDropdown from "./vault/VaultDropdown";
+import VaultDropdown from "../vault/VaultDropdown";
 import { Vault } from "@/lib/types/VaultType";
-import { SvgCircle } from "../vault/_components/SVG";
+import { SvgCircle } from "../../vault/_components/SVG";
 
 export function VaultSideButton({ vault, collapsed }: { vault: Vault, collapsed: boolean }) {
     const pathName = usePathname();

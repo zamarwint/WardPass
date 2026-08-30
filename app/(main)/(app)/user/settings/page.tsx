@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field";
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldTitle } from "@/components/ui/field";
 import { SwitchDualIconLabelDemo } from "@/app/_components/ThemeChange";
 
 import {
@@ -15,8 +15,13 @@ import { Button } from "@/components/ui/button";
 export default function GeneralSettingsPage() {
     return (
         <motion.div className="flex flex-col gap-10 items-start justify-start py-60 px-10">
-            <Field className="flex flex-col gap-10">
+            <Field className="flex flex-col gap-5">
+                <Field>
+                    <FieldTitle className='text-2xl'>General Settings</FieldTitle>
+                    <FieldDescription>Update your general settings.</FieldDescription>
+                </Field>
                 <FieldGroup>
+                    <FieldSeparator />
                     <Field>
                         <FieldLabel className="text-xl">Language</FieldLabel>
                         <FieldDescription>Choose your preferred language.</FieldDescription>

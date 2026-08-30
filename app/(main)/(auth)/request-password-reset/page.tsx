@@ -6,13 +6,13 @@ import { toast } from "sonner";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldTitle } from "@/components/ui/field";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Loader2Icon, X } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import { WebsiteCredentialCard } from "@/app/_components/UICards";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
-export default function ResetPasswordComponent({ cancel }: { cancel: () => void }) {
+export default function RequestPasswordResetPage() {
     const [resetPasswordPending, StartResetPasswordTransition] = useTransition();
     const [email, setEmail] = useState("");
 
@@ -56,7 +56,7 @@ export default function ResetPasswordComponent({ cancel }: { cancel: () => void 
 
                             <Field>
                                 <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
-                                <Input type="email" id="email" required placeholder="e.g. alexpeart@gmail.com" className="h-12" onChange={(e) => setEmail(e.target.value)} />
+                                <Input type="email" id="email" required placeholder="e.g. alexpeart@gmail.com" value={email} className="h-12" onChange={(e) => setEmail(e.target.value)} />
                             </Field>
                         </FieldGroup>
                     </FieldSet>
@@ -76,7 +76,6 @@ export default function ResetPasswordComponent({ cancel }: { cancel: () => void 
                 </div>
                 {/* ONE CARD */}
                 <div className="w-full flex flex-col items-center justify-center">
-                    <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
                     <WebsiteCredentialCard />
                 </div>
             </div>

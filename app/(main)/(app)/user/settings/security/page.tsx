@@ -5,6 +5,7 @@ import { motion } from "motion/react"
 import {
     Field,
     FieldDescription,
+    FieldGroup,
     FieldLegend,
     FieldSeparator,
     FieldTitle,
@@ -64,68 +65,74 @@ export default function SecurityPage() {
     };
 
     return (
-        <motion.div className="pt-60 px-10 py-5">
-            <Field className="border border-border rounded-xl p-10">
-                <FieldLegend>Unlock WardPass with:</FieldLegend>
-                <FieldDescription>Set your preferred unlocking method.</FieldDescription>
-
-                <FieldSeparator />
-
-                <div className="flex items-center gap-3 mb-6 p-4 bg-muted/50 rounded-lg">
-                    <LockKeyholeIcon className="w-5 h-5 text-primary" />
-                    <div>
-                        <p className="font-semibold">End-to-End Encryption Enabled</p>
-                        <p className="text-sm text-muted-foreground">Your vault is secured using your login password. WardPass cannot access your data.</p>
-                    </div>
-                </div>
-
-                <Field className="mb-6">
-                    <FieldTitle>Auto Lock after:</FieldTitle>
-                    <FieldDescription>Set your preferred auto lock time.</FieldDescription>
-                    <Select onValueChange={(e) => setSelectedAutoLock(e)} value={displayAutoLock}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select preferred lock time." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {autoLockOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value} className="cursor-pointer">
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </Field>
-
-                <Field className="mb-4">
-                    <FieldTitle>Hide vault after inactivity of:</FieldTitle>
-                    <FieldDescription>Set the time it takes for the vault to automatically hide.</FieldDescription>
-                    <Select onValueChange={(e) => setSelectedHiddenTabTimeout(e)} value={displayHiddenTab}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select preferred timeout period." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {hiddenTabTimeoutOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value} className="cursor-pointer">
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </Field>
-
-                <Field orientation="horizontal">
-                    <Button
-                        size="lg"
-                        onClick={handleSave}
-                        disabled={
-                            displayAutoLock === autoLockTimeInMinutes.toString() &&
-                            displayHiddenTab === hiddenTabTimeoutInMinutes.toString()
-                        }
-                    >
-                        Save changes
-                    </Button>
-                </Field>
+        <motion.div className="pt-60 px-10 py-5 space-y-5">
+            <Field>
+                <FieldTitle className="text-2xl">Security</FieldTitle>
+                <FieldDescription>Update your security settings.</FieldDescription>
             </Field>
+            <FieldGroup className="border border-border rounded-xl p-10">
+                <Field>
+                    <FieldLegend>Unlock WardPass with:</FieldLegend>
+                    <FieldDescription>Set your preferred unlocking method.</FieldDescription>
+
+                    <FieldSeparator />
+
+                    <div className="flex items-center gap-3 mb-6 p-4 bg-muted/50 rounded-lg">
+                        <LockKeyholeIcon className="w-5 h-5 text-primary" />
+                        <div>
+                            <p className="font-semibold">End-to-End Encryption Enabled</p>
+                            <p className="text-sm text-muted-foreground">Your vault is secured using your login password. WardPass cannot access your data.</p>
+                        </div>
+                    </div>
+
+                    <Field className="mb-6">
+                        <FieldTitle>Auto Lock after:</FieldTitle>
+                        <FieldDescription>Set your preferred auto lock time.</FieldDescription>
+                        <Select onValueChange={(e) => setSelectedAutoLock(e)} value={displayAutoLock}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select preferred lock time." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {autoLockOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value} className="cursor-pointer">
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </Field>
+
+                    <Field className="mb-4">
+                        <FieldTitle>Hide vault after inactivity of:</FieldTitle>
+                        <FieldDescription>Set the time it takes for the vault to automatically hide.</FieldDescription>
+                        <Select onValueChange={(e) => setSelectedHiddenTabTimeout(e)} value={displayHiddenTab}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select preferred timeout period." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {hiddenTabTimeoutOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value} className="cursor-pointer">
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </Field>
+
+                    <Field orientation="horizontal">
+                        <Button
+                            size="lg"
+                            onClick={handleSave}
+                            disabled={
+                                displayAutoLock === autoLockTimeInMinutes.toString() &&
+                                displayHiddenTab === hiddenTabTimeoutInMinutes.toString()
+                            }
+                        >
+                            Save changes
+                        </Button>
+                    </Field>
+                </Field>
+            </FieldGroup>
         </motion.div>
     )
 }

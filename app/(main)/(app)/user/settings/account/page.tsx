@@ -20,12 +20,14 @@ import {
     AlertDialogTitle,
     AlertDialogCancel
 } from "@/components/ui/alert-dialog"
-import SignOut from "../../_components/SignOut";
-import ResetPasswordComponent from "@/app/(main)/(auth)/_components/ResetPassword";
+import SignOut from "../../_components/signout/SignOut";
 import { useGetSession } from "@/lib/queries/SessionQueries";
+import { useRouter } from "next/navigation";
 
 export default function AccountPage() {
     const { isPending, data, error } = useGetSession();
+
+    const router = useRouter();
 
     const [newEmail, setNewEmail] = useState(data?.user.email as string)
     const [emailPending, startEmailChangeTransition] = useTransition();
@@ -35,7 +37,6 @@ export default function AccountPage() {
     const [deletePending, startDeleteTransition] = useTransition();
 
     const [editing, setEditing] = useState<boolean>(false);
-    const [showEmailToReset, setShowEmailToReset] = useState<boolean>(false);
 
     const changeEmail = () => {
         startEmailChangeTransition(async () => {
@@ -87,10 +88,10 @@ export default function AccountPage() {
     return (
         <>
             <motion.div className="flex flex-col gap-10 items-start justify-start pt-60 px-10 py-5">
-                <Field className="flex flex-col gap-10">
+                <Field className="flex flex-col gap-5">
                     <FieldGroup>
                         <Field>
-                            <FieldLabel className="text-xl">Account Settings</FieldLabel>
+                            <FieldLabel className="text-2xl">Account Settings</FieldLabel>
                             <FieldDescription>Update your account information and preferences.</FieldDescription>
                         </Field>
 
@@ -102,37 +103,42 @@ export default function AccountPage() {
                             </Field>
                         ) : (
                             <FieldGroup>
-                                <Field className="w-xl">
-                                    <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>
+                                <FieldSeparator />
+                                <Field className="w-fit">
+                                    <FieldTitle className="text-xl">Update Email Address</FieldTitle>
+                                    <FieldDescription>
+                                        To update your email address, please enter your new email address in the field below and click the &lsquo;Update Email&rsquo; button.
+                                    </FieldDescription>
+                                    <FieldLabel htmlFor="email" className="text-muted-foreground mt-2">Email</FieldLabel>
                                     <Input disabled={!editing} type="email" id="email" autoComplete="off" placeholder="e.g. johndoe@gmail.com" className="h-12" onChange={(e) => setNewEmail(e.target.value)} value={newEmail} />
                                 </Field>
 
-                                <Field>
-                                    <FieldTitle className="text-md">Change Password</FieldTitle>
-                                    <FieldDescription>
-                                        To change your password, please go to the <span className="btn-link cursor-pointer font-bold" onClick={() => { setShowEmailToReset(!showEmailToReset); }}>Reset Password</span> page.
-                                    </FieldDescription>
-                                    <FieldDescription>
-                                        NB: If you are signed in with Google, our OAuth provider, you do not have a <span className="font-bold">password</span>. If you wish to <span className="font-bold">create vaults</span> or <span className="font-bold">delete your account</span>, you first need to create a password.
-                                    </FieldDescription>
+                                <Field className="w-fit flex flex-row">
+                                    <Button variant="secondary" className="h-12 w-fit" size="lg" onClick={() => setEditing(!editing)}>{editing ? "Cancel" : "Edit Email"}</Button>
+                                    <Button disabled={!editing || (newEmail === data?.user.email)} className="h-12 w-fit" size="lg" onClick={changeEmail}>
+                                        {emailPending ? (
+                                            <>
+                                                <Loader2Icon className="size-4 animate-spin" />
+                                                <span>Updating Email...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>Update Email</span>
+                                            </>
+                                        )}</Button>
                                 </Field>
                             </FieldGroup>
                         )}
+                    </FieldGroup>
 
-                        <FieldGroup className="flex flex-row">
-                            <Button variant="secondary" className="h-12 w-fit px-10" size="lg" onClick={() => setEditing(!editing)}>{editing ? "Cancel" : "Edit"}</Button>
-                            <Button disabled={!editing || (newEmail === data?.user.email)} className="h-12 w-fit px-10" size="lg" onClick={changeEmail}>
-                                {emailPending ? (
-                                    <>
-                                        <Loader2Icon className="size-4 animate-spin" />
-                                        <span>Updating...</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <span>Update</span>
-                                    </>
-                                )}</Button>
-                        </FieldGroup>
+                    <FieldGroup>
+                        <FieldSeparator />
+                        <FieldTitle className="text-xl">Change Password</FieldTitle>
+                        <FieldDescription>
+                            To change your password, please go to the <span className="btn-link cursor-pointer font-bold" onClick={() => router.push('/request-password-reset')}>Reset Password</span> page. <br />
+                            NB: If you are signed in with Google, our OAuth provider, you do not have a <span className="font-bold">password</span>. If you wish to <span className="font-bold">create vaults</span> or <span className="font-bold">delete your account</span>, you first need to create a password. <br />
+                            You can do this on the <span className="cursor-pointer font-bold">Reset Password</span> page.
+                        </FieldDescription>
                     </FieldGroup>
 
                     <FieldGroup>
@@ -149,7 +155,7 @@ export default function AccountPage() {
                     <FieldGroup>
                         <FieldSeparator />
                         <Field>
-                            <FieldLabel className="text-xl text-destructive">Danger Zone</FieldLabel>
+                            <FieldLabel className="text-xl">Danger Zone</FieldLabel>
                             <FieldDescription>This section contains actions that are irreversible.</FieldDescription>
                         </Field>
                         <Field className="w-fit">
@@ -196,7 +202,6 @@ export default function AccountPage() {
                     </FieldGroup>
                 </Field>
             </motion.div>
-            {showEmailToReset && <ResetPasswordComponent cancel={() => setShowEmailToReset(!showEmailToReset)} />}
         </>
     )
 }

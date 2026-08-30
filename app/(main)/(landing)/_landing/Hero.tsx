@@ -1,0 +1,119 @@
+import GridPattern from "@/components/ui/grid-pattern";
+import { ShieldCheck } from "lucide-react";
+import { MoveRight, MoveUpRight } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+
+// HERO AND TRUST BAR SECTIONS
+
+function TrustBar() {
+  return (
+    <section className="border-y border-foreground/5 py-12">
+      <div className="mx-auto">
+        <div className="flex flex-col items-center justify-center space-y-6">
+          <p className="uppercase tracking-widest font-bold">
+            Certified Security Protocols
+          </p>
+          <Link href="https://gdpr-info.eu/" target="_blank">
+            <Image
+              src="/security-badges.svg"
+              alt="Security Badges"
+              width={1440}
+              height={190}
+              className="w-full max-w-200 h-auto"
+              loading="eager"
+            />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function HeroContent() {
+  return (
+    <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-black">
+      {/* Subtle background grid */}
+      <div>
+        <GridPattern
+          width={40}
+          height={40}
+          strokeDasharray="0"
+          squares={[[0, 0]]}
+        />
+      </div>
+      <div className="mx-auto px-4 md:px-10 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="flex flex-col items-start max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-primary/30 bg-primary/5 text-primary uppercase tracking-wider">
+              <span>
+                <ShieldCheck />
+              </span>
+              Active Protection Enabled
+            </div>
+            <h1 className="text-4xl font-bold md:text-6xl mb-6">
+              The Password Management Solution, <br />
+              <span className="text-primary">You Deserve.</span>
+            </h1>
+            <p className="mb-10 max-w-xl">
+              Create strong, unique passwords in seconds and keep your online
+              accounts better protected. Our password management solution helps
+              you reduce security risks, avoid reused passwords, and take
+              control of your digital security with a fast, simple, and reliable
+              experience.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 font-geist w-full">
+              <Button size="lg" className="h-full px-14 py-6">
+                <Link
+                  href="/sign-up"
+                  className="font-bold text-center uppercase tracking-wider flex items-center justify-center gap-2"
+                >
+                  Get Started for Free
+                  <MoveRight />
+                </Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="h-full px-10 py-6"
+              >
+                <Link
+                  href="#about"
+                  className="font-bold text-center uppercase tracking-wider flex items-center justify-center gap-2"
+                >
+                  Learn More
+                  <MoveUpRight />
+                </Link>
+              </Button>
+            </div>
+            <div className="mt-8 flex items-center gap-2 font-mono text-muted-foreground">
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+              System Status: Operational &amp; Secure
+            </div>
+          </div>
+          <div className="size-fit flex items-center justify-center aspect-square">
+            <Image
+              src="/vault-image.svg"
+              alt="Vault Image"
+              width={1000}
+              height={1000}
+              className="w-auto h-auto object-cover object-center"
+              loading="eager"
+              draggable={false}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function Hero() {
+  return (
+    <>
+      <HeroContent />
+      <TrustBar />
+    </>
+  );
+}

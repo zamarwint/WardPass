@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { Loader2Icon, SquarePen } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 
 import {
     Dialog,
@@ -11,7 +11,6 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogClose
 } from "@/components/ui/dialog"
 
@@ -21,33 +20,9 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import ProfileAvatar from "./ProfileAvatar";
 
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar"
-import { cn } from "@/lib/utils";
-import { useGetSession } from "@/lib/queries/SessionQueries";
-
-export function ProfileAvatar({ image, alt, fallback, size }: { image: string, alt: string, fallback: string, size: string }) {
-    return (
-        <Avatar className={size}>
-            <AvatarImage
-                src={image}
-                alt={alt}
-                className="grayscale"
-            />
-            <AvatarFallback>{fallback}</AvatarFallback>
-        </Avatar>
-    )
-}
-
-export default function Profile({ collapsed }: { collapsed: boolean }) {
-    const { isPending, data, error } = useGetSession();
-
-    if (error) toast.error(error.message);
-
+export default function Profile({ data, open, onOpenChange }: { data: any, open: boolean, onOpenChange: (open: boolean) => void }) {
     const [newName, setNewName] = useState<string>(data?.user?.name as string);
     const [newImage, setNewImage] = useState(data?.user.image);
     const [nameChangePending, startNameChangeTransition] = useTransition();
@@ -100,34 +75,7 @@ export default function Profile({ collapsed }: { collapsed: boolean }) {
     }
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button variant="ghost" size="lg" className="w-full flex justify-start py-7">
-                    {isPending ? (
-                        <>
-                            <Loader2Icon className="size-4 animate-spin" />
-                            <span className={cn("font-semibold", collapsed ? "hidden" : "block")}>Loading...</span>
-                        </>
-                    ) : (
-                        <motion.div className="w-full flex items-center justify-between gap-2">
-                            <div className="flex items-center justify-center gap-2">
-                                <ProfileAvatar size="size-8" image={data?.user.image as string} alt={data?.user.name || "Profile picture"} fallback={`${data?.user.name.split(" ")[0][0]}${data?.user.name.split(" ")[1][0]}`} />
-                                {!collapsed && (
-                                    <div className="flex flex-col items-start justify-start">
-                                        <div className="font-semibold line-clamp-1">{data ? data.user.name : "Name"}</div>
-                                        <div className="font-normal text-muted-foreground line-clamp-1">{data ? data.user.email : "Email"}</div>
-                                    </div>
-                                )}
-                            </div>
-                            {!collapsed ? (
-                                <div>
-                                    <SquarePen />
-                                </div>
-                            ) : null}
-                        </motion.div>
-                    )}
-                </Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="font-geist">
                 <DialogHeader>
                     <DialogTitle className="font-bold">Edit Profile</DialogTitle>
@@ -147,8 +95,8 @@ export default function Profile({ collapsed }: { collapsed: boolean }) {
                         <Separator />
                         <DialogTitle className="self-start">Change your name.</DialogTitle>
                         <div className="w-full flex flex-col gap-2">
-                            <Label htmlFor="name" className="self-start text-muted-foreground">Full Name</Label>
-                            <Input type="text" id="name" placeholder="e.g. John Doe" value={newName} onChange={(e) => setNewName(e.target.value)} />
+                            <Label htmlFor="profile-name" className="self-start text-muted-foreground">Full Name</Label>
+                            <Input type="text" id="profile-name" placeholder="e.g. John Doe" value={newName} onChange={(e) => setNewName(e.target.value)} />
                         </div>
                     </div>
                     <DialogFooter className="mt-2">

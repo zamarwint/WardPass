@@ -1,16 +1,34 @@
-import Footer from "./_components/Footer"
-import Navbar from "./_components/Navbar"
+import Footer from "./_components/Footer";
+import Navbar from "./_components/Navbar";
+import type { Metadata } from "next";
+import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { getUserSession } from "@/app/actions/getSession";
 
-export default function LandingPageLayout({
-    children,
+export const metadata: Metadata = {
+  title: "WardPass",
+  description:
+    "What is WardPass? WardPass is a secure password management solution. With WardPass, you can easily organize your passwords into different folders, and use them when you want to sign in to any service.",
+};
+
+export default async function LandingPageLayout({
+  children,
 }: Readonly<{
-    children: React.ReactNode
+  children: React.ReactNode;
 }>) {
-    return (
-        <div className="flex flex-col w-full h-full min-h-screen min-w-screen overflow-x-hidden">
-            <Navbar />
-            {children}
-            <Footer />
-        </div>
-    )
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ['session'],
+    queryFn: () => getUserSession(),
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="flex flex-col w-full h-full min-h-screen min-w-screen overflow-x-hidden">
+        <Navbar />
+        {children}
+        <Footer />
+      </div>
+    </HydrationBoundary>
+  );
 }

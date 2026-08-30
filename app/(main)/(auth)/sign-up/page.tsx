@@ -19,17 +19,17 @@ import { authClient } from "@/utils/auth-client";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { PasswordInput } from "./../_components/PasswordInput";
+import { EmailDeliveryNotWorkingAlert } from "@/app/_components/Banners";
 
 // import PasswordStrengthBar from "@/app/_components/PasswordStrengthBar";
-import VerifyEmailComponent from "../_components/EmailVerification";
 import { signUpSchema } from "@/lib/validations/authSchemas";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
-    const [currentEmail, setCurrentEmail] = useState<string>("");
-    const [showEmailVerification, setShowEmailVerification] = useState<boolean>(false);
-
     const [emailPending, startEmailTransition] = useTransition();
     const [showPassword, setShowPassword] = useState(false);
+
+    const router = useRouter();
 
     // 2. Create form instance with resolver
     const form = useForm<z.infer<typeof signUpSchema>>({
@@ -57,9 +57,8 @@ export default function SignUpPage() {
                 onSuccess: () => {
                     //redirect to verify email page
                     toast.dismiss();
-                    setCurrentEmail(data.email);
                     toast.success("Success! Check your email to verify your account. This session expires in 10 minutes.");
-                    setShowEmailVerification(true);
+                    router.push(`/verify-email?email=${data.email}`);
                 },
                 onError: (ctx) => {
                     // display the error message
@@ -72,6 +71,7 @@ export default function SignUpPage() {
 
     return (
         <>
+            <EmailDeliveryNotWorkingAlert />
             <div className="flex items-center justify-center w-screen h-screen z-998">
                 {/* SIGN UP CARD */}
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-5 border-r border-foreground/5">
@@ -218,7 +218,6 @@ export default function SignUpPage() {
                 </div>
             </div>
             <DotPattern />
-            {showEmailVerification && <VerifyEmailComponent currentUserEmail={currentEmail} cancel={() => setShowEmailVerification(!showEmailVerification)} />}
         </>
     )
 }

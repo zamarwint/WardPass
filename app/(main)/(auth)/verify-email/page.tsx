@@ -6,18 +6,20 @@ import { toast } from "sonner";
 import { Field, FieldDescription, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Loader2Icon, X } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import { WebsiteCredentialCard } from "@/app/_components/UICards";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Input } from "@/components/ui/input";
 
-export default function VerifyEmailComponent({ currentUserEmail, cancel }: { currentUserEmail: string, cancel: () => void }) {
+export default function EmailVerificationPage() {
+    const currentUserEmail = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('email') : null;
+
     const [verificationPending, StartVerificationTransition] = useTransition();
     const [showEmailInput, setShowEmailInput] = useState(false);
     const [newEmail, setNewEmail] = useState("");
 
     const handleResendVerification = async () => {
-        const emailToSend = showEmailInput ? newEmail : currentUserEmail;
+        const emailToSend = showEmailInput ? newEmail : currentUserEmail as string;
         StartVerificationTransition(async () => {
             await authClient.sendVerificationEmail({
                 email: emailToSend,
@@ -79,7 +81,6 @@ export default function VerifyEmailComponent({ currentUserEmail, cancel }: { cur
                 </div>
                 {/* ONE CARD */}
                 <div className="w-full flex flex-col items-center justify-center">
-                    <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
                     <WebsiteCredentialCard />
                 </div>
             </div>

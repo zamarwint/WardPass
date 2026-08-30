@@ -33,10 +33,10 @@ export default function ExportPage() {
                 className="size-full max-w-2xl space-y-8"
             >
                 <div className="text-left w-full space-y-2">
-                    <h1 className="text-3xl font-bold">
+                    <h1 className="text-2xl font-bold">
                         Export Passwords
                     </h1>
-                    <p className="text-muted-foreground">Export passwords to a CSV file.</p>
+                    <p className="text-muted-foreground text-sm">Export passwords to a CSV file.</p>
                 </div>
                 <Card>
                     <CardHeader>

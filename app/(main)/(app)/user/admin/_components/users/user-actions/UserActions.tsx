@@ -21,7 +21,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { useState, useTransition } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
-import { ProfileAvatar } from "../../../../_components/Profile"
+import ProfileAvatar from "../../../../_components/sidebar/ProfileAvatar"
 
 export function SetUserRoleAlert({ open, onOpenChange, userId, currentRole }: { open: boolean, onOpenChange: (open: boolean) => void, userId: string, currentRole: "admin" | "user" | ("admin" | "user")[] }) {
     const [role, setRole] = useState<"admin" | "user" | ("admin" | "user")[]>(currentRole)

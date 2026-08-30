@@ -1,7 +1,6 @@
 "use client";
 
 import { Settings, ShieldUser, Trash, Upload, Vault } from "lucide-react";
-import Profile from "./Profile";
 
 import { Separator } from "@/components/ui/separator";
 import { LockSideButton, LinkSideButton, VaultSideButton, CollapseSideButton } from "./SideButton"
@@ -10,7 +9,8 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useGetVaults } from "@/lib/queries/VaultQueries";
 import { motion } from "motion/react";
-import { useCheckAdminSession } from "@/lib/queries/SessionQueries";
+import { useCheckAdminSession, useGetSession } from "@/lib/queries/SessionQueries";
+import UserDropdown from "./UserDropdown";
 
 export default function Sidebar() {
     return (
@@ -24,6 +24,7 @@ export function SidebarContent() {
     // GET CURRENT VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
     const { data: vaults, isLoading: vaultsLoading, error: vaultsLoadingError } = useGetVaults();
     const { data: admin, isLoading: adminLoading, error: adminLoadingError } = useCheckAdminSession();
+    const { isPending: sessionPending, data: sessionData, error: sessionError } = useGetSession();
 
     if (vaultsLoadingError || adminLoadingError) {
         toast.error("There was an error loading your vaults or admin session. Please try refreshing the page." + vaultsLoadingError?.message || adminLoadingError?.message);
@@ -84,7 +85,7 @@ export function SidebarContent() {
                     {admin && <LinkSideButton hrefExact={false} href="/user/admin" text="Admin" Icon={<ShieldUser />} collapsed={collapsed} />}
                     <LockSideButton collapsed={collapsed} />
                     <Separator />
-                    <Profile collapsed={collapsed} />
+                    <UserDropdown onSidebar={true} collapsed={collapsed} sessionData={{ isPending: sessionPending, data: sessionData, error: sessionError }} />
                     <Separator />
                     <div className="pt-2 w-full flex flex-col items-start justify-start gap-1">
                         <LinkSideButton hrefExact={false} href="/user/settings" text="Settings" Icon={<Settings />} collapsed={collapsed} />

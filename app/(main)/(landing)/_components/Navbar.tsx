@@ -12,6 +12,7 @@ import { ModeToggleIcon } from "@/app/_components/ThemeChange";
 import { toast } from "sonner";
 import { useGetSession } from "@/lib/queries/SessionQueries";
 import { cn } from "@/lib/utils";
+import UserDropdown from "../../(app)/user/_components/sidebar/UserDropdown";
 
 const navigationLinks = [
     {
@@ -151,6 +152,7 @@ export default function Navbar() {
                         <>
                             <ModeToggleIcon />
                             <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="/user/vault">VAULT DASHBOARD</Link>
+                            <UserDropdown collapsed={false} onSidebar={false} sessionData={{ isPending, data, error }} />
                         </>
                     ) : (
                         <>

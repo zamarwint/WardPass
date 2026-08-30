@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Search from "./Search";
-import { BugPlay, CircleQuestionMark, OctagonAlert } from "lucide-react";
+import { BugPlay, OctagonAlert } from "lucide-react";
 import Notifications from "./Notifications";
 import PlaygroundCard from "../PlaygroundCard";
 import { useState } from "react";
@@ -36,9 +36,6 @@ export default function TopBar() {
                         <BugPlay size={32} className="text-muted-foreground" />
                     </Button>
                     <Notifications />
-                    <Button size="icon" variant="ghost" onClick={() => router.push('/contact')}>
-                        <CircleQuestionMark size={32} className="text-muted-foreground" />
-                    </Button>
                 </div>
             </div>
             <PlaygroundCard open={openPlayground} setOpen={() => setOpenPlayground(!openPlayground)} />

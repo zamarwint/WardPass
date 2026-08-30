@@ -13,16 +13,19 @@ import { useState, useTransition } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import ResetPasswordComponent from "../_components/ResetPassword";
 import { useVaultStore } from "@/stores/vault";
+import { useQueryClient } from "@tanstack/react-query";
+import { EmailDeliveryNotWorkingAlert } from "@/app/_components/Banners";
 
 export default function SignInPage() {
     const router = useRouter();
+    const queryClient = useQueryClient();
+
     const [googlePending, startGoogleTransition] = useTransition()
     const [emailPending, startEmailTransition] = useTransition()
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showEmailToReset, setShowEmailToReset] = useState<boolean>(false)
+
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
     const signInWithGoogle = async () => {
         startGoogleTransition(async () => {
@@ -78,6 +81,7 @@ export default function SignInPage() {
                     //redirect to the user vault page
                     toast.dismiss();
                     toast.success("Success!");
+                    queryClient.invalidateQueries({ queryKey: ['session'] });
                 },
                 onError: (ctx) => {
                     // display the error message
@@ -90,6 +94,7 @@ export default function SignInPage() {
 
     return (
         <>
+            <EmailDeliveryNotWorkingAlert />
             <div className="flex items-center justify-center w-screen h-screen z-998">
                 {/* SIGN IN CARD */}
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-10 border-r border-foreground/5">
@@ -150,7 +155,7 @@ export default function SignInPage() {
 
                         <FieldDescription>
                             Forgot your Password?
-                            <Button variant="link" onClick={() => setShowEmailToReset(!showEmailToReset)}>Reset Password</Button>
+                            <Button variant="link" onClick={() => router.push('/request-password-reset')}>Reset Password</Button>
                         </FieldDescription>
                     </FieldSet>
                 </div>
@@ -160,7 +165,6 @@ export default function SignInPage() {
                 </div>
             </div>
             <DotPattern />
-            {showEmailToReset && <ResetPasswordComponent cancel={() => setShowEmailToReset(!showEmailToReset)} />}
         </>
     )
 }
