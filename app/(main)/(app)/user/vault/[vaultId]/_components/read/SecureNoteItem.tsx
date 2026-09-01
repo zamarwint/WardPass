@@ -28,7 +28,7 @@ export default function SecureNoteItem({ secureNoteItem }: { secureNoteItem: Sec
                 </Field>
                 <Field>
                     <FieldLabel>Note</FieldLabel>
-                    <Textarea placeholder="Note" id="note" value={secureNoteItem.content} readOnly className="min-h-75" />
+                    <Textarea placeholder="Note" id="note" value={secureNoteItem.content} readOnly className="min-h-75 resize-none" />
                 </Field>
             </FieldGroup>
 

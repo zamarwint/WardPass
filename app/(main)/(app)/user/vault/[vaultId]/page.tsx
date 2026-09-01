@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CreditCard, Globe, IdCard, LayoutList, NotebookPen, PlusIcon, XIcon } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
-import { VaultItem } from "@/lib/types/VaultType";
+import { VaultItem, VaultItemType } from "@/lib/types/VaultType";
 import { useVaultStore } from "@/stores/vault";
 import { deriveKey, fromBase64 } from "@/lib/crypto/argon2";
 import { decryptVaultKey, verifyVaultKey, decryptData } from "@/lib/crypto/aes";
@@ -35,6 +35,7 @@ import CreditCardDropdown from "./_components/dropdowns/CreditCardDropdown";
 import IdentityDropdown from "./_components/dropdowns/IdentityDropdown";
 import { CreditCardJSON, IdentityJSON, LoginJSON, SecureNoteJSON } from "@/lib/types/VaultItemType";
 import { useGetVaultItems, useGetVaultWithTrashedItems } from "@/lib/queries/VaultQueries";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 // THE PURPOSE OF THIS PAGE IS TO DISPLAY ALL THE VAULT ITEMS IN A LIST ON THE LEFT SIDE, AND WHEN SELECTED, DISPLAY THE ITEM DETAILS ON THE RIGHT SIDE. 
 // LIKE LOGIN ITEMS, SECURE NOTE ITEMS, CREDIT CARD ITEMS, AND IDENTITY ITEMS
@@ -42,6 +43,7 @@ export default function VaultIDPage() {
     const params = useParams();
     const vaultId = params.vaultId as string;
 
+    const [selectedItemType, setSelectedItemType] = useState<VaultItemType>(VaultItemType.LOGIN);
     const [selectedItem, setSelectedItem] = useState<SecureNoteJSON | CreditCardJSON | IdentityJSON | LoginJSON | null>(null);
 
     // DROPDOWN
@@ -178,74 +180,99 @@ export default function VaultIDPage() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Separator className="bg-muted" />
-                    <div className="w-full mt-4 flex-1 overflow-y-auto pb-8 flex items-center justify-center" onDoubleClick={unSelectItems}>
+                    <div className="w-full h-fit p-4 overflow-x-auto no-scrollbar flex">
+                        <ToggleGroup type="single" value={selectedItemType} onValueChange={(value) => setSelectedItemType(value as VaultItemType)} className="w-full overflow-x-scroll no-scrollbar">
+                            <ToggleGroupItem value="LOGIN">LOGIN</ToggleGroupItem>
+                            <ToggleGroupItem value="SECURE_NOTE">SECURE NOTE</ToggleGroupItem>
+                            <ToggleGroupItem value="CREDIT_CARD">CREDIT CARD</ToggleGroupItem>
+                            <ToggleGroupItem value="IDENTITY">IDENTITY</ToggleGroupItem>
+                        </ToggleGroup>
+                    </div>
+                    <Separator className="bg-muted" />
+                    <div className="size-full overflow-y-auto pb-8 flex items-center justify-center no-scrollbar" onDoubleClick={unSelectItems}>
                         {vaultItemsLoading || trashedItemsLoading ? (
                             <div>Loading...</div>
                         ) : (!decryptedVaultItems || decryptedVaultItems.vaultItems!.length === 0) ?
                             (
                                 <div className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
                             ) : (
-                                <div className="size-full text-left mt-4 w-[90%]">
-                                    {decryptedVaultItems.vaultItems?.map((item) => (
-                                        item.itemType === 'LOGIN' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                            <div className="flex gap-3 p-2">
-                                                <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-xl">
-                                                    <Globe className="size-[80%] text-primary" />
-                                                </div>
-                                                <div className="size-full flex flex-col items-start justify-center">
-                                                    <h1 className="text-primary font-bold">{item.name}</h1>
-                                                    <p className="font-mono text-sm">{item.email}</p>
-                                                </div>
-                                            </div>
-                                            {selectedItem?.id === item.id && <LoginDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} loginItem={item} />}
-                                        </div>
-                                    ))}
-                                    {decryptedVaultItems.vaultItems?.map((item) => (
-                                        item.itemType === 'SECURE_NOTE' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                            <div className="flex flex-col gap-3 p-2 w-[90%]">
-                                                <div className="size-full flex flex-col items-start justify-center gap-2">
-                                                    <div className="flex items-center gap-2">
-                                                        <NotebookPen className="size=[80%] text-primary" />
-                                                        <h1 className="font-bold">{item.title}</h1>
+                                <div className="size-full text-left w-[92%] h-full py-4 flex items-start justify-center no-scrollbar">
+                                    {selectedItemType === VaultItemType.LOGIN && decryptedVaultItems.vaultItems?.map((item) => (
+                                        item.itemType === VaultItemType.LOGIN && !item ? (
+                                            <div key={item.id} className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
+                                        ) : (
+                                            item.itemType === VaultItemType.LOGIN && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                                <div className="flex w-full gap-3 p-2">
+                                                    <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-xl">
+                                                        <Globe className="size-[80%] text-primary" />
                                                     </div>
-                                                    <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{item.content}</p>
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <Separator />
-                                                    <div className="flex items-center justify-between w-full pt-2">
-                                                        <p className="text-xs font-medium text-muted-foreground">LAST UPDATED</p>
-                                                        <p className="text-xs font-mono text-muted-foreground">{item.updatedAt?.toDateString()}</p>
+                                                    <div className="size-full flex flex-col items-start justify-center">
+                                                        <h1 className="text-primary font-bold">{item.name}</h1>
+                                                        <p className="font-mono text-sm">{item.email}</p>
                                                     </div>
                                                 </div>
+                                                {selectedItem?.id === item.id && <LoginDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} loginItem={item} />}
                                             </div>
-                                            {selectedItem?.id === item.id && <SecureNoteDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} secureNoteItem={item} />}
-                                        </div>
+                                        )
                                     ))}
-                                    {decryptedVaultItems.vaultItems?.map((item) => (
-                                        item.itemType === 'CREDIT_CARD' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                            <div className="flex flex-col gap-2 p-2 w-full">
-                                                <CreditCard className="size=[80%] text-primary" />
-                                                <div className="size-full flex flex-col items-start justify-center gap-1">
-                                                    <h1 className="font-bold">{item.cardHolderName}</h1>
-                                                    <p className="text-md text-muted-foreground font-medium line-clamp-1">{item.cardNumber}</p>
+                                    {selectedItemType === VaultItemType.SECURE_NOTE && decryptedVaultItems.vaultItems?.map((item) => (
+                                        item.itemType === VaultItemType.SECURE_NOTE && !item ? (
+                                            <div key={item.id} className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
+                                        ) : (
+                                            item.itemType === VaultItemType.SECURE_NOTE && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                                <div className="flex flex-col gap-3 p-2 w-[90%]">
+                                                    <div className="size-full flex flex-col items-start justify-center gap-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <NotebookPen className="size=[80%] text-primary" />
+                                                            <h1 className="font-bold">{item.title}</h1>
+                                                        </div>
+                                                        <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{item.content}</p>
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <Separator />
+                                                        <div className="flex items-center justify-between w-full pt-2">
+                                                            <p className="text-xs font-medium text-muted-foreground">LAST UPDATED</p>
+                                                            <p className="text-xs font-mono text-muted-foreground">{item.updatedAt?.toDateString()}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
+                                                {selectedItem?.id === item.id && <SecureNoteDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} secureNoteItem={item} />}
                                             </div>
-                                            {selectedItem?.id === item.id && <CreditCardDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} creditCardItem={item} />}
-                                        </div>
+                                        )
                                     ))}
-                                    {decryptedVaultItems.vaultItems?.map((item) => (
-                                        item.itemType === 'IDENTITY' && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                            <div className="flex gap-3 p-2">
-                                                <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-full">
-                                                    <IdCard className="size-[70%] text-primary" />
+                                    {selectedItemType === VaultItemType.CREDIT_CARD && decryptedVaultItems.vaultItems?.map((item) => (
+                                        item.itemType === VaultItemType.CREDIT_CARD && !item ? (
+                                            <div key={item.id} className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
+                                        ) : (
+                                            item.itemType === VaultItemType.CREDIT_CARD && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                                <div className="flex flex-col gap-2 p-2 w-full">
+                                                    <CreditCard className="size=[80%] text-primary" />
+                                                    <div className="size-full flex flex-col items-start justify-center gap-1">
+                                                        <h1 className="font-bold">{item.cardHolderName}</h1>
+                                                        <p className="text-md text-muted-foreground font-medium line-clamp-1">{item.cardNumber}</p>
+                                                    </div>
                                                 </div>
-                                                <div className="size-full flex flex-col items-start justify-center">
-                                                    <h1 className="font-bold">{item.name}</h1>
-                                                    <p className="font-mono text-sm">{item.phoneNumber}</p>
-                                                </div>
+                                                {selectedItem?.id === item.id && <CreditCardDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} creditCardItem={item} />}
                                             </div>
-                                            {selectedItem?.id === item.id && <IdentityDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} identityItem={item} />}
-                                        </div>
+                                        )
+                                    ))}
+                                    {selectedItemType === VaultItemType.IDENTITY && decryptedVaultItems.vaultItems?.map((item) => (
+                                        item.itemType === VaultItemType.IDENTITY && !item ? (
+                                            <div key={item.id} className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
+                                        ) : (
+                                            item.itemType === VaultItemType.IDENTITY && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                                <div className="flex gap-3 p-2">
+                                                    <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-full">
+                                                        <IdCard className="size-[70%] text-primary" />
+                                                    </div>
+                                                    <div className="size-full flex flex-col items-start justify-center">
+                                                        <h1 className="font-bold">{item.name}</h1>
+                                                        <p className="font-mono text-sm">{item.phoneNumber}</p>
+                                                    </div>
+                                                </div>
+                                                {selectedItem?.id === item.id && <IdentityDropdown open={openDropdown} onOpenChange={() => setOpenDropdown(!openDropdown)} identityItem={item} />}
+                                            </div>
+                                        )
                                     ))}
                                 </div>
                             )}
@@ -262,10 +289,10 @@ export default function VaultIDPage() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center size-full">
-                            {selectedItem?.itemType === "LOGIN" && <LoginItem loginItem={selectedItem as LoginJSON} />}
-                            {selectedItem?.itemType === "SECURE_NOTE" && <SecureNoteItem secureNoteItem={selectedItem as SecureNoteJSON} />}
-                            {selectedItem?.itemType === "CREDIT_CARD" && <CreditCardItem creditCardItem={selectedItem as CreditCardJSON} />}
-                            {selectedItem?.itemType === "IDENTITY" && <IdentityItem identityItem={selectedItem as IdentityJSON} />}
+                            {selectedItem?.itemType === VaultItemType.LOGIN && <LoginItem loginItem={selectedItem as LoginJSON} />}
+                            {selectedItem?.itemType === VaultItemType.SECURE_NOTE && <SecureNoteItem secureNoteItem={selectedItem as SecureNoteJSON} />}
+                            {selectedItem?.itemType === VaultItemType.CREDIT_CARD && <CreditCardItem creditCardItem={selectedItem as CreditCardJSON} />}
+                            {selectedItem?.itemType === VaultItemType.IDENTITY && <IdentityItem identityItem={selectedItem as IdentityJSON} />}
                         </div>
                     )}
                 </div>

@@ -65,16 +65,16 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
                     </Field>
                     <Field>
                         <FieldLabel>Card Number</FieldLabel>
-                        <PasswordInput placeholder="Card Number" id="cardNumber" value={cardNumber} onChange={(e) => { setCardNumber(e.target.value) }} className="h-12" maxLength={16} />
+                        <PasswordInput placeholder="Card Number" id="cardNumber" value={cardNumber} onChange={(e) => { setCardNumber(e.target.value) }} className="h-12" maxLength={16} number={true} />
                     </Field>
                     <Field>
                         <FieldLabel>CVV</FieldLabel>
-                        <PasswordInput placeholder="CVV" id="cvv" value={cvv} onChange={(e) => { setCvv(e.target.value) }} className="h-12" maxLength={3} />
+                        <PasswordInput placeholder="CVV" id="cvv" value={cvv} onChange={(e) => { setCvv(e.target.value) }} className="h-12" maxLength={3} number={true} />
                     </Field>
 
                     <Field>
                         <FieldLabel>Expiry Date</FieldLabel>
-                        <PasswordInput placeholder="Expiry Date" id="expiryDate" value={expiryDate} onChange={(e) => { setExpiryDate(e.target.value) }} className="h-12" maxLength={5} />
+                        <PasswordInput placeholder="Expiry Date" id="expiryDate" value={expiryDate} onChange={(e) => { setExpiryDate(e.target.value) }} className="h-12" maxLength={5} number={true} />
                     </Field>
 
                     <Field>

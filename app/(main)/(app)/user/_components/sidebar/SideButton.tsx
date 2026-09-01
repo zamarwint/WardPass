@@ -43,7 +43,7 @@ export function LockSideButton({ disabled = false, collapsed }: { disabled?: boo
     };
 
     return (
-        <Button disabled={disabled} variant={"ghost"} size="lg" className={cn("w-full flex mb-2", collapsed ? "justify-center" : "justify-start")} onClick={handleLock}>
+        <Button disabled={disabled} variant={"ghost"} size="lg" className={cn("w-full flex", collapsed ? "justify-center" : "justify-start")} onClick={handleLock}>
             <LockIcon size={16} />
             {!collapsed && <span className="text-sm font-semibold">Lock WardPass</span>}
         </Button>
@@ -66,7 +66,7 @@ export function LinkSideButton({ Icon, href, hrefExact = false, text, disabled =
 
 export function CollapseSideButton({ collapsed, setIsCollapsed }: { collapsed: boolean, setIsCollapsed: (value: boolean) => void }) {
     return (
-        <Button variant={"ghost"} size="lg" className={cn("w-full flex mb-2", collapsed ? "justify-center" : "justify-start")} onClick={() => setIsCollapsed(!collapsed)}>
+        <Button variant={"ghost"} size="lg" className={cn("w-full flex", collapsed ? "justify-center" : "justify-start")} onClick={() => setIsCollapsed(!collapsed)}>
             <ChevronsLeft className={cn("size-4", collapsed ? "rotate-180" : "")} />
             {!collapsed && <span>Collapse Sidebar</span>}
         </Button>

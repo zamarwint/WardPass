@@ -30,7 +30,7 @@ export default function ChooseVault() {
                 <SelectTrigger>
                     <SelectValue placeholder="Select a vault" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align='end'>
                     {vaults?.map((vault: Vault) => (
                         <SelectItem className="cursor-pointer" key={vault.id} value={vault.id}>
                             {vault.name}

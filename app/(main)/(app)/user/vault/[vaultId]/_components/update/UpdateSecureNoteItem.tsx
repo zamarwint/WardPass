@@ -66,7 +66,7 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
                     </Field>
                     <Field>
                         <FieldLabel>Content</FieldLabel>
-                        <Textarea placeholder="Content of secure note item" id="content" value={content} onChange={handleContentChange} className="min-h-75" />
+                        <Textarea placeholder="Content of secure note item" id="content" value={content} onChange={handleContentChange} className="min-h-75 resize-none" />
                         <FieldDescription>{characterLength}/2000 characters</FieldDescription>
                     </Field>
                     <FieldSeparator />

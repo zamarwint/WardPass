@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, ShieldUser, Trash, Upload, Vault } from "lucide-react";
+import { AlertTriangle, Loader, ShieldUser, Upload, Vault } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import { LockSideButton, LinkSideButton, VaultSideButton, CollapseSideButton } from "./SideButton"
@@ -39,8 +39,11 @@ export function SidebarContent() {
                 transition={{
                     duration: 1,
                 }}
-                className="h-screen px-4 py-8 bg-card/40 backdrop:blur-sm w-xs flex flex-col justify-between border-r border-muted">
-                Loading...
+                className="h-screen px-4 py-8 bg-card/40 backdrop:blur-sm w-xs flex flex-col justify-center items-center border-r border-muted">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Loader size={16} className="animate-spin" />
+                    <span>Loading...</span>
+                </div>
             </motion.div>
         ) : vaultsLoadingError || adminLoadingError ? (
             <motion.div
@@ -50,9 +53,12 @@ export function SidebarContent() {
                 transition={{
                     duration: 1,
                 }}
-                className="h-screen px-4 py-8 bg-card/40 backdrop:blur-sm w-xs flex flex-col justify-between border-r border-muted">
-                {vaultsLoadingError && "There was an error loading your vaults. Please try refreshing the page." + vaultsLoadingError?.message}
-                {adminLoadingError && "There was an error loading your admin session. Please try refreshing the page." + adminLoadingError?.message}
+                className="h-screen px-4 py-8 bg-card/40 backdrop:blur-sm w-xs flex flex-col justify-center items-center border-r border-muted">
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                    <AlertTriangle size={16} />
+                    <span className="text-wrap">{vaultsLoadingError && "There was an error loading your vaults. Please try refreshing the page." + vaultsLoadingError?.message}</span>
+                    <span className="text-wrap">{adminLoadingError && "There was an error loading your admin session. Please try refreshing the page." + adminLoadingError?.message}</span>
+                </div>
             </motion.div>
         ) : (
             <motion.div
@@ -80,17 +86,12 @@ export function SidebarContent() {
                 </div>
                 <div className="w-full flex flex-col items-start justify-start gap-1">
                     <CollapseSideButton collapsed={collapsed} setIsCollapsed={setCollapsed} />
-                    <Separator />
-                    <LinkSideButton hrefExact={true} href="/user/import" text="Import Data" Icon={<Upload />} collapsed={collapsed} />
-                    {admin && <LinkSideButton hrefExact={false} href="/user/admin" text="Admin" Icon={<ShieldUser />} collapsed={collapsed} />}
+                    <Separator className="my-1" />
+                    <LinkSideButton hrefExact={true} href="/user/import" text="Import Passwords" Icon={<Upload />} collapsed={collapsed} />
+                    {admin && <LinkSideButton hrefExact={false} href="/user/admin" text="Admin Panel" Icon={<ShieldUser />} collapsed={collapsed} />}
                     <LockSideButton collapsed={collapsed} />
-                    <Separator />
+                    <Separator className="my-1" />
                     <UserDropdown onSidebar={true} collapsed={collapsed} sessionData={{ isPending: sessionPending, data: sessionData, error: sessionError }} />
-                    <Separator />
-                    <div className="pt-2 w-full flex flex-col items-start justify-start gap-1">
-                        <LinkSideButton hrefExact={false} href="/user/settings" text="Settings" Icon={<Settings />} collapsed={collapsed} />
-                        <LinkSideButton hrefExact={false} href="/user/trash" text="Trash" Icon={<Trash />} collapsed={collapsed} />
-                    </div>
                 </div>
             </motion.div>
         )

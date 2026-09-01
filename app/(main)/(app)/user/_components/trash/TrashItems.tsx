@@ -22,8 +22,10 @@ import { useVaultStore } from "@/stores/vault";
 import { UnlockVaultModal } from "../../vault/_components/UnlockVaultModal";
 import { CreditCardJSON, IdentityJSON, LoginJSON, SecureNoteJSON } from "@/lib/types/VaultItemType";
 import { useGetVaultWithTrashedItems } from "@/lib/queries/VaultQueries";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export default function TrashItems({ vaultId }: { vaultId: string }) {
+    const [selectedItemType, setSelectedItemType] = useState<VaultItemType>(VaultItemType.LOGIN);
     const [selectedItem, setSelectedItem] = useState<SecureNoteJSON | CreditCardJSON | IdentityJSON | LoginJSON | null>(null);
 
     const store = useVaultStore();
@@ -104,7 +106,16 @@ export default function TrashItems({ vaultId }: { vaultId: string }) {
                 <div className="size-full flex items-center justify-center overflow-hidden">
                     <div className="w-1/3 h-full border-r border-muted flex flex-col items-center justify-start overflow-hidden">
                         <Separator className="bg-muted" />
-                        <div className="w-[90%] mt-4 flex-1 overflow-y-auto pb-8" onDoubleClick={unSelectItems}>
+                        <div className="w-full h-fit p-4 overflow-x-auto no-scrollbar flex">
+                            <ToggleGroup type="single" value={selectedItemType} onValueChange={(value) => setSelectedItemType(value as VaultItemType)} className="w-full overflow-x-scroll no-scrollbar">
+                                <ToggleGroupItem value="LOGIN">LOGIN</ToggleGroupItem>
+                                <ToggleGroupItem value="SECURE_NOTE">SECURE NOTE</ToggleGroupItem>
+                                <ToggleGroupItem value="CREDIT_CARD">CREDIT CARD</ToggleGroupItem>
+                                <ToggleGroupItem value="IDENTITY">IDENTITY</ToggleGroupItem>
+                            </ToggleGroup>
+                        </div>
+                        <Separator className="bg-muted" />
+                        <div className="size-full overflow-y-auto pb-8 flex items-center justify-center no-scrollbar" onDoubleClick={unSelectItems}>
                             {trashedItemsLoading ? (
                                 <div>Loading...</div>
                             ) : !trashedItems || trashedItems?.vaultItems!.length === 0 ?
@@ -114,10 +125,10 @@ export default function TrashItems({ vaultId }: { vaultId: string }) {
                                     </div>
                                 )
                                 : (
-                                    <div className="size-full text-left mt-4">
-                                        {decryptedVaultItems?.vaultItems!.map((item) => (
-                                            item.itemType === VaultItemType.LOGIN && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                                <div className="flex gap-3 p-2">
+                                    <div className="size-full text-left w-[92%] h-full py-4 flex items-start justify-center no-scrollbar">
+                                        {selectedItemType === VaultItemType.LOGIN && decryptedVaultItems?.vaultItems!.map((item) => (
+                                            item.itemType === VaultItemType.LOGIN && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                                <div className="flex w-full gap-3 p-2">
                                                     <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-xl">
                                                         <Globe className="size-[80%] text-primary" />
                                                     </div>
@@ -130,15 +141,15 @@ export default function TrashItems({ vaultId }: { vaultId: string }) {
                                                 {selectedItem?.id === item.id && <DeleteLoginItemDialog loginItem={item} />}
                                             </div>
                                         ))}
-                                        {decryptedVaultItems?.vaultItems!.map((item) => (
-                                            item.itemType === VaultItemType.SECURE_NOTE && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                                <div className="flex flex-col gap-3 p-2 w-[90%]">
+                                        {selectedItemType === VaultItemType.SECURE_NOTE && decryptedVaultItems?.vaultItems!.map((item) => (
+                                            item.itemType === VaultItemType.SECURE_NOTE && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                                <div className="flex flex-col flex-1 gap-3 p-2 w-[90%]">
                                                     <div className="size-full flex flex-col items-start justify-center gap-2">
                                                         <div className="flex items-center gap-2">
                                                             <NotebookPen className="size=[80%] text-primary" />
-                                                            <h1 className="font-bold">{item.name}</h1>
+                                                            <h1 className="font-bold">{item.title}</h1>
                                                         </div>
-                                                        <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{item.notes}</p>
+                                                        <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{item.content}</p>
                                                     </div>
                                                     <div className="flex flex-col">
                                                         <Separator />
@@ -152,22 +163,22 @@ export default function TrashItems({ vaultId }: { vaultId: string }) {
                                                 {selectedItem?.id === item.id && <DeleteSecureNoteItemDialog secureNoteItem={item} />}
                                             </div>
                                         ))}
-                                        {decryptedVaultItems?.vaultItems!.map((item) => (
-                                            item.itemType === VaultItemType.CREDIT_CARD && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                        {selectedItemType === VaultItemType.CREDIT_CARD && decryptedVaultItems?.vaultItems!.map((item) => (
+                                            item.itemType === VaultItemType.CREDIT_CARD && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                                 <div className="flex flex-col gap-2 p-2 w-full">
                                                     <CreditCard className="size=[80%] text-primary" />
                                                     <div className="size-full flex flex-col items-start justify-center gap-1">
                                                         <h1 className="font-bold">{item.cardHolderName}</h1>
-                                                        <p className="text-md text-muted-foreground font-medium line-clamp-1">{item.billingAddress1}</p>
+                                                        <p className="text-md text-muted-foreground font-medium line-clamp-1">{item.cardNumber}</p>
                                                     </div>
                                                 </div>
                                                 {selectedItem?.id === item.id && <RestoreCreditCardItemDialog creditCardItem={item} />}
                                                 {selectedItem?.id === item.id && <DeleteCreditCardItemDialog creditCardItem={item} />}
                                             </div>
                                         ))}
-                                        {decryptedVaultItems?.vaultItems!.map((item) => (
-                                            item.itemType === VaultItemType.IDENTITY && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center mt-2 justify-between cursor-pointer py-4 pl-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
-                                                <div className="flex gap-3 p-2">
+                                        {selectedItemType === VaultItemType.IDENTITY && decryptedVaultItems?.vaultItems!.map((item) => (
+                                            item.itemType === VaultItemType.IDENTITY && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                                <div className="flex flex-1 gap-3 p-2">
                                                     <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-full">
                                                         <IdCard className="size-[70%] text-primary" />
                                                     </div>

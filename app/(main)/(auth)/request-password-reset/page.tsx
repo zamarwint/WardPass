@@ -1,8 +1,6 @@
 "use client";
 
-import { authClient } from "@/utils/auth-client";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet, FieldTitle } from "@/components/ui/field";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -11,30 +9,16 @@ import { WebsiteCredentialCard } from "@/app/_components/UICards";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useRequestPasswordReset } from "@/lib/mutations/AuthMutations";
 
 export default function RequestPasswordResetPage() {
     const [resetPasswordPending, StartResetPasswordTransition] = useTransition();
     const [email, setEmail] = useState("");
+    const requestResetPassword = useRequestPasswordReset(email);
 
     const handleResendPasswordResetEmail = async () => {
-        StartResetPasswordTransition(async () => {
-            await authClient.requestPasswordReset({
-                email: email,
-                redirectTo: process.env.NEXT_PUBLIC_APP_URL + '/reset-password',
-                fetchOptions: {
-                    onRequest: () => {
-                        toast.loading("Sending reset password email...");
-                    },
-                    onSuccess: () => {
-                        toast.dismiss();
-                        toast.success("Success. Check your email to reset your password.");
-                    },
-                    onError: () => {
-                        toast.dismiss();
-                        toast.error("Failed to send reset password email");
-                    }
-                }
-            })
+        StartResetPasswordTransition(() => {
+            requestResetPassword.mutate();
         })
     }
 

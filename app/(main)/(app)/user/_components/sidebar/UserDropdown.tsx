@@ -11,7 +11,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ChevronDown, EllipsisVertical, ExternalLink, Loader2Icon } from "lucide-react";
+import { ChevronDown, CircleQuestionMark, EllipsisVertical, Loader2Icon, LogOut, Settings, Trash, User } from "lucide-react";
 import ProfileAvatar from "./ProfileAvatar";
 import { cn } from "@/lib/utils";
 import Profile from "./Profile";
@@ -46,11 +46,9 @@ export default function UserDropdown({ collapsed, onSidebar, sessionData }: User
             <DropdownMenu>
                 {!onSidebar && (
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="lg" className="w-fit">
+                        <Button variant="ghost" size="icon-lg" className="w-fit">
                             {isPending ? (
-                                <>
-                                    <Loader2Icon className="size-4 animate-spin" />
-                                </>
+                                <Loader2Icon className="size-4 animate-spin" />
                             ) : error ? (
                                 <span>Error! Unable to load user information.</span>
                             ) : (
@@ -96,12 +94,17 @@ export default function UserDropdown({ collapsed, onSidebar, sessionData }: User
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenProfile(!openProfile)}>Profile</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/contact')}>Get Help <ExternalLink size={16} /></DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenProfile(!openProfile)}><User size={16} className="mr-0.5" /> Profile</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/contact')}><CircleQuestionMark size={16} className="mr-0.5" /> Get Help</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSignOut(!openSignOut)}>Log Out</DropdownMenuItem>
+                    <DropdownMenuLabel>Utilities</DropdownMenuLabel>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/user/settings')}><Settings size={16} className="mr-0.5" /> Settings</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/user/trash')}><Trash size={16} className="mr-0.5" /> Trash</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel>Log Out</DropdownMenuLabel>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSignOut(!openSignOut)}><LogOut size={16} className="mr-0.5" /> Log Out</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </>
     )
-}
+}

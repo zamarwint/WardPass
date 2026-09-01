@@ -15,21 +15,17 @@ import { FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon, Loader2Icon, ShieldPlus } from "lucide-react";
 import Link from "next/link";
-import { authClient } from "@/utils/auth-client";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
 import { PasswordInput } from "./../_components/PasswordInput";
 import { EmailDeliveryNotWorkingAlert } from "@/app/_components/Banners";
 
 // import PasswordStrengthBar from "@/app/_components/PasswordStrengthBar";
 import { signUpSchema } from "@/lib/validations/authSchemas";
-import { useRouter } from "next/navigation";
+import { useSignUp } from "@/lib/mutations/AuthMutations";
 
 export default function SignUpPage() {
-    const [emailPending, startEmailTransition] = useTransition();
+    const [signUpPending, startSignUpTransition] = useTransition();
     const [showPassword, setShowPassword] = useState(false);
-
-    const router = useRouter();
 
     // 2. Create form instance with resolver
     const form = useForm<z.infer<typeof signUpSchema>>({
@@ -43,29 +39,13 @@ export default function SignUpPage() {
         }
     })
 
+    const { mutate, isPending: signUpIsPending } = useSignUp(form.getValues().name, form.getValues().email, form.getValues().password);
+
     function onSubmit(data: z.infer<typeof signUpSchema>) {
-        startEmailTransition(async () => {
-            await authClient.signUp.email({
-                email: data.email, // user email address
-                password: data.password, // user password -> min 8 characters by default
-                name: data.name, // user display name
-                callbackURL: process.env.NEXT_PUBLIC_APP_URL + '/sign-in' // A URL to redirect to after the user verifies their email (optional)
-            }, {
-                onRequest: () => {
-                    toast.loading("Signing you up...");
-                },
-                onSuccess: () => {
-                    //redirect to verify email page
-                    toast.dismiss();
-                    toast.success("Success! Check your email to verify your account. This session expires in 10 minutes.");
-                    router.push(`/verify-email?email=${data.email}`);
-                },
-                onError: (ctx) => {
-                    // display the error message
-                    toast.dismiss();
-                    toast.error(ctx.error.message);
-                },
-            });
+        console.log('New User', data.email);
+
+        startSignUpTransition(async () => {
+            mutate();
         })
     }
 
@@ -190,8 +170,8 @@ export default function SignUpPage() {
                             />
                         </FieldGroup>
 
-                        <Button type="submit" variant="default" size="lg" className="w-full h-12" disabled={form.formState.isSubmitting || emailPending}>
-                            {emailPending ? (
+                        <Button type="submit" variant="default" size="lg" className="w-full h-12" disabled={form.formState.isSubmitting || signUpPending || signUpIsPending}>
+                            {signUpPending || signUpIsPending ? (
                                 <>
                                     <Loader2Icon className="size-4 animate-spin" />
                                     <span>Initializing...</span>

@@ -13,13 +13,11 @@ import { useState, useTransition } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useVaultStore } from "@/stores/vault";
-import { useQueryClient } from "@tanstack/react-query";
 import { EmailDeliveryNotWorkingAlert } from "@/app/_components/Banners";
+import { useSignIn } from "@/lib/mutations/AuthMutations";
 
 export default function SignInPage() {
     const router = useRouter();
-    const queryClient = useQueryClient();
 
     const [googlePending, startGoogleTransition] = useTransition()
     const [emailPending, startEmailTransition] = useTransition()
@@ -50,45 +48,11 @@ export default function SignInPage() {
         })
     }
 
-    const signInWithEmail = async () => {
-        startEmailTransition(async () => {
-            await authClient.signIn.email({
-                /**
-                 * The user email
-                 */
-                email,
-                /**
-                 * The user password
-                 */
-                password,
-                /**
-                 * A URL to redirect to after the user verifies their email (optional)
-                 */
-                callbackURL: process.env.NEXT_PUBLIC_APP_URL + '/user/vault',
-                /**
-                 * remember the user session after the browser is closed. 
-                 * @default true
-                 */
-                rememberMe: false
-            }, {
-                onRequest: () => {
-                    toast.loading("Signing you in...");
-                },
-                onSuccess: () => {
-                    // Store the master password in memory to unlock vaults later
-                    useVaultStore.getState().setMasterPassword(password);
+    const { mutate, isPending: emailIsPending } = useSignIn(email, password);
 
-                    //redirect to the user vault page
-                    toast.dismiss();
-                    toast.success("Success!");
-                    queryClient.invalidateQueries({ queryKey: ['session'] });
-                },
-                onError: (ctx) => {
-                    // display the error message
-                    toast.dismiss();
-                    toast.error(ctx.error.message);
-                },
-            })
+    const signInWithEmail = () => {
+        startEmailTransition(() => {
+            mutate();
         })
     }
 
@@ -137,8 +101,8 @@ export default function SignInPage() {
                         </FieldGroup>
 
                         <Field orientation="horizontal">
-                            <Button disabled={emailPending} variant="default" size="lg" className="w-full h-12" onClick={signInWithEmail}>
-                                {emailPending ? (
+                            <Button disabled={emailPending || emailIsPending} variant="default" size="lg" className="w-full h-12" onClick={signInWithEmail}>
+                                {emailPending || emailIsPending ? (
                                     <>
                                         <Loader2Icon className="size-4 animate-spin" />
                                         <span>Loading...</span>

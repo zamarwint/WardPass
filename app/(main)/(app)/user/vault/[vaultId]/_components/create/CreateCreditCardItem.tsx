@@ -65,16 +65,16 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
                     </Field>
                     <Field>
                         <FieldLabel>Card Number</FieldLabel>
-                        <PasswordInput placeholder="1234 5678 9012 3456" id="cardNumber" value={cardNumber} onChange={(e) => { setCardNumber(e.target.value) }} className="h-12" maxLength={16} />
+                        <PasswordInput placeholder="1234 5678 9012 3456" id="cardNumber" value={cardNumber} onChange={(e) => { setCardNumber(e.target.value) }} className="h-12" maxLength={16} number={true} />
                     </Field>
                     <Field>
                         <FieldLabel>CVV</FieldLabel>
-                        <PasswordInput placeholder="123" id="cvv" value={cvv} onChange={(e) => { setCvv(e.target.value) }} className="h-12" maxLength={3} />
+                        <PasswordInput placeholder="123" id="cvv" value={cvv} onChange={(e) => { setCvv(e.target.value) }} className="h-12" maxLength={3} number={true} />
                     </Field>
 
                     <Field>
                         <FieldLabel>Expiry Date</FieldLabel>
-                        <PasswordInput placeholder="12/24" id="expiryDate" value={expiryDate} onChange={(e) => { setExpiryDate(e.target.value) }} className="h-12" maxLength={5} />
+                        <PasswordInput placeholder="12/24" id="expiryDate" value={expiryDate} onChange={(e) => { setExpiryDate(e.target.value) }} className="h-12" maxLength={5} number={true} />
                     </Field>
 
                     <Field>

@@ -32,6 +32,12 @@ const otherApps = [
         comingSoon: true
     },
     {
+        title: "Caribbean Media Platform",
+        description: "A social media platform exclusively for the Caribbean. Coming soon.",
+        url: "https://cmp.netlify.app/",
+        comingSoon: true
+    },
+    {
         title: "Portfolio",
         description: "A professional portfolio.",
         url: "https://zamarwint.xyz/",

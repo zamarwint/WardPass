@@ -5,19 +5,16 @@ import { PasswordInput } from "../_components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
 import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
-import { toast } from "sonner";
-import { authClient } from "@/utils/auth-client";
-import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { Controller, useForm } from "react-hook-form";
 import { resetPasswordSchema } from "@/lib/validations/authSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { Input } from "@/components/ui/input";
+import { useResetPassword } from "@/lib/mutations/AuthMutations";
 
 export default function ResetPasswordPage() {
     const [showPassword, setShowPassword] = useState(false);
-    const router = useRouter();
     const [resetPasswordPending, startResetPasswordTransition] = useTransition();
     const token = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get("token") : null;
 
@@ -31,32 +28,11 @@ export default function ResetPasswordPage() {
         }
     })
 
-    function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
-        console.log("Reset Password:", data.password, data.confirmPassword, token);
-        if (!token) {
-            toast.error("Token not found");
-            return;
-        }
+    const resetPassword = useResetPassword(form.getValues().password, token!);
 
+    function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
         startResetPasswordTransition(async () => {
-            authClient.resetPassword({
-                newPassword: data.password,
-                token,
-                fetchOptions: {
-                    onRequest: () => {
-                        toast.loading("Resetting your password...");
-                    },
-                    onSuccess: () => {
-                        toast.dismiss();
-                        toast.success("Password reset successfully!");
-                        router.push("/sign-in");
-                    },
-                    onError: () => {
-                        toast.dismiss();
-                        toast.error("Failed to reset password");
-                    }
-                }
-            })
+            resetPassword.mutate();
         })
     }
 

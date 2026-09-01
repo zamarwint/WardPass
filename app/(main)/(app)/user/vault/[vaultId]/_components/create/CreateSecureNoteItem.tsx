@@ -66,7 +66,7 @@ export default function CreateSecureNoteItem({ vaultId, cancel }: { vaultId: str
                     </Field>
                     <Field>
                         <FieldLabel>Content</FieldLabel>
-                        <Textarea placeholder="Write your notes here..." id="content" value={content} onChange={handleContentChange} className="min-h-75" />
+                        <Textarea placeholder="Write your notes here..." id="content" value={content} onChange={handleContentChange} className="min-h-75 resize-none" />
                         <FieldDescription>{characterLength}/2000 characters</FieldDescription>
                     </Field>
                     <FieldSeparator />
