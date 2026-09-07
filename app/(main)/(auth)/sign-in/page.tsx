@@ -7,7 +7,7 @@ import DotPattern from "@/components/ui/dot-pattern";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/utils/auth-client";
-import { Loader2Icon, LockKeyholeOpen } from "lucide-react";
+import { LockKeyholeOpen } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { FaGoogle } from "react-icons/fa";
@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { EmailDeliveryNotWorkingAlert } from "@/app/_components/Banners";
 import { useSignIn } from "@/lib/mutations/AuthMutations";
+import { CustomLoadingState } from "@/app/_components/LoadingStates";
 
 export default function SignInPage() {
     const router = useRouter();
@@ -71,10 +72,9 @@ export default function SignInPage() {
                             <FieldTitle className="text-muted-foreground">Continue with Google</FieldTitle>
                             <Button variant="outline" size="lg" disabled={googlePending} onClick={signInWithGoogle} className="h-12">
                                 {googlePending ? (
-                                    <>
-                                        <Loader2Icon className="size-4 animate-spin" />
-                                        <span>Loading...</span>
-                                    </>
+                                    <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
+                                        <span className="shimmer shimmer-duration-1000"> AUTHENTICATING WITH GOOGLE </span>
+                                    </CustomLoadingState>
                                 ) : (
                                     <>
                                         <FaGoogle /> Sign in with Google
@@ -103,10 +103,9 @@ export default function SignInPage() {
                         <Field orientation="horizontal">
                             <Button disabled={emailPending || emailIsPending} variant="default" size="lg" className="w-full h-12" onClick={signInWithEmail}>
                                 {emailPending || emailIsPending ? (
-                                    <>
-                                        <Loader2Icon className="size-4 animate-spin" />
-                                        <span>Loading...</span>
-                                    </>
+                                    <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
+                                        <span className="shimmer shimmer-duration-1000"> UNLOCKING WARDPASS </span>
+                                    </CustomLoadingState>
                                 ) : (
                                     <>
                                         <LockKeyholeOpen /> UNLOCK WARDPASS

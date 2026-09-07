@@ -1,8 +1,8 @@
 "use client";
 
+import { CustomLoadingState } from "@/app/_components/LoadingStates";
 import { Button } from "@/components/ui/button";
 import { useGetSession } from "@/lib/queries/SessionQueries";
-import { Loader } from "lucide-react";
 import Link from "next/link";
 
 // CALL TO ACTION
@@ -32,10 +32,9 @@ export default function CallToAction() {
               className="flex items-center justify-center"
             >
               {isPending ? (
-                <>
-                  <Loader className="size-4 animate-spin" />
-                  <span className="ml-2">Loading...</span>
-                </>
+                <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
+                  <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                </CustomLoadingState>
               ) : data?.user ? (
                 <span>Back to Dashboard</span>
               ) : (

@@ -18,6 +18,7 @@ import Profile from "./Profile";
 import { useState } from "react";
 import SignOutAlert from "../signout/SignOutDropdown";
 import { useRouter } from "next/navigation";
+import { CustomLoadingState } from "@/app/_components/LoadingStates";
 
 interface UserDropdownProps {
     collapsed: boolean;
@@ -64,10 +65,9 @@ export default function UserDropdown({ collapsed, onSidebar, sessionData }: User
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="lg" className="w-full flex justify-start py-7">
                             {isPending ? (
-                                <>
-                                    <Loader2Icon className="size-4 animate-spin" />
-                                    <span className={cn("font-semibold", collapsed ? "hidden" : "block")}>Loading...</span>
-                                </>
+                                <CustomLoadingState loaderChoice={1} className={cn("flex items-center justify-center gap-2 font-semibold size-full", collapsed ? "hidden" : "block")}>
+                                    <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                                </CustomLoadingState>
                             ) : error ? (
                                 <span>Error! Unable to load user information.</span>
                             ) : (
@@ -91,7 +91,7 @@ export default function UserDropdown({ collapsed, onSidebar, sessionData }: User
                         </Button>
                     </DropdownMenuTrigger>
                 )}
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="font-geist">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenProfile(!openProfile)}><User size={16} className="mr-0.5" /> Profile</DropdownMenuItem>

@@ -1,4 +1,4 @@
-import { LineAnimationClass } from "@/app/_components/LineAnimation";
+import { LineAnimationClass } from "@/app/_components/ModalContent";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { ArrowLeft } from "lucide-react";
@@ -15,7 +15,10 @@ export default function SecurityWhitepaperPage() {
         <div className="py-30 mx-auto flex flex-col items-center justify-center gap-10 font-geist">
             <div className="flex flex-col gap-6 items-center justify-center text-center">
                 <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">Security Whitepaper</h1>
-                <p className="text-xl text-muted-foreground">As shown on the home page, the WardPass team is committed to transparency and security. Below is a summary of our security practices:</p>
+                <div className="flex flex-col gap-2">
+                    <p className="text-xl text-muted-foreground">As shown on the home page, the WardPass team is committed to transparency and security.</p>
+                    <p className="text-xl text-muted-foreground">Below is a summary of our security practices.</p>
+                </div>
             </div>
             <FieldSet className="px-4 md:max-w-xl md:px-0 text-muted-foreground prose text-md space-y-8">
                 <Field>

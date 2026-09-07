@@ -62,6 +62,31 @@ export const NumberOfVaultandVaultItems = () => {
     );
 }
 
+export const KeyboardShortcuts = () => {
+    // As stated in the plan.
+    return (
+        <Dialog>
+            <DialogTrigger className="text-left px-2">
+                Tip: Keyboard Shortcuts
+            </DialogTrigger>
+            <DialogContent>
+                <DialogTitle className="font-bold">KEYBOARD SHORTCUTS</DialogTitle>
+                <DialogDescription>
+                    Here are some keyboard shortcuts that you can use to navigate WardPass:
+                </DialogDescription>
+                <div className="w-fit px-2 py-1 rounded-md">
+                    <ul>
+                        <li>1. <kbd>Esc</kbd> - Go back to landing page.</li>
+                        <li>2. <kbd>Alt</kbd> + <kbd>V</kbd> - Go to the vaults page.</li>
+                        <li>3. <kbd>Alt</kbd> + <kbd>T</kbd> - Change theme.</li>
+                        <li>4. <kbd>Alt</kbd> + <kbd>P</kbd> - Open promotional message.</li>
+                        <li>5. <kbd>Alt</kbd> + <kbd>U</kbd> - Open user settings.</li>
+                    </ul>
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
 
 export default function Notifications() {
     return (
@@ -81,6 +106,10 @@ export default function Notifications() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                         <NumberOfVaultandVaultItems />
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                        <KeyboardShortcuts />
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
             </DropdownMenuContent>

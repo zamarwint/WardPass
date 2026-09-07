@@ -1,34 +1,14 @@
-import { authClient } from "@/utils/auth-client";
-import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
+import { useSignOut } from "@/lib/mutations/AuthMutations";
 
 export default function SignOutAlert({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
+    const signOutMutation = useSignOut();
     const [signOutPending, startSignOutTransition] = useTransition();
-
-    const queryClient = useQueryClient();
-    const router = useRouter();
 
     const signOut = async () => {
         startSignOutTransition(async () => {
-            await authClient.signOut({
-                fetchOptions: {
-                    onRequest: () => {
-                        toast.loading("Signing you out...");
-                    },
-                    onSuccess: () => {
-                        toast.dismiss();
-                        toast.success("Signed out successfully.");
-                        router.push("/sign-in"); // redirect to login page
-                        queryClient.invalidateQueries({ queryKey: ['session'] });
-                    },
-                    onError: (ctx) => {
-                        toast.error("Sign out failed. Internal server error. " + ctx.error.message);
-                    }
-                },
-            });
+            signOutMutation.mutate();
         })
     }
 
@@ -43,7 +23,7 @@ export default function SignOutAlert({ open, onOpenChange }: { open: boolean, on
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={signOut} disabled={signOutPending}>{signOutPending ? "Signing you out..." : "Continue"}</AlertDialogAction>
+                    <AlertDialogAction onClick={signOut} disabled={signOutPending || signOutMutation.isPending}>{signOutPending || signOutMutation.isPending ? "Signing you out..." : "Sign Out"}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

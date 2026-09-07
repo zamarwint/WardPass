@@ -1,11 +1,9 @@
 "use client";
 
 import Link from "next/link"
-import { ExternalLink, Loader2Icon, Menu, X } from "lucide-react"
+import { ExternalLink, Menu, X } from "lucide-react"
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-
 import { motion, useScroll } from "motion/react";
 import { ScrollToAnchor } from "@/lib/functions";
 import { ModeToggleIcon } from "@/app/_components/ThemeChange";
@@ -13,6 +11,7 @@ import { toast } from "sonner";
 import { useGetSession } from "@/lib/queries/SessionQueries";
 import { cn } from "@/lib/utils";
 import UserDropdown from "../../(app)/user/_components/sidebar/UserDropdown";
+import { CustomLoadingState } from "@/app/_components/LoadingStates";
 
 const navigationLinks = [
     {
@@ -41,7 +40,6 @@ const navigationLinks = [
 export default function Navbar() {
     const { scrollYProgress } = useScroll();
     const [open, setOpen] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
     const pathName = usePathname();
     const { isPending, data, error } = useGetSession();
 
@@ -55,27 +53,6 @@ export default function Navbar() {
             document.documentElement.style.overflow = "auto";
         }
     }, [open]);
-
-    // CHANGE THEME, FOR DEV PURPOSES, NOT FOR PRODUCTION
-    useEffect(() => {
-        if (typeof window === undefined) return;
-        if (pathName !== '/') return;
-        if (process.env.NEXT_PUBLIC_NODE_ENV === 'production') return;
-
-        console.log(scrollYProgress)
-
-        const handleKeyEscape = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                setIsOpen(true);
-            }
-        }
-
-        window.addEventListener("keydown", handleKeyEscape);
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyEscape);
-        }
-    })
 
     ScrollToAnchor();
     return (
@@ -144,10 +121,9 @@ export default function Navbar() {
                 {/* LOGIN AND SIGN-UP (DESKTOP ONLY) */}
                 <div className="hidden lg:flex items-center justify-end gap-4 w-fit">
                     {isPending ? (
-                        <>
-                            <Loader2Icon className="size-4 animate-spin" />
-                            <span>Loading...</span>
-                        </>
+                        <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
+                            <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                        </CustomLoadingState>
                     ) : data?.user ? (
                         <>
                             <ModeToggleIcon />
@@ -162,14 +138,6 @@ export default function Navbar() {
                     )}
                 </div>
             </motion.div>
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="z-999 flex flex-col items-center justify-center">
-                    <DialogHeader>
-                        <DialogTitle>Change Theme</DialogTitle>
-                    </DialogHeader>
-                    <ModeToggleIcon />
-                </DialogContent>
-            </Dialog>
             <motion.div
                 id="scroll-indicator"
                 className="fixed top-0 left-0 right-0 h-0.5 w-screen bg-primary origin-left z-50"

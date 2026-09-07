@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field";
 import { useGetSession } from "@/lib/queries/SessionQueries";
-import { LoaderIcon, TriangleAlert } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
 
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Bar, BarChart, XAxis } from "recharts";
@@ -11,6 +11,7 @@ import { Bar, BarChart, XAxis } from "recharts";
 import { type ChartConfig } from "@/components/ui/chart"
 import { useDBListUserSessions, useListUsers } from "@/lib/queries/AdminQueries";
 import { useTheme } from "next-themes";
+import { CustomLoadingState } from "@/app/_components/LoadingStates";
 
 const AdminSessionsChart = () => {
     const { resolvedTheme } = useTheme();
@@ -105,10 +106,9 @@ export default function GeneralSettingsPage() {
     return (
         <motion.div className="flex flex-col gap-10 items-start justify-start pt-60 px-10">
             {isPending ? (
-                <div className="flex items-center gap-2">
-                    <LoaderIcon className="animate-spin" />
-                    <span>Loading...</span>
-                </div>
+                <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
+                    <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                </CustomLoadingState>
             ) : error ? (
                 <div className="flex items-center gap-2">
                     <TriangleAlert className="text-red-500" />

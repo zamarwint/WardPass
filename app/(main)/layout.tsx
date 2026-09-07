@@ -2,6 +2,9 @@
 
 import { QueryClient, QueryClientProvider, isServer } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { Suspense } from "react";
+import MainLoading from "./loading";
+import { useKeyboardShortcuts } from "@/lib/functions";
 
 function makeQueryClient() {
     return new QueryClient({
@@ -31,11 +34,14 @@ export default function MainLayout({
     children: React.ReactNode
 }>) {
     const queryClient = getQueryClient();
+    useKeyboardShortcuts();
 
     return (
         <div className="flex flex-col w-full h-full min-h-screen min-w-screen overflow-x-hidden">
             <QueryClientProvider client={queryClient}>
-                {children}
+                <Suspense fallback={<MainLoading />}>
+                    {children}
+                </Suspense>
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </div>

@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useGetVaults } from "@/lib/queries/VaultQueries";
+import { SkeletonLoadingState } from "@/app/_components/LoadingStates";
 
 export default function ExportPage() {
     const [selectedVault, setSelectedVault] = useState<string>("");
@@ -46,10 +47,7 @@ export default function ExportPage() {
                     <CardContent className="space-y-6">
                         <div className="space-y-2">
                             {isLoading ? (
-                                <>
-                                    <h1>Loading...</h1>
-                                    <Skeleton className="w-full max-w-sm h-12" />
-                                </>
+                                <SkeletonLoadingState numberOfSkeletons={1} skeletonClassName="w-full max-w-sm h-12" />
                             ) : (
                                 <Select onValueChange={(e) => setSelectedVault(e)} value={selectedVault}>
                                     <SelectTrigger disabled>

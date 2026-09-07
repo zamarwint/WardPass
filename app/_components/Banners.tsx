@@ -9,7 +9,7 @@ export function EmailDeliveryNotWorkingBanner({ open, onOpenChange }: { open: bo
     return (
         <Drawer direction="top" open={open} onOpenChange={onOpenChange}>
             <DrawerContent>
-                <div className="bg-yellow-800 dark:bg-yellow-300">
+                <div className="bg-primary">
                     <div className="flex items-center justify-between p-4">
                         <div className="flex items-center gap-3">
                             <AlertCircle className="h-5 w-5 text-background" />
@@ -27,8 +27,8 @@ export function EmailDeliveryNotWorkingBanner({ open, onOpenChange }: { open: bo
                         </div>
                         <div className="flex items-center gap-2">
                             <DrawerClose asChild>
-                                <Button className="h-8 w-8 bg-transparent" size="icon" variant="ghost">
-                                    <X className="h-4 w-4 text-background bg-transparent" />
+                                <Button className="size-8 hover:bg-transparent" size="icon" variant="ghost">
+                                    <X className="size-4 text-background" />
                                 </Button>
                             </DrawerClose>
                         </div>

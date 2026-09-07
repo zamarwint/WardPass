@@ -3,6 +3,7 @@ import {
   resetPassword,
 } from "@/app/actions/auth/reset-password";
 import signIn from "@/app/actions/auth/signIn";
+import signOut from "@/app/actions/auth/signOut";
 import signUp from "@/app/actions/auth/signUp";
 import { useVaultStore } from "@/stores/vault";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -59,6 +60,33 @@ export function useSignUp(
       // display the error message
       toast.dismiss();
       toast.error(error.message);
+    },
+  });
+}
+
+export function useSignOut() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: () => signOut(),
+    onMutate: () => {
+      toast.loading("Signing you out...");
+    },
+    onSuccess: () => {
+      //clear the master password from memory
+      useVaultStore.getState().clearMasterPassword();
+
+      //redirect to the home page
+      toast.dismiss();
+      toast.success("Success!");
+      router.push("/");
+      queryClient.invalidateQueries({ queryKey: ["session"] });
+    },
+    onError: (error) => {
+      // display the error message
+      toast.dismiss();
+      toast.error("An error occured. " + error.message);
     },
   });
 }

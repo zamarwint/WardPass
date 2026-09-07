@@ -23,6 +23,7 @@ import {
 import SignOut from "../../_components/signout/SignOut";
 import { useGetSession } from "@/lib/queries/SessionQueries";
 import { useRouter } from "next/navigation";
+import { CustomLoadingState, SkeletonLoadingState } from "@/app/_components/LoadingStates";
 
 export default function AccountPage() {
     const { isPending, data, error } = useGetSession();
@@ -98,9 +99,7 @@ export default function AccountPage() {
                         {error && toast.error("Internal Server Error. Please try again." + error.message)}
 
                         {isPending ? (
-                            <Field>
-                                <FieldTitle>Loading...</FieldTitle>
-                            </Field>
+                            <SkeletonLoadingState numberOfSkeletons={5} skeletonClassName="w-full max-w-sm h-12" wrapperClassName="flex flex-col gap-5" />
                         ) : (
                             <FieldGroup>
                                 <FieldSeparator />
@@ -185,14 +184,11 @@ export default function AccountPage() {
                                         </AlertDialogCancel>
                                         <Button disabled={deleteConfirm !== "delete wardpass" || passwordForDeletion === "" || deletePending} className="w-fit px-8" size='lg' variant="destructive" onClick={deleteAccount}>
                                             {deletePending ? (
-                                                <>
-                                                    <Loader2Icon className="size-4 animate-spin" />
-                                                    <span>Loading...</span>
-                                                </>
+                                                <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
+                                                    <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                                                </CustomLoadingState>
                                             ) : (
-                                                <>
-                                                    <span>Delete Account</span>
-                                                </>
+                                                <span>Delete Account</span>
                                             )}
                                         </Button>
                                     </AlertDialogFooter>

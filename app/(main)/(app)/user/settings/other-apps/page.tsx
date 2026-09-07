@@ -39,13 +39,13 @@ const otherApps = [
     },
     {
         title: "Portfolio",
-        description: "A professional portfolio.",
+        description: "The developer's professional portfolio. You can find more about me and some of my work here!",
         url: "https://zamarwint.xyz/",
         comingSoon: false
     },
     {
         title: "Reckon",
-        description: "Investment and arithmetic calculators.",
+        description: "An application with investment and arithmetic calculators. Work in progress.",
         url: "https://reckon-p.netlify.app/",
         comingSoon: false
     },

@@ -31,8 +31,8 @@ export function UserActionsDropdown({ user }: { user: any }) {
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSetUserRole(true)}>Set Role</DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSetUserPassword(true)}>Set User Password</DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUpdateUser(true)}>Update User</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenBanUser(true)} disabled={user.banned}>Ban User</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUnbanUser(true)} disabled={!user.banned}>Unban User</DropdownMenuItem>
+                    {!user.banned && <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenBanUser(true)} disabled={user.banned}>Ban User</DropdownMenuItem>}
+                    {user.banned && <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUnbanUser(true)} disabled={!user.banned}>Unban User</DropdownMenuItem>}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel>

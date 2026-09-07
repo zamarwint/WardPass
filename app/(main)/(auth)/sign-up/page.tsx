@@ -13,7 +13,7 @@ import { DotPattern } from "@/components/ui/dot-pattern";
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSeparator, FieldTitle } from "@/components/ui/field";
 import { FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
-import { EyeIcon, EyeOffIcon, Loader2Icon, ShieldPlus } from "lucide-react";
+import { EyeIcon, EyeOffIcon, ShieldPlus } from "lucide-react";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { PasswordInput } from "./../_components/PasswordInput";
@@ -22,6 +22,7 @@ import { EmailDeliveryNotWorkingAlert } from "@/app/_components/Banners";
 // import PasswordStrengthBar from "@/app/_components/PasswordStrengthBar";
 import { signUpSchema } from "@/lib/validations/authSchemas";
 import { useSignUp } from "@/lib/mutations/AuthMutations";
+import { CustomLoadingState } from "@/app/_components/LoadingStates";
 
 export default function SignUpPage() {
     const [signUpPending, startSignUpTransition] = useTransition();
@@ -60,7 +61,7 @@ export default function SignUpPage() {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FieldGroup className="w-xl">
                             <FieldTitle className="text-4xl text-primary font-bold">Sign Up</FieldTitle>
-                            <FieldDescription>Create an account for a vault. <span className="font-bold">OAuth</span> is <span className="font-bold underline">NOT</span> supported on the Sign Up page.</FieldDescription>
+                            <FieldDescription><span className="font-bold">Create an account </span> for a vault.</FieldDescription>
 
                             {/* Name Field */}
                             <Controller
@@ -172,10 +173,9 @@ export default function SignUpPage() {
 
                         <Button type="submit" variant="default" size="lg" className="w-full h-12" disabled={form.formState.isSubmitting || signUpPending || signUpIsPending}>
                             {signUpPending || signUpIsPending ? (
-                                <>
-                                    <Loader2Icon className="size-4 animate-spin" />
-                                    <span>Initializing...</span>
-                                </>
+                                <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
+                                    <span className="shimmer shimmer-duration-1000">INITIALIZING</span>
+                                </CustomLoadingState>
                             ) : (
                                 <>
                                     <ShieldPlus /> INITIALIZE WARDPASS

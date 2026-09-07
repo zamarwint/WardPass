@@ -22,12 +22,12 @@ export default async function TrashVaultSelectionPage() {
 
     const VaultList = () => {
         return vaults!.map((vault) => (
-            <Link key={vault.id} href={`/user/trash/${vault.id}`} className='w-full'>
-                <Button variant="secondary" size="lg" className="flex items-center p-5 w-full">
+            <Button key={vault.id} variant="secondary" size="lg" className="flex items-center p-5 w-full" asChild>
+                <Link href={`/user/trash/${vault.id}`} className='w-full'>
                     <RenderIcon name={vault.icon} size={32} color={vault.iconColor ? vault.iconColor : 'white'} />
                     <span className="ml-1 text-md font-bold">{vault.name}</span>
-                </Button>
-            </Link>
+                </Link>
+            </Button>
         ))
     }
 

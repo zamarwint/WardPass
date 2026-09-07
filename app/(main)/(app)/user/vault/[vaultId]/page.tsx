@@ -36,6 +36,7 @@ import IdentityDropdown from "./_components/dropdowns/IdentityDropdown";
 import { CreditCardJSON, IdentityJSON, LoginJSON, SecureNoteJSON } from "@/lib/types/VaultItemType";
 import { useGetVaultItems, useGetVaultWithTrashedItems } from "@/lib/queries/VaultQueries";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { CustomLoadingState } from "@/app/_components/LoadingStates";
 
 // THE PURPOSE OF THIS PAGE IS TO DISPLAY ALL THE VAULT ITEMS IN A LIST ON THE LEFT SIDE, AND WHEN SELECTED, DISPLAY THE ITEM DETAILS ON THE RIGHT SIDE. 
 // LIKE LOGIN ITEMS, SECURE NOTE ITEMS, CREDIT CARD ITEMS, AND IDENTITY ITEMS
@@ -154,9 +155,9 @@ export default function VaultIDPage() {
                             <Button disabled={isVaultLimit || (vaultItemsLoading || trashedItemsLoading)} variant="outline" size="lg" className="w-[80%] my-8 py-6 text-md rounded-xl">
                                 {
                                     vaultItemsLoading || trashedItemsLoading ? (
-                                        <>
-                                            Loading...
-                                        </>
+                                        <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
+                                            <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                                        </CustomLoadingState>
                                     ) : isVaultLimit ? (
                                         <>
                                             <XIcon size={24} className="text-foreground mr-2" />
@@ -180,8 +181,8 @@ export default function VaultIDPage() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Separator className="bg-muted" />
-                    <div className="w-full h-fit p-4 overflow-x-auto no-scrollbar flex">
-                        <ToggleGroup type="single" value={selectedItemType} onValueChange={(value) => setSelectedItemType(value as VaultItemType)} className="w-full overflow-x-scroll no-scrollbar">
+                    <div className="w-full h-fit p-4 overflow-x-auto no-scrollbar flex items-center justify-center">
+                        <ToggleGroup type="single" value={selectedItemType} onValueChange={(value) => setSelectedItemType(value as VaultItemType)} className="w-full h-fit flex items-center justify-around overflow-x-scroll no-scrollbar">
                             <ToggleGroupItem value="LOGIN">LOGIN</ToggleGroupItem>
                             <ToggleGroupItem value="SECURE_NOTE">SECURE NOTE</ToggleGroupItem>
                             <ToggleGroupItem value="CREDIT_CARD">CREDIT CARD</ToggleGroupItem>
@@ -191,17 +192,20 @@ export default function VaultIDPage() {
                     <Separator className="bg-muted" />
                     <div className="size-full overflow-y-auto pb-8 flex items-center justify-center no-scrollbar" onDoubleClick={unSelectItems}>
                         {vaultItemsLoading || trashedItemsLoading ? (
-                            <div>Loading...</div>
+                            <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
+                                <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                            </CustomLoadingState>
                         ) : (!decryptedVaultItems || decryptedVaultItems.vaultItems!.length === 0) ?
                             (
                                 <div className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
                             ) : (
-                                <div className="size-full text-left w-[92%] h-full py-4 flex items-start justify-center no-scrollbar">
+                                <div className="size-full text-left p-4 flex items-start justify-center no-scrollbar">
                                     {selectedItemType === VaultItemType.LOGIN && decryptedVaultItems.vaultItems?.map((item) => (
                                         item.itemType === VaultItemType.LOGIN && !item ? (
                                             <div key={item.id} className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
                                         ) : (
-                                            item.itemType === VaultItemType.LOGIN && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                            item.itemType === VaultItemType.LOGIN &&
+                                            <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                                 <div className="flex w-full gap-3 p-2">
                                                     <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-xl">
                                                         <Globe className="size-[80%] text-primary" />
@@ -219,7 +223,8 @@ export default function VaultIDPage() {
                                         item.itemType === VaultItemType.SECURE_NOTE && !item ? (
                                             <div key={item.id} className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
                                         ) : (
-                                            item.itemType === VaultItemType.SECURE_NOTE && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                            item.itemType === VaultItemType.SECURE_NOTE &&
+                                            <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                                 <div className="flex flex-col gap-3 p-2 w-[90%]">
                                                     <div className="size-full flex flex-col items-start justify-center gap-2">
                                                         <div className="flex items-center gap-2">
@@ -244,7 +249,8 @@ export default function VaultIDPage() {
                                         item.itemType === VaultItemType.CREDIT_CARD && !item ? (
                                             <div key={item.id} className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
                                         ) : (
-                                            item.itemType === VaultItemType.CREDIT_CARD && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                            item.itemType === VaultItemType.CREDIT_CARD &&
+                                            <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                                 <div className="flex flex-col gap-2 p-2 w-full">
                                                     <CreditCard className="size=[80%] text-primary" />
                                                     <div className="size-full flex flex-col items-start justify-center gap-1">
@@ -260,7 +266,8 @@ export default function VaultIDPage() {
                                         item.itemType === VaultItemType.IDENTITY && !item ? (
                                             <div key={item.id} className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
                                         ) : (
-                                            item.itemType === VaultItemType.IDENTITY && <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
+                                            item.itemType === VaultItemType.IDENTITY &&
+                                            <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>
                                                 <div className="flex gap-3 p-2">
                                                     <div className="w-18.75 h-12.5 flex items-center justify-center bg-background rounded-full">
                                                         <IdCard className="size-[70%] text-primary" />
@@ -279,22 +286,25 @@ export default function VaultIDPage() {
                     </div>
                 </div>
                 <div className="flex-1 h-full flex items-center justify-center overflow-y-auto">
-                    {vaultItemsLoading || trashedItemsLoading ? <div>Loading...</div> : !selectedItem ? (
-                        <div className="flex flex-col items-center gap-1">
-                            <SvgCircle>
-                                <LayoutList size={80} className="text-primary relative z-10" />
-                            </SvgCircle>
-                            <h1 className="text-2xl font-semibold text-foreground mt-2">No item selected</h1>
-                            <p className="text-muted-foreground text-center">Select an item to view details.</p>
-                        </div>
-                    ) : (
-                        <div className="flex flex-col items-center justify-center size-full">
-                            {selectedItem?.itemType === VaultItemType.LOGIN && <LoginItem loginItem={selectedItem as LoginJSON} />}
-                            {selectedItem?.itemType === VaultItemType.SECURE_NOTE && <SecureNoteItem secureNoteItem={selectedItem as SecureNoteJSON} />}
-                            {selectedItem?.itemType === VaultItemType.CREDIT_CARD && <CreditCardItem creditCardItem={selectedItem as CreditCardJSON} />}
-                            {selectedItem?.itemType === VaultItemType.IDENTITY && <IdentityItem identityItem={selectedItem as IdentityJSON} />}
-                        </div>
-                    )}
+                    {vaultItemsLoading || trashedItemsLoading ?
+                        <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
+                            <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                        </CustomLoadingState> : !selectedItem ? (
+                            <div className="flex flex-col items-center gap-1">
+                                <SvgCircle>
+                                    <LayoutList size={80} className="text-primary relative z-10" />
+                                </SvgCircle>
+                                <h1 className="text-2xl font-semibold text-foreground mt-2">No item selected</h1>
+                                <p className="text-muted-foreground text-center">Select an item to view details.</p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center size-full">
+                                {selectedItem?.itemType === VaultItemType.LOGIN && <LoginItem loginItem={selectedItem as LoginJSON} />}
+                                {selectedItem?.itemType === VaultItemType.SECURE_NOTE && <SecureNoteItem secureNoteItem={selectedItem as SecureNoteJSON} />}
+                                {selectedItem?.itemType === VaultItemType.CREDIT_CARD && <CreditCardItem creditCardItem={selectedItem as CreditCardJSON} />}
+                                {selectedItem?.itemType === VaultItemType.IDENTITY && <IdentityItem identityItem={selectedItem as IdentityJSON} />}
+                            </div>
+                        )}
                 </div>
             </div>
         </>

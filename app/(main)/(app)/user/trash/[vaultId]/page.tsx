@@ -1,12 +1,14 @@
 "use client";
 
-import ChooseVault from "../../_components/trash/ChooseVault";
+import { Button } from "@/components/ui/button";
 import TrashItems from "../../_components/trash/TrashItems";
-import { useParams } from "next/navigation";
+import { ArrowLeftIcon } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 
 export default function TrashPage() {
     const params = useParams();
     const vaultId = params.vaultId as string;
+    const router = useRouter();
 
     return (
         <div className="flex-1 h-full flex flex-col items-center justify-center overflow-y-auto">
@@ -15,7 +17,10 @@ export default function TrashPage() {
                     <span>Trash</span>
                 </h1>
                 <p className="text-xl text-muted-foreground">Here are the entries that you have deleted. They will be permanently deleted after 30 days.</p>
-                <ChooseVault />
+                <Button variant="secondary" size="lg" className="w-fit cursor-pointer" onClick={() => router.back()}>
+                    <ArrowLeftIcon className="size-4" />
+                    Back to Vaults
+                </Button>
             </div>
             <TrashItems vaultId={vaultId} />
         </div>

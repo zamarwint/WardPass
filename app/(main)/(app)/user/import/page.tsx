@@ -10,10 +10,10 @@ import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Vault } from "@/lib/types/VaultType";
 import { useGetVaults } from "@/lib/queries/VaultQueries";
+import { SkeletonLoadingState } from "@/app/_components/LoadingStates";
 // import { processCSV } from "@/lib/functions";
 
 export default function ImportPage() {
@@ -117,10 +117,7 @@ export default function ImportPage() {
                         <div className="space-y-2">
                             <Label>Select Vault to put imported data in.</Label>
                             {isLoading ? (
-                                <>
-                                    <h1>Loading...</h1>
-                                    <Skeleton className="w-full max-w-sm h-12" />
-                                </>
+                                <SkeletonLoadingState numberOfSkeletons={1} skeletonClassName="w-full max-w-sm h-12" />
                             ) : (
                                 <Select onValueChange={(e) => setSelectedVault(e)} value={selectedVault}>
                                     <SelectTrigger disabled>

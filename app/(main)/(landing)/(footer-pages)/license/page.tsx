@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldSeparator } from "@/components/ui/field";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { LineAnimationClass } from "@/app/_components/LineAnimation";
+import { LineAnimationClass } from "@/app/_components/ModalContent";
 
 export default function LicensePage() {
     return (

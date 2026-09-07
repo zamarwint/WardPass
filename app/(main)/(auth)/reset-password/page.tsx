@@ -4,7 +4,7 @@ import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldSet, 
 import { PasswordInput } from "../_components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
-import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Controller, useForm } from "react-hook-form";
 import { resetPasswordSchema } from "@/lib/validations/authSchemas";
@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { Input } from "@/components/ui/input";
 import { useResetPassword } from "@/lib/mutations/AuthMutations";
+import { CustomLoadingState } from "@/app/_components/LoadingStates";
 
 export default function ResetPasswordPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +31,7 @@ export default function ResetPasswordPage() {
 
     const resetPassword = useResetPassword(form.getValues().password, token!);
 
-    function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
+    function onSubmit() {
         startResetPasswordTransition(async () => {
             resetPassword.mutate();
         })
@@ -110,10 +111,9 @@ export default function ResetPasswordPage() {
                     <Field>
                         <Button type="submit" disabled={resetPasswordPending} variant="default" size="lg" className="py-6">
                             {resetPasswordPending ? (
-                                <>
-                                    <Loader2Icon className="size-4 animate-spin" />
-                                    <span>Loading...</span>
-                                </>
+                                <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
+                                    <span className="shimmer shimmer-duration-1000"> RESETTING PASSWORD </span>
+                                </CustomLoadingState>
                             ) : (
                                 <span>Reset Password</span>
                             )}
