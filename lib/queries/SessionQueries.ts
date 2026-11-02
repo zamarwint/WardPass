@@ -6,7 +6,6 @@ export function useGetSession() {
     return useQuery({
         queryKey: ['session'],
         queryFn: () => getUserSession(),
-        refetchOnMount: true,
         refetchOnReconnect: true,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60 * 2,
@@ -19,7 +18,6 @@ export function useCheckAdminSession() {
     return useQuery({
         queryKey: ['checkAdminSession'],
         queryFn: () => checkAdminSession(),
-        refetchOnMount: true,
         refetchOnReconnect: true,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60 * 2,

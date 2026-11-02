@@ -2,8 +2,10 @@
 
 import { auth } from "@/utils/auth"
 import { headers } from "next/headers";
-import { checkAdminSession } from "../getSession";
-import { prisma } from "@/utils/db";
+import { eq, isNotNull } from "drizzle-orm";
+import { db } from "@/drizzle/client";
+import { session } from "@/drizzle/schema";
+import { requireAdminSession } from "@/lib/server/auth";
 
 export async function searchUserSession({ userId }: { userId: string }) {
     if (!userId) return null;
@@ -16,53 +18,54 @@ export async function searchUserSession({ userId }: { userId: string }) {
         headers: await headers(),
     });
 
-    return data;
+    return {
+        sessions: data.sessions.map((userSession) => {
+            const safeSession = Object.fromEntries(
+                Object.entries(userSession).filter(([key]) => key !== "token"),
+            ) as Omit<typeof userSession, "token">;
+            return safeSession;
+        }),
+    };
 }
 
 export async function dbListUserSessions() {
-    const checkAdmin = checkAdminSession();
-
-    if (!checkAdmin) return null;
-
-    const data = await prisma.session.findMany({
-        select: {
-            id: true,
-            createdAt: true,
-            updatedAt: true,
-            userId: true,
-            expiresAt: true,
-            ipAddress: true,
-            userAgent: true,
-            token: true,
-            impersonatedBy: true,
-        }
-    })
-
-    return data;
+    await requireAdminSession();
+    return db.select({
+        id: session.id,
+        createdAt: session.createdAt,
+        updatedAt: session.updatedAt,
+        userId: session.userId,
+        expiresAt: session.expiresAt,
+        ipAddress: session.ipAddress,
+        userAgent: session.userAgent,
+        impersonatedBy: session.impersonatedBy,
+    }).from(session);
 }
 
 export async function dbListUserImpersonations() {
-    const checkAdmin = checkAdminSession();
+    await requireAdminSession();
+    return db.select({
+        id: session.id,
+        createdAt: session.createdAt,
+        updatedAt: session.updatedAt,
+        userId: session.userId,
+        expiresAt: session.expiresAt,
+        ipAddress: session.ipAddress,
+        userAgent: session.userAgent,
+        impersonatedBy: session.impersonatedBy,
+    }).from(session).where(isNotNull(session.impersonatedBy));
+}
 
-    if (!checkAdmin) return null;
-
-    const data = await prisma.session.findMany({
-        where: {
-            impersonatedBy: {
-                not: null
-            }
-        },
-        select: {
-            id: true,
-            createdAt: true,
-            updatedAt: true,
-            userId: true,
-            expiresAt: true,
-            ipAddress: true,
-            userAgent: true,
-            impersonatedBy: true,
-        }
-    })
-
-    return data;
+export async function revokeUserSessionById(sessionId: string) {
+    await requireAdminSession();
+    const [row] = await db
+        .select({ token: session.token })
+        .from(session)
+        .where(eq(session.id, sessionId))
+        .limit(1);
+    if (!row) throw new Error("Session not found.");
+    return auth.api.revokeUserSession({
+        body: { sessionToken: row.token },
+        headers: await headers(),
+    });
 }

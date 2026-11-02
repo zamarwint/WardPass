@@ -19,6 +19,8 @@ export type Vault = {
     vaultItems?: VaultItem[]
 }
 
+export type VaultSummary = Pick<Vault, "id" | "name" | "slug" | "icon" | "iconColor">;
+
 export type VaultItem = {
     id: string
     itemType: VaultItemType

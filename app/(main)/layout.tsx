@@ -1,10 +1,16 @@
 "use client";
 
 import { QueryClient, QueryClientProvider, isServer } from "@tanstack/react-query";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import MainLoading from "./loading";
 import { useKeyboardShortcuts } from "@/lib/functions";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
+const ReactQueryDevtools = dynamic(
+    () => import("@tanstack/react-query-devtools").then((module) => module.ReactQueryDevtools),
+    { ssr: false },
+);
 
 function makeQueryClient() {
     return new QueryClient({
@@ -37,12 +43,16 @@ export default function MainLayout({
     useKeyboardShortcuts();
 
     return (
-        <div className="flex flex-col w-full h-full min-h-screen min-w-screen overflow-x-hidden">
+        <div className="flex flex-col size-full items-center justify-center overflow-x-hidden">
             <QueryClientProvider client={queryClient}>
                 <Suspense fallback={<MainLoading />}>
-                    {children}
+                    <TooltipProvider>
+                        {children}
+                    </TooltipProvider>
                 </Suspense>
-                <ReactQueryDevtools initialIsOpen={false} />
+                {process.env.NODE_ENV === "development" && (
+                    <ReactQueryDevtools initialIsOpen={false} />
+                )}
             </QueryClientProvider>
         </div>
     )

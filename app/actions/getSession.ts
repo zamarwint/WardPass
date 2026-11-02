@@ -1,24 +1,12 @@
 "use server";
 
-import { headers } from "next/headers";
-import { auth } from "../../utils/auth"
+import { getCurrentSession } from "@/lib/server/auth";
 
 export const getUserSession = async () => {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    return session;
+    return getCurrentSession();
 }
 
 export const checkAdminSession = async () => {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
-
-    if (!session?.user) return null;
-
-    if (session.user.role !== 'admin') return null;
-
-    return true;
+    const session = await getCurrentSession();
+    return session?.user.role === "admin";
 }

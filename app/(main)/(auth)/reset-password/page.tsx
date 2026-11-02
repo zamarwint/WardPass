@@ -1,7 +1,7 @@
 "use client";
 
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldSet, FieldTitle } from "@/components/ui/field";
-import { PasswordInput } from "../_components/PasswordInput";
+import { PasswordInput } from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { Input } from "@/components/ui/input";
 import { useResetPassword } from "@/lib/mutations/AuthMutations";
-import { CustomLoadingState } from "@/app/_components/LoadingStates";
+import { CustomLoadingState } from "@/components/LoadingStates";
 
 export default function ResetPasswordPage() {
     const [showPassword, setShowPassword] = useState(false);

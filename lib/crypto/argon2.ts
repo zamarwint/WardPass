@@ -42,10 +42,8 @@ export const ARGON2_PARAMS = {
     TIME: 3,
 
     /**
-     * Degree of parallelism.
-     * Set to 1 because browsers are single-threaded (no worker threads for
-     * this synchronous implementation). Increase only if you move deriveKey
-     * into a Web Worker with SharedArrayBuffer support.
+ * Degree of parallelism. Kept at 1 to preserve the existing derivation
+ * parameters; moving the synchronous work to a worker does not change them.
      */
     PARALLELISM: 1,
 
@@ -85,10 +83,8 @@ export function generateSalt(): Uint8Array {
 /**
  * Derive a 32-byte AES-256 encryption key from the user's master password.
  *
- * This is an async wrapper around the synchronous @noble/hashes argon2id
- * implementation. The single `await` before the computation yields the event
- * loop once, giving the browser a chance to render a loading spinner before
- * the blocking CPU work begins (~0.5–2 s on typical hardware).
+ * The synchronous @noble/hashes implementation runs in a module worker so it
+ * does not block rendering or input on the main browser thread.
  *
  * @param masterPassword  Plaintext master password typed by the user.
  *                        Never stored, never transmitted — used only here.
@@ -129,18 +125,35 @@ export async function deriveKey(
     // not JavaScript strings.
     const passwordBytes = new TextEncoder().encode(masterPassword);
 
-    // Yield to the event loop once so the calling component can render
-    // its loading state before the synchronous, CPU-heavy work starts.
-    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    if (typeof Worker === "undefined") {
+        return argon2id(passwordBytes, salt, {
+            t: ARGON2_PARAMS.TIME,
+            m: ARGON2_PARAMS.MEM,
+            p: ARGON2_PARAMS.PARALLELISM,
+            dkLen: ARGON2_PARAMS.KEY_LEN,
+        });
+    }
 
-    // argon2id is synchronous in @noble/hashes. It will block the main
-    // thread for the duration of the computation. This is expected and
-    // intentional — moving it to a Web Worker is a future improvement.
-    return argon2id(passwordBytes, salt, {
-        t: ARGON2_PARAMS.TIME,
-        m: ARGON2_PARAMS.MEM,
-        p: ARGON2_PARAMS.PARALLELISM,
-        dkLen: ARGON2_PARAMS.KEY_LEN,
-        // version: 19 is the default (Argon2 spec v1.3) — no need to specify.
+    return new Promise<Uint8Array>((resolve, reject) => {
+        const worker = new Worker(new URL("./argon2.worker.ts", import.meta.url), { type: "module" });
+        worker.onmessage = (event: MessageEvent<{ key?: Uint8Array; error?: string }>) => {
+            worker.terminate();
+            if (event.data.error || !event.data.key) {
+                reject(new Error(event.data.error ?? "Key derivation failed."));
+                return;
+            }
+            resolve(new Uint8Array(event.data.key));
+        };
+        worker.onerror = () => {
+            worker.terminate();
+            reject(new Error("Key derivation worker failed."));
+        };
+
+        const passwordTransfer = passwordBytes.slice();
+        const saltTransfer = salt.slice();
+        worker.postMessage(
+            { passwordBytes: passwordTransfer, salt: saltTransfer, params: ARGON2_PARAMS },
+            [passwordTransfer.buffer, saltTransfer.buffer],
+        );
     });
 }

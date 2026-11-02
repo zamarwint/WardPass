@@ -1,0 +1,149 @@
+"use client";
+
+import Link from "next/link"
+import { ExternalLink, Menu, X } from "lucide-react"
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { motion, useScroll } from "motion/react";
+import { ModeToggleIcon } from "./ThemeChange";
+import { toast } from "sonner";
+import { useGetSession } from "@/lib/queries/SessionQueries";
+import { cn } from "@/lib/utils";
+import UserDropdown from "./app/sidebar/UserDropdown";
+import { CustomLoadingState } from "./LoadingStates";
+
+const navigationLinks = [
+    {
+        label: "Features",
+        path: "#features",
+    },
+    {
+        label: "Security",
+        path: "#security",
+    },
+    {
+        label: "Password Generator",
+        path: "/password-generator"
+    },
+    {
+        label: "Chrome Extension",
+        path: "/chrome-extension"
+    },
+    {
+        label: "Donate",
+        path: "#",
+        isExternal: true
+    },
+];
+
+export default function Navbar() {
+    const { scrollYProgress } = useScroll();
+    const [open, setOpen] = useState(false);
+    const pathName = usePathname();
+    const session = useGetSession();
+
+    if (session.error) toast.error("An error occured." + session.error.message);
+
+    // PREVENT USER FROM SCROLLING WHEN MOBILE MENU IS ACTIVE
+    useEffect(() => {
+        if (open) {
+            document.documentElement.style.overflow = "hidden";
+        } else {
+            document.documentElement.style.overflow = "auto";
+        }
+    }, [open]);
+
+    return (
+        <motion.header
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{
+                duration: 1,
+            }}
+            className="bg-transparent backdrop-blur-md w-full z-50 border-b border-foreground/10 fixed flex flex-col font-geist"
+        >
+            <motion.div className="flex justify-between items-center w-full px-4 md:px-10 py-4 mx-auto">
+                {/* DESKTOP MENU */}
+                <div className="hidden lg:flex items-center gap-8 w-fit">
+                    <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
+                    <nav className="hidden md:flex items-center justify-center gap-6 w-full">
+                        {navigationLinks.map((link, index) => (
+                            <Link key={index} className={cn("transition-all flex items-center", pathName === link.path ? "text-primary border-b-2 border-primary pb-1 opacity-80" : "hover:text-primary hover:border-b-2 hover:border-primary hover:pb-1 hover:opacity-80")} href={link.path}>
+                                {link.label}
+                                {link.isExternal && <ExternalLink size={16} className="ml-2" />}
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
+
+                {/* MOBILE MENU (VISUAL ONLY) */}
+                <div className="lg:hidden flex items-center justify-between gap-8 w-full">
+                    <Link className="font-bold text-3xl tracking-tighter text-primary uppercase" href="/">WardPass</Link>
+                    <div
+                        onClick={() => setOpen(!open)}
+                        className="cursor-pointer text-primary"
+                    >
+                        {open ? <X size={48} /> : <Menu size={48} />}
+                    </div>
+                </div>
+
+                {/* MOBILE MENU DROPDOWN */}
+                <div
+                    className={
+                        open
+                            ? "flex flex-col lg:hidden w-screen h-screen items-left justify-left top-20 left-0 z-999 fixed"
+                            : "hidden"
+                    }
+                >
+                    <div className="w-full">
+                        {open &&
+                            navigationLinks.map((link, index) => (
+                                <Link
+                                    key={index}
+                                    href={link.path}
+                                    className={cn("flex transition w-full h-fit p-5 items-center",
+                                        pathName === link.path
+                                            ? `bg-primary text-primary-foreground`
+                                            : "bg-background"
+                                    )}
+                                >
+                                    {link.label}
+                                    {link.isExternal && <ExternalLink size={16} className="ml-2" />}
+                                </Link>
+                            ))}
+                    </div>
+                    <div className="size-full backdrop-blur-md bg-transparent"></div>
+                </div>
+
+                {/* LOGIN AND SIGN-UP (DESKTOP ONLY) */}
+                <div className="hidden lg:flex items-center justify-end gap-4 w-fit">
+                    {session.isPending ? (
+                        <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
+                            <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                        </CustomLoadingState>
+                    ) : session.data?.user ? (
+                        <>
+                            <ModeToggleIcon />
+                            <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="/strongroom">VAULT DASHBOARD</Link>
+                            <UserDropdown onSidebar={false} />
+                        </>
+                    ) : (
+                        <>
+                            <Link className="hidden md:block btn-ghost transition-colors" href="sign-in">Login</Link>
+                            <Link className="hidden md:block btn-primary py-2 px-5 uppercase tracking-wider font-semibold" href="sign-up">Get Started</Link>
+                        </>
+                    )}
+                </div>
+            </motion.div>
+            <motion.div
+                id="scroll-indicator"
+                className="fixed top-0 left-0 right-0 h-0.5 w-screen bg-primary origin-left z-50"
+                style={{
+                    scaleX: scrollYProgress,
+                    transformOrigin: "0%",
+                }}
+            />
+        </motion.header>
+    )
+}

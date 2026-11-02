@@ -1,6 +1,6 @@
 "use client";
 
-import { SuccessIcon, ErrorIcon } from "@/app/_components/ModalContent";
+import { SuccessIcon, ErrorIcon } from "@/components/ModalContent";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {

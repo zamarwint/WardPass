@@ -1,4 +1,4 @@
-import { AnimatedDotsLoadingState } from "../_components/LoadingStates";
+import { AnimatedDotsLoadingState } from "@/components/LoadingStates";
 
 export default function MainLoading() {
     return (

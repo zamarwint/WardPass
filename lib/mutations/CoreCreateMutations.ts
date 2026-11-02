@@ -86,7 +86,7 @@ export function useCreateVaultItem(vaultId: string, data: CreditCardJSON | Ident
             toast.success("Vault item added successfully");
             cancel();
             queryClient.invalidateQueries({
-                queryKey: ["vaultItems", vaultId],
+                queryKey: ["vaultPage", vaultId],
                 refetchType: 'active'
             });
         },

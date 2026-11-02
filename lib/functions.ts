@@ -1,27 +1,9 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
-
-// SCROLL TO ANCHOR LINK
-export const ScrollToAnchor = () => {
-  const pathname = usePathname();
-  const lastHash = useRef("");
-
-  useEffect(() => {
-    const hash = pathname.split("#")[1];
-    if (hash) {
-      const element = document.getElementById(hash);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  }, [pathname]);
-
-  return null;
-};
 
 // TRACK THE VIEWPORT WIDTH
 export const useViewportWidth = () => {
@@ -62,7 +44,7 @@ export function useKeyboardShortcuts() {
     const handleKeyAltV = (e: KeyboardEvent) => {
       if (e.key === "v" && e.altKey) {
         // Go to the vaults page
-        router.push("/user/vault");
+        router.push("/strongroom");
       }
     };
 
@@ -83,7 +65,7 @@ export function useKeyboardShortcuts() {
     const handleKeyAltU = (e: KeyboardEvent) => {
       if (e.key === "u" && e.altKey) {
         // Open user settings
-        router.push("/user/settings");
+        router.push("/strongroom/settings");
       }
     };
 

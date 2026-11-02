@@ -9,7 +9,9 @@ export default async function signIn(email: string, password: string) {
       email, // required, The email address of the user.
       password, // required, The password of the user. It should be at least 8 characters long and max 128 by default.
       rememberMe: true, // If false, the user will be signed out when the browser is closed. (optional) (default: true)
-      callbackURL: process.env.NEXT_PUBLIC_APP_URL + "/user/vault", // An optional URL to redirect to after the user signs in. (optional)
+      callbackURL:
+        process.env.NEXT_PUBLIC_APP_URL +
+        process.env.NEXT_PUBLIC_SIGN_IN_REDIRECT_URL!, // An optional URL to redirect to after the user signs in. (optional)
     },
     // This endpoint requires session cookies.
     headers: await headers(),

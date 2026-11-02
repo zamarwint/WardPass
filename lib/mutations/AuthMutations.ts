@@ -26,7 +26,7 @@ export function useSignIn(email: string, password: string) {
       //redirect to the user vault page
       toast.dismiss();
       toast.success("Success!");
-      router.push("/user/vault");
+      router.push("/strongroom");
       queryClient.invalidateQueries({ queryKey: ["session"] });
     },
     onError: (error) => {

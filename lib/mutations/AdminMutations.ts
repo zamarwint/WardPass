@@ -1,15 +1,16 @@
 import { createUser } from "@/app/actions/admin/createUser";
-import { revokeUserSession } from "@/app/actions/admin/revokeUserSession";
+import { revokeUserSessionById } from "@/app/actions/admin/listUserSessions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export function useRevokeUserSessionMutation({ sessionToken }: { sessionToken: string }) {
+export function useRevokeUserSessionMutation({ sessionId }: { sessionId: string }) {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationKey: ['revoke-user-session'],
-        mutationFn: () => revokeUserSession({ sessionToken }),
+        mutationFn: () => revokeUserSessionById(sessionId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['list-user-sessions'] });
+            queryClient.invalidateQueries({ queryKey: ["dbListUserSessions"] });
+            queryClient.invalidateQueries({ queryKey: ["listUserSessions"] });
         }
     })
 }

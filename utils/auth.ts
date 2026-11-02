@@ -1,13 +1,15 @@
 import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import { prisma } from "./db";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "@/drizzle/client";
+import { schema } from "@/drizzle/schema";
 import { sendEmail } from "@/lib/sendEmail";
 import { admin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
-    provider: "postgresql", // or "mysql", "postgresql", ...etc
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schema,
   }),
   baseURL: process.env.BETTER_AUTH_URL,
   plugins: [admin(), nextCookies()],
@@ -63,47 +65,6 @@ export const auth = betterAuth({
           subject: "Verify Deletion for your WardPass Account.",
           text: `<div><p>Click the link to verify deletion:</p><a href="${url}">Verify Deletion</a></div>`,
         });
-      },
-      afterDelete: async ({ id, name }) => {
-        console.log("Account with name: " + name + " has been deleted.");
-
-        const vaults = await prisma.vault.findMany({
-          where: {
-            userId: id,
-          },
-        });
-
-        if (!vaults) {
-          console.log("Successfully deleted all of" + name + " vaults.");
-        } else {
-          console.log("Found " + vaults.length + " vaults for " + name);
-          console.log("Deleting all data from the vaults...");
-
-          vaults.forEach(async (vault) => {
-            await prisma.vaultItem.deleteMany({
-              where: {
-                vaultId: vault.id,
-              },
-            });
-          });
-
-          console.log(
-            "Deleted all data from the vaults, deleting user vaults...",
-          );
-
-          const { count } = await prisma.vault.deleteMany({
-            where: {
-              userId: id,
-            },
-          });
-
-          console.log(
-            "Successfully deleted all of" +
-              name +
-              " vaults. Total vaults: " +
-              count,
-          );
-        }
       },
     },
     additionalFields: {

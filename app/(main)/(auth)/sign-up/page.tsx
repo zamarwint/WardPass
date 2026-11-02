@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import { Controller } from "react-hook-form"
 import * as z from "zod"
 
-import { PaymentCard, WebsiteCredentialCard } from "@/app/_components/UICards";
+import { PaymentCard, WebsiteCredentialCard } from "@/components/UICards";
 import { Button } from "@/components/ui/button";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSeparator, FieldTitle } from "@/components/ui/field";
@@ -15,14 +15,16 @@ import { FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon, ShieldPlus } from "lucide-react";
 import Link from "next/link";
-import { useState, useTransition } from "react";
-import { PasswordInput } from "./../_components/PasswordInput";
-import { EmailDeliveryNotWorkingAlert } from "@/app/_components/Banners";
+import { useMemo, useState, useTransition } from "react";
+import { passwordStrength } from "check-password-strength";
+import { PasswordInput } from "@/components/PasswordInput";
+import { EmailDeliveryNotWorkingAlert } from "@/components/Banners";
 
 // import PasswordStrengthBar from "@/app/_components/PasswordStrengthBar";
 import { signUpSchema } from "@/lib/validations/authSchemas";
 import { useSignUp } from "@/lib/mutations/AuthMutations";
-import { CustomLoadingState } from "@/app/_components/LoadingStates";
+import { CustomLoadingState } from "@/components/LoadingStates";
+import PasswordStrengthBar from "@/components/PasswordStrengthBar";
 
 export default function SignUpPage() {
     const [signUpPending, startSignUpTransition] = useTransition();
@@ -39,6 +41,12 @@ export default function SignUpPage() {
             confirmPassword: ""
         }
     })
+
+    const watchedPassword = form.watch("password");
+    const passStrength = useMemo(
+        () => (watchedPassword ? passwordStrength(watchedPassword).value : ""),
+        [watchedPassword]
+    );
 
     const { mutate, isPending: signUpIsPending } = useSignUp(form.getValues().name, form.getValues().email, form.getValues().password);
 
@@ -140,6 +148,7 @@ export default function SignUpPage() {
                                                 )}
                                             </Button>
                                         </div>
+                                        <PasswordStrengthBar strength={passStrength} />
                                         {fieldState.invalid && (
                                             <FieldError errors={[fieldState.error]} />
                                         )}

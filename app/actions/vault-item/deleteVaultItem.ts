@@ -1,32 +1,44 @@
-'use server';
+"use server";
 
-import { prisma } from '@/utils/db';
-import { getUserSession } from '../getSession';
-import { toast } from 'sonner';
-import { redirect } from 'next/navigation';
+import { and, eq, exists } from "drizzle-orm";
+import { db } from "@/drizzle/client";
+import { vault, vaultItem } from "@/drizzle/schema";
+import { requireUserSession } from "@/lib/server/auth";
 
 export default async function deleteVaultItem({
-    id,
-    vaultId
+  id,
+  vaultId,
 }: {
-    id: string,
-    vaultId: string
+  id: string;
+  vaultId: string;
 }) {
-    const session = await getUserSession();
+  const session = await requireUserSession();
 
-    if (!session) {
-        toast.error("You must be logged in to delete items from vaults.");
-        redirect("/login");
-    }
+  const [deletedVaultItem] = await db
+    .delete(vaultItem)
+    .where(
+      and(
+        eq(vaultItem.id, id),
+        eq(vaultItem.vaultId, vaultId),
+        exists(
+          db
+            .select({ id: vault.id })
+            .from(vault)
+            .where(
+              and(
+                eq(vault.id, vaultItem.vaultId),
+                eq(vault.userId, session.user.id),
+              ),
+            ),
+        ),
+      ),
+    )
+    .returning({ id: vaultItem.id });
 
-    const deletedVaultItem = await prisma.vaultItem.delete({
-        where: {
-            id: id,
-            vaultId: vaultId
-        }
-    })
+  if (!deletedVaultItem)
+    throw new Error("Vault item not found or access denied.");
 
-    // // UPDATING STATE FROM THE SERVER ACTION AFTER CREATING THE LOGIN ITEM. ONLY WORKS WITH DIALOGS, NOT DIVS, NOT ALERT DIALOGS.
-    // revalidatePath(`/user/vault/${vaultId}`);
-    return deletedVaultItem;
+  // // UPDATING STATE FROM THE SERVER ACTION AFTER CREATING THE LOGIN ITEM. ONLY WORKS WITH DIALOGS, NOT DIVS, NOT ALERT DIALOGS.
+  // revalidatePath(`/strongroom/${vaultId}`);
+  return deletedVaultItem;
 }

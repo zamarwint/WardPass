@@ -21,7 +21,7 @@ export function useDeleteVaultItemMutation(id: string, vaultId: string) {
                 refetchType: 'active'
             });
             queryClient.invalidateQueries({
-                queryKey: ["vaultItems"],
+                queryKey: ["vaultPage"],
                 refetchType: 'active'
             });
         },
@@ -50,7 +50,7 @@ export function useRestoreVaultItemMutation(id: string) {
                 refetchType: 'active'
             });
             queryClient.invalidateQueries({
-                queryKey: ["vaultItems"],
+                queryKey: ["vaultPage"],
                 refetchType: 'active'
             });
         },
@@ -76,7 +76,7 @@ export function useTrashVaultItemMutation(id: string, vaultId: string, onOpenCha
             toast.success("Item moved to Trash successfully!");
             onOpenChange(false);
             queryClient.invalidateQueries({
-                queryKey: ["vaultItems", vaultId],
+                queryKey: ["vaultPage", vaultId],
                 refetchType: 'active'
             });
             queryClient.invalidateQueries({

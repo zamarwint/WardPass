@@ -1,8 +1,8 @@
-import About from "./_landing/About";
-import Features from "./_landing/Features";
-import SecurityPipeline from "./_landing/SecurityPipeline";
-import CallToAction from "./_landing/CallToAction";
-import Hero from "./_landing/Hero";
+import About from "@/components/landing/About";
+import Features from "@/components/landing/Features";
+import SecurityPipeline from "@/components/landing/SecurityPipeline";
+import CallToAction from "@/components/landing/CallToAction";
+import Hero from "@/components/landing/Hero";
 
 export default async function Page() {
   return (

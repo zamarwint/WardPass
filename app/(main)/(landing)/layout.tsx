@@ -1,5 +1,5 @@
-import Footer from "./_components/Footer";
-import Navbar from "./_components/Navbar";
+import Footer from "@/components//Footer";
+import Navbar from "@/components//Navbar";
 import type { Metadata } from "next";
 import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getUserSession } from "@/app/actions/getSession";

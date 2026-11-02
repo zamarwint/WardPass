@@ -67,6 +67,10 @@ export function useUpdateVault(vaultId: string, vaultName: string, selectedIcon:
                 queryKey: ["vaults"],
                 refetchType: 'active'
             });
+            queryClient.invalidateQueries({
+                queryKey: ["vaultPage", vaultId],
+                refetchType: "active",
+            });
         },
         onError: (error) => {
             toast.dismiss();
@@ -95,7 +99,7 @@ export function useUpdateVaultItem(id: string, vaultId: string, data: CreditCard
             toast.success("Vault item updated successfully");
             cancel();
             queryClient.invalidateQueries({
-                queryKey: ["vaultItems", vaultId],
+                queryKey: ["vaultPage", vaultId],
                 refetchType: 'active'
             });
         },

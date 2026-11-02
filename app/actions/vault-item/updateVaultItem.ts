@@ -1,9 +1,9 @@
 'use server';
 
-import { prisma } from '@/utils/db';
-import { getUserSession } from '../getSession';
-import { toast } from 'sonner';
-import { redirect } from 'next/navigation';
+import { and, eq, exists } from 'drizzle-orm';
+import { db } from '@/drizzle/client';
+import { vault, vaultItem } from '@/drizzle/schema';
+import { requireUserSession } from '@/lib/server/auth';
 
 export default async function updateLogin({
     id,
@@ -16,27 +16,21 @@ export default async function updateLogin({
     encryptedData: string,
     iv: string
 }) {
-    const session = await getUserSession();
+    const session = await requireUserSession();
 
-    if (!session) {
-        toast.error("You must be logged in to update vault items.");
-        redirect("/login");
-    }
+    const [updatedLogin] = await db.update(vaultItem)
+        .set({ encryptedData, iv, updatedAt: new Date() })
+        .where(and(
+            eq(vaultItem.id, id),
+            eq(vaultItem.vaultId, vaultId),
+            exists(db.select({ id: vault.id }).from(vault).where(and(
+                eq(vault.id, vaultItem.vaultId),
+                eq(vault.userId, session.user.id),
+            ))),
+        ))
+        .returning({ id: vaultItem.id });
 
-    const updatedLogin = await prisma.vaultItem.update({
-        select: {
-            encryptedData: true,
-            iv: true
-        },
-        where: {
-            id: id,
-            vaultId: vaultId
-        },
-        data: {
-            encryptedData,
-            iv
-        }
-    })
+    if (!updatedLogin) throw new Error("Vault item not found or access denied.");
 
     return updatedLogin;
 }

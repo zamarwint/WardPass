@@ -1,7 +1,7 @@
 "use client";
 
-import { PasswordInput } from "./../_components/PasswordInput";
-import { PaymentCard } from "@/app/_components/UICards";
+import { PasswordInput } from "@/components/PasswordInput";
+import { PaymentCard } from "@/components/UICards";
 import { Button } from "@/components/ui/button";
 import DotPattern from "@/components/ui/dot-pattern";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
@@ -13,9 +13,9 @@ import { useState, useTransition } from "react";
 import { FaGoogle } from "react-icons/fa";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { EmailDeliveryNotWorkingAlert } from "@/app/_components/Banners";
+import { EmailDeliveryNotWorkingAlert } from "@/components/Banners";
 import { useSignIn } from "@/lib/mutations/AuthMutations";
-import { CustomLoadingState } from "@/app/_components/LoadingStates";
+import { CustomLoadingState } from "@/components/LoadingStates";
 
 export default function SignInPage() {
     const router = useRouter();
@@ -30,7 +30,7 @@ export default function SignInPage() {
         startGoogleTransition(async () => {
             await authClient.signIn.social({
                 provider: "google",
-                callbackURL: process.env.NEXT_PUBLIC_APP_URL + "/user/vault",
+                callbackURL: process.env.NEXT_PUBLIC_APP_URL + process.env.NEXT_PUBLIC_SIGN_IN_REDIRECT_URL!,
                 fetchOptions: {
                     onRequest: () => {
                         toast.loading("Signing you up with Google...");
@@ -38,7 +38,7 @@ export default function SignInPage() {
                     onSuccess: () => {
                         toast.dismiss();
                         toast.success("Successfully signed in!")
-                        router.push("/user/vault");
+                        router.push(process.env.NEXT_PUBLIC_SIGN_IN_REDIRECT_URL as string);
                     },
                     onError: (error) => {
                         toast.error("Internal server error. Please try again.")

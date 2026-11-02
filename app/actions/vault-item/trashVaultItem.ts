@@ -1,46 +1,40 @@
-'use server'
+"use server";
 
-import { prisma } from '@/utils/db';
-import { getUserSession } from '../getSession';
-import { toast } from 'sonner';
-import { redirect } from 'next/navigation';
+import { and, eq, exists } from "drizzle-orm";
+import { db } from "@/drizzle/client";
+import { vault, vaultItem } from "@/drizzle/schema";
+import { requireUserSession } from "@/lib/server/auth";
 
 export async function trashVaultItem(id: string) {
-    const session = await getUserSession();
+  const session = await requireUserSession();
+  const [item] = await db.update(vaultItem)
+    .set({ deletedAt: new Date(), updatedAt: new Date() })
+    .where(and(
+      eq(vaultItem.id, id),
+      exists(db.select({ id: vault.id }).from(vault).where(and(
+        eq(vault.id, vaultItem.vaultId),
+        eq(vault.userId, session.user.id),
+      ))),
+    ))
+    .returning({ id: vaultItem.id });
 
-    if (!session) {
-        toast.error("You must be logged in to trash a vault item.");
-        redirect("/login");
-    }
-
-    const trashedVaultItem = await prisma.vaultItem.update({
-        where: {
-            id
-        },
-        data: {
-            deletedAt: new Date()
-        }
-    })
-
-    return trashedVaultItem
+  if (!item) throw new Error("Vault item not found or access denied.");
+  return item;
 }
 
 export async function restoreVaultItem(id: string) {
-    const session = await getUserSession();
+  const session = await requireUserSession();
+  const [item] = await db.update(vaultItem)
+    .set({ deletedAt: null, updatedAt: new Date() })
+    .where(and(
+      eq(vaultItem.id, id),
+      exists(db.select({ id: vault.id }).from(vault).where(and(
+        eq(vault.id, vaultItem.vaultId),
+        eq(vault.userId, session.user.id),
+      ))),
+    ))
+    .returning({ id: vaultItem.id });
 
-    if (!session) {
-        toast.error("You must be logged in to restore a vault item.");
-        redirect("/login");
-    }
-
-    const restoredVaultItem = await prisma.vaultItem.update({
-        where: {
-            id
-        },
-        data: {
-            deletedAt: null
-        }
-    })
-
-    return restoredVaultItem
+  if (!item) throw new Error("Vault item not found or access denied.");
+  return item;
 }

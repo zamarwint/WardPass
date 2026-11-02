@@ -7,7 +7,7 @@ import { Field, FieldDescription, FieldLabel, FieldSeparator, FieldSet, FieldTit
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
-import { WebsiteCredentialCard } from "@/app/_components/UICards";
+import { WebsiteCredentialCard } from "@/components/UICards";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Input } from "@/components/ui/input";
 

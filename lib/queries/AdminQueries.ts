@@ -7,7 +7,6 @@ export function useListUsers({ limit }: { limit?: number }) {
     return useQuery({
         queryKey: ['listUsers', limit],
         queryFn: () => listUsers(limit),
-        refetchOnMount: true,
         refetchOnReconnect: true,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60 * 2,
@@ -19,7 +18,6 @@ export function useGetUser({ userId }: { userId: string }) {
     return useQuery({
         queryKey: ['getUser', userId],
         queryFn: () => getUser({ userId }),
-        refetchOnMount: true,
         refetchOnReconnect: true,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60 * 2,
@@ -31,7 +29,6 @@ export function useSearchUserSession({ userId }: { userId: string | undefined })
     return useQuery({
         queryKey: ['listUserSessions', userId],
         queryFn: () => searchUserSession({ userId: userId as string }),
-        refetchOnMount: true,
         refetchOnReconnect: true,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60 * 2,
@@ -43,7 +40,6 @@ export function useDBListUserSessions() {
     return useQuery({
         queryKey: ['dbListUserSessions'],
         queryFn: () => dbListUserSessions(),
-        refetchOnMount: true,
         refetchOnReconnect: true,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60 * 2,
@@ -55,7 +51,6 @@ export function useDBListUserImpersonations() {
     return useQuery({
         queryKey: ['dbListUserImpersonations'],
         queryFn: () => dbListUserImpersonations(),
-        refetchOnMount: true,
         refetchOnReconnect: true,
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60 * 2,
