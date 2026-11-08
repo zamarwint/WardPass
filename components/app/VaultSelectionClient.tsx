@@ -12,7 +12,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { CustomLoadingState } from "@/components/LoadingStates";
-import CreateVault from "./vault-crud/CreateVault";
+import CreateVault from "@/components/app/vault-crud/CreateVault";
 import { useGetVaults } from "@/lib/queries/VaultQueries";
 
 export default function VaultSelectionClient() {
@@ -21,21 +21,21 @@ export default function VaultSelectionClient() {
   const canCreateVault = vaultList.length < 3;
 
   return (
-    <Field className="w-full h-full">
-      <FieldContent className="font-geist flex flex-col items-center justify-center text-center w-full">
+    <Field className="size-full">
+      <FieldContent className="flex flex-col items-center justify-center text-center w-full">
         <FieldSet className="flex flex-col items-center justify-center size-full gap-3">
           <Field className="flex flex-col items-center justify-center w-xl max-h-xl gap-3 text-3xl">
-            <FieldLegend className="font-bold text-center">Select Vault</FieldLegend>
+            <FieldLegend className="font-bold text-center">Choose a Vault to View Vault Items</FieldLegend>
             <FieldDescription className="text-center">
               {error
                 ? "There was a problem loading your vaults. Please refresh the page."
                 : vaultList.length === 0
-                  ? "No vaults found. Create one below."
-                  : "Choose an existing vault or create a new one below to continue."}
+                  ? "You currently have no vaults. Create one using the 'Create' button below!"
+                  : "Choose an existing vault from the options below or create a new one to get started."}
             </FieldDescription>
             <FieldSeparator />
           </Field>
-          <Field className="flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3">
+          <Field className="flex flex-col items-center justify-center overflow-y-auto no-scrollbar w-xl max-h-xl gap-3">
             {isPending ? (
               <CustomLoadingState loaderChoice={1} className="flex items-center justify-center gap-2">
                 <span className="shimmer shimmer-duration-1000">Loading...</span>

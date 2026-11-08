@@ -1,6 +1,5 @@
 "use client";
 
-import { SuccessIcon, ErrorIcon } from "@/components/ModalContent";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -23,6 +22,7 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
+import { CheckCircle2, CircleAlert, Copy, Dice5, RotateCcw } from "lucide-react";
 import { useState } from "react";
 
 export default function PasswordGeneratorPage() {
@@ -31,7 +31,7 @@ export default function PasswordGeneratorPage() {
     const [modalMessage, setModalMessage] = useState<string>("");
 
     // Password Generator Variables.
-    const [sliderValue, setSliderValue] = useState<number[]>([0, 0]);
+    const [sliderValue, setSliderValue] = useState<number[]>([12, 24]);
     const [upperChecked, setUpperChecked] = useState<boolean>(false);
     const [lowerChecked, setLowerChecked] = useState<boolean>(false);
     const [numbersChecked, setNumbersChecked] = useState<boolean>(false);
@@ -47,12 +47,7 @@ export default function PasswordGeneratorPage() {
         const digits = "0123456789";
         const symbols = "!@#$%^&*_-+=~";
         const space = " ";
-        const addingSpace = (combination: string) => {
-            for (let x = 0; x < length / 2; x++) {
-                combination += space;
-            }
-            return combination;
-        }
+        const addingSpace = (combination: string) => combination + space;
 
         // Combination and Password
         let combination: string = "", password: string = "";
@@ -74,9 +69,6 @@ export default function PasswordGeneratorPage() {
             return;
         }
 
-        // LENGTH OF THE PASSWORD
-        const length = sliderValue[1] - sliderValue[0];
-
         // Get checkbox values
         if (upperChecked) combination += uppercaseLetters;
         if (lowerChecked) combination += lowercaseLetters;
@@ -85,8 +77,15 @@ export default function PasswordGeneratorPage() {
         if (spacesChecked) combination = addingSpace(combination);
 
         // Randomize then set password
+        const randomBelow = (maxExclusive: number) => {
+            const values = new Uint32Array(1);
+            const limit = Math.floor(0x100000000 / maxExclusive) * maxExclusive;
+            do { crypto.getRandomValues(values); } while (values[0] >= limit);
+            return values[0] % maxExclusive;
+        };
+        const length = sliderValue[0] + randomBelow(sliderValue[1] - sliderValue[0] + 1);
         for (let x = 0; x < length; x++) {
-            const randomNumber = Math.floor(Math.random() * combination.length);
+            const randomNumber = randomBelow(combination.length);
             password += combination.substring(randomNumber, randomNumber + 1);
         }
         setPass(password);
@@ -96,7 +95,7 @@ export default function PasswordGeneratorPage() {
     const copyPassword = async () => {
         if (!pass) {
             setSuccessOrFailure(1);
-            setModalMessage("An error occured. No password was generated. Please try again.");
+            setModalMessage("No password is ready to copy yet. Generate one first.");
             setModalOpen(true);
             return;
         }
@@ -107,9 +106,9 @@ export default function PasswordGeneratorPage() {
             setModalMessage("Your password has been copied to the clipboard.");
             setModalOpen(true);
             return;
-        } catch (err) {
+        } catch {
             setSuccessOrFailure(1);
-            setModalMessage("An error occured. Please try again." + err);
+            setModalMessage("Your browser could not copy the password. Select and copy it manually instead.");
             setModalOpen(true);
             return;
         }
@@ -118,7 +117,7 @@ export default function PasswordGeneratorPage() {
     // Clear the display.
     const clearDisplay = () => {
         setPass("");
-        setSliderValue([0, 0]);
+        setSliderValue([12, 24]);
         setUpperChecked(false);
         setLowerChecked(false);
         setNumbersChecked(false);
@@ -128,122 +127,87 @@ export default function PasswordGeneratorPage() {
 
     return (
         <>
-            <div className="flex flex-col items-center justify-center text-center gap-3">
-                <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">Generate a Secure Password</h1>
-                <p className="px-4 md:px-0 text-xl text-muted-foreground">Remember to store it somewhere safe afterwards.</p>
-            </div>
-            <FieldSet className="py-8 px-8 w-full flex flex-col items-center justify-center border border-neutral-200 dark:border-neutral-600 bg-card/80 drop-shadow-xl dark:drop-shadow-xl/25 rounded-2xl">
-                <Field>
-                    <FieldLegend className="text-center">Password</FieldLegend>
-                    <FieldDescription className="text-center">Generate your password.</FieldDescription>
-                </Field>
+            <header className="border-b border-border pb-8">
+                <div className="mb-5 flex items-center justify-between gap-4">
+                    <p className="eyebrow">WardPass / Password generator</p>
+                    <span className="font-mono text-[10px] tracking-widest text-muted-foreground">TOOL / 01</span>
+                </div>
+                <h1 className="landing-display max-w-3xl text-4xl leading-[1.04] tracking-tight md:text-6xl">Generate a stronger<br /><span className="landing-serif text-primary">password.</span></h1>
+                <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground">Choose a length and character set, then save the result somewhere safe—like a WardPass vault.</p>
+            </header>
+            <FieldSet className="w-full min-w-0 rounded-none border border-border bg-card px-5 py-6 sm:px-8 sm:py-8">
+                <div className="mb-7 flex flex-col gap-3 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+                    <Field>
+                        <FieldLegend className="text-2xl font-medium tracking-tight">Build a password</FieldLegend>
+                        <FieldDescription>Generated in this browser using the Web Crypto API.</FieldDescription>
+                    </Field>
+                    <span className="w-fit border border-border px-2.5 py-1 font-mono text-[10px] tracking-wider text-muted-foreground">LOCAL / RANDOM</span>
+                </div>
 
                 <FieldGroup>
-                    <FieldSeparator />
                     <Field>
-                        <FieldTitle className="text-xl">Password Length</FieldTitle>
-                        <FieldDescription>
-                            Set your password length
-                            (<span className="font-medium tabular-nums">{sliderValue[0]}</span> -{" "}
-                            <span className="font-medium tabular-nums">{sliderValue[1]}</span>).
-                        </FieldDescription>
+                        <div className="flex items-center justify-between gap-4">
+                            <FieldTitle className="text-base font-medium">Password length</FieldTitle>
+                            <span className="font-mono text-sm tabular-nums text-foreground">{sliderValue[0]}–{sliderValue[1]}</span>
+                        </div>
+                        <FieldDescription>Set a minimum and maximum length from 8 to 128 characters.</FieldDescription>
                         <Slider
                             value={sliderValue}
                             onValueChange={(value) => setSliderValue(value as [number, number])}
-                            max={1000}
-                            min={0}
-                            step={10}
+                            max={128}
+                            min={8}
+                            step={1}
                             className="mt-2 w-full"
-                            aria-label="Price Range"
+                            aria-label="Password length range"
                         />
                     </Field>
                     <FieldSeparator />
-                </FieldGroup>
-
-                <Field>
-                    <FieldLabel className="text-xl">
-                        Choose characters to include:
-                    </FieldLabel>
-                    <FieldDescription>
-                        Check the boxes for the characters you want to include in your password.
-                    </FieldDescription>
-                </Field>
-                <FieldGroup className="gap-3">
-                    <Field orientation="horizontal">
-                        <Checkbox id="finder-pref-9k2-hard-disks-ljj" checked={upperChecked} onCheckedChange={() => setUpperChecked(!upperChecked)} />
-                        <FieldLabel
-                            htmlFor="finder-pref-9k2-hard-disks-ljj"
-                            className="font-normal"
-                            defaultChecked
-                        >
-                            UPPERCASE LETTERS (A-Z)
-                        </FieldLabel>
-                    </Field>
-                    <Field orientation="horizontal">
-                        <Checkbox id="finder-pref-9k2-external-disks-1yg" checked={lowerChecked} onCheckedChange={() => setLowerChecked(!lowerChecked)} />
-                        <FieldLabel
-                            htmlFor="finder-pref-9k2-external-disks-1yg"
-                            className="font-normal"
-                        >
-                            lowercase letters (a-z)
-                        </FieldLabel>
-                    </Field>
-                    <Field orientation="horizontal">
-                        <Checkbox id="finder-pref-9k2-cds-dvds-fzt" checked={numbersChecked} onCheckedChange={() => setNumbersChecked(!numbersChecked)} />
-                        <FieldLabel
-                            htmlFor="finder-pref-9k2-cds-dvds-fzt"
-                            className="font-normal"
-                        >
-                            Numbers (0-9)
-                        </FieldLabel>
-                    </Field>
-                    <Field orientation="horizontal">
-                        <Checkbox id="finder-pref-9k2-connected-servers-6l2" checked={symbolsChecked} onCheckedChange={() => setSymbolsChecked(!symbolsChecked)} />
-                        <FieldLabel
-                            htmlFor="finder-pref-9k2-connected-servers-6l2"
-                            className="font-normal"
-                        >
-                            Symbols (!, @, #, $, %, ^, &, *, ?, _, -, =)
-                        </FieldLabel>
-                    </Field>
-                    <Field orientation="horizontal">
-                        <Checkbox id="finder-pref-9k2-connected-servers-6l2" checked={spacesChecked} onCheckedChange={() => setSpacesChecked(!spacesChecked)} />
-                        <FieldLabel
-                            htmlFor="finder-pref-9k2-connected-servers-6l2"
-                            className="font-normal"
-                        >
-                            Spaces ( )
-                        </FieldLabel>
-                    </Field>
-
+                    <div>
+                        <FieldLabel className="text-base font-medium">Character sets</FieldLabel>
+                        <p className="mt-1 text-sm text-muted-foreground">Choose one or more kinds of characters to include.</p>
+                    </div>
+                    <FieldGroup className="grid gap-2 sm:grid-cols-2 sm:gap-3">
+                        {[
+                            { id: "password-uppercase", label: "Uppercase letters", hint: "A–Z", checked: upperChecked, set: setUpperChecked },
+                            { id: "password-lowercase", label: "Lowercase letters", hint: "a–z", checked: lowerChecked, set: setLowerChecked },
+                            { id: "password-numbers", label: "Numbers", hint: "0–9", checked: numbersChecked, set: setNumbersChecked },
+                            { id: "password-symbols", label: "Symbols", hint: "13 symbols", checked: symbolsChecked, set: setSymbolsChecked },
+                            { id: "password-spaces", label: "Spaces", hint: "␠", checked: spacesChecked, set: setSpacesChecked },
+                        ].map((option) => (
+                            <Field key={option.id} orientation="horizontal" className="min-h-14 items-center border border-border px-3 py-2.5 transition-colors hover:border-primary/60">
+                                <Checkbox id={option.id} checked={option.checked} onCheckedChange={(checked) => option.set(checked === true)} />
+                                <FieldLabel htmlFor={option.id} className="flex w-full items-center justify-between gap-3 font-normal">
+                                    <span>{option.label}</span><span className="font-mono text-[11px] text-muted-foreground">{option.hint}</span>
+                                </FieldLabel>
+                            </Field>
+                        ))}
+                    </FieldGroup>
                     <FieldSeparator />
-
                     <Field>
-                        <FieldLabel htmlFor="name" className="text-xl">Generated Password</FieldLabel>
-                        <Input id="name" autoComplete="off" placeholder="e.g. G@5S5Jq!028476$d" readOnly value={pass} className="select-none pointer-events-none" />
+                        <FieldLabel htmlFor="generated-password" className="text-base font-medium">Generated password</FieldLabel>
+                        <Input id="generated-password" autoComplete="off" placeholder="Your password appears here" readOnly value={pass} className="h-12 rounded-none bg-background font-mono text-base tracking-wide sm:text-lg" />
                     </Field>
-
-                    <Field orientation="horizontal" className="flex flex-col md:flex-row items-center justify-center">
-                        <Button variant="default" size="lg" onClick={passwordGenerate} >Generate Password</Button>
-                        <Button variant="default" size="lg" onClick={clearDisplay}>Reset Password</Button>
-                        <Button variant="default" size="lg" onClick={copyPassword}>Copy Password</Button>
+                    <Field orientation="horizontal" className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+                        <Button className="rounded-none" variant="default" size="lg" onClick={passwordGenerate}><Dice5 /> Generate password</Button>
+                        <Button className="rounded-none" variant="outline" size="lg" onClick={clearDisplay}><RotateCcw /> Reset options</Button>
+                        <Button className="rounded-none" variant="outline" size="lg" onClick={copyPassword}><Copy /> Copy password</Button>
                     </Field>
                 </FieldGroup>
             </FieldSet>
 
             <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-                <DialogContent>
+                <DialogContent className="rounded-none border-border">
                     <DialogHeader className="text-center">
                         <DialogTitle>{successOrFailure === 0 ? "Success" : "Error"}</DialogTitle>
                     </DialogHeader>
                     {successOrFailure === 0 ? (
                         <DialogDescription className="flex flex-col items-center justify-center gap-4 text-center">
-                            <SuccessIcon />
+                            <CheckCircle2 aria-hidden="true" className="size-12 text-primary" />
                             {modalMessage}
                         </DialogDescription>
                     ) : (
                         <DialogDescription className="flex flex-col items-center justify-center gap-4 text-center">
-                            <ErrorIcon />
+                            <CircleAlert aria-hidden="true" className="size-12 text-destructive" />
                             {modalMessage}
                         </DialogDescription>
                     )}

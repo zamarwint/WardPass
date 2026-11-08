@@ -111,7 +111,7 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button disabled={isPending || !cardHolderName || !cardNumber || !cvv || !expiryDate || !billingAddress2 || !zipCode || !city || !country || (cardHolderName === creditCardItem.cardHolderName && cardNumber === creditCardItem.cardNumber && cvv === creditCardItem.cvv.toString() && expiryDate === creditCardItem.expiryDate && billingAddress1 === creditCardItem.billingAddress1 && billingAddress2 === creditCardItem.billingAddress2 && zipCode === creditCardItem.zipCode && city === creditCardItem.city && state === creditCardItem.state && country === creditCardItem.country)} onClick={handleSubmit} className="font-bold">
+                    <Button disabled={isPending || !cardHolderName || !cardNumber || !cvv || !expiryDate || !billingAddress2 || !zipCode || !city || !country} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

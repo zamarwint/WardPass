@@ -1,74 +1,21 @@
-import { LineAnimationClass } from "@/components/ModalContent";
-import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
-import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { ArrowLeft, ArrowUpRight, Code2, Fingerprint, LockKeyhole, Server } from "lucide-react";
 
-export const metadata: Metadata = {
-    title: "Security Whitepaper | WardPass",
-};
+export const metadata: Metadata = { title: "Security Overview | WardPass" };
+
+const sections = [
+  { icon: <Fingerprint/>, title: "Key derivation", text: "WardPass uses Argon2id to derive a 32-byte key from the vault password. That derived key protects a randomly generated vault key, which is used for vault item encryption." },
+  { icon: <LockKeyhole/>, title: "Authenticated encryption", text: "Vault keys and vault items are encrypted with AES-256-GCM. Each encryption uses a fresh initialization vector, and GCM authentication detects altered ciphertext during decryption." },
+  { icon: <Server/>, title: "What the server stores", text: "Encrypted vault keys, encrypted item contents, and their initialization vectors are stored by the service. Vault names, slugs, icons, item types, and some account or organizational metadata are stored as regular database fields and are not encrypted like item contents. Encryption and decryption happen in the client application; the server does not need the unlocked vault key to store ciphertext." },
+  { icon: <Code2/>, title: "Review the implementation", text: "WardPass is open source. The security model depends on the code, configuration, and operation of the deployed service; this overview is not an independent audit or certification." },
+];
 
 export default function SecurityWhitepaperPage() {
-    return (
-        <div className="py-30 mx-auto flex flex-col items-center justify-center gap-10 font-geist">
-            <div className="flex flex-col gap-6 items-center justify-center text-center">
-                <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">Security Whitepaper</h1>
-                <div className="flex flex-col gap-2">
-                    <p className="text-xl text-muted-foreground">As shown on the home page, the WardPass team is committed to transparency and security.</p>
-                    <p className="text-xl text-muted-foreground">Below is a summary of our security practices.</p>
-                </div>
-            </div>
-            <FieldSet className="px-4 md:max-w-xl md:px-0 text-muted-foreground prose text-md space-y-8">
-                <Field>
-                    <div className="w-full max-w-200 h-auto">
-                        <Image src="/security-badges.svg" alt="Security Badges" width={1440} height={190} className="w-full max-w-200 h-auto" loading="eager" />
-                    </div>
-                    <FieldSeparator className="mb-4" />
-                    <FieldDescription className="text-center">
-                        The WardPass codebase is publicly available on GitHub, and we encourage security researchers to review our code for vulnerabilities. You can find our code at <Link href="https://github.com/zamarwint/WardPass" target="_blank" rel="noopener noreferrer" className={`font-bold text-foreground hover:text-primary ${LineAnimationClass}`}>github.com/wardpass</Link>.
-                    </FieldDescription>
-                </Field>
-
-                <Field>
-                    <FieldTitle className="text-xl text-foreground">What is SOC Type II?</FieldTitle>
-                    <FieldSeparator className="mb-2" />
-                    <FieldDescription>
-                        SOC 2® Type 2 extends beyond the SOC 2® Type 1 evaluation of the design of controls to examine the operational effectiveness of those controls. The emphasis at this stage is related to service commitments and system requirements based on the TSC over a defined period, typically a minimum of six months. The SOC 2® Type 2 audit process includes a detailed description of the auditor’s tests of controls and results. SOC 2® Type 2 reports are integral for organizations that require ongoing assurance that their information security practices align with industry standards.
-                    </FieldDescription>
-                    <FieldDescription className="font-bold text-foreground">SOURCE: <Link href="https://optro.ai/blog/soc-2-type-1-vs-type-2" target="_blank" rel="noopener noreferrer" className={`font-bold text-foreground hover:text-primary ${LineAnimationClass}`}>https://optro.ai/blog/soc-2-type-1-vs-type-2</Link></FieldDescription>
-                </Field>
-
-                <Field>
-                    <FieldTitle className="text-xl text-foreground">What is AES 256-bit encryption?</FieldTitle>
-                    <FieldSeparator className="mb-2" />
-                    <FieldDescription>
-                        AES, the Advanced Encryption Standard, is the current U.S. government standard for a symmetric-key encryption algorithm. A symmetric-key algorithm, also known as a secret key algorithm, is a cryp­togra­phy algorithm that uses the same cryp­togra­phic key for both plaintext encryption and ciphertext decryption.
-
-                        AES has a block size of 128 bits and can have a key size of 128, 192, or 256 bits. AES is defined in the U.S. Federal Information Processing Standard (FIPS) 197 PDF* and it is included in the ISO/IEC 18033-3 standard. It can be implemented in either software or hardware. Modern web browsers provide a low-level interface to cryp­togra­phy functions via the W3C Web Cryp­togra­phy API*. This web app uses a key size of 256 bits, which is currently considered strong enough to protect U.S. government sensitive and important data. In this app, the key is generated from a passphrase by running it through the Password-Based Key Derivation Function 2 (PBKDF2, defined in IETF's RFC 2898*) one million times.
-
-                        AES in Galois/Counter Mode PDF* or GCM is an authenticated encryption algorithm (AEAD, authenticated encryption with associated data). It provides confidentiality and integrity protection by generating both the ciphertext and an authentication tag in a single pass. During decryption, the ciphertext and the authentication tag are passed through the algorithm. If the calculated and expected authentication tags do not match, decryption fails. Unlike the commonly used CBC mode, GCM is not susceptible to padding oracle attacks PDF*. Nor has it the problems of ECB mode, which can reveal structures in the plaintext*. However, NIST* recom­mends* we should not encrypt more than 232 plaintexts with the same key while using a randomly generated initialization vector IV, like this app does. If we restrict the number of plaintexts to 10000, the probability of an IV collision is less than 2-70.
-                    </FieldDescription>
-
-                    <FieldDescription className="font-bold text-foreground">SOURCE: <Link href="https://crypt-app.net/info/aes-256-gcm.html" target="_blank" rel="noopener noreferrer" className={`font-bold text-foreground hover:text-primary ${LineAnimationClass}`}>https://crypt-app.net/info/aes-256-gcm.html</Link></FieldDescription>
-                </Field>
-
-                <Field>
-                    <FieldTitle className="text-xl text-foreground">What is General Data Protection Regulation (GDPR)?</FieldTitle>
-                    <FieldSeparator className="mb-2" />
-                    <FieldDescription>
-                        This Regulation lays down rules relating to the protection of natural persons with regard to the processing of personal data and rules relating to the free movement of personal data.
-                        This Regulation protects fundamental rights and freedoms of natural persons and in particular their right to the protection of personal data.
-                        The free movement of personal data within the Union shall be neither restricted nor prohibited for reasons connected with the protection of natural persons with regard to the processing of personal data.
-                    </FieldDescription>
-
-                    <FieldDescription className="font-bold text-foreground">READ MORE AT: <Link href="https://gdpr-info.eu/" target="_blank" rel="noopener noreferrer" className={`font-bold text-foreground hover:text-primary ${LineAnimationClass}`}>https://gdpr-info.eu/</Link></FieldDescription>
-                </Field>
-            </FieldSet>
-            <Link href="/">
-                <Button size="lg" className="text-md p-8"><ArrowLeft /> Back to Home</Button>
-            </Link>
-        </div>
-    )
+  return <main className="landing-shell pb-24 pt-36 md:pt-44">
+    <div className="max-w-3xl"><p className="eyebrow mb-6">Security / Overview</p><h1 className="landing-display text-5xl tracking-tight md:text-6xl">How WardPass protects<br/><span className="landing-serif text-primary">your vault data.</span></h1><p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground">A plain-language summary of the encryption approach visible in the WardPass codebase. We aim to describe the current implementation, not promise that any single measure removes every security risk.</p></div>
+    <div className="mt-12 grid max-w-5xl border-y border-border md:grid-cols-2 md:divide-x md:divide-border">{sections.map((section, i) => <article key={section.title} className="landing-card border-x-0 border-y-0 border-b border-border p-6 last:border-b-0 md:p-8"><div className="flex items-center justify-between"><span className="flex size-10 items-center justify-center border border-border bg-secondary/50 text-primary">{section.icon}</span><span className="font-mono text-xs text-muted-foreground">/{String(i + 1).padStart(2, "0")}</span></div><h2 className="mt-7 text-xl font-medium">{section.title}</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">{section.text}</p></article>)}</div>
+    <div className="mt-8 max-w-5xl border border-border bg-secondary/30 p-6 md:p-8"><h2 className="text-lg font-medium">Further reading</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">Read the source and technical details directly. For general background, consult primary standards and regulator guidance.</p><div className="mt-5 flex flex-wrap gap-3"><Link className="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 text-sm hover:border-primary/50" href="https://github.com/zamarwint/WardPass" target="_blank" rel="noopener noreferrer">WardPass source code <ArrowUpRight size={15}/></Link><Link className="inline-flex items-center gap-2 border border-border bg-background px-4 py-2 text-sm hover:border-primary/50" href="https://csrc.nist.gov/pubs/fips/197/final" target="_blank" rel="noopener noreferrer">NIST AES standard <ArrowUpRight size={15}/></Link></div></div>
+    <Link href="/" className="mt-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft size={15}/> Back to WardPass</Link>
+  </main>;
 }

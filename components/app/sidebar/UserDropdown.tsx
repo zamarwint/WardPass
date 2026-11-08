@@ -11,15 +11,15 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ChevronDown, EllipsisVertical, Loader2Icon, LogOut, Settings, Trash, User } from "lucide-react";
-import ProfileAvatar from "./ProfileAvatar";
-import Profile from "./Profile";
+import { ChevronDown, EllipsisVertical, Loader2Icon, LogOut, Settings, Shield, Trash, User } from "lucide-react";
+import { ProfileAvatar } from "./Profile";
+import { Profile } from "./Profile";
 import { useState } from "react";
-import SignOutAlert from "../signout/SignOutDropdown";
+import SignOutAlert from "@/components/app/auth/SignOutAlert";
 import { useRouter } from "next/navigation";
 import { CustomLoadingState } from "@/components/LoadingStates";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { useGetSession } from "@/lib/queries/SessionQueries";
+import { useCheckAdminSession, useGetSession } from "@/lib/queries/SessionQueries";
 
 interface UserDropdownProps {
     onSidebar: boolean;
@@ -27,6 +27,7 @@ interface UserDropdownProps {
 
 export default function UserDropdown({ onSidebar }: UserDropdownProps) {
     const session = useGetSession();
+    const checkAdmin = useCheckAdminSession();
 
     const [openProfile, setOpenProfile] = useState(false);
     const [openSignOut, setOpenSignOut] = useState(false);
@@ -82,13 +83,16 @@ export default function UserDropdown({ onSidebar }: UserDropdownProps) {
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                 )}
-                <DropdownMenuContent align="end" className="font-geist">
+                <DropdownMenuContent align="end">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenProfile(!openProfile)}><User size={16} className="mr-0.5" /> Profile</DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/settings')}><Settings size={16} className="mr-0.5" /> Settings</DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/trash')}><Trash size={16} className="mr-0.5" /> Trash</DropdownMenuItem>
                     <DropdownMenuSeparator />
+                    {checkAdmin && <DropdownMenuLabel>Admin Controls</DropdownMenuLabel>}
+                    {checkAdmin && <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/admin')}><Shield className="mr-0.5" /> Admin Panel</DropdownMenuItem>}
+                    {checkAdmin && <DropdownMenuSeparator />}
                     <DropdownMenuLabel>Log Out</DropdownMenuLabel>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSignOut(!openSignOut)}><LogOut size={16} className="mr-0.5" /> Log Out</DropdownMenuItem>
                 </DropdownMenuContent>

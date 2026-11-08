@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 
 export default function GeneralSettingsPage() {
     return (
-        <motion.div className="flex flex-col gap-10 items-start justify-start py-60 px-10">
+        <motion.div className="flex flex-col gap-10 items-start justify-start pt-5 px-10">
             <Field className="flex flex-col gap-5">
                 <Field>
                     <FieldTitle className='text-2xl'>General Settings</FieldTitle>

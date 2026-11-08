@@ -11,7 +11,7 @@ import { VaultItem, VaultItemType } from "@/lib/types/VaultType";
 import { useVaultStore } from "@/stores/vault";
 import { deriveKey, fromBase64 } from "@/lib/crypto/argon2";
 import { decryptVaultKey, verifyVaultKey, decryptData } from "@/lib/crypto/aes";
-import { UnlockVaultModal } from "@/components/app/vault/UnlockVaultModal";
+import { UnlockVaultModal } from "@/components/app/UnlockVaultModal";
 
 import {
     DropdownMenu,
@@ -23,7 +23,7 @@ import LoginItem from "@/components/app/vault-item/read/LoginItem";
 import SecureNoteItem from "@/components/app/vault-item/read/SecureNoteItem";
 import CreditCardItem from "@/components/app/vault-item/read/CreditCardItem";
 import IdentityItem from "@/components/app/vault-item/read/IdentityItem";
-import { SvgCircle } from "@/components/app/vault/SVG";
+import { SvgCircle } from "@/components/app/SVG";
 import CreateLoginItem from "@/components/app/vault-item/create/CreateLoginItem";
 
 import LoginDropdown from "@/components/app/vault-item/dropdowns/LoginDropdown";
@@ -202,7 +202,7 @@ export default function VaultIDPage() {
                                 (
                                     <div className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>
                                 ) : (
-                                    <div className="size-full text-left p-4 flex items-start justify-center no-scrollbar">
+                                    <div className="size-full text-left p-4 flex flex-col items-start justify-start no-scrollbar">
                                         {selectedItemType === VaultItemType.LOGIN && decryptedVaultItems.vaultItems?.map((item) => (
                                             item.itemType === VaultItemType.LOGIN && !item ? (
                                                 <div key={item.id} className="text-muted-foreground mt-4 text-center max-w-fit">No items found. Create a new item to continue.</div>

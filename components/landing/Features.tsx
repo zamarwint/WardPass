@@ -1,59 +1,18 @@
-import { EyeOff, Share2Icon, ShieldEllipsis } from "lucide-react";
+import { Eye, Fingerprint, ShieldCheck } from "lucide-react";
 
 const features = [
-  {
-    icon: <EyeOff />,
-    title: "Zero-Knowledge Architecture",
-    description:
-      "We can't see your data, and neither can anyone else. Your master key never leaves your device.",
-    protocol: "ZK-PROOFS_V2",
-  },
-  {
-    icon: <ShieldEllipsis />,
-    title: "Client-Side AES-256-GCM Encryption",
-    description:
-      "Military-grade encryption happens locally on your device before a single byte hits our servers.",
-    protocol: "AES-256-GCM",
-  },
-  {
-    icon: <Share2Icon />,
-    title: "End-to-End Secure Sharing",
-    description:
-      "Share passwords with family or team members via encrypted tunnels, revoking access instantly when needed.",
-    protocol: "ACTIVE_TUNNELS",
-  },
+  { icon: <Eye />, title: "Private item contents", description: "Login, card, identity, and note contents are encrypted in the browser before storage. Vault names and some organization metadata are stored separately and are not encrypted the same way." },
+  { icon: <Fingerprint />, title: "A key derived from your password", description: "WardPass derives a key from your vault password with Argon2id and uses it to protect a randomly generated vault key." },
+  { icon: <ShieldCheck />, title: "Authenticated encryption", description: "Vault keys and saved items use AES-256-GCM, which checks integrity as well as keeping the data confidential." },
 ];
 
 export default function Features() {
-  return (
-    <section
-      id="features"
-      className="w-full py-24 px-4 md:px-10 border-y border-foreground/5 flex items-center justify-center"
-    >
-      <div className="flex flex-col items-start">
-        <div className="mb-16 max-w-3xl flex flex-col gap-4 items-start justify-start">
-          <h2 className="font-bold text-3xl">Engineered for Absolute Trust</h2>
-          <p className="text-muted-foreground">
-            We rebuilt password management from the ground up, prioritizing
-            mathematical certainty over promises.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Features */}
-          {features.map((feature, index) => (
-            <div key={index} className="p-8 flex flex-col h-full bg-card">
-              <div className="w-12 h-12 mb-6 flex items-center justify-center border border-primary/30 bg-primary/10 text-primary">
-                <span className="">{feature.icon}</span>
-              </div>
-              <h3 className="font-bold mb-3 text-lg">{feature.title}</h3>
-              <p className="mb-8 grow">{feature.description}</p>
-              <div className="pt-4 border-t border-white/10 font-mono text-xs">
-                PROTOCOL: {feature.protocol}
-              </div>
-            </div>
-          ))}
-        </div>
+  return <section id="features" className="landing-section bg-secondary/35">
+    <div className="landing-shell">
+      <div className="max-w-2xl"><p className="eyebrow mb-5">01 / Data protection</p><h2 className="landing-display text-4xl leading-tight md:text-5xl">Protection for the details<br/><span className="landing-serif text-primary">you store in your vault.</span></h2><p className="mt-5 max-w-xl leading-7 text-muted-foreground">See what WardPass encrypts, how the vault key is prepared, and what happens when encrypted items are checked.</p></div>
+      <div className="mt-12 grid border-y border-border md:grid-cols-3 md:divide-x md:divide-border">
+        {features.map((feature, index) => <article key={feature.title} className="border-b border-border p-7 last:border-b-0 md:border-b-0 md:p-8"><span className="flex size-10 items-center justify-center border border-border bg-background text-primary">{feature.icon}</span><p className="mt-8 font-mono text-[11px] tracking-widest text-muted-foreground">0{index + 1} / PROTECTION</p><h3 className="mt-3 text-lg font-medium">{feature.title}</h3><p className="mt-3 text-sm leading-6 text-muted-foreground">{feature.description}</p></article>)}
       </div>
-    </section>
-  );
+    </div>
+  </section>;
 }

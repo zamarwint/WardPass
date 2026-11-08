@@ -1,6 +1,6 @@
 "use client"
 
-import DesktopOnly from "@/components/DesktopOnly"
+import DesktopOnly from "@/hooks/use-desktop-only"
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function AuthLayout({
@@ -9,7 +9,7 @@ export default function AuthLayout({
     children: React.ReactNode
 }>) {
     return (
-        <div className="flex flex-col w-screen h-screen items-center justify-center gap-4 font-geist">
+        <div className="flex flex-col w-screen h-screen items-center justify-center gap-4">
             {useIsMobile() ? (
                 <DesktopOnly />
             ) : (

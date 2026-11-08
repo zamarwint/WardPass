@@ -22,7 +22,7 @@ export default function SecureNoteDropdown({ open, onOpenChange, secureNoteItem 
                 <DropdownMenuTrigger className="p-2 h-full cursor-pointer">
                     <EllipsisVertical size={16} />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="font-geist">
+                <DropdownMenuContent>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUpdateSecureNote(!openUpdateSecureNote)}>
                         <PencilIcon size={20} className="mr-2" />
                         <span>Update</span>

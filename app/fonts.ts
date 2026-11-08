@@ -1,16 +1,19 @@
-import { Geist, Inter, JetBrains_Mono } from "next/font/google";
+import { DM_Serif_Display, Geist, Geist_Mono } from "next/font/google";
 
 export const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+  display: "swap",
 });
 
-export const inter = Inter({
-    variable: "--font-inter",
-    subsets: ["latin"],
+export const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
 });
 
-export const jetbrainsMono = JetBrains_Mono({
-    variable: "--font-jetbrains-mono",
-    subsets: ["latin"],
+export const dmSerifDisplay = DM_Serif_Display({
+  variable: "--font-dm-serif-display",
+  subsets: ["latin"],
+  weight: "400",
 });

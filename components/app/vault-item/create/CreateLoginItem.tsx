@@ -1,10 +1,10 @@
 "use client";
 
-import { PasswordInput } from "@/components/PasswordInput";
 import { Button } from "@/components/ui/button";
 import {
     Field,
     FieldDescription,
+    FieldError,
     FieldGroup,
     FieldLabel,
     FieldLegend,
@@ -12,21 +12,52 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Loader2Icon, PlusIcon, X } from "lucide-react";
-import { useState } from "react";
+import { EyeIcon, EyeOffIcon, Loader2Icon, PlusIcon, X } from "lucide-react";
+import { useMemo, useState } from "react";
 import { motion } from "motion/react"
 import { VaultItemType } from "@/lib/types/VaultType";
 import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginItemSchema } from "@/lib/validations/vaultItemSchemas";
+import z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { LoginJSONRaw } from "@/lib/types/RawVaultItemType";
+import PasswordStrengthBar from "@/components/PasswordStrengthBar";
+import { passwordStrength } from "check-password-strength";
 
 export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
-    const [name, setName] = useState<string>("")
-    const [url, setUrl] = useState<string>("")
-    const [username, setUsername] = useState<string>("")
-    const [email, setEmail] = useState<string>("")
-    const [password, setPassword] = useState<string>("")
-    const [note, setNote] = useState<string>("")
+    const [showPassword, setShowPassword] = useState(false);
 
-    const data = { name, url, username, email, password, note };
+    // 2. Create form instance with resolver
+    const form = useForm<z.infer<typeof loginItemSchema>>({
+        resolver: zodResolver(loginItemSchema),
+        mode: "onChange",
+        defaultValues: {
+            name: "",
+            url: "",
+            username: "",
+            email: "",
+            password: "",
+            note: ""
+        }
+    })
+
+    const watchedPassword = form.watch("password");
+    const passStrength = useMemo(
+        () => (watchedPassword ? passwordStrength(watchedPassword).value : ""),
+        [watchedPassword]
+    );
+
+    const data: LoginJSONRaw = {
+        name: form.getValues().name,
+        url: form.getValues().url,
+        username: form.getValues().username,
+        email: form.getValues().email,
+        password: form.getValues().password,
+        note: form.getValues().note
+    };
+
+    {/* SUBMISSION */ }
     const { mutate, isPending } = useCreateVaultItem(vaultId, data, cancel, VaultItemType.LOGIN);
 
     const handleSubmit = () => {
@@ -52,53 +83,179 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
                 </FieldSet>
 
                 <FieldSeparator />
-                <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
-                    <Field>
-                        <FieldLabel>Name</FieldLabel>
-                        <Input type="text" placeholder="Name of login item" id="name" value={name} onChange={(e) => { setName(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>URL</FieldLabel>
-                        <Input type="text" placeholder="https://example.com" id="url" value={url} onChange={(e) => { setUrl(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Username</FieldLabel>
-                        <Input type="text" placeholder="Username" id="username" value={username} onChange={(e) => { setUsername(e.target.value) }} className="h-12" />
-                    </Field>
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-4">
+                    <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
+                        <Controller
+                            name="name"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="name">Name</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="Name of login item"
+                                        id="name"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={31}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            name="url"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel>URL</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="https://example.com"
+                                        id="url"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={31}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            name="username"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel>Username</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="Username"
+                                        id="username"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={31}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>Email</FieldLabel>
-                        <Input type="email" placeholder="Email" id="email" value={email} onChange={(e) => { setEmail(e.target.value) }} className="h-12" />
-                    </Field>
+                        <Controller
+                            name="email"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel>Email</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="email"
+                                        placeholder="Email"
+                                        id="email"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={31}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>Password</FieldLabel>
-                        <PasswordInput placeholder="Password" id="password" value={password} onChange={(e) => { setPassword(e.target.value) }} className="h-12" />
-                    </Field>
+                        <Controller
+                            name="password"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="master-password">Password</FieldLabel>
+                                    <div className="relative">
+                                        <Input
+                                            {...field}
+                                            id="master-password"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="************"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? (
+                                                <EyeIcon className="h-4 w-4" aria-hidden="true" />
+                                            ) : (
+                                                <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
+                                            )}
+                                        </Button>
+                                    </div>
+                                    <PasswordStrengthBar strength={passStrength} />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>Note</FieldLabel>
-                        <Input type="text" placeholder="Note" id="note" value={note} onChange={(e) => { setNote(e.target.value) }} className="h-12" />
-                    </Field>
-                </FieldGroup>
+                        <Controller
+                            name="note"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel>Note</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="note"
+                                        placeholder="Note"
+                                        id="note"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={31}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                    </FieldGroup>
 
-                <FieldSeparator />
-                <Field orientation="horizontal">
-                    <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !name || !email || !password}>
-                        {isPending ? (
-                            <>
-                                <Loader2Icon className="size-4 animate-spin" />
-                                <span>Creating...</span>
-                            </>
-                        ) : (
-                            <>
-                                <PlusIcon className="size-4" />
-                                <span>Create Login</span>
-                            </>
-                        )}
-                    </Button>
-                </Field>
+                    <FieldSeparator className="mb-5" />
+
+                    <Field orientation="horizontal">
+                        <Button variant="outline" onClick={cancel}>Cancel</Button>
+                        <Button type="submit" className="font-bold" disabled={isPending || form.formState.isSubmitting}>
+                            {isPending ? (
+                                <>
+                                    <Loader2Icon className="size-4 animate-spin" />
+                                    <span>Creating...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <PlusIcon className="size-4" />
+                                    <span>Create Login</span>
+                                </>
+                            )}
+                        </Button>
+                    </Field>
+                </form>
             </Field>
             <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
         </motion.div>

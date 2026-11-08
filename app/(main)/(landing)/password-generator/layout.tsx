@@ -10,8 +10,10 @@ export default function PasswordGeneratorPageLayout({
     children: React.ReactNode
 }>) {
     return (
-        <div className="py-30 mx-auto flex flex-col gap-10">
-            {children}
-        </div>
+        <main className="grow">
+            <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 px-5 pb-20 pt-32 sm:px-8 md:pt-40">
+                {children}
+            </div>
+        </main>
     )
 }

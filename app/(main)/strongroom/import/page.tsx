@@ -76,109 +76,107 @@ export default function ImportPage() {
     // };
 
     return (
-        <div className="flex items-center justify-center size-full">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="w-full max-w-2xl"
-            >
-                <div className="text-center w-full py-10 space-y-4">
-                    <h1 className="text-6xl font-bold text-primary">
-                        Import Passwords
-                    </h1>
-                    <p className="text-muted-foreground">Import passwords from a CSV file encrypted with your Master Password.</p>
-                </div>
-                <Card className="shadow-sm">
-                    <CardHeader>
-                        <CardTitle>Import Passwords</CardTitle>
-                        <CardDescription>
-                            Import passwords from a CSV file encrypted with your Master Password.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="file">CSV File</Label>
-                            <Input
-                                id="file"
-                                type="file"
-                                accept=".csv"
-                                onChange={handleFileChange}
-                                disabled
-                            //disabled={processing}
-                            />
-                            {file && (
-                                <div className="text-sm text-muted-foreground">
-                                    Selected: {file.name} ({Math.round(file.size / 1024)} KB)
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="w-full flex flex-col items-center justify-center gap-10"
+        >
+            <div className="text-center w-full space-y-4">
+                <h1 className="text-6xl font-bold text-primary">
+                    Import Credentials
+                </h1>
+                <p className="text-muted-foreground">Import credentials from a CSV file encrypted with your Master Password.</p>
+            </div>
+            <Card className="w-2xl shadow-sm">
+                <CardHeader>
+                    <CardTitle>Import Credentials</CardTitle>
+                    <CardDescription>
+                        Import credentials from a CSV file encrypted with your Master Password.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="space-y-2">
+                        <Label htmlFor="file">CSV File</Label>
+                        <Input
+                            id="file"
+                            type="file"
+                            accept=".csv"
+                            onChange={handleFileChange}
+                            disabled
+                        //disabled={processing}
+                        />
+                        {file && (
+                            <div className="text-sm text-muted-foreground">
+                                Selected: {file.name} ({Math.round(file.size / 1024)} KB)
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label>Select Vault to put imported data in.</Label>
+                        {isLoading ? (
+                            <SkeletonLoadingState numberOfSkeletons={1} skeletonClassName="w-full max-w-sm h-12" />
+                        ) : (
+                            <Select onValueChange={(e) => setSelectedVault(e)} value={selectedVault}>
+                                <SelectTrigger disabled>
+                                    <SelectValue placeholder="Select a vault" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {vaults?.map((vault: VaultSummary) => (
+                                        <SelectItem className="cursor-pointer" key={vault.id} value={vault.name}>
+                                            {vault.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )
+                        }
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="password">Master Password</Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            placeholder="Enter your master password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            disabled
+                        //disabled={processing}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="note">Note</Label>
+                        <Input
+                            id="note"
+                            type="text"
+                            placeholder="Optional note for this import (e.g., 'Imported on 2023-10-27')"
+                            value={note}
+                            onChange={(e) => setNote(e.target.value)}
+                            disabled
+                        //disabled={processing}
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <Button
+                            // onClick={handleSubmit}
+                            // disabled={!file || processing}
+                            disabled
+                            className="flex-1"
+                        >
+                            {processing ? (
+                                <div className="flex items-center gap-2">
+                                    <Loader className="w-4 h-4 animate-spin" />
+                                    Processing...
                                 </div>
-                            )}
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label>Select Vault to put imported data in.</Label>
-                            {isLoading ? (
-                                <SkeletonLoadingState numberOfSkeletons={1} skeletonClassName="w-full max-w-sm h-12" />
-                            ) : (
-                                <Select onValueChange={(e) => setSelectedVault(e)} value={selectedVault}>
-                                    <SelectTrigger disabled>
-                                        <SelectValue placeholder="Select a vault" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {vaults?.map((vault: VaultSummary) => (
-                                            <SelectItem className="cursor-pointer" key={vault.id} value={vault.name}>
-                                                {vault.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            )
-                            }
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="password">Master Password</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="Enter your master password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                disabled
-                            //disabled={processing}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="note">Note</Label>
-                            <Input
-                                id="note"
-                                type="text"
-                                placeholder="Optional note for this import (e.g., 'Imported on 2023-10-27')"
-                                value={note}
-                                onChange={(e) => setNote(e.target.value)}
-                                disabled
-                            //disabled={processing}
-                            />
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <Button
-                                // onClick={handleSubmit}
-                                // disabled={!file || processing}
-                                disabled
-                                className="flex-1"
-                            >
-                                {processing ? (
-                                    <div className="flex items-center gap-2">
-                                        <Loader className="w-4 h-4 animate-spin" />
-                                        Processing...
-                                    </div>
-                                ) : 'Import Passwords (Coming soon)'}
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
-            </motion.div>
-        </div>
+                            ) : 'Import Credentials (Coming soon)'}
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+        </motion.div>
     );
 }

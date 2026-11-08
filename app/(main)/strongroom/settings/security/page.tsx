@@ -65,7 +65,7 @@ export default function SecurityPage() {
     };
 
     return (
-        <motion.div className="pt-60 px-10 py-5 space-y-5">
+        <motion.div className="pt-5 px-10 py-5 space-y-5">
             <Field>
                 <FieldTitle className="text-2xl">Security</FieldTitle>
                 <FieldDescription>Update your security settings.</FieldDescription>

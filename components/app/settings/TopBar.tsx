@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 import { ExternalLink } from "lucide-react";
 import { motion } from "motion/react"
 import Link from "next/link";
@@ -21,13 +21,8 @@ const navigationLinks = [
         path: "/strongroom/settings/security"
     },
     {
-        label: "Export Data",
-        path: "/strongroom/settings/export"
-    },
-    {
-        label: "Contact Us",
-        path: "/contact",
-        isExternal: true
+        label: "Other Apps",
+        path: "/strongroom/settings/other-apps"
     },
     {
         label: "Donate",
@@ -35,31 +30,30 @@ const navigationLinks = [
         isExternal: true
     },
     {
-        label: "Other Apps",
-        path: "/strongroom/settings/other-apps"
+        label: "Contact Us",
+        path: "/contact",
+        isExternal: true
     },
 ];
 
 export default function TopBar() {
     const pathName = usePathname();
     return (
-        <motion.div className="flex flex-col bg-background fixed w-full h-fit px-10 pt-10 z-50">
+        <motion.div className="flex flex-col bg-background fixed w-full h-fit px-10 pt-10">
             <div className="flex flex-col gap-5">
-                <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">Settings</h1>
+                <h1 className="text-2xl md:text-6xl font-bold text-primary">Settings</h1>
                 <p className="text-xl text-muted-foreground">Manage your preferences.</p>
             </div>
             <motion.div className="flex items-center justify-start gap-4 pt-6">
                 {navigationLinks.map((link, key) => (
                     <Link key={key} href={link.path} target={link.isExternal ? "_blank" : "_self"} rel={link.isExternal ? "noopener noreferrer" : undefined}>
-                        <Button variant="link" size="lg" className={pathName === link.path ?
-                            "text-primary underline underline-offset-13" : "text-muted-foreground hover:text-primary underline-offset-13 transition-underline duration-300"}>
+                        <Button variant="link" size="lg" className={cn("text-muted-foreground hover:text-primary underline-offset-10 transition-underline duration-300", pathName === link.path && "text-primary underline")}>
                             <p>{link.label}</p>
                             {link.isExternal && <ExternalLink className="size-4" />}
                         </Button>
                     </Link>
                 ))}
             </motion.div>
-            <Separator />
         </motion.div>
     )
 }

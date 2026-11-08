@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import VaultSelectionClient from "@/components/app/vault/VaultSelectionClient";
+import VaultSelectionClient from "@/components/app/VaultSelectionClient";
 
 export const metadata: Metadata = {
-  title: "Select Vault | Strongroom | WardPass",
+  title: "Vault Selection | Strongroom | WardPass",
+  robots: {
+    googleBot: {
+      index: false,
+      follow: false
+    }
+  }
 };
 
 export default function VaultSelectionPage() {

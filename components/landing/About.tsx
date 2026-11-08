@@ -1,30 +1,24 @@
-import { PaymentCard } from "../UICards";
+import { ArrowRight, FolderLock, KeyRound, Plus } from "lucide-react";
+import Link from "next/link";
 
-// ABOUT SECTION
+const steps = [
+  { number: "01", icon: <FolderLock />, title: "Make a vault", text: "Create a named space for the logins you want to keep together—personal, work, or anything that suits you." },
+  { number: "02", icon: <Plus />, title: "Add what you need", text: "Save logins, payment cards, identity details, or secure notes in the vault that fits." },
+  { number: "03", icon: <KeyRound />, title: "Unlock when needed", text: "Unlock your vault to view and manage the credentials you saved." },
+];
 
 export default function About() {
   return (
-    <section
-      id="about"
-      className="border-y border-foreground/5 w-full py-30 px-4 md:px-10 font-geist"
-    >
-      <div className="flex flex-col md:flex-row mx-auto items-center justify-around gap-10 md:gap-0">
-        <div className="w-64 md:w-2/6 text-center md:text-left flex flex-col gap-15">
-          <h2 className="text-2xl md:text-8xl font-bold text-primary">
-            What is WardPass?
-          </h2>
-          <div className="flex flex-col gap-8 text-xl">
-            <p>
-              WardPass is a secure password management solution. With WardPass,
-              you can easily organize your passwords into different folders
-              called <b>Vaults</b>, and use them when you want to sign in to any
-              service.
-            </p>
-          </div>
+    <section id="how-it-works" className="landing-section">
+      <div className="landing-shell">
+        <div className="grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-end">
+          <div><p className="eyebrow mb-5">A little more order, every day</p><h2 className="landing-display text-4xl leading-tight md:text-5xl">A home for the<br/><span className="landing-serif text-primary">things you sign into.</span></h2></div>
+          <p className="max-w-xl text-base leading-7 text-muted-foreground md:justify-self-end">WardPass is a personal credential manager. Group logins into vaults, then keep the details you need in one place that’s simple to return to.</p>
         </div>
-        <div className="flex gap-4">
-          <PaymentCard />
+        <div className="mt-14 grid border-y border-border md:grid-cols-3 md:divide-x md:divide-border">
+          {steps.map((step) => <article key={step.number} className="flex min-h-64 flex-col border-b border-border p-6 last:border-b-0 md:border-b-0 md:p-7"><div className="flex items-center justify-between"><span className="flex size-10 items-center justify-center border border-border bg-secondary/50 text-foreground">{step.icon}</span><span className="font-mono text-xs tracking-widest text-muted-foreground">/{step.number}</span></div><h3 className="mt-9 text-xl font-medium tracking-tight">{step.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{step.text}</p></article>)}
         </div>
+        <Link className="mt-8 inline-flex items-center gap-2 text-sm font-medium hover:text-primary" href="/sign-up">Start your first vault <ArrowRight size={16}/></Link>
       </div>
     </section>
   );

@@ -22,7 +22,7 @@ export default function CreditCardDropdown({ open, onOpenChange, creditCardItem 
                 <DropdownMenuTrigger className="p-2 h-full cursor-pointer">
                     <EllipsisVertical size={16} />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="font-geist">
+                <DropdownMenuContent>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUpdateCreditCard(!openUpdateCreditCard)}>
                         <PencilIcon size={20} className="mr-2" />
                         <span>Update</span>

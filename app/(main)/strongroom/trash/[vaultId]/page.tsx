@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 import { CreditCard, Globe, IdCard, NotebookPen, Trash2Icon } from "lucide-react";
-import { SvgCircle } from "@/components/app/vault/SVG";
+import { SvgCircle } from "@/components/app/SVG";
 import { useEffect, useMemo, useState } from "react";
 import { VaultItem, VaultItemType } from "@/lib/types/VaultType";
 import { Separator } from "@/components/ui/separator";
@@ -17,7 +17,7 @@ import { decryptData, decryptVaultKey, verifyVaultKey } from "@/lib/crypto/aes";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
 import { useVaultStore } from "@/stores/vault";
-import { UnlockVaultModal } from "@/components/app/vault/UnlockVaultModal";
+import { UnlockVaultModal } from "@/components/app/UnlockVaultModal";
 import { CreditCardJSON, IdentityJSON, LoginJSON, SecureNoteJSON } from "@/lib/types/VaultItemType";
 import { useGetVaultWithTrashedItems } from "@/lib/queries/VaultQueries";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -116,8 +116,8 @@ export default function TrashPage() {
             {needsUnlock && <UnlockVaultModal open={true} vault={trashedItems} />}
             {/* TOP BAR */}
             <ResizablePanelGroup orientation="vertical" className="size-full">
-                <ResizablePanel defaultSize={30} className="flex flex-col gap-6 py-10 px-10 size-full">
-                    <h1 className="text-2xl md:text-6xl font-bold font-geist text-primary">
+                <ResizablePanel defaultSize={30} className="flex flex-col gap-6 py-10 px-10 size-full no-scrollbar">
+                    <h1 className="text-2xl md:text-6xl font-bold text-primary">
                         <span>Trash</span>
                     </h1>
                     <p className="text-xl text-muted-foreground">Here are the entries that you have deleted. They will be permanently deleted after 30 days.</p>
@@ -151,11 +151,11 @@ export default function TrashPage() {
                                     ) : !trashedItems || trashedItems?.vaultItems!.length === 0 ?
                                         (
                                             <div className="flex flex-col items-center justify-center size-full gap-1">
-                                                <h1 className="text-lg font-medium font-geist text-muted-foreground mt-2">No trashed items.</h1>
+                                                <h1 className="text-lg font-medium text-muted-foreground mt-2">No trashed items.</h1>
                                             </div>
                                         )
                                         : (
-                                            <div className="size-full text-left p-4 flex items-start justify-center no-scrollbar">
+                                            <div className="size-full text-left p-4 flex flex-col items-start justify-start no-scrollbar">
                                                 {selectedItemType === VaultItemType.LOGIN && decryptedVaultItems?.vaultItems!.map((item) => (
                                                     item.itemType === VaultItemType.LOGIN &&
                                                     <div key={item.id} className={`w-full min-h-fit max-h-24 text-md rounded-lg flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in ${selectedItem?.id === item.id ? `btn-teritary` : `btn-ghost`}`} onClick={() => setSelectedItem(item)}>

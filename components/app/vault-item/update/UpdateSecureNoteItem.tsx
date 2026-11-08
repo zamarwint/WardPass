@@ -74,7 +74,7 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
 
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button disabled={isPending || !title || !content || (title === secureNoteItem.title && content === secureNoteItem.content)} onClick={handleSubmit} className="font-bold">
+                    <Button disabled={isPending || !title || !content} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

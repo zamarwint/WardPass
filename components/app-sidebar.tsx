@@ -9,39 +9,36 @@ import {
     SidebarRail,
 } from "@/components/ui/sidebar"
 
-import { CircleQuestionMark, Upload } from "lucide-react"
+import { BugPlay, FolderDown, Upload } from "lucide-react"
 import { Separator } from "./ui/separator"
-import { AdminButton, LinkSideButton, LockSideButton, SideLogo, VaultSideButton } from "./app/sidebar/SideButton"
+import { LinkSideButton, LockSideButton, SideLogo, VaultSideButton } from "./app/sidebar/SideButtons"
 import UserDropdown from "./app/sidebar/UserDropdown"
-import { ActivatePlayground } from "./app/PlaygroundCard"
 
 export function AppSidebar() {
     return (
-        <Sidebar className="font-geist">
+        <Sidebar>
             <SidebarHeader>
                 <SidebarMenu>
                     <SideLogo />
-                    <Separator />
                 </SidebarMenu>
             </SidebarHeader>
+            <Separator />
             <SidebarContent>
                 <VaultSideButton />
             </SidebarContent>
+            <Separator />
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarGroup>
                         <SidebarGroupLabel>Utilities</SidebarGroupLabel>
-                        <ActivatePlayground />
-                        <LinkSideButton hrefExact={true} href="/contact" text="Get Help" Icon={<CircleQuestionMark />} />
+                        <LinkSideButton hrefExact={true} href="/strongroom/import" text="Import Credentials" Icon={<Upload />} />
+                        <LinkSideButton hrefExact={true} href="/strongroom/export" text="Export Credentials" Icon={<FolderDown />} />
+                        <LinkSideButton hrefExact={true} href="/strongroom/playground" text="Playground" Icon={<BugPlay />} />
                     </SidebarGroup>
-                    <Separator className="my-1" />
                     <SidebarGroup>
-                        <SidebarGroupLabel>Other</SidebarGroupLabel>
-                        <LinkSideButton hrefExact={true} href="/strongroom/import" text="Import Passwords" Icon={<Upload />} />
-                        <AdminButton />
+                        <SidebarGroupLabel>Protection</SidebarGroupLabel>
                         <LockSideButton />
                     </SidebarGroup>
-                    <Separator className="my-1" />
                     <SidebarGroup>
                         <SidebarGroupLabel>Account</SidebarGroupLabel>
                         <UserDropdown onSidebar={true} />

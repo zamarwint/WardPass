@@ -1,16 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader, Loader2 } from "lucide-react";
 
-export function AnimatedThreeDots() {
-    return (
-        <div className="flex items-end justify-end space-x-1.5 text-muted-foreground">
-            <div className="size-1 bg-foreground rounded-full animate-bounce duration-300 delay-0"></div>
-            <div className="size-1 bg-foreground rounded-full animate-bounce duration-300 delay-100"></div>
-            <div className="size-1 bg-foreground rounded-full animate-bounce duration-300 delay-200"></div>
-        </div>
-    )
-}
-
 export function NormalLoadingState({ loaderChoice, className }: { loaderChoice: 1 | 2, className?: string }) {
     return (
         <div className={className}>
@@ -38,6 +28,17 @@ export function SkeletonLoadingState({ numberOfSkeletons, skeletonClassName, wra
                 <Skeleton key={i} className={skeletonClassName} />
             ))}
         </div>
+    )
+}
+
+// ANIMATED THREE DOTS
+export function AnimatedThreeDots() {
+    return (
+        <span className="flex gap-1">
+            <i className="size-1.5 animate-bounce rounded-full bg-primary [animation-delay:-0.2s]" />
+            <i className="size-1.5 animate-bounce rounded-full bg-primary [animation-delay:-0.1s]" />
+            <i className="size-1.5 animate-bounce rounded-full bg-primary" />
+        </span>
     )
 }
 

@@ -13,7 +13,13 @@ import type { Metadata } from "next";
 import { getVaultsAsync } from '@/lib/queries/VaultQueries';
 
 export const metadata: Metadata = {
-    title: "Trash Vault Selection",
+    title: "Trashed Vault Items - Vault Selection | WardPass",
+    robots: {
+        googleBot: {
+            index: false,
+            follow: false
+        }
+    }
 };
 
 export default async function TrashVaultSelectionPage() {
@@ -32,18 +38,18 @@ export default async function TrashVaultSelectionPage() {
     }
 
     return (
-        <Field className='w-full h-full'>
-            <FieldContent className='font-geist flex flex-col items-center justify-center text-center w-full'>
+        <Field className='size-full'>
+            <FieldContent className='flex flex-col items-center justify-center text-center w-full'>
                 <FieldSet className='flex flex-col items-center justify-center size-full gap-5'>
                     <Field className='flex flex-col items-center justify-center w-xl max-h-xl gap-3 text-3xl'>
-                        <FieldLegend className='font-bold text-center'>Select Vault</FieldLegend>
+                        <FieldLegend className='font-bold text-center'>View Trash Items in Vaults</FieldLegend>
                         {noVaults ? (
-                            <FieldDescription className='text-center'>No vaults found.</FieldDescription>
+                            <FieldDescription className='text-center'>You currently have no vaults. Please create a vault to view trash items.</FieldDescription>
                         ) : (
                             <FieldDescription className='text-center'>Choose an existing vault to view trash items.</FieldDescription>
                         )}
                     </Field>
-                    <Field className='flex flex-col items-center justify-center overflow-y-auto w-xl max-h-xl gap-3'>
+                    <Field className='flex flex-col items-center justify-center overflow-y-auto no-scrollbar w-xl max-h-xl gap-3'>
                         {VaultList()}
                     </Field>
                 </FieldSet>

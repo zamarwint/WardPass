@@ -6,7 +6,7 @@ import Hero from "@/components/landing/Hero";
 
 export default async function Page() {
   return (
-    <main className="grow font-geist">
+    <main className="grow">
       {/* HERO SECTION */}
       <Hero />
 

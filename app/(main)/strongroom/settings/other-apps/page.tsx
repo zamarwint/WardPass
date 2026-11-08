@@ -41,7 +41,7 @@ const otherApps = [
 
 export default function OtherAppsPage() {
     return (
-        <motion.div className="pt-60 px-10 py-5">
+        <motion.div className="pt-5 px-10 py-5">
             <div className="pb-6 flex flex-col gap-2">
                 <h1 className="text-2xl font-semibold">Other Apps by the ZWNT Company.</h1>
                 <p className="text-sm text-muted-foreground">Check out our other apps!</p>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { geistSans, inter, jetbrainsMono } from "./fonts"
+import { dmSerifDisplay, geistSans, geistMono } from "./fonts"
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
@@ -7,6 +7,18 @@ import { Toaster } from "@/components/ui/sonner"
 export const metadata: Metadata = {
   title: "WardPass",
   description: "The smartest way to secure your life.",
+  icons: [
+    {
+      rel: "icon",
+      url: "/wp-logo-light.svg",
+      media: "(prefers-color-scheme: light)"
+    },
+    {
+      rel: "icon",
+      url: "/wp-logo-dark.svg",
+      media: "(prefers-color-scheme: dark)"
+    }
+  ]
 };
 
 export default function RootLayout({
@@ -16,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${geistSans.variable} ${jetbrainsMono.variable} antialiased min-h-screen overflow-x-hidden`}>
+      <body className={`${geistSans.className} ${geistMono.variable} ${dmSerifDisplay.variable} antialiased min-h-screen overflow-x-hidden`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -24,7 +36,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster />
+          <Toaster className="font-sans" />
         </ThemeProvider>
       </body>
     </html>

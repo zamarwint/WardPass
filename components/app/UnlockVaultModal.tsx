@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { deriveKey, fromBase64 } from "@/lib/crypto/argon2";
 import { decryptVaultKey, verifyVaultKey } from "@/lib/crypto/aes";
 import { Vault } from "@/lib/types/VaultType";
-import { Separator } from "@/components/ui/separator";
 import { SvgCircle } from "./SVG";
 
 export function UnlockVaultModal({
@@ -75,7 +74,7 @@ export function UnlockVaultModal({
                     </div>
                 </div>
             </div>
-            <form onSubmit={handleUnlock} className="flex flex-col mt-4 min-w-lg max-w-full">
+            <form onSubmit={handleUnlock} className="flex flex-col gap-4 mt-4 min-w-lg max-w-full">
                 <div className="flex flex-col gap-2">
                     <Label htmlFor="masterPassword">Master Password</Label>
                     <Input
@@ -87,7 +86,6 @@ export function UnlockVaultModal({
                         autoFocus
                         className="h-12"
                     />
-                    <Separator className="mb-2" />
                 </div>
                 <Button type="submit" disabled={isUnlocking} className="w-full h-12">
                     {isUnlocking ? (

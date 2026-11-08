@@ -24,7 +24,7 @@ export default async function LandingPageLayout({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex flex-col w-full h-full min-h-screen min-w-screen overflow-x-hidden">
+      <div className="flex min-h-screen w-full flex-col overflow-x-hidden no-scrollbar">
         <Navbar />
         {children}
         <Footer />

@@ -23,7 +23,7 @@ export default function DeleteVault({ open, onOpenChange, vault }: { open: boole
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent className="font-geist">
+            <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle className="font-bold">Delete {vault.name}</AlertDialogTitle>
                     <AlertDialogDescription>
@@ -34,7 +34,7 @@ export default function DeleteVault({ open, onOpenChange, vault }: { open: boole
                     <Label className="mt-2" htmlFor="vaultNameConfirm">Type in<span className="font-bold">{vault.name.toLowerCase()}</span>to confirm</Label>
                     <Input placeholder="type in vault name to confirm" className="h-12 mt-3" id="vaultNameConfirm" value={vaultNameConfirm} onChange={(e) => setVaultNameConfirm(e.target.value)} />
                 </div>
-                <AlertDialogFooter className="font-geist">
+                <AlertDialogFooter>
                     <AlertDialogCancel className="text-md" size="lg">
                         <span className="font-bold">Cancel</span>
                     </AlertDialogCancel>

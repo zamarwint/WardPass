@@ -36,6 +36,10 @@ export const ChangingPasswords = () => {
                     If you forget your vault password, you will not be able to access your vaults.
                     So please remember to change your vault password when changing your account password.
                 </DialogDescription>
+                <DialogDescription>
+                    NB: You can create different passwords for vaults. However, if do this, please note that the vault whose password is not your master password will not auto-lock on sign-in.
+                    You will have to unlock it using its own password.
+                </DialogDescription>
             </DialogContent>
         </Dialog>
     )
@@ -105,7 +109,7 @@ export default function Notifications() {
                     <Bell />
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="font-geist w-full">
+            <DropdownMenuContent align="start" className="w-full">
                 <DropdownMenuLabel>Recent Notifications</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup className="text-sm">

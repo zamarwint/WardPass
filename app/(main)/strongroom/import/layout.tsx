@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Import Passwords | WardPass",
+    title: "Import Credentials | WardPass",
+    robots: {
+        googleBot: {
+            index: false,
+            follow: false
+        }
+    }
 };
 
-export default function ImportLayout({
+export default function ImportPageLayout({
     children,
 }: Readonly<{
     children: React.ReactNode

@@ -1,0 +1,126 @@
+"use client";
+
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldSet, FieldTitle } from "@/components/ui/field";
+import { PasswordInput } from "@/components/PasswordInput";
+import { Button } from "@/components/ui/button";
+import { useState, useTransition } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Controller, useForm } from "react-hook-form";
+import { resetPasswordSchema } from "@/lib/validations/authSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import { Input } from "@/components/ui/input";
+import { useResetPassword } from "@/lib/mutations/AuthMutations";
+import { CustomLoadingState } from "@/components/LoadingStates";
+
+export default function ResetPassword() {
+    const [showPassword, setShowPassword] = useState(false);
+    const [resetPasswordPending, startResetPasswordTransition] = useTransition();
+    const token = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get("token") : null;
+
+    // 2. Create form instance with resolver
+    const form = useForm<z.infer<typeof resetPasswordSchema>>({
+        resolver: zodResolver(resetPasswordSchema),
+        mode: "onChange",
+        defaultValues: {
+            password: "",
+            confirmPassword: ""
+        }
+    })
+
+    const resetPassword = useResetPassword(form.getValues().password, token!);
+
+    function onSubmit() {
+        startResetPasswordTransition(async () => {
+            resetPassword.mutate();
+        })
+    }
+
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen w-screen z-999">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FieldSet className="w-xl">
+                    <Field>
+                        <FieldTitle className="text-3xl font-bold">Reset Your Password</FieldTitle>
+                        <FieldDescription>Enter your new password.</FieldDescription>
+                    </Field>
+                    <FieldGroup className="mt-10">
+                        {/* Password Field */}
+                        <Controller
+                            name="password"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="master-password">New Master Password</FieldLabel>
+                                    <div className="relative">
+                                        <Input
+                                            {...field}
+                                            id="master-password"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="************"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? (
+                                                <EyeIcon className="h-4 w-4" aria-hidden="true" />
+                                            ) : (
+                                                <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
+                                            )}
+                                        </Button>
+                                    </div>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+
+                        {/* Confirm Password Field */}
+                        <Controller
+                            name="confirmPassword"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="confirmMasterPassword">Confirm New Master Password</FieldLabel>
+                                    <PasswordInput
+                                        {...field}
+                                        id="confirmMasterPassword"
+                                        type="password"
+                                        placeholder="************"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                    </FieldGroup>
+                    <Separator />
+                    <Field>
+                        <Button type="submit" disabled={resetPasswordPending} variant="default" size="lg" className="py-6">
+                            {resetPasswordPending ? (
+                                <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
+                                    <span className="shimmer shimmer-duration-1000"> RESETTING PASSWORD </span>
+                                </CustomLoadingState>
+                            ) : (
+                                <span>Reset Password</span>
+                            )}
+                        </Button>
+                    </Field>
+                </FieldSet>
+            </form>
+        </div>
+    )
+}

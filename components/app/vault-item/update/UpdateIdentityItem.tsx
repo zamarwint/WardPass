@@ -223,7 +223,7 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
                 <FieldSeparator />
                 <Field orientation="horizontal">
                     <Button variant="outline" onClick={cancel}>Cancel</Button>
-                    <Button disabled={isPending || !name || !email || !phoneNumber || (name === identityItem.name && email === identityItem.email && phoneNumber === identityItem.phoneNumber)} onClick={handleSubmit} className="font-bold">
+                    <Button disabled={isPending || !name || !email || !phoneNumber} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

@@ -4,46 +4,9 @@ import { CustomLoadingState } from "../LoadingStates";
 import { Button } from "@/components/ui/button";
 import { useGetSession } from "@/lib/queries/SessionQueries";
 import Link from "next/link";
-
-// CALL TO ACTION
+import { ArrowRight } from "lucide-react";
 
 export default function CallToAction() {
-  const { isPending, data, error } = useGetSession();
-
-  return (
-    <section className="py-30 border-y border-foreground/5">
-      <div className="mx-auto">
-        <div className="p-12 text-center max-w-4xl mx-auto border border-foreground/20 hover:border-primary/50 bg-card">
-          <h2 className="text-2xl md:text-4xl font-bold font-geist mb-6">
-            Ready to secure your assets?
-          </h2>
-          <p className="mb-10 max-w-2xl mx-auto text-muted-foreground">
-            Join thousands of power users who trust WardPass with their most
-            sensitive digital credentials.
-          </p>
-          <Button
-            variant={error ? "destructive" : "default"}
-            className="tracking-wider uppercase py-8 px-10"
-            size="lg"
-            disabled={isPending}
-          >
-            <Link
-              href={data?.user ? "/strongroom" : "/sign-up"}
-              className="flex items-center justify-center"
-            >
-              {isPending ? (
-                <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
-                  <span className="shimmer shimmer-duration-1000"> Loading... </span>
-                </CustomLoadingState>
-              ) : data?.user ? (
-                <span>Back to Dashboard</span>
-              ) : (
-                <span>Try WardPass</span>
-              )}
-            </Link>
-          </Button>
-        </div>
-      </div>
-    </section>
-  );
+  const { isPending, data } = useGetSession();
+  return <section className="landing-section pb-20 md:pb-28"><div className="landing-shell"><div className="relative grid gap-8 border border-foreground/25 bg-foreground px-7 py-10 text-background md:grid-cols-[1fr_auto] md:items-end md:px-12 md:py-14"><div className="absolute inset-y-0 left-0 w-1 bg-primary"/><div><p className="eyebrow relative mb-5 text-background/65">WARDPASS / GET STARTED</p><h2 className="landing-display relative max-w-2xl text-4xl leading-tight md:text-5xl">A better place for the passwords you rely on.</h2><p className="relative mt-5 max-w-xl text-sm leading-6 text-background/70">Create a WardPass account and start organizing your credentials in personal vaults.</p></div><Button asChild size="lg" variant="secondary" disabled={isPending} className="relative w-fit rounded-none px-6">{isPending ? <span className="flex items-center gap-2"><CustomLoadingState loaderChoice={2} className="flex items-center gap-2">Loading...</CustomLoadingState></span> : <Link href={data?.user ? "/strongroom" : "/sign-up"}>{data?.user ? "Open your Strongroom" : "Get started with WardPass"}<ArrowRight/></Link>}</Button></div></div></section>;
 }

@@ -13,9 +13,9 @@ export default function NotFoundPage() {
     }
 
     return (
-        <motion.div className="flex flex-col w-screen h-screen items-center justify-center gap-4 font-geist text-center">
+        <motion.div className="flex flex-col w-screen h-screen items-center justify-center gap-4 text-center">
             <TriangleAlert size={128} className="text-primary" />
-            <h1 className="text-4xl md:text-8xl font-geist font-bold text-primary">404</h1>
+            <h1 className="text-4xl md:text-8xl font-bold text-primary">404</h1>
             <p className="text-muted-foreground">Page Not Found</p>
             <div className="w-full flex items-center justify-center">
                 <svg height="20" width="2000" xmlns="http://www.w3.org/2000/svg">
@@ -29,7 +29,7 @@ export default function NotFoundPage() {
                 </svg>
             </div>
             <p className="text-muted-foreground">We are sorry, the page you requested could not be found. Please go back to the homepage.</p>
-            <Button variant="default" size="lg" className="p-6 font-geist" onClick={handleBackButton}>
+            <Button variant="default" size="lg" className="p-6" onClick={handleBackButton}>
                 <MoveLeft />
                 <span>Go Back</span>
             </Button>

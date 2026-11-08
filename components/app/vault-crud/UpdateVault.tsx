@@ -8,49 +8,48 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 
+import { useVaultStore } from "@/stores/vault";
+
 import { Button } from "@/components/ui/button";
-import { Plus, X, Loader2Icon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { motion } from "motion/react";
 import { IconMap, RenderIcon } from "@/components/IconMap";
-import { useCreateVault } from "@/lib/mutations/CoreCreateMutations";
+import { Loader2Icon } from "lucide-react";
+import { VaultSummary } from "@/lib/types/VaultType";
+import { useUpdateVault } from "@/lib/mutations/CoreUpdateMutations";
 import { useTheme } from "next-themes";
 
-export default function CreateVault({ disabled }: { disabled: boolean }) {
+export default function UpdateVault({ open, onOpenChange, vault }: { open: boolean, onOpenChange: (open: boolean) => void, vault: VaultSummary }) {
     const { resolvedTheme } = useTheme();
 
-    const [selectedIcon, setSelectedIcon] = useState<string>();
-    const [vaultName, setVaultName] = useState<string>("");
-    const [vaultColor, setVaultColor] = useState<string>("");
-    const [open, setOpen] = useState<boolean>(false);
+    const [selectedIcon, setSelectedIcon] = useState<string>(vault.icon);
+    const [vaultName, setVaultName] = useState<string>(vault.name);
+    const [vaultColor, setVaultColor] = useState<string>(vault.iconColor!);
 
     // ✅ Master password lives in local state — form input only
-    const [masterPassword, setMasterPassword] = useState<string>("");
-    const { mutate, isPending } = useCreateVault(vaultName, selectedIcon!, vaultColor, masterPassword, setMasterPassword, setOpen);
+    const [masterPassword, setMasterPassword] = useState<string>(useVaultStore.getState().masterPassword || "");
+    const { mutate, isPending } = useUpdateVault(vault.id, vaultName, selectedIcon as string, vaultColor, masterPassword, setMasterPassword, onOpenChange)
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button disabled={disabled} variant="secondary" size="lg" className="p-5 w-full">{!disabled ? <>Create Vault <Plus size="16" /></> : <> Vault Limit Reached <X size="16" /></>}</Button>
-            </DialogTrigger>
-            <DialogContent className="font-geist">
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent>
                 <DialogHeader>
-                    <DialogTitle className="font-bold">New Vault</DialogTitle>
+                    <DialogTitle className="font-bold">Update <span className="font-bold">{vault.name}</span></DialogTitle>
                     <DialogDescription>
-                        Create a new vault.
+                        Update <span className="font-bold">{vault.name}</span> details below.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-col gap-3">
-                    <Label htmlFor="vaultName">Enter Vault Name</Label>
+                    <Label htmlFor="vaultName">Update Vault Name</Label>
                     <Input id="vaultName" placeholder="e.g. Work, Personal, etc." value={vaultName} onChange={(e) => setVaultName(e.target.value)} />
                 </div>
                 <div className="flex flex-col gap-3">
-                    <Label htmlFor="vaultIcon">Choose an icon</Label>
-                    <div className="flex flex-wrap">
+                    <Label htmlFor="vaultIcon">Update icon</Label>
+                    <motion.div className="flex flex-wrap">
                         {Object.keys(IconMap).map((iconName) => (
                             <Button
                                 variant={selectedIcon === iconName ? "default" : "ghost"}
@@ -62,26 +61,26 @@ export default function CreateVault({ disabled }: { disabled: boolean }) {
                                 <RenderIcon name={iconName} size={32} color={resolvedTheme === 'light' ? (selectedIcon === iconName ? 'white' : 'black') : (selectedIcon === iconName ? 'black' : 'white')} />
                             </Button>
                         ))}
-                    </div>
+                    </motion.div>
                 </div>
                 <div className="flex flex-col gap-3">
-                    <Label htmlFor="vaultColor">Enter Vault Color</Label>
+                    <Label htmlFor="vaultColor">Update Vault Color</Label>
                     <Input id="vaultColor" placeholder="e.g. red, green, blue" value={vaultColor} onChange={(e) => setVaultColor(e.target.value)} />
                 </div>
                 <div className="flex flex-col gap-3">
-                    <Label htmlFor="masterPassword">Enter Master Password</Label>
-                    <Input type="password" id="masterPassword" placeholder="Enter your master password to create vault" value={masterPassword} onChange={(e) => setMasterPassword(e.target.value)} />
+                    <Label htmlFor="masterPassword">Update Master Password</Label>
+                    <Input type="password" id="masterPassword" placeholder="Enter your master password to update vault" value={masterPassword} onChange={(e) => setMasterPassword(e.target.value)} />
                 </div>
-                <DialogFooter className="font-geist">
+                <DialogFooter>
                     <DialogClose className="text-md mr-1">Cancel</DialogClose>
-                    <Button disabled={isPending || !vaultName || !selectedIcon || !vaultColor || !masterPassword} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
+                    <Button disabled={isPending || (vaultName === vault.name && selectedIcon === vault.icon && vaultColor === vault.iconColor && !masterPassword)} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />
-                                <span>Creating...</span>
+                                <span>Updating...</span>
                             </>
                         ) : (
-                            <span>Create Vault</span>
+                            <span>Update Vault</span>
                         )}
                     </Button>
                 </DialogFooter>

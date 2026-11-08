@@ -20,7 +20,7 @@ import {
     AlertDialogTitle,
     AlertDialogCancel
 } from "@/components/ui/alert-dialog"
-import SignOut from "@/components/app/signout/SignOut";
+import SignOut from "@/components/app/auth/SignOut";
 import { useGetSession } from "@/lib/queries/SessionQueries";
 import { useRouter } from "next/navigation";
 import { CustomLoadingState, SkeletonLoadingState } from "@/components/LoadingStates";
@@ -88,7 +88,7 @@ export default function AccountPage() {
 
     return (
         <>
-            <motion.div className="flex flex-col gap-10 items-start justify-start pt-60 px-10 py-5">
+            <motion.div className="flex flex-col gap-10 items-start justify-start pt-5 px-10 py-5">
                 <Field className="flex flex-col gap-5">
                     <FieldGroup>
                         <Field>

@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Trash | WardPass",
+    title: "Trashed Vault Items | WardPass",
+    robots: {
+        googleBot: {
+            index: false,
+            follow: false
+        }
+    }
 };
 
-export default function PageLayout({
+export default function TrashedVaultItemsPageLayout({
     children,
 }: Readonly<{
     children: React.ReactNode

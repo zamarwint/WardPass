@@ -1,119 +1,35 @@
-import GridPattern from "@/components/ui/grid-pattern";
-import { ShieldCheck } from "lucide-react";
-import { MoveRight, MoveUpRight } from "lucide-react";
+import { ArrowDown, ArrowRight, LockKeyhole } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-
-// HERO AND TRUST BAR SECTIONS
-
-function TrustBar() {
-  return (
-    <section className="border-y border-foreground/5 py-12">
-      <div className="mx-auto">
-        <div className="flex flex-col items-center justify-center space-y-6">
-          <p className="uppercase tracking-widest font-bold">
-            Certified Security Protocols
-          </p>
-          <Link href="https://gdpr-info.eu/" target="_blank">
-            <Image
-              src="/security-badges.svg"
-              alt="Security Badges"
-              width={1440}
-              height={190}
-              className="w-full max-w-200 h-auto"
-              loading="eager"
-            />
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function HeroContent() {
-  return (
-    <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-black">
-      {/* Subtle background grid */}
-      <div>
-        <GridPattern
-          width={40}
-          height={40}
-          strokeDasharray="0"
-          squares={[[0, 0]]}
-        />
-      </div>
-      <div className="mx-auto px-4 md:px-10 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="flex flex-col items-start max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 border border-primary/30 bg-primary/5 text-primary uppercase tracking-wider">
-              <span>
-                <ShieldCheck />
-              </span>
-              Active Protection Enabled
-            </div>
-            <h1 className="text-4xl font-bold md:text-6xl mb-6">
-              The Password Management Solution, <br />
-              <span className="text-primary">You Deserve.</span>
-            </h1>
-            <p className="mb-10 max-w-xl">
-              Create strong, unique passwords in seconds and keep your online
-              accounts better protected. Our password management solution helps
-              you reduce security risks, avoid reused passwords, and take
-              control of your digital security with a fast, simple, and reliable
-              experience.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 font-geist w-full">
-              <Button size="lg" className="h-full px-14 py-6">
-                <Link
-                  href="/sign-up"
-                  className="font-bold text-center uppercase tracking-wider flex items-center justify-center gap-2"
-                >
-                  Get Started for Free
-                  <MoveRight />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="secondary"
-                className="h-full px-10 py-6"
-              >
-                <Link
-                  href="#about"
-                  className="font-bold text-center uppercase tracking-wider flex items-center justify-center gap-2"
-                >
-                  Learn More
-                  <MoveUpRight />
-                </Link>
-              </Button>
-            </div>
-            <div className="mt-8 flex items-center gap-2 font-mono text-muted-foreground">
-              <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-              System Status: Operational &amp; Secure
-            </div>
-          </div>
-          <div className="size-fit flex items-center justify-center aspect-square">
-            <Image
-              src="/vault-image.svg"
-              alt="Vault Image"
-              width={1000}
-              height={1000}
-              className="w-auto h-auto object-cover object-center"
-              loading="eager"
-              draggable={false}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+import SecureVault from "../SecureVault";
 
 export default function Hero() {
   return (
     <>
-      <HeroContent />
-      <TrustBar />
+      <section className="landing-hero relative overflow-hidden border-b border-foreground/20 pt-32 pb-20 text-foreground md:pt-40 md:pb-28">
+        <div className="landing-shell relative z-10 grid items-center gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:gap-8">
+          <div className="max-w-xl">
+            <div className="eyebrow mb-7 text-foreground/70"><LockKeyhole size={14} /> A calmer way to stay secure</div>
+            <h1 className="landing-display text-5xl leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+              Your digital life,<br /><span className="landing-serif border-b-2 border-primary pb-1">well kept.</span>
+            </h1>
+            <p className="mt-7 max-w-lg text-base leading-7 text-foreground/75 md:text-lg">
+              Keep the passwords and important details you use every day in one thoughtfully organized, encrypted place.
+            </p>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Button asChild size="lg" className="rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/85"><Link href="/sign-up">Create your account <ArrowRight /></Link></Button>
+              <Button asChild size="lg" variant="outline" className="rounded-none border-foreground/30 bg-background/25 px-6 text-foreground hover:bg-background/60 hover:text-foreground"><Link href="#how-it-works">See how it works <ArrowDown /></Link></Button>
+            </div>
+            <p className="mt-6 text-xs text-foreground/65">Start with a personal vault. Add your first login when you’re ready.</p>
+          </div>
+          <div className="relative mx-auto w-full max-w-[650px]">
+            <SecureVault className="relative w-full" />
+          </div>
+        </div>
+        <div className="landing-shell relative z-10 mt-12 grid grid-cols-2 gap-3 border-t border-foreground/20 pt-6 text-xs text-foreground/70 sm:grid-cols-4">
+          {["Private by design", "Encrypted vaults", "Simple to use", "Open-source project"].map((item) => <div key={item} className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-primary" />{item}</div>)}
+        </div>
+      </section>
     </>
   );
 }

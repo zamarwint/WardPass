@@ -12,7 +12,7 @@ export default function UserManagementPage() {
     const [selectedContent, setSelectedContent] = useState<string>("users");
 
     return (
-        <motion.div className="flex flex-col gap-10 items-start justify-start pt-60 px-10 py-5">
+        <motion.div className="flex flex-col gap-10 items-start justify-start pt-5 px-10 py-5">
             <Field className="flex flex-col gap-10">
                 <FieldGroup>
                     <Field>
