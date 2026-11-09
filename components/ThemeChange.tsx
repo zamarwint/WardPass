@@ -44,8 +44,8 @@ import { SunIcon, MoonIcon } from 'lucide-react'
 
 export const SwitchDualIconLabelDemo = () => {
     const id = useId()
-    const [checked, setChecked] = useState<boolean>(true)
     const { setTheme } = useTheme();
+    const [checked, setChecked] = useState<boolean>(false);
 
     const toggleSwitch = () => {
         setChecked(prev => !prev);

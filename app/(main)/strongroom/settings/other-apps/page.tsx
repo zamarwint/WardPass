@@ -1,7 +1,3 @@
-"use client";
-
-import { motion } from "motion/react"
-
 import {
     Field,
     FieldDescription,
@@ -11,6 +7,17 @@ import {
 import Link from "next/link"
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Other Apps | Settings | WardPass",
+    robots: {
+        googleBot: {
+            index: false,
+            follow: false
+        }
+    }
+};
 
 const otherApps = [
     {
@@ -41,13 +48,13 @@ const otherApps = [
 
 export default function OtherAppsPage() {
     return (
-        <motion.div className="pt-5 px-10 py-5">
+        <div className="pt-5 px-10 py-5">
             <div className="pb-6 flex flex-col gap-2">
                 <h1 className="text-2xl font-semibold">Other Apps by the ZWNT Company.</h1>
                 <p className="text-sm text-muted-foreground">Check out our other apps!</p>
             </div>
 
-            <motion.div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
                 {otherApps.map((app, key) => (
                     <Field key={key} className="border border-border rounded-xl p-10 max-w-full break-keep">
                         <FieldTitle>{app.title}</FieldTitle>
@@ -59,8 +66,8 @@ export default function OtherAppsPage() {
                         </Link>
                     </Field>
                 ))}
-            </motion.div>
+            </div>
 
-        </motion.div>
+        </div>
     )
 }

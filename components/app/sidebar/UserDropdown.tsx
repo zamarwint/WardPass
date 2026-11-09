@@ -11,9 +11,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ChevronDown, EllipsisVertical, Loader2Icon, LogOut, Settings, Shield, Trash, User } from "lucide-react";
-import { ProfileAvatar } from "./Profile";
-import { Profile } from "./Profile";
+import { ChevronDown, EllipsisVertical, Loader2Icon, LogOut, Settings, Shield, Trash } from "lucide-react";
+import ProfileAvatar from "../settings/ProfileAvatar";
 import { useState } from "react";
 import SignOutAlert from "@/components/app/auth/SignOutAlert";
 import { useRouter } from "next/navigation";
@@ -29,14 +28,12 @@ export default function UserDropdown({ onSidebar }: UserDropdownProps) {
     const session = useGetSession();
     const checkAdmin = useCheckAdminSession();
 
-    const [openProfile, setOpenProfile] = useState(false);
     const [openSignOut, setOpenSignOut] = useState(false);
 
     const router = useRouter();
 
     return (
         <SidebarMenuItem className="my-1">
-            <Profile open={openProfile} onOpenChange={setOpenProfile} data={session.data} />
             <SignOutAlert open={openSignOut} onOpenChange={setOpenSignOut} />
             <DropdownMenu>
                 {!onSidebar && (
@@ -84,16 +81,13 @@ export default function UserDropdown({ onSidebar }: UserDropdownProps) {
                     </DropdownMenuTrigger>
                 )}
                 <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenProfile(!openProfile)}><User size={16} className="mr-0.5" /> Profile</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/settings')}><Settings size={16} className="mr-0.5" /> Settings</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/trash')}><Trash size={16} className="mr-0.5" /> Trash</DropdownMenuItem>
-                    <DropdownMenuSeparator />
                     {checkAdmin && <DropdownMenuLabel>Admin Controls</DropdownMenuLabel>}
                     {checkAdmin && <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/admin')}><Shield className="mr-0.5" /> Admin Panel</DropdownMenuItem>}
                     {checkAdmin && <DropdownMenuSeparator />}
-                    <DropdownMenuLabel>Log Out</DropdownMenuLabel>
+
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/settings')}><Settings size={16} className="mr-0.5" /> Settings</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/trash')}><Trash size={16} className="mr-0.5" /> Trash</DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSignOut(!openSignOut)}><LogOut size={16} className="mr-0.5" /> Log Out</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

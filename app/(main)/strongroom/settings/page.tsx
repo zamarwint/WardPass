@@ -1,68 +1,15 @@
-"use client";
+import GeneralSettings from "@/components/app/settings/General";
+import type { Metadata } from "next";
 
-import { motion } from "motion/react";
-import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldTitle } from "@/components/ui/field";
-import { SwitchDualIconLabelDemo } from "@/components/ThemeChange";
-
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button";
-
+export const metadata: Metadata = {
+    title: "General | Settings | WardPass",
+    robots: {
+        googleBot: {
+            index: false,
+            follow: false
+        }
+    }
+};
 export default function GeneralSettingsPage() {
-    return (
-        <motion.div className="flex flex-col gap-10 items-start justify-start pt-5 px-10">
-            <Field className="flex flex-col gap-5">
-                <Field>
-                    <FieldTitle className='text-2xl'>General Settings</FieldTitle>
-                    <FieldDescription>Update your general settings.</FieldDescription>
-                </Field>
-                <FieldGroup>
-                    <FieldSeparator />
-                    <Field>
-                        <FieldLabel className="text-xl">Language</FieldLabel>
-                        <FieldDescription>Choose your preferred language.</FieldDescription>
-                    </Field>
-
-                    <Field className="w-2xs text-left">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button disabled variant="outline" size="lg">
-                                    English (Coming soon)
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                    English
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Spanish
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    French
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Dutch
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </Field>
-                </FieldGroup>
-                <FieldSeparator />
-                <FieldGroup>
-                    <Field>
-                        <FieldLabel className="text-xl">Change Theme</FieldLabel>
-                        <FieldDescription>Switch between light, dark, and system themes.</FieldDescription>
-                    </Field>
-
-                    <Field className="w-fit">
-                        <SwitchDualIconLabelDemo />
-                    </Field>
-                </FieldGroup>
-            </Field>
-        </motion.div>
-    )
+    return <GeneralSettings />
 }
