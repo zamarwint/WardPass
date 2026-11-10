@@ -3,4 +3,6 @@
   # Next.js bundle, and BETTER_AUTH_URL holds the same public site URL as
   # NEXT_PUBLIC_APP_URL. Excluding them keeps secrets scanning on for real secrets
   # (BETTER_AUTH_SECRET, DATABASE_URL, GOOGLE_CLIENT_SECRET, etc.).
-  SECRETS_SCAN_OMIT_KEYS = "BETTER_AUTH_URL,NEXT_PUBLIC_APP_URL,NEXT_PUBLIC_NODE_ENV,NEXT_PUBLIC_SIGN_IN_REDIRECT_URL"
+  # SECRETS_SCAN_OMIT_KEYS lists itself so that, if it is also stored as a secret
+  # variable in the Netlify UI, the scanner doesn't flag this line as a leaked secret.
+  SECRETS_SCAN_OMIT_KEYS = "SECRETS_SCAN_OMIT_KEYS,BETTER_AUTH_URL,NEXT_PUBLIC_APP_URL,NEXT_PUBLIC_NODE_ENV,NEXT_PUBLIC_SIGN_IN_REDIRECT_URL"
