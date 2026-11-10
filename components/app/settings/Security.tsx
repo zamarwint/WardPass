@@ -86,7 +86,7 @@ export default function Security() {
                     <Field className="mb-6">
                         <FieldTitle>Auto Lock after:</FieldTitle>
                         <FieldDescription>Set your preferred auto lock time.</FieldDescription>
-                        <Select onValueChange={(e) => setSelectedAutoLock(e)} value={displayAutoLock}>
+                        <Select onValueChange={(e) => setSelectedAutoLock(e as string)} value={displayAutoLock}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select preferred lock time." />
                             </SelectTrigger>
@@ -103,7 +103,7 @@ export default function Security() {
                     <Field className="mb-4">
                         <FieldTitle>Hide vault after inactivity of:</FieldTitle>
                         <FieldDescription>Set the time it takes for the vault to automatically hide.</FieldDescription>
-                        <Select onValueChange={(e) => setSelectedHiddenTabTimeout(e)} value={displayHiddenTab}>
+                        <Select onValueChange={(e) => setSelectedHiddenTabTimeout(e as string)} value={displayHiddenTab}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select preferred timeout period." />
                             </SelectTrigger>

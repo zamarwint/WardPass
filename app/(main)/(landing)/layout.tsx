@@ -1,13 +1,13 @@
-import Footer from "@/components//Footer";
-import Navbar from "@/components//Navbar";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 import type { Metadata } from "next";
 import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getUserSession } from "@/app/actions/getSession";
 
 export const metadata: Metadata = {
-  title: "WardPass",
+  title: "WardPass | Zero-Knowledge Secrets & Credential Vault",
   description:
-    "What is WardPass? WardPass is a secure password management solution. With WardPass, you can easily organize your passwords into different folders, and use them when you want to sign in to any service.",
+    "WardPass is an open-source, zero-knowledge credential and secrets management platform with client-side Argon2id key derivation and AES-256-GCM authenticated encryption.",
 };
 
 export default async function LandingPageLayout({
@@ -24,7 +24,7 @@ export default async function LandingPageLayout({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex min-h-screen w-full flex-col overflow-x-hidden no-scrollbar">
+      <div className="flex min-h-screen w-full flex-col overflow-x-hidden no-scrollbar bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
         <Navbar />
         {children}
         <Footer />

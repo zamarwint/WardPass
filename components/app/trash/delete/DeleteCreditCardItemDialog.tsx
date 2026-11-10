@@ -30,8 +30,9 @@ export default function DeleteCreditCardItemDialog({ creditCardItem }: { creditC
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger asChild>
+            <AlertDialogTrigger render={
                 <Button variant="ghost" size="icon"><Trash2Icon className="text-destructive" /></Button>
+            }>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -45,11 +46,13 @@ export default function DeleteCreditCardItemDialog({ creditCardItem }: { creditC
                     <Input placeholder="type in credit card holder's name to confirm" className="h-12 mt-3" id="creditCardHolderNameConfirm" value={creditCardNameConfirm} onChange={(e) => setCreditCardNameConfirm(e.target.value)} />
                 </div>
                 <AlertDialogFooter>
-                    <AlertDialogCancel asChild>
+                    <AlertDialogCancel render={
                         <Button variant="outline">Cancel</Button>
+                    }>
                     </AlertDialogCancel>
-                    <AlertDialogAction asChild>
+                    <AlertDialogAction render={
                         <Button disabled={creditCardNameConfirm.toLowerCase() !== creditCardItem.cardHolderName?.toLowerCase() || isPending} variant="destructive" className="font-bold" onClick={handleSubmit}>Delete</Button>
+                    }>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

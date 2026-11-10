@@ -26,8 +26,9 @@ export default function RestoreIdentityItemDialog({ identityItem }: { identityIt
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger asChild>
+            <AlertDialogTrigger render={
                 <Button variant="ghost" size="icon"><ArchiveRestore className="text-foreground" /></Button>
+            }>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -37,10 +38,11 @@ export default function RestoreIdentityItemDialog({ identityItem }: { identityIt
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel asChild>
+                    <AlertDialogCancel render={
                         <Button variant="outline">Cancel</Button>
+                    }>
                     </AlertDialogCancel>
-                    <AlertDialogAction asChild>
+                    <AlertDialogAction>
                         <Button disabled={isPending} variant="default" className="font-bold" onClick={handleSubmit}>Restore</Button>
                     </AlertDialogAction>
                 </AlertDialogFooter>

@@ -105,7 +105,6 @@ export function useUpdateVaultItem(
   id: string,
   vaultId: string,
   data: CreditCardJSONRaw | IdentityJSONRaw | SecureNoteJSONRaw | LoginJSONRaw,
-  cancel: () => void,
 ) {
   const queryClient = useQueryClient();
 
@@ -123,7 +122,6 @@ export function useUpdateVaultItem(
     onSuccess: () => {
       toast.dismiss();
       toast.success("Vault item updated successfully");
-      cancel();
       queryClient.invalidateQueries({
         queryKey: ["vaultPage", vaultId],
         refetchType: "active",

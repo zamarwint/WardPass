@@ -7,18 +7,16 @@ import {
     FieldGroup,
     FieldLabel,
     FieldLegend,
-    FieldSeparator,
-    FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Loader2Icon, PenIcon, X } from "lucide-react";
+import { Loader2Icon, PenIcon } from "lucide-react";
 import { useState } from "react";
-import { motion } from "motion/react"
 import { Textarea } from "@/components/ui/textarea";
 import { SecureNoteJSON } from "@/lib/types/VaultItemType";
 import { useUpdateVaultItem } from "@/lib/mutations/CoreUpdateMutations";
+import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader } from "@/components/ui/drawer";
 
-export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secureNoteItem: SecureNoteJSON, cancel: () => void }) {
+export default function UpdateSecureNoteItem({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: SecureNoteJSON }) {
     const [title, setTitle] = useState<string>(secureNoteItem.title)
     const [content, setContent] = useState<string>(secureNoteItem.content)
     const [characterLength, setCharacterLength] = useState<number>(content.length)
@@ -34,32 +32,21 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
     };
 
     const data = { title, content };
-    const { mutate, isPending } = useUpdateVaultItem(secureNoteItem.id, secureNoteItem.vaultId, data, cancel)
+    const { mutate, isPending } = useUpdateVaultItem(secureNoteItem.id, secureNoteItem.vaultId, data)
 
     const handleSubmit = () => {
         mutate();
     }
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-                hidden: { opacity: 0, x: 1000 },
-                visible: { opacity: 1, x: 0 },
-            }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
-                <FieldSet>
+        <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">
+            <DrawerContent className="w-[50vw]">
+                <DrawerHeader>
                     <FieldLegend>Update Secure Note</FieldLegend>
                     <FieldDescription>Update {secureNoteItem.title}.</FieldDescription>
-                </FieldSet>
+                </DrawerHeader>
 
-                <FieldGroup>
-                    <FieldSeparator />
+                <FieldGroup className="p-4">
                     <Field>
                         <FieldLabel>Title</FieldLabel>
                         <Input type="text" placeholder="Name of secure note item" id="title" value={title} onChange={(e) => { setTitle(e.target.value) }} className="h-12" />
@@ -69,11 +56,10 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
                         <Textarea placeholder="Content of secure note item" id="content" value={content} onChange={handleContentChange} className="min-h-75 resize-none" />
                         <FieldDescription>{characterLength}/2000 characters</FieldDescription>
                     </Field>
-                    <FieldSeparator />
                 </FieldGroup>
 
-                <Field orientation="horizontal">
-                    <Button variant="outline" onClick={cancel}>Cancel</Button>
+                <DrawerFooter className="flex flex-row">
+                    <DrawerClose>Cancel</DrawerClose>
                     <Button disabled={isPending || !title || !content} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
@@ -87,9 +73,8 @@ export default function UpdateSecureNoteItem({ secureNoteItem, cancel }: { secur
                             </>
                         )}
                     </Button>
-                </Field>
-            </Field>
-            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
-        </motion.div>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
     )
 }

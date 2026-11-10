@@ -30,8 +30,9 @@ export default function DeleteLoginItemDialog({ loginItem }: { loginItem: LoginJ
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger asChild>
+            <AlertDialogTrigger render={
                 <Button variant="ghost" size="icon"><Trash2Icon className="text-destructive" /></Button>
+            }>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -45,11 +46,13 @@ export default function DeleteLoginItemDialog({ loginItem }: { loginItem: LoginJ
                     <Input placeholder="type in login item name to confirm" className="h-12 mt-3" id="loginItemNameConfirm" value={loginNameConfirm} onChange={(e) => setLoginNameConfirm(e.target.value)} />
                 </div>
                 <AlertDialogFooter>
-                    <AlertDialogCancel asChild>
+                    <AlertDialogCancel render={
                         <Button variant="outline">Cancel</Button>
+                    }>
                     </AlertDialogCancel>
-                    <AlertDialogAction asChild>
+                    <AlertDialogAction render={
                         <Button disabled={loginNameConfirm.toLowerCase() !== loginItem.name?.toLowerCase() || isPending} variant="destructive" className="font-bold" onClick={handleSubmit}>Delete</Button>
+                    }>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

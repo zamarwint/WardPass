@@ -26,8 +26,9 @@ export default function RestoreSecureNoteItemDialog({ secureNoteItem }: { secure
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger asChild>
+            <AlertDialogTrigger render={
                 <Button variant="ghost" size="icon"><ArchiveRestore className="text-foreground" /></Button>
+            }>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -37,11 +38,13 @@ export default function RestoreSecureNoteItemDialog({ secureNoteItem }: { secure
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel asChild>
+                    <AlertDialogCancel render={
                         <Button variant="outline">Cancel</Button>
+                    }>
                     </AlertDialogCancel>
-                    <AlertDialogAction asChild>
+                    <AlertDialogAction render={
                         <Button disabled={isPending} variant="default" className="font-bold" onClick={handleSubmit}>Restore</Button>
+                    }>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

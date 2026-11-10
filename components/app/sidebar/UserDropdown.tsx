@@ -37,7 +37,7 @@ export default function UserDropdown({ onSidebar }: UserDropdownProps) {
             <SignOutAlert open={openSignOut} onOpenChange={setOpenSignOut} />
             <DropdownMenu>
                 {!onSidebar && (
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger render={
                         <Button variant="ghost" size="icon-lg" className="w-fit">
                             {session.isPending ? (
                                 <Loader2Icon className="size-4 animate-spin" />
@@ -50,10 +50,11 @@ export default function UserDropdown({ onSidebar }: UserDropdownProps) {
                                 </>
                             )}
                         </Button>
+                    }>
                     </DropdownMenuTrigger>
                 )}
                 {onSidebar && (
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger render={
                         <SidebarMenuButton size="lg" className="w-full flex justify-start py-7">
                             {session.isPending ? (
                                 <CustomLoadingState loaderChoice={1} className="flex items-center justify-center gap-2 font-semibold size-full">
@@ -78,17 +79,22 @@ export default function UserDropdown({ onSidebar }: UserDropdownProps) {
                                 </motion.div>
                             )}
                         </SidebarMenuButton>
+                    }>
                     </DropdownMenuTrigger>
                 )}
                 <DropdownMenuContent align="end">
-                    {checkAdmin && <DropdownMenuLabel>Admin Controls</DropdownMenuLabel>}
-                    {checkAdmin && <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/admin')}><Shield className="mr-0.5" /> Admin Panel</DropdownMenuItem>}
-                    {checkAdmin && <DropdownMenuSeparator />}
+                    {checkAdmin && <DropdownMenuGroup>
+                        {checkAdmin && <DropdownMenuLabel>Admin Controls</DropdownMenuLabel>}
+                        {checkAdmin && <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/admin')}><Shield className="mr-0.5" /> Admin Panel</DropdownMenuItem>}
+                        {checkAdmin && <DropdownMenuSeparator />}
+                    </DropdownMenuGroup>}
 
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/settings')}><Settings size={16} className="mr-0.5" /> Settings</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/trash')}><Trash size={16} className="mr-0.5" /> Trash</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSignOut(!openSignOut)}><LogOut size={16} className="mr-0.5" /> Log Out</DropdownMenuItem>
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/settings')}><Settings size={16} className="mr-0.5" /> Settings</DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/trash')}><Trash size={16} className="mr-0.5" /> Trash</DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSignOut(!openSignOut)}><LogOut size={16} className="mr-0.5" /> Log Out</DropdownMenuItem>
+                    </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
         </SidebarMenuItem>

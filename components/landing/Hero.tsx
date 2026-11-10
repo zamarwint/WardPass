@@ -1,35 +1,116 @@
-import { ArrowDown, ArrowRight, LockKeyhole } from "lucide-react";
+"use client";
+
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import SecureVault from "../SecureVault";
+import { ArrowRight, ShieldCheck, Terminal } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import IsometricVaultGraphic from "./IsometricVaultGraphic";
+import { cn } from "@/lib/utils";
 
 export default function Hero() {
   return (
-    <>
-      <section className="landing-hero relative overflow-hidden border-b border-foreground/20 pt-32 pb-20 text-foreground md:pt-40 md:pb-28">
-        <div className="landing-shell relative z-10 grid items-center gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:gap-8">
-          <div className="max-w-xl">
-            <div className="eyebrow mb-7 text-foreground/70"><LockKeyhole size={14} /> A calmer way to stay secure</div>
-            <h1 className="landing-display text-5xl leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-              Your digital life,<br /><span className="landing-serif border-b-2 border-primary pb-1">well kept.</span>
-            </h1>
-            <p className="mt-7 max-w-lg text-base leading-7 text-foreground/75 md:text-lg">
-              Keep the passwords and important details you use every day in one thoughtfully organized, encrypted place.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-none bg-primary px-6 text-primary-foreground hover:bg-primary/85"><Link href="/sign-up">Create your account <ArrowRight /></Link></Button>
-              <Button asChild size="lg" variant="outline" className="rounded-none border-foreground/30 bg-background/25 px-6 text-foreground hover:bg-background/60 hover:text-foreground"><Link href="#how-it-works">See how it works <ArrowDown /></Link></Button>
+    <section className="relative w-full overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28 bg-background text-foreground">
+      {/* Luminous Gold Yellow Glow Background */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0 opacity-80"
+        style={{
+          background: `
+            radial-gradient(circle at 75% 35%, rgba(214, 165, 29, 0.22) 0%, rgba(152, 106, 8, 0.10) 30%, transparent 65%),
+            radial-gradient(circle at 25% 20%, rgba(247, 200, 115, 0.14) 0%, transparent 50%),
+            radial-gradient(circle at 50% 90%, rgba(128, 91, 10, 0.08) 0%, transparent 60%)
+          `
+        }}
+      />
+
+      {/* Subtle telemetry isometric grid */}
+      <div className="absolute inset-0 telemetry-grid pointer-events-none opacity-40 z-0" />
+
+      <div className="landing-shell relative z-10">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+          {/* LEFT: VALUE PROPOSITION */}
+          <div className="flex flex-col items-start max-w-2xl">
+            {/* STATUS PILLS */}
+            <div className="flex flex-wrap items-center gap-2.5 mb-7">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono tracking-wider uppercase bg-card border border-border text-foreground shadow-xs backdrop-blur-md">
+                <ShieldCheck className="size-3 text-primary" />
+                ARGON2ID + AES-256-GCM
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono tracking-wider uppercase bg-card border border-border text-foreground shadow-xs backdrop-blur-md">
+                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                STATUS: ZERO-KNOWLEDGE ACTIVE
+              </span>
             </div>
-            <p className="mt-6 text-xs text-foreground/65">Start with a personal vault. Add your first login when you’re ready.</p>
+
+            {/* HEADLINE */}
+            <h1 className="text-4xl sm:text-6xl lg:text-[4.2rem] font-medium tracking-tight leading-[1.05] text-foreground">
+              Encrypted before it touches the wire
+            </h1>
+
+            {/* SUBHEADLINE */}
+            <p className="mt-6 text-base sm:text-lg leading-relaxed text-muted-foreground max-w-xl font-normal">
+              A zero-knowledge secrets and credential vault engineered for modern teams and discerning individuals.
+              Keys derived in browser memory, payload encrypted on your device, and zero plaintext exposure to any server.
+            </p>
+
+            {/* CALL TO ACTION BUTTONS */}
+            <div className="mt-8 flex flex-wrap items-center gap-3.5 w-full sm:w-auto">
+              <Link href="/sign-up" className={cn("flex items-center gap-2", buttonVariants({ size: "lg" }))}>
+                <span>Get Early Access</span>
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+
+              <Link href="#interactive-demo" className={cn("flex items-center gap-2", buttonVariants({ variant: "outline", size: "lg" }))}>
+                <Terminal className="size-4 text-primary" />
+                <span>Interactive Crypto Demo</span>
+              </Link>
+            </div>
+
+            {/* TRUST HIGHLIGHTS */}
+            <div className="mt-8 flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-muted-foreground font-mono">
+              <span className="flex items-center gap-1.5">
+                <span className="size-1 rounded-full bg-primary" /> Independent Vault Keys
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="size-1 rounded-full bg-primary" /> 64MB Memory-Hard KDF
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="size-1 rounded-full bg-primary" /> MIT Open-Source
+              </span>
+            </div>
           </div>
-          <div className="relative mx-auto w-full max-w-[650px]">
-            <SecureVault className="relative w-full" />
+
+          {/* RIGHT: FLOATING ISOMETRIC SCHEMATIC */}
+          <div className="relative w-full flex items-center justify-center">
+            <IsometricVaultGraphic />
           </div>
         </div>
-        <div className="landing-shell relative z-10 mt-12 grid grid-cols-2 gap-3 border-t border-foreground/20 pt-6 text-xs text-foreground/70 sm:grid-cols-4">
-          {["Private by design", "Encrypted vaults", "Simple to use", "Open-source project"].map((item) => <div key={item} className="flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-primary" />{item}</div>)}
+
+        {/* ─── TRUSTED BY LOGO TICKER / SOCIAL PROOF ─────────────────────── */}
+        <div className="mt-20 pt-8 border-t border-border flex flex-col gap-4">
+          <p className="text-[11px] font-mono tracking-widest text-muted-foreground uppercase text-center sm:text-left">
+            BUILT WITH STANDARDS TRUSTED BY HIGH-SECURITY ENGINEERING TEAMS
+          </p>
+          <div className="flex flex-wrap items-center justify-between gap-6 opacity-80 transition-all duration-300">
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-muted-foreground hover:text-foreground transition-colors">
+              <span className="text-lg">▲</span> Vercel
+            </div>
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-muted-foreground hover:text-foreground transition-colors">
+              <span className="font-mono text-base font-bold">&gt;_</span> Cursor
+            </div>
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-muted-foreground hover:text-foreground transition-colors">
+              <span className="text-base font-bold">◈</span> Coinbase
+            </div>
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-muted-foreground hover:text-foreground transition-colors">
+              <span className="font-mono font-bold text-base">§</span> Linear
+            </div>
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-muted-foreground hover:text-foreground transition-colors">
+              <span className="text-base font-bold">⚡</span> Neon
+            </div>
+            <div className="flex items-center gap-2 text-sm font-semibold tracking-wider text-muted-foreground hover:text-foreground transition-colors">
+              <span className="text-base font-bold">❇</span> Supabase
+            </div>
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

@@ -34,8 +34,9 @@ export default function CreateVault({ disabled }: { disabled: boolean }) {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger render={
                 <Button disabled={disabled} variant="secondary" size="lg" className="p-5 w-full">{!disabled ? <>Create Vault <Plus size="16" /></> : <> Vault Limit Reached <X size="16" /></>}</Button>
+            }>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

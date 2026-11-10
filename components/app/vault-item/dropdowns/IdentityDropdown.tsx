@@ -33,7 +33,7 @@ export default function IdentityDropdown({ open, onOpenChange, identityItem }: {
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            {openUpdateIdentity && <UpdateIdentityItem identityItem={identityItem} cancel={() => { setOpenUpdateIdentity(false) }} />}
+            <UpdateIdentityItem open={openUpdateIdentity} onOpenChange={() => { setOpenUpdateIdentity(false) }} identityItem={identityItem} />
             <TrashIdentityItemDialog open={openDeleteIdentity} onOpenChange={setOpenDeleteIdentity} identityItem={identityItem} />
         </>
     )

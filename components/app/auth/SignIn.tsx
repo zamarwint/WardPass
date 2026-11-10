@@ -3,14 +3,12 @@
 import { PasswordInput } from "@/components/PasswordInput";
 import { PaymentCard } from "@/components/UICards";
 import { Button } from "@/components/ui/button";
-import DotPattern from "@/components/ui/dot-pattern";
+import { DotPattern } from "@/components/ui/dot-pattern";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/utils/auth-client";
 import { LockKeyholeOpen } from "lucide-react";
-import Link from "next/link";
 import { useState, useTransition } from "react";
-import { FaGoogle } from "react-icons/fa";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { EmailDeliveryNotWorkingAlert } from "@/components/Banners";
@@ -76,7 +74,7 @@ export default function SignIn() {
                                     </CustomLoadingState>
                                 ) : (
                                     <>
-                                        <FaGoogle /> Sign in with Google
+                                        Sign in with Google
                                     </>
                                 )}
                             </Button>

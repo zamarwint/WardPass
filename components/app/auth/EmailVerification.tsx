@@ -4,7 +4,6 @@ import { authClient } from "@/utils/auth-client";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Field, FieldDescription, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
 import { WebsiteCredentialCard } from "@/components/UICards";

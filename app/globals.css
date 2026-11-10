@@ -71,6 +71,13 @@
   --color-info-soft: var(--info-soft);
   --color-info-soft-foreground: var(--info-soft-foreground);
 
+  /* Gold glow and warm surface tokens */
+  --color-glow-gold: var(--glow-gold);
+  --color-glow-amber: var(--glow-amber);
+  --color-glow-bronze: var(--glow-bronze);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-card: var(--surface-card);
+
   /* Gold brand scale */
   --color-gold-50: oklch(0.991 0.014 93);
   --color-gold-100: oklch(0.967 0.047 92.6);
@@ -109,6 +116,14 @@
 
   --shadow-popover:
     0 8px 24px rgb(24 22 16 / 0.1), 0 2px 6px rgb(24 22 16 / 0.05);
+
+  --animate-dot-pattern-wave: dot-pattern-wave var(--dot-pattern-duration, 12s)
+    linear infinite;
+  @keyframes dot-pattern-wave {
+    to {
+      translate: 339.41px 0;
+    }
+  }
 }
 
 /* =========================================
@@ -121,6 +136,24 @@
   --radius: 0.75rem;
 
   /* Core surfaces */
+  --surface-dark: #1b1b18;
+  --surface-card: #25241f;
+
+  /* Light-mode decorative gold effects */
+  --glow-gold: #986a08;
+  --glow-amber: #c18b16;
+  --glow-bronze: #805b0a;
+  --gradient-gold-start: #805b0a;
+  --gradient-gold-mid: #b07d08;
+  --gradient-gold-end: #6f4b06;
+  --glow-hero-primary: rgba(176, 125, 8, 0.16);
+  --glow-hero-secondary: rgba(214, 165, 29, 0.11);
+  --glow-card: rgba(176, 125, 8, 0.12);
+  --glass-panel-bg: rgba(27, 27, 24, 0.76);
+  --glass-panel-border: rgba(128, 91, 10, 0.22);
+  --glass-panel-light-bg: rgba(250, 249, 246, 0.86);
+  --glass-panel-light-border: rgba(80, 65, 35, 0.12);
+
   --background: oklch(0.982 0.004 91.4);
   --foreground: oklch(0.221 0.006 106.9);
 
@@ -199,6 +232,24 @@
   color-scheme: dark;
 
   /* Core surfaces */
+  --surface-dark: #141512;
+  --surface-card: #1c1d18;
+
+  /* Dark-mode decorative gold effects */
+  --glow-gold: #e5b93f;
+  --glow-amber: #f2d36b;
+  --glow-bronze: #b98722;
+  --gradient-gold-start: #f4d77a;
+  --gradient-gold-mid: #e5b93f;
+  --gradient-gold-end: #b98722;
+  --glow-hero-primary: rgba(229, 185, 63, 0.22);
+  --glow-hero-secondary: rgba(185, 135, 34, 0.16);
+  --glow-card: rgba(229, 185, 63, 0.15);
+  --glass-panel-bg: rgba(28, 29, 24, 0.8);
+  --glass-panel-border: rgba(242, 211, 107, 0.14);
+  --glass-panel-light-bg: rgba(250, 249, 246, 0.88);
+  --glass-panel-light-border: rgba(242, 211, 107, 0.2);
+
   --background: oklch(0.193 0.006 122);
   --foreground: oklch(0.955 0.012 91.5);
 
@@ -279,7 +330,7 @@
   }
 
   html {
-    @apply font-sans scroll-smooth;
+    @apply font-sans;
   }
 
   body {
@@ -372,4 +423,177 @@
   .btn-ghost {
     @apply hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50;
   }
+
+  /* Sleek Landing Design System */
+  .landing-shell {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+  }
+
+  /* Gold gradients */
+  .text-gradient-gold {
+    background: linear-gradient(
+      135deg,
+      var(--gradient-gold-start) 0%,
+      var(--gradient-gold-mid) 50%,
+      var(--gradient-gold-end) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .text-gradient-amber {
+    background: linear-gradient(
+      135deg,
+      var(--gradient-gold-end) 0%,
+      var(--gradient-gold-start) 50%,
+      var(--gradient-gold-mid) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .glow-radial-hero {
+    background:
+      radial-gradient(
+        circle at 75% 45%,
+        var(--glow-hero-primary) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        circle at 30% 20%,
+        var(--glow-hero-secondary) 0%,
+        transparent 52%
+      );
+  }
+
+  .glow-radial-card {
+    background: radial-gradient(
+      circle at 50% 0%,
+      var(--glow-card) 0%,
+      transparent 70%
+    );
+  }
+
+  .glass-panel {
+    background: var(--glass-panel-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-panel-border);
+  }
+
+  .glass-panel-light {
+    background: var(--glass-panel-light-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-panel-light-border);
+  }
+
+  .telemetry-grid {
+    background-size: 32px 32px;
+    background-image:
+      linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  }
+
+  .dark .telemetry-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  }
+}
+@property --dot-pattern-x {
+  inherits: false;
+  initial-value: 0px;
+  syntax: "<length>";
+}
+@property --dot-pattern-y {
+  inherits: false;
+  initial-value: 0px;
+  syntax: "<length>";
+}
+
+@utility dot-pattern-dots {
+  background-color: var(
+    --dot-pattern-color,
+    color-mix(in oklab, var(--muted-foreground) 45%, transparent)
+  );
+  mask-image: radial-gradient(
+    circle,
+    #000 calc(calc(var(--dot-pattern-size, 2px) / 2) - 0.25px),
+    transparent calc(calc(var(--dot-pattern-size, 2px) / 2) + 0.5px)
+  );
+  mask-position: center;
+  mask-size: calc(var(--dot-pattern-size, 2px) + var(--dot-pattern-gap, 24px))
+    calc(var(--dot-pattern-size, 2px) + var(--dot-pattern-gap, 24px));
+}
+
+@utility dot-pattern-glow {
+  @media (prefers-reduced-motion: no-preference) {
+  }
+  /* @media (prefers-reduced-motion[data-pointer=move]: no-preference) {
+    --dot-pattern-follow: 150ms;
+  } */
+  &[data-pointer] {
+    opacity: var(--dot-pattern-strength, 0.8);
+  }
+  background-image: radial-gradient(
+    closest-side,
+    var(--dot-pattern-glow, var(--primary)),
+    32.5%,
+    color-mix(
+        in oklab,
+        var(--dot-pattern-glow, var(--primary)) 50%,
+        transparent
+      )
+      50%,
+    67.5%,
+    transparent
+  );
+  height: calc(var(--dot-pattern-proximity, 120px) * 2);
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  transition:
+    opacity 300ms ease-out,
+    --dot-pattern-x var(--dot-pattern-follow, 0s) cubic-bezier(0.22, 1, 0.36, 1),
+    --dot-pattern-y var(--dot-pattern-follow, 0s) cubic-bezier(0.22, 1, 0.36, 1);
+  translate: calc(var(--dot-pattern-x) - var(--dot-pattern-proximity, 120px))
+    calc(var(--dot-pattern-y) - var(--dot-pattern-proximity, 120px));
+  width: calc(var(--dot-pattern-proximity, 120px) * 2);
+  will-change: translate;
+}
+
+@utility dot-pattern-lit {
+  mask-image: radial-gradient(
+    circle,
+    #000 calc(calc(var(--dot-pattern-size, 2px) / 2) * 1.8),
+    rgb(0 0 0 / 0.3) calc(calc(var(--dot-pattern-size, 2px) / 2) * 1.8 + 0.75px),
+    transparent
+      min(
+        calc(var(--dot-pattern-size, 2px) / 2) * 6,
+        calc(var(--dot-pattern-size, 2px) + var(--dot-pattern-gap, 24px)) / 2
+      )
+  );
+  mask-position: center;
+  mask-size: calc(var(--dot-pattern-size, 2px) + var(--dot-pattern-gap, 24px))
+    calc(var(--dot-pattern-size, 2px) + var(--dot-pattern-gap, 24px));
+}
+
+@utility dot-pattern-wave {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0,
+    color-mix(in oklab, var(--foreground) 28%, transparent) 120px,
+    transparent 240px
+  );
+  bottom: 0;
+  left: -339.41px;
+  position: absolute;
+  right: 0;
+  top: 0;
 }

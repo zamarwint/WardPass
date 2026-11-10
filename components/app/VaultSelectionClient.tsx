@@ -18,7 +18,7 @@ import { useGetVaults } from "@/lib/queries/VaultQueries";
 export default function VaultSelectionClient() {
   const { data: vaults, isPending, error } = useGetVaults();
   const vaultList = vaults ?? [];
-  const canCreateVault = vaultList.length < 3;
+  const canCreateVault = vaultList.length < 5;
 
   return (
     <Field className="size-full">

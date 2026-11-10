@@ -1,242 +1,185 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react"
-import { cn } from "@/lib/utils"
+import {
+  type ComponentProps,
+  type CSSProperties,
+  type PointerEvent,
+  useRef,
+} from "react";
+import { cn } from "@/lib/utils";
 
-export interface DotPatternProps {
-  className?: string
-  children?: React.ReactNode
-  /** Dot diameter in pixels */
-  dotSize?: number
-  /** Gap between dots in pixels */
-  gap?: number
-  /** Base dot color (hex) */
-  baseColor?: string
-  /** Glow color on hover (hex) */
-  glowColor?: string
-  /** Mouse proximity radius for highlighting */
-  proximity?: number
-  /** Glow intensity multiplier */
-  glowIntensity?: number
-  /** Wave animation speed (0 to disable) */
-  waveSpeed?: number
+export interface DotPatternProps extends ComponentProps<"div"> {
+  /**
+   * The dots' colour, any CSS colour.
+   *
+   * @default 45% of `--muted-foreground`
+   */
+  dotColor?: string;
+  /** Each dot's diameter, in pixels. @default 2 */
+  dotSize?: number;
+  /**
+   * Where the dots fade out: toward the edges, the top, the bottom, or
+   * nowhere.
+   *
+   * @default "radial"
+   */
+  fade?: "none" | "radial" | "top" | "bottom";
+  /** The space between two dots, in pixels. @default 24 */
+  gap?: number;
+  /**
+   * The colour dots near the pointer turn, any CSS colour.
+   *
+   * @default `var(--primary)`
+   */
+  glowColor?: string;
+  /** How brightly dots near the pointer light up. @default "medium" */
+  intensity?: "subtle" | "medium" | "strong";
+  /** Whether dots near the pointer light up. @default true */
+  interactive?: boolean;
+  /** How far from the pointer dots light up, in pixels. @default 120 */
+  proximity?: number;
+  /**
+   * How fast the wave crosses the dots: 1 is one pass every 12 seconds,
+   * 2 twice as fast. 0 turns the wave off.
+   *
+   * @default 1
+   */
+  speed?: number;
 }
 
-function hexToRgb(hex: string): { r: number; g: number; b: number } {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return result
-    ? {
-      r: Number.parseInt(result[1], 16),
-      g: Number.parseInt(result[2], 16),
-      b: Number.parseInt(result[3], 16),
+/** A mask on the whole field, so the dots fade into what's behind them. */
+const FADE = {
+  bottom: "[mask-image:linear-gradient(to_bottom,#000_40%,transparent)]",
+  none: "",
+  radial:
+    "[mask-image:radial-gradient(ellipse_at_center,#000_40%,transparent)]",
+  top: "[mask-image:linear-gradient(to_top,#000_40%,transparent)]",
+};
+
+/** The light's opacity at the pointer. */
+const STRENGTH = { medium: 0.8, strong: 1, subtle: 0.5 };
+
+const px = (value: number | undefined) =>
+  value === undefined ? undefined : `${value}px`;
+
+/** One wave pass, 12 s at speed 1; nothing when the prop isn't passed. */
+const duration = (speed: number | undefined) =>
+  speed === undefined || speed <= 0 ? undefined : `${12 / speed}s`;
+
+/**
+ * A grid of small dots behind your content. A slow diagonal wave
+ * brightens them in turn, and dots near the pointer light up in the glow
+ * colour, grow and get a soft halo. The dots are a CSS mask over a fill;
+ * the wave is a striped layer slid under that mask by `translate`
+ * keyframes, and the light a soft spot moved under a second mask of
+ * larger dots, to where each pointer move writes two registered CSS
+ * properties, eased by a transition. When the pointer leaves, the light
+ * fades out where it was. Touch doesn't light dots; reduced motion
+ * freezes the wave and the light follows without gliding.
+ *
+ * @cssvar --dot-pattern-color The dots' colour (45% of `--muted-foreground`).
+ * @cssvar --dot-pattern-duration One wave pass (`12s`).
+ * @cssvar --dot-pattern-gap The space between two dots (`24px`).
+ * @cssvar --dot-pattern-glow The colour dots near the pointer turn (`--primary`).
+ * @cssvar --dot-pattern-proximity How far from the pointer dots light up (`120px`).
+ * @cssvar --dot-pattern-size Each dot's diameter (`2px`).
+ * @cssvar --dot-pattern-strength The light's opacity at the pointer (`0.8`).
+ */
+export const DotPattern = (props: DotPatternProps) => {
+  const {
+    dotColor,
+    dotSize,
+    fade = "radial",
+    gap,
+    glowColor,
+    intensity,
+    interactive = true,
+    proximity,
+    speed,
+    onPointerLeave,
+    onPointerMove,
+    className,
+    children,
+    ...rest
+  } = props;
+  const glow = useRef<HTMLDivElement>(null);
+
+  const pointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    onPointerMove?.(event);
+    const node = glow.current;
+    if (!node || event.pointerType === "touch") {
+      return;
     }
-    : { r: 0, g: 0, b: 0 }
-}
+    const box = event.currentTarget.getBoundingClientRect();
+    node.style.setProperty("--dot-pattern-x", `${event.clientX - box.left}px`);
+    node.style.setProperty("--dot-pattern-y", `${event.clientY - box.top}px`);
+    // The light lands where the pointer comes in, and glides from the
+    // next move on.
+    node.setAttribute(
+      "data-pointer",
+      node.hasAttribute("data-pointer") ? "move" : "enter"
+    );
+  };
 
-interface Dot {
-  x: number
-  y: number
-  baseOpacity: number
-}
-
-export function DotPattern({
-  className,
-  children,
-  dotSize = 2,
-  gap = 24,
-  baseColor = "#404040",
-  glowColor = "#22d3ee",
-  proximity = 120,
-  glowIntensity = 1,
-  waveSpeed = 0.5,
-}: DotPatternProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const dotsRef = useRef<Dot[]>([])
-  const mouseRef = useRef({ x: -1000, y: -1000 })
-  const animationRef = useRef<number>(0)
-  const startTimeRef = useRef(Date.now())
-
-  const baseRgb = useMemo(() => hexToRgb(baseColor), [baseColor])
-  const glowRgb = useMemo(() => hexToRgb(glowColor), [glowColor])
-
-  const buildGrid = useCallback(() => {
-    const canvas = canvasRef.current
-    const container = containerRef.current
-    if (!canvas || !container) return
-
-    const rect = container.getBoundingClientRect()
-    const dpr = window.devicePixelRatio || 1
-
-    canvas.width = rect.width * dpr
-    canvas.height = rect.height * dpr
-    canvas.style.width = `${rect.width}px`
-    canvas.style.height = `${rect.height}px`
-
-    const ctx = canvas.getContext("2d")
-    if (ctx) ctx.scale(dpr, dpr)
-
-    const cellSize = dotSize + gap
-    const cols = Math.ceil(rect.width / cellSize) + 1
-    const rows = Math.ceil(rect.height / cellSize) + 1
-
-    const offsetX = (rect.width - (cols - 1) * cellSize) / 2
-    const offsetY = (rect.height - (rows - 1) * cellSize) / 2
-
-    const dots: Dot[] = []
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        dots.push({
-          x: offsetX + col * cellSize,
-          y: offsetY + row * cellSize,
-          baseOpacity: 0.3 + Math.random() * 0.2,
-        })
-      }
-    }
-    dotsRef.current = dots
-  }, [dotSize, gap])
-
-  const draw = useCallback(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    const dpr = window.devicePixelRatio || 1
-    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr)
-
-    const { x: mx, y: my } = mouseRef.current
-    const proxSq = proximity * proximity
-    const time = (Date.now() - startTimeRef.current) * 0.001 * waveSpeed
-
-    for (const dot of dotsRef.current) {
-      const dx = dot.x - mx
-      const dy = dot.y - my
-      const distSq = dx * dx + dy * dy
-
-      // Wave animation
-      const wave = Math.sin(dot.x * 0.02 + dot.y * 0.02 + time) * 0.5 + 0.5
-      const waveOpacity = dot.baseOpacity + wave * 0.15
-      const waveScale = 1 + wave * 0.2
-
-      let opacity = waveOpacity
-      let scale = waveScale
-      let r = baseRgb.r
-      let g = baseRgb.g
-      let b = baseRgb.b
-      let glow = 0
-
-      // Mouse proximity effect
-      if (distSq < proxSq) {
-        const dist = Math.sqrt(distSq)
-        const t = 1 - dist / proximity
-        const easedT = t * t * (3 - 2 * t) // smoothstep
-
-        // Interpolate color
-        r = Math.round(baseRgb.r + (glowRgb.r - baseRgb.r) * easedT)
-        g = Math.round(baseRgb.g + (glowRgb.g - baseRgb.g) * easedT)
-        b = Math.round(baseRgb.b + (glowRgb.b - baseRgb.b) * easedT)
-
-        opacity = Math.min(1, waveOpacity + easedT * 0.7)
-        scale = waveScale + easedT * 0.8
-        glow = easedT * glowIntensity
-      }
-
-      const radius = (dotSize / 2) * scale
-
-      // Draw glow
-      if (glow > 0) {
-        const gradient = ctx.createRadialGradient(dot.x, dot.y, 0, dot.x, dot.y, radius * 4)
-        gradient.addColorStop(0, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${glow * 0.4})`)
-        gradient.addColorStop(0.5, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${glow * 0.1})`)
-        gradient.addColorStop(1, `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, 0)`)
-        ctx.beginPath()
-        ctx.arc(dot.x, dot.y, radius * 4, 0, Math.PI * 2)
-        ctx.fillStyle = gradient
-        ctx.fill()
-      }
-
-      // Draw dot
-      ctx.beginPath()
-      ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`
-      ctx.fill()
-    }
-
-    animationRef.current = requestAnimationFrame(draw)
-  }, [proximity, baseRgb, glowRgb, dotSize, glowIntensity, waveSpeed])
-
-  useEffect(() => {
-    buildGrid()
-
-    const container = containerRef.current
-    if (!container) return
-
-    const ro = new ResizeObserver(buildGrid)
-    ro.observe(container)
-
-    return () => ro.disconnect()
-  }, [buildGrid])
-
-  useEffect(() => {
-    animationRef.current = requestAnimationFrame(draw)
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current)
-    }
-  }, [draw])
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const canvas = canvasRef.current
-      if (!canvas) return
-      const rect = canvas.getBoundingClientRect()
-      mouseRef.current = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      }
-    }
-
-    const handleMouseLeave = () => {
-      mouseRef.current = { x: -1000, y: -1000 }
-    }
-
-    const container = containerRef.current
-    if (container) {
-      container.addEventListener("mousemove", handleMouseMove)
-      container.addEventListener("mouseleave", handleMouseLeave)
-    }
-
-    return () => {
-      if (container) {
-        container.removeEventListener("mousemove", handleMouseMove)
-        container.removeEventListener("mouseleave", handleMouseLeave)
-      }
-    }
-  }, [])
+  // The position stays, so the light fades out where it was.
+  const pointerLeave = (event: PointerEvent<HTMLDivElement>) => {
+    onPointerLeave?.(event);
+    glow.current?.removeAttribute("data-pointer");
+  };
 
   return (
     <div
-      ref={containerRef}
-      className={cn("fixed inset-0 overflow-hidden bg-neutral-50 dark:bg-neutral-950", className)}
+      className={cn("relative isolate overflow-hidden", className)}
+      data-slot="dot-pattern"
+      onPointerLeave={pointerLeave}
+      onPointerMove={pointerMove}
+      {...rest}
     >
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
-
-      {/* Vignette overlay */}
       <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(10,10,10,0.6) 100%)",
-        }}
-      />
-
-      {/* Content layer */}
-      {children && <div className="relative z-10 h-full w-full">{children}</div>}
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none absolute inset-0 -z-10 [container-type:size] [content-visibility:auto]",
+          FADE[fade]
+        )}
+        data-slot="dot-pattern-field"
+        style={
+          {
+            "--dot-pattern-color": dotColor,
+            "--dot-pattern-duration": duration(speed),
+            "--dot-pattern-gap": px(gap),
+            "--dot-pattern-glow": glowColor,
+            "--dot-pattern-proximity": px(proximity),
+            "--dot-pattern-size": px(dotSize),
+            "--dot-pattern-strength":
+              intensity === undefined ? undefined : STRENGTH[intensity],
+          } as CSSProperties
+        }
+      >
+        <div
+          className="dot-pattern-dots absolute inset-0"
+          data-slot="dot-pattern-dots"
+        >
+          {(speed === undefined || speed > 0) && (
+            <div
+              className="dot-pattern-wave animate-dot-pattern-wave motion-reduce:[animation-play-state:paused]"
+              data-slot="dot-pattern-wave"
+            />
+          )}
+        </div>
+        {interactive ? (
+          <div
+            className="dot-pattern-lit absolute inset-0"
+            data-slot="dot-pattern-lit"
+          >
+            <div
+              className="dot-pattern-glow"
+              data-slot="dot-pattern-glow"
+              ref={glow}
+            />
+          </div>
+        ) : null}
+      </div>
+      {children}
     </div>
-  )
-}
-
-export default function DotPatternDemo() {
-  return <DotPattern />
-}
+  );
+};

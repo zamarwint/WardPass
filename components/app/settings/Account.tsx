@@ -132,9 +132,10 @@ export default function Account() {
                 <FieldGroup>
                     <FieldTitle className="text-xl">Change Password</FieldTitle>
                     <FieldDescription>
-                        To change your password, please go to the <span className="btn-link cursor-pointer font-bold" onClick={() => router.push('/request-password-reset')}>Reset Password</span> page. <br />
-                        NB: If you are signed in with Google, our OAuth provider, you do not have a <span className="font-bold">password</span>. If you wish to <span className="font-bold">create vaults</span> or <span className="font-bold">delete your account</span>, you first need to create a password. <br />
-                        You can do this on the <span className="cursor-pointer font-bold">Reset Password</span> page.
+                        To change your password, please go to the <span className="btn-link cursor-pointer font-bold" onClick={() => router.push('/request-password-reset')}>Reset Password</span> page.
+                    </FieldDescription>
+                    <FieldDescription>
+                        NB: If you are signed in with Google, our OAuth provider, you do not have a <span className="font-bold">password</span>. If you wish to delete your account, you will need a password. If you are having difficulties creating a password when signed in with Google, please contact support.<br />
                     </FieldDescription>
                 </FieldGroup>
 
@@ -157,8 +158,9 @@ export default function Account() {
                     </Field>
                     <Field className="w-fit">
                         <AlertDialog>
-                            <AlertDialogTrigger asChild>
+                            <AlertDialogTrigger render={
                                 <Button variant="destructive" className="cursor-pointer h-12 w-fit px-10">Delete Account</Button>
+                            }>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
@@ -173,12 +175,13 @@ export default function Account() {
                                     <Input type="text" className="h-12" placeholder="delete wardpass" onChange={(e) => setDeleteConfirm(e.target.value)} />
 
                                     <h1 className="font-semibold">Type in your master password.</h1>
-                                    <PasswordInput className="h-12" placeholder="•••••••••••••" onChange={(e) => setPasswordForDeletion(e.target.value)} />
+                                    <PasswordInput className="h-12" placeholder="••••••••••••••••••••••••••" onChange={(e) => setPasswordForDeletion(e.target.value)} />
                                 </div>
 
                                 <AlertDialogFooter>
-                                    <AlertDialogCancel asChild>
+                                    <AlertDialogCancel render={
                                         <Button className="w-fit px-8" size="lg" variant="secondary">Cancel</Button>
+                                    }>
                                     </AlertDialogCancel>
                                     <Button disabled={deleteConfirm !== "delete wardpass" || passwordForDeletion === "" || deletePending} className="w-fit px-8" size='lg' variant="destructive" onClick={deleteAccount}>
                                         {deletePending ? (

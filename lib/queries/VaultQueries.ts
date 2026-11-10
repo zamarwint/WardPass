@@ -1,4 +1,4 @@
-import { getVaultWithTrashedItems } from "@/app/actions/getVaultWithTrashedItems";
+import { getAllVaultsWithTrashedItems, getVaultWithTrashedItems } from "@/app/actions/getVaultWithTrashedItems";
 import { getVaultItems } from "@/app/actions/vault/getVaultItems";
 import { getVaults } from "@/app/actions/vault/getVaults"
 import { getVaultPageData } from "@/app/actions/vault/getVaultPageData";
@@ -51,5 +51,17 @@ export function useGetVaultWithTrashedItems(vaultId: string) {
         refetchOnWindowFocus: true,
         staleTime: 1000 * 60 * 2,
         gcTime: 1000 * 60 * 5
+    })
+}
+
+// GET ALL VAULTS WITH TRASHED ITEMS
+export function useGetAllVaultsWithTrashedItems() {
+    return useQuery({
+        queryKey: ['trashedItems'],
+        queryFn: () => getAllVaultsWithTrashedItems(),
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+        staleTime: 1000 * 60 * 2,
+        gcTime: 1000 * 60 * 5,
     })
 }

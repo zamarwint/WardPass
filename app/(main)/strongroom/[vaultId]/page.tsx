@@ -8,7 +8,6 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const vaultID = (await params).vaultId;
-    console.log(vaultID);
     const currentVault = await getVaultUnique(vaultID);
     const vaultName = currentVault.name;
 

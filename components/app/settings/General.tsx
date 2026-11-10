@@ -19,7 +19,6 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { useGetSession } from "@/lib/queries/SessionQueries";
 import ProfileAvatar from "@/components/app/settings/ProfileAvatar";
-import { useTheme } from "next-themes";
 
 function ProfileName({ data }: { data: any }) {
     const [newName, setNewName] = useState<string>(data?.user?.name as string);
@@ -50,7 +49,7 @@ function ProfileName({ data }: { data: any }) {
 
     return (
         <div className="size-full flex flex-row items-center justify-between">
-            <FieldLegend className="size-full">Change name</FieldLegend>
+            <FieldLegend className="size-full">Full Name</FieldLegend>
             <div className="size-full flex items-center justify-center gap-2">
                 <Input type="text" className="size-sm" placeholder="e.g. John Doe" value={newName} onChange={(e) => setNewName(e.target.value)} />
                 <Button disabled={!newName || nameChangePending || (newName === data?.user.name)}>
@@ -132,10 +131,11 @@ export default function GeneralSettings() {
 
                     <Field className="w-2xs text-left">
                         <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                            <DropdownMenuTrigger render={
                                 <Button disabled variant="outline" size="lg">
                                     English (Coming soon)
                                 </Button>
+                            }>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuItem>

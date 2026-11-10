@@ -33,7 +33,7 @@ export default function CreditCardDropdown({ open, onOpenChange, creditCardItem 
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            {openUpdateCreditCard && <UpdateCreditCardItem creditCardItem={creditCardItem} cancel={() => { setOpenUpdateCreditCard(false) }} />}
+            <UpdateCreditCardItem open={openUpdateCreditCard} onOpenChange={() => { setOpenUpdateCreditCard(false) }} creditCardItem={creditCardItem} />
             <TrashCreditCardItemDialog open={openDeleteCreditCard} onOpenChange={setOpenDeleteCreditCard} creditCardItem={creditCardItem} />
         </>
     )

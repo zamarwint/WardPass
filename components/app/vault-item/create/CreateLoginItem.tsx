@@ -3,18 +3,13 @@
 import { Button } from "@/components/ui/button";
 import {
     Field,
-    FieldDescription,
     FieldError,
     FieldGroup,
     FieldLabel,
-    FieldLegend,
-    FieldSeparator,
-    FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { EyeIcon, EyeOffIcon, Loader2Icon, PlusIcon, X } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2Icon, PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
-import { motion } from "motion/react"
 import { VaultItemType } from "@/lib/types/VaultType";
 import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,8 +19,9 @@ import { Controller, useForm } from "react-hook-form";
 import { LoginJSONRaw } from "@/lib/types/RawVaultItemType";
 import PasswordStrengthBar from "@/components/PasswordStrengthBar";
 import { passwordStrength } from "check-password-strength";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
-export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
+export default function CreateLoginItem({ open, onOpenChange, vaultId }: { open: boolean, onOpenChange: (open: boolean) => void, vaultId: string }) {
     const [showPassword, setShowPassword] = useState(false);
 
     // 2. Create form instance with resolver
@@ -58,32 +54,28 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
     };
 
     {/* SUBMISSION */ }
-    const { mutate, isPending } = useCreateVaultItem(vaultId, data, cancel, VaultItemType.LOGIN);
+    const { mutate, isPending } = useCreateVaultItem(vaultId, data, VaultItemType.LOGIN);
 
     const handleSubmit = () => {
         mutate();
+        form.setValues({
+            name: "",
+            url: "",
+            username: "",
+            email: "",
+            password: "",
+            note: ""
+        })
     }
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-                hidden: { opacity: 0, x: 1000 },
-                visible: { opacity: 1, x: 0 },
-            }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
-                <FieldSet>
-                    <FieldLegend>Create Login Item</FieldLegend>
-                    <FieldDescription>Create a new login item.</FieldDescription>
-                </FieldSet>
-
-                <FieldSeparator />
-                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-4">
+        <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">
+            <DrawerContent className="w-[50vw]">
+                <DrawerHeader>
+                    <DrawerTitle>Create Login Item</DrawerTitle>
+                    <DrawerDescription>Create a new login item.</DrawerDescription>
+                </DrawerHeader>
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-4 size-full p-4">
                     <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
                         <Controller
                             name="name"
@@ -237,10 +229,8 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
                         />
                     </FieldGroup>
 
-                    <FieldSeparator className="mb-5" />
-
-                    <Field orientation="horizontal">
-                        <Button variant="outline" onClick={cancel}>Cancel</Button>
+                    <DrawerFooter className="flex flex-row">
+                        <DrawerClose>Cancel</DrawerClose>
                         <Button type="submit" className="font-bold" disabled={isPending || form.formState.isSubmitting}>
                             {isPending ? (
                                 <>
@@ -254,10 +244,9 @@ export default function CreateLoginItem({ vaultId, cancel }: { vaultId: string, 
                                 </>
                             )}
                         </Button>
-                    </Field>
+                    </DrawerFooter>
                 </form>
-            </Field>
-            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
-        </motion.div>
+            </DrawerContent>
+        </Drawer>
     )
 }

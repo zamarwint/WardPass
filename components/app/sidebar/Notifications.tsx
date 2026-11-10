@@ -7,7 +7,6 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Bell } from "lucide-react"
@@ -17,13 +16,36 @@ import Link from "next/link";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { EmailDeliveryNotWorkingBanner } from "@/components/Banners";
 
+export const Manual = () => {
+    return (
+        <Dialog>
+            <DialogTrigger render={
+                <SidebarMenuButton size="lg" className="w-full font-bold flex justify-start text-left">
+                    WardPass Manual
+                </SidebarMenuButton>
+            }>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogTitle className="font-bold">WARDPASS MANUAL</DialogTitle>
+                <DialogDescription>
+                    Welcome to WardPass! So excited that you are here!
+                </DialogDescription>
+                <DialogDescription>
+                    <strong> TIP:</strong> To edit or delete a vault, right click on the vault in the sidebar. To edit or trash a vault item, click on the three dots on the vault item. To delete a vault item you must navigate to the trash bin the under User Dropdown area.
+                </DialogDescription>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
 export const ChangingPasswords = () => {
     return (
         <Dialog>
-            <DialogTrigger asChild>
+            <DialogTrigger render={
                 <SidebarMenuButton size="lg" className="w-full flex justify-start text-left">
                     <strong>TIP:</strong> Changing Account and Vault Password
                 </SidebarMenuButton>
+            }>
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle className="font-bold">CHANGING ACCOUNT AND VAULT PASSWORDS</DialogTitle>
@@ -48,15 +70,16 @@ export const ChangingPasswords = () => {
 export const NumberOfVaultandVaultItems = () => {
     return (
         <Dialog>
-            <DialogTrigger asChild>
+            <DialogTrigger render={
                 <SidebarMenuButton size="lg" className="w-full flex justify-start text-left">
                     <strong>NB:</strong> Number of Vaults and Vault Items
                 </SidebarMenuButton>
+            }>
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle className="font-bold">NUMBER OF VAULTS AND VAULT ITEMS</DialogTitle>
                 <DialogDescription>
-                    You can only have up to 3 vaults with 3 vault items at this moment.
+                    You can only have up to 5 vaults with 5 vault items at this moment.
                     This is because WardPass is a free service.
                 </DialogDescription>
                 <DialogDescription>
@@ -76,10 +99,11 @@ export const KeyboardShortcuts = () => {
     // As stated in the plan.
     return (
         <Dialog>
-            <DialogTrigger asChild>
+            <DialogTrigger render={
                 <SidebarMenuButton size="lg" className="w-full flex justify-start text-left">
                     <strong>TIP:</strong> Keyboard Shortcuts
                 </SidebarMenuButton>
+            }>
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle className="font-bold">KEYBOARD SHORTCUTS</DialogTitle>
@@ -104,33 +128,23 @@ export const KeyboardShortcuts = () => {
 export default function Notifications() {
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger render={
                 <Button variant="ghost" size="icon-lg">
                     <Bell />
                 </Button>
+            }>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-full">
-                <DropdownMenuLabel>Recent Notifications</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup className="text-sm">
-                    <DropdownMenuGroup>
-                        <DropdownMenuLabel>Alerts!</DropdownMenuLabel>
-                        <DropdownMenuItem asChild>
-                            <EmailDeliveryNotWorkingBanner />
-                        </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuGroup>
-                        <DropdownMenuLabel>Main Notifications</DropdownMenuLabel>
-                        <DropdownMenuItem asChild>
-                            <ChangingPasswords />
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <NumberOfVaultandVaultItems />
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <KeyboardShortcuts />
-                        </DropdownMenuItem>
-                    </DropdownMenuGroup>
+                <DropdownMenuGroup>
+                    <DropdownMenuLabel>Alerts!</DropdownMenuLabel>
+                    <DropdownMenuItem render={<EmailDeliveryNotWorkingBanner />} />
+                </DropdownMenuGroup>
+                <DropdownMenuGroup>
+                    <DropdownMenuLabel>Main Notifications</DropdownMenuLabel>
+                    <DropdownMenuItem render={<Manual />} />
+                    <DropdownMenuItem render={<ChangingPasswords />} />
+                    <DropdownMenuItem render={<NumberOfVaultandVaultItems />} />
+                    <DropdownMenuItem render={<KeyboardShortcuts />} />
                 </DropdownMenuGroup>
             </DropdownMenuContent>
         </DropdownMenu>

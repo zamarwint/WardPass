@@ -3,22 +3,18 @@
 import { Button } from "@/components/ui/button";
 import {
     Field,
-    FieldDescription,
     FieldGroup,
     FieldLabel,
-    FieldLegend,
-    FieldSeparator,
-    FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Loader2Icon, PlusIcon, X } from "lucide-react";
+import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
-import { motion } from "motion/react"
 import { PasswordInput } from "@/components/PasswordInput";
 import { VaultItemType } from "@/lib/types/VaultType";
 import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
-export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
+export default function CreateCreditCardItem({ open, onOpenChange, vaultId }: { open: boolean, onOpenChange: (open: boolean) => void, vaultId: string }) {
     const [cardHolderName, setCardHolderName] = useState<string>("")
     const [cardNumber, setCardNumber] = useState<string>("")
     const [cvv, setCvv] = useState<string>("")
@@ -34,31 +30,33 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
         cardHolderName, cardNumber, cvv: Number(cvv), expiryDate,
         billingAddress1, billingAddress2, zipCode, city, state, country
     };
-    const { mutate, isPending } = useCreateVaultItem(vaultId, data, cancel, VaultItemType.CREDIT_CARD);
+    const { mutate, isPending } = useCreateVaultItem(vaultId, data, VaultItemType.CREDIT_CARD);
 
     const handleSubmit = () => {
         mutate();
+
+        // EMPTY VALUES
+        setCardHolderName("");
+        setCardNumber("");
+        setCvv("");
+        setExpiryDate("");
+        setBillingAddress1("");
+        setBillingAddress2("");
+        setZipCode("");
+        setCity("");
+        setState("");
+        setCountry("");
     }
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-                hidden: { opacity: 0, x: 1000 },
-                visible: { opacity: 1, x: 0 },
-            }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
-                <FieldSet>
-                    <FieldLegend>Create Credit Card Item</FieldLegend>
-                    <FieldDescription>Create a new credit card item.</FieldDescription>
-                </FieldSet>
+        <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">
+            <DrawerContent className="w-[50vw]">
+                <DrawerHeader>
+                    <DrawerTitle>Create Credit Card Item</DrawerTitle>
+                    <DrawerDescription>Create a new credit card item.</DrawerDescription>
+                </DrawerHeader>
 
-                <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
+                <FieldGroup className="grid grid-cols-2 gap-4 p-4">
                     <Field>
                         <FieldLabel>Card Holder Name</FieldLabel>
                         <Input type="text" placeholder="Name of credit card item" id="name" value={cardHolderName} onChange={(e) => { setCardHolderName(e.target.value) }} className="h-12" />
@@ -108,9 +106,8 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
                     </Field>
                 </FieldGroup>
 
-                <FieldSeparator />
-                <Field orientation="horizontal">
-                    <Button variant="outline" onClick={cancel}>Cancel</Button>
+                <DrawerFooter className="flex flex-row">
+                    <DrawerClose>Cancel</DrawerClose>
                     <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !cardHolderName || !cardNumber || !cvv || !expiryDate || !billingAddress1 || !zipCode || !city || !country}>
                         {isPending ? (
                             <>
@@ -124,9 +121,8 @@ export default function CreateCreditCardItem({ vaultId, cancel }: { vaultId: str
                             </>
                         )}
                     </Button>
-                </Field>
-            </Field>
-            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
-        </motion.div>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
     )
 }

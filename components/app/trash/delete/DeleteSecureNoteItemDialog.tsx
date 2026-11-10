@@ -30,8 +30,9 @@ export default function DeleteSecureNoteItemDialog({ secureNoteItem }: { secureN
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger asChild>
+            <AlertDialogTrigger render={
                 <Button variant="ghost" size="icon"><Trash2Icon className="text-destructive" /></Button>
+            }>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -45,11 +46,13 @@ export default function DeleteSecureNoteItemDialog({ secureNoteItem }: { secureN
                     <Input placeholder="type in secure note name to confirm" className="h-12 mt-3" id="secureNoteNameConfirm" value={secureNoteNameConfirm} onChange={(e) => setSecureNoteNameConfirm(e.target.value)} />
                 </div>
                 <AlertDialogFooter>
-                    <AlertDialogCancel asChild>
+                    <AlertDialogCancel render={
                         <Button variant="outline">Cancel</Button>
+                    }>
                     </AlertDialogCancel>
-                    <AlertDialogAction asChild>
+                    <AlertDialogAction render={
                         <Button disabled={secureNoteNameConfirm.toLowerCase() !== secureNoteItem.title?.toLowerCase() || isPending} variant="destructive" className="font-bold" onClick={handleSubmit}>Delete</Button>
+                    }>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

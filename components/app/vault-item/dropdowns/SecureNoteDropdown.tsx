@@ -33,7 +33,7 @@ export default function SecureNoteDropdown({ open, onOpenChange, secureNoteItem 
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            {openUpdateSecureNote && <UpdateSecureNoteItem secureNoteItem={secureNoteItem} cancel={() => { setOpenUpdateSecureNote(false) }} />}
+            <UpdateSecureNoteItem open={openUpdateSecureNote} onOpenChange={() => { setOpenUpdateSecureNote(false) }} secureNoteItem={secureNoteItem} />
             <TrashSecureNoteItemDialog open={openDeleteSecureNote} onOpenChange={setOpenDeleteSecureNote} secureNoteItem={secureNoteItem} />
         </>
     )

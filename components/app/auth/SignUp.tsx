@@ -199,7 +199,7 @@ export default function SignUp() {
                     </form>
                 </div>
                 {/* STACK THE CARDS ON TOP OF EACH OTHER */}
-                <div className="w-full flex flex-col items-center justify-center">
+                <div className="w-full flex flex-col items-center justify-center bg-transparent">
                     <div className="z-998 rotate-13 -translate-y-8"><PaymentCard withoutHeader={true} /></div>
                     <div className="z-999 -rotate-13 translate-y-1"><WebsiteCredentialCard withoutHeader={true} /></div>
                 </div>

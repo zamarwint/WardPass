@@ -91,7 +91,6 @@ export function useCreateVault(
 export function useCreateVaultItem(
   vaultId: string,
   data: CreditCardJSONRaw | IdentityJSONRaw | SecureNoteJSONRaw | LoginJSONRaw,
-  cancel: () => void,
   type: VaultItemType,
 ) {
   const queryClient = useQueryClient();
@@ -115,7 +114,6 @@ export function useCreateVaultItem(
     onSuccess: () => {
       toast.dismiss();
       toast.success("Vault item added successfully");
-      cancel();
       queryClient.invalidateQueries({
         queryKey: ["vaultPage", vaultId],
         refetchType: "active",

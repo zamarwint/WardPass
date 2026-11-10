@@ -3,22 +3,18 @@
 import { Button } from "@/components/ui/button";
 import {
     Field,
-    FieldDescription,
     FieldGroup,
     FieldLabel,
-    FieldLegend,
-    FieldSeparator,
-    FieldSet,
     FieldTitle,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Loader2Icon, PlusIcon, X } from "lucide-react";
+import { Loader2Icon, PlusIcon } from "lucide-react";
 import { useState } from "react";
-import { motion } from "motion/react"
 import { VaultItemType } from "@/lib/types/VaultType";
 import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
-export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: string, cancel: () => void }) {
+export default function CreateIdentityItem({ open, onOpenChange, vaultId }: { open: boolean, onOpenChange: (open: boolean) => void, vaultId: string }) {
     // Personal details
     const [name, setName] = useState<string>("")
     const [email, setEmail] = useState<string>("")
@@ -61,35 +57,50 @@ export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: strin
         companyName, occupation, x, linkedin, instagram,
         tiktok, facebook, github, other
     };
-    const { mutate, isPending } = useCreateVaultItem(vaultId, data, cancel, VaultItemType.IDENTITY);
+    const { mutate, isPending } = useCreateVaultItem(vaultId, data, VaultItemType.IDENTITY);
 
     const handleSubmit = () => {
         mutate();
+
+        setName("");
+        setEmail("");
+        setPhoneNumber("");
+        setOrganizationName("");
+        setAddress1("")
+        setAddress2("");
+        setZipCode("");
+        setCity("");
+        setState("");
+        setCountry("");
+        setFloor("");
+        setCounty("");
+        setPoBox("");
+        setSocialSecurityNumber("");
+        setPassportNumber("");
+        setLicenseNumber("");
+        setCompanyName("");
+        setOccupation("");
+        setX("");
+        setLinkedin("");
+        setInstagram("");
+        setTiktok("");
+        setFacebook("");
+        setGithub("");
+        setOther("");
     }
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-                hidden: { opacity: 0, x: 1000 },
-                visible: { opacity: 1, x: 0 },
-            }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
-                <FieldSet>
-                    <FieldLegend>Create Identity Item</FieldLegend>
-                    <FieldDescription>Create a new Identity item.</FieldDescription>
-                </FieldSet>
+        <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">
+            <DrawerContent className="w-[50vw]">
+                <DrawerHeader>
+                    <DrawerTitle>Create Identity Item</DrawerTitle>
+                    <DrawerDescription>Create a new Identity item.</DrawerDescription>
+                </DrawerHeader>
 
-                <FieldGroup className="hidden lg:flex flex-col gap-4 w-full">
+                <FieldGroup className="flex flex-col gap-4 p-4 overflow-y-scroll">
                     {/* Personal details */}
 
                     <FieldTitle className="text-2xl font-semibold">Personal Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -108,7 +119,6 @@ export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: strin
 
                     {/* Organization details */}
                     <FieldTitle className="text-2xl font-semibold pt-8">Organization Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -155,7 +165,6 @@ export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: strin
 
                     {/* ID details */}
                     <FieldTitle className="text-2xl font-semibold pt-8">ID Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -174,7 +183,6 @@ export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: strin
 
                     {/* Work details */}
                     <FieldTitle className="text-2xl font-semibold pt-8">Work Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -189,7 +197,6 @@ export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: strin
 
                     {/* Social details */}
                     <FieldTitle className="text-2xl font-semibold pt-8">Social Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -222,9 +229,8 @@ export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: strin
                         </Field>
                     </FieldGroup>
                 </FieldGroup>
-                <FieldSeparator />
-                <Field orientation="horizontal">
-                    <Button variant="outline" onClick={cancel}>Cancel</Button>
+                <DrawerFooter className="flex flex-row">
+                    <DrawerClose>Cancel</DrawerClose>
                     <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !name || !email || !phoneNumber}>
                         {isPending ? (
                             <>
@@ -238,9 +244,8 @@ export default function CreateIdentityItem({ vaultId, cancel }: { vaultId: strin
                             </>
                         )}
                     </Button>
-                </Field>
-            </Field>
-            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
-        </motion.div>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
     )
 }

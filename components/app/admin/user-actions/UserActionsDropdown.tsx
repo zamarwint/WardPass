@@ -17,10 +17,11 @@ export function UserActionsDropdown({ user }: { user: any }) {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger render={
                 <Button variant="ghost">
                     <EllipsisVertical className="size-4" />
                 </Button>
+            }>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
                 <DropdownMenuLabel>

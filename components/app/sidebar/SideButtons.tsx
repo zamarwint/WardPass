@@ -28,10 +28,11 @@ export function SideLogo() {
             <div>
                 <Notifications />
                 <Tooltip>
-                    <TooltipTrigger asChild>
+                    <TooltipTrigger render={
                         <Button size="icon-lg" variant="ghost" onClick={() => router.push('/strongroom')}>
                             <Vault />
                         </Button>
+                    }>
                     </TooltipTrigger>
                     <TooltipContent>All Vaults</TooltipContent>
                 </Tooltip>
@@ -60,11 +61,12 @@ export function VaultSideButton() {
                 ) : vaultData && vaultData.data?.map((vault: VaultSummary) => (
                     <SidebarMenuItem key={vault.id} onClick={() => router.push(vaultLink + vault.id)} className="size-full cursor-pointer">
                         <ContextMenu>
-                            <ContextMenuTrigger asChild>
+                            <ContextMenuTrigger render={
                                 <SidebarMenuButton variant={pathName === (vaultLink + vault.id) ? 'highlight' : 'default'} className='size-full flex items-center justify-start text-center gap-2 p-5'>
                                     <RenderIcon name={vault.icon} size={16} color={vault.iconColor ? vault.iconColor : 'white'} />
                                     <span className="text-sm font-semibold">{vault.name}</span>
                                 </SidebarMenuButton>
+                            }>
                             </ContextMenuTrigger>
                             <ContextMenuContent>
                                 <ContextMenuItem onClick={() => setOpenUpdateVault(prev => !prev)}>

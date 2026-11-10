@@ -8,13 +8,10 @@ import {
     FieldGroup,
     FieldLabel,
     FieldLegend,
-    FieldSeparator,
-    FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { EyeIcon, EyeOffIcon, Loader2Icon, PenIcon, X } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2Icon, PenIcon } from "lucide-react";
 import { useMemo, useState } from "react";
-import { motion } from "motion/react"
 import { useUpdateVaultItem } from "@/lib/mutations/CoreUpdateMutations";
 import { passwordStrength } from "check-password-strength";
 import { Controller, useForm } from "react-hook-form";
@@ -24,8 +21,9 @@ import { LoginJSONRaw } from "@/lib/types/RawVaultItemType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginJSON } from "@/lib/types/VaultItemType";
 import PasswordStrengthBar from "@/components/PasswordStrengthBar";
+import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader } from "@/components/ui/drawer";
 
-export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: LoginJSON, cancel: () => void }) {
+export default function UpdateLoginItem({ open, onOpenChange, loginItem }: { open: boolean, onOpenChange: (open: boolean) => void, loginItem: LoginJSON }) {
     const [showPassword, setShowPassword] = useState(false);
 
     // 2. Create form instance with resolver
@@ -58,32 +56,21 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: Logi
     };
 
     {/* SUBMISSION */ }
-    const { mutate, isPending } = useUpdateVaultItem(loginItem.id, loginItem.vaultId, data, cancel);
+    const { mutate, isPending } = useUpdateVaultItem(loginItem.id, loginItem.vaultId, data);
 
     const handleSubmit = () => {
         mutate();
     }
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-                hidden: { opacity: 0, x: 1000 },
-                visible: { opacity: 1, x: 0 },
-            }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex w-screen h-screen items-start justify-start z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
-                <FieldSet>
+        <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">
+            <DrawerContent className="w-[50vw]">
+                <DrawerHeader>
                     <FieldLegend>Update Login</FieldLegend>
                     <FieldDescription>Update {loginItem.name}.</FieldDescription>
-                </FieldSet>
+                </DrawerHeader>
 
-                <FieldSeparator />
-                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-4">
+                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-4 p-4">
                     <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
                         <Controller
                             name="name"
@@ -237,9 +224,8 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: Logi
                         />
                     </FieldGroup>
 
-                    <FieldSeparator className="mb-5" />
-                    <Field orientation="horizontal">
-                        <Button variant="outline" onClick={cancel}>Cancel</Button>
+                    <DrawerFooter className="flex flex-row">
+                        <DrawerClose>Cancel</DrawerClose>
                         <Button type="submit" disabled={isPending || form.formState.isSubmitting} className="font-bold">
                             {isPending ? (
                                 <>
@@ -253,10 +239,9 @@ export default function UpdateLoginItem({ loginItem, cancel }: { loginItem: Logi
                                 </>
                             )}
                         </Button>
-                    </Field>
+                    </DrawerFooter>
                 </form>
-            </Field>
-            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
-        </motion.div>
+            </DrawerContent>
+        </Drawer>
     )
 }

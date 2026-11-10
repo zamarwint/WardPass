@@ -32,11 +32,13 @@ export default function TrashSecureNoteItemDialog({ open, onOpenChange, secureNo
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel asChild>
+                    <AlertDialogCancel render={
                         <Button variant="outline">Cancel</Button>
+                    }>
                     </AlertDialogCancel>
-                    <AlertDialogAction asChild>
+                    <AlertDialogAction render={
                         <Button disabled={isPending} variant="destructive" className="font-bold" onClick={handleSubmit}>Move to Trash</Button>
+                    }>
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

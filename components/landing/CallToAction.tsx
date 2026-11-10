@@ -1,12 +1,81 @@
 "use client";
 
-import { CustomLoadingState } from "../LoadingStates";
-import { Button } from "@/components/ui/button";
-import { useGetSession } from "@/lib/queries/SessionQueries";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { useGetSession } from "@/lib/queries/SessionQueries";
+import { CustomLoadingState } from "../LoadingStates";
+import { cn } from "@/lib/utils";
 
 export default function CallToAction() {
   const { isPending, data } = useGetSession();
-  return <section className="landing-section pb-20 md:pb-28"><div className="landing-shell"><div className="relative grid gap-8 border border-foreground/25 bg-foreground px-7 py-10 text-background md:grid-cols-[1fr_auto] md:items-end md:px-12 md:py-14"><div className="absolute inset-y-0 left-0 w-1 bg-primary"/><div><p className="eyebrow relative mb-5 text-background/65">WARDPASS / GET STARTED</p><h2 className="landing-display relative max-w-2xl text-4xl leading-tight md:text-5xl">A better place for the passwords you rely on.</h2><p className="relative mt-5 max-w-xl text-sm leading-6 text-background/70">Create a WardPass account and start organizing your credentials in personal vaults.</p></div><Button asChild size="lg" variant="secondary" disabled={isPending} className="relative w-fit rounded-none px-6">{isPending ? <span className="flex items-center gap-2"><CustomLoadingState loaderChoice={2} className="flex items-center gap-2">Loading...</CustomLoadingState></span> : <Link href={data?.user ? "/strongroom" : "/sign-up"}>{data?.user ? "Open your Strongroom" : "Get started with WardPass"}<ArrowRight/></Link>}</Button></div></div></section>;
+
+  return (
+    <section className="relative w-full py-24 sm:py-32 bg-secondary/30 text-foreground border-t border-border overflow-hidden">
+      {/* Intense luminous radial gold bloom */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-40 z-0"
+        style={{
+          background: "radial-gradient(circle at 50% 50%, rgba(214, 165, 29, 0.15) 0%, transparent 70%)"
+        }}
+      />
+
+      <div className="landing-shell relative z-10">
+        <div className="relative rounded-3xl border border-border bg-card text-card-foreground p-8 sm:p-14 lg:p-16 shadow-md overflow-hidden flex flex-col items-center text-center">
+          {/* Eyebrow */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono tracking-wider uppercase bg-primary/10 border border-primary/20 text-primary mb-6">
+            <Sparkles className="size-3.5 text-primary" />
+            ZERO-KNOWLEDGE SECURITY FOR EVERYONE
+          </div>
+
+          {/* Headline */}
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-foreground max-w-3xl leading-[1.08]">
+            Your credentials deserve{" "}
+            <span className="text-gradient-gold font-normal">mathematical protection</span>
+          </h2>
+
+          {/* Subhead */}
+          <p className="mt-6 text-base sm:text-lg text-muted-foreground max-w-2xl leading-relaxed font-normal">
+            Join engineering teams, businesses, and privacy-conscious individuals using WardPass to
+            protect logins, notes, cards, and identities without ever leaking plaintext to a server.
+          </p>
+
+          {/* CTAs */}
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+            <>
+              {isPending ? (
+                <span className="flex items-center gap-2">
+                  <CustomLoadingState loaderChoice={2}>Loading...</CustomLoadingState>
+                </span>
+              ) : (
+                <Link href={data?.user ? "/strongroom" : "/sign-up"} className={cn("flex items-center gap-2", buttonVariants({ size: "lg" }))}>
+                  <span>{data?.user ? "Open Your Strongroom" : "Get Started with WardPass"}</span>
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              )
+              }
+            </>
+
+            <Link href="/security-whitepaper" className={cn("flex items-center gap-2", buttonVariants({ variant: "outline", size: "lg" }))}>
+              <ShieldCheck className="size-4 text-primary" />
+              <span>Security Whitepaper</span>
+            </Link>
+          </div>
+
+          {/* Reassurance points */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-mono text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <span className="size-1 rounded-full bg-primary" /> Free & Open Source
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="size-1 rounded-full bg-primary" /> Zero Plaintext Storage
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="size-1 rounded-full bg-primary" /> Independent Vault Keys
+            </span>
+          </div>
+        </div>
+      </div>
+    </section >
+  );
 }

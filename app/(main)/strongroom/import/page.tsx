@@ -118,7 +118,7 @@ export default function ImportPage() {
                         {isLoading ? (
                             <SkeletonLoadingState numberOfSkeletons={1} skeletonClassName="w-full max-w-sm h-12" />
                         ) : (
-                            <Select onValueChange={(e) => setSelectedVault(e)} value={selectedVault}>
+                            <Select onValueChange={(e) => setSelectedVault(e as string)} value={selectedVault}>
                                 <SelectTrigger disabled>
                                     <SelectValue placeholder="Select a vault" />
                                 </SelectTrigger>

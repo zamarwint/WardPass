@@ -33,7 +33,7 @@ export default function LoginDropdown({ open, onOpenChange, loginItem }: { open:
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            {openUpdateLogin && <UpdateLoginItem loginItem={loginItem} cancel={() => { setOpenUpdateLogin(false) }} />}
+            <UpdateLoginItem open={openUpdateLogin} onOpenChange={() => { setOpenUpdateLogin(false) }} loginItem={loginItem} />
             <TrashLoginItemDialog open={openDeleteLogin} onOpenChange={setOpenDeleteLogin} loginItem={loginItem} />
         </>
     )

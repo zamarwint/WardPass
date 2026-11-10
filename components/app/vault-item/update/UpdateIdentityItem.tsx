@@ -3,23 +3,19 @@
 import { Button } from "@/components/ui/button";
 import {
     Field,
-    FieldDescription,
     FieldGroup,
     FieldLabel,
-    FieldLegend,
-    FieldSeparator,
-    FieldSet,
     FieldTitle,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Loader2Icon, PenIcon, X } from "lucide-react";
+import { Loader2Icon, PenIcon } from "lucide-react";
 import { useState } from "react";
-import { motion } from "motion/react"
 import PasswordCopyInput from "@/components/app/PasswordCopyInput";
 import { IdentityJSON } from "@/lib/types/VaultItemType";
 import { useUpdateVaultItem } from "@/lib/mutations/CoreUpdateMutations";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
-export default function UpdateIdentityItem({ identityItem, cancel }: { identityItem: IdentityJSON, cancel: () => void }) {
+export default function UpdateIdentityItem({ open, onOpenChange, identityItem }: { open: boolean, onOpenChange: (open: boolean) => void, identityItem: IdentityJSON }) {
     const [name, setName] = useState<string>(identityItem.name)
     const [email, setEmail] = useState<string>(identityItem.email)
     const [phoneNumber, setPhoneNumber] = useState<string>(identityItem.phoneNumber)
@@ -59,34 +55,23 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
         zipCode, country, floor, county, poBox, socialSecurityNumber, passportNumber,
         licenseNumber, companyName, occupation, x, linkedin, instagram, tiktok, facebook, github, other
     };
-    const { mutate, isPending } = useUpdateVaultItem(identityItem.id, identityItem.vaultId, data, cancel);
+    const { mutate, isPending } = useUpdateVaultItem(identityItem.id, identityItem.vaultId, data);
 
     const handleSubmit = () => {
         mutate();
     }
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-                hidden: { opacity: 0, x: 1000 },
-                visible: { opacity: 1, x: 0 },
-            }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
-                <FieldSet>
-                    <FieldLegend>Update Identity</FieldLegend>
-                    <FieldDescription>Update {identityItem.name}.</FieldDescription>
-                </FieldSet>
+        <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">
+            <DrawerContent className="w-[50vw]">
+                <DrawerHeader>
+                    <DrawerTitle>Update Identity</DrawerTitle>
+                    <DrawerDescription>Update {identityItem.name}.</DrawerDescription>
+                </DrawerHeader>
 
-                <FieldGroup className="hidden lg:flex flex-col gap-4 w-full">
+                <FieldGroup className="hidden lg:flex flex-col gap-4 p-4 overflow-y-scroll">
                     {/* Personal details */}
                     <FieldTitle className="text-2xl font-semibold">Personal Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -105,7 +90,6 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
 
                     {/* Organization details */}
                     <FieldTitle className="text-2xl font-semibold pt-8">Organization Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -152,7 +136,6 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
 
                     {/* ID details */}
                     <FieldTitle className="text-2xl font-semibold pt-8">ID Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -171,7 +154,6 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
 
                     {/* Work details */}
                     <FieldTitle className="text-2xl font-semibold pt-8">Work Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -186,7 +168,6 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
 
                     {/* Social details */}
                     <FieldTitle className="text-2xl font-semibold pt-8">Social Details</FieldTitle>
-                    <FieldSeparator />
 
                     <FieldGroup className="hidden lg:grid grid-cols-2">
                         <Field>
@@ -220,9 +201,8 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
                     </FieldGroup>
                 </FieldGroup>
 
-                <FieldSeparator />
-                <Field orientation="horizontal">
-                    <Button variant="outline" onClick={cancel}>Cancel</Button>
+                <DrawerFooter className="flex flex-row">
+                    <DrawerClose>Cancel</DrawerClose>
                     <Button disabled={isPending || !name || !email || !phoneNumber} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
@@ -236,9 +216,8 @@ export default function UpdateIdentityItem({ identityItem, cancel }: { identityI
                             </>
                         )}
                     </Button>
-                </Field>
-            </Field>
-            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
-        </motion.div>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
     )
 }

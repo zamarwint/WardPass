@@ -6,7 +6,6 @@ import { motion } from "motion/react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { VaultSummary } from "@/lib/types/VaultType";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
@@ -48,7 +47,7 @@ export default function ExportPage() {
                         {isLoading ? (
                             <SkeletonLoadingState numberOfSkeletons={1} skeletonClassName="w-full max-w-sm h-12" />
                         ) : (
-                            <Select onValueChange={(e) => setSelectedVault(e)} value={selectedVault}>
+                            <Select onValueChange={(e) => setSelectedVault(e as string)} value={selectedVault}>
                                 <SelectTrigger disabled>
                                     <SelectValue placeholder="Select a vault" />
                                 </SelectTrigger>

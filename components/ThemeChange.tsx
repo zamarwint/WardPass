@@ -2,6 +2,7 @@
 
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
+import Image from 'next/image';
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,12 +17,13 @@ export function ModeToggleIcon() {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="rounded-none">
+            <DropdownMenuTrigger render={
+                <Button variant="ghost" size="icon" className="rounded-none">
                     <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
                     <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
                     <span className="sr-only">Toggle theme</span>
                 </Button>
+            }>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer">
@@ -77,6 +79,14 @@ export const SwitchDualIconLabelDemo = () => {
             >
                 <MoonIcon className='size-4' aria-hidden='true' />
             </span>
+        </div>
+    )
+}
+
+export const LogoSwitch = () => {
+    return (
+        <div>
+            <Image src="/wp-logo-dark.svg" width={0} height={0} alt="" className="size-6 object-cover" />
         </div>
     )
 }

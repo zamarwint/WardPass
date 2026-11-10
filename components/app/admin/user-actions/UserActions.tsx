@@ -237,7 +237,7 @@ export function BanUserAlert({ open, onOpenChange, userId }: { open: boolean, on
                 </AlertDialogHeader>
                 <Label htmlFor='ban'>Enter the ban reason</Label>
                 <Input id='ban' placeholder="Ban reason" value={banReason} onChange={(e) => setBanReason(e.target.value)} />
-                <Select value={banExpiresIn} onValueChange={(value) => setBanExpiresIn(value)}>
+                <Select value={banExpiresIn} onValueChange={(value) => setBanExpiresIn(value as string)}>
                     <SelectTrigger>
                         <SelectValue placeholder="Ban expires in" />
                     </SelectTrigger>

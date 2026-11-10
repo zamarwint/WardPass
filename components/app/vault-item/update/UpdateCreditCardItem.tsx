@@ -3,22 +3,18 @@
 import { Button } from "@/components/ui/button";
 import {
     Field,
-    FieldDescription,
     FieldGroup,
     FieldLabel,
-    FieldLegend,
-    FieldSeparator,
-    FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { motion } from "motion/react"
 import { PasswordInput } from "@/components/PasswordInput";
 import { useState } from "react";
-import { Loader2Icon, PenIcon, X } from "lucide-react";
+import { Loader2Icon, PenIcon } from "lucide-react";
 import { CreditCardJSON } from "@/lib/types/VaultItemType";
 import { useUpdateVaultItem } from "@/lib/mutations/CoreUpdateMutations";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
-export default function UpdateCreditCardItem({ creditCardItem, cancel }: { creditCardItem: CreditCardJSON, cancel: () => void }) {
+export default function UpdateCreditCardItem({ open, onOpenChange, creditCardItem }: { open: boolean, onOpenChange: (open: boolean) => void, creditCardItem: CreditCardJSON }) {
     const [cardHolderName, setCardHolderName] = useState<string>(creditCardItem.cardHolderName)
     const [cardNumber, setCardNumber] = useState<string>(creditCardItem.cardNumber)
     const [cvv, setCvv] = useState<string>(creditCardItem.cvv.toString())
@@ -34,31 +30,21 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
         cardHolderName, cardNumber, cvv: Number(cvv), expiryDate,
         billingAddress1, billingAddress2, zipCode, city, state, country
     };
-    const { mutate, isPending } = useUpdateVaultItem(creditCardItem.id, creditCardItem.vaultId, data, cancel)
+    const { mutate, isPending } = useUpdateVaultItem(creditCardItem.id, creditCardItem.vaultId, data)
 
     const handleSubmit = () => {
         mutate();
     }
 
     return (
-        <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-                hidden: { opacity: 0, x: 1000 },
-                visible: { opacity: 1, x: 0 },
-            }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="flex w-screen h-screen items-center justify-center z-998 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-        >
-            <div className="flex w-full h-full bg-transparent backdrop-blur-sm opacity-100"></div>
-            <Field className="size-full flex flex-col items-start justify-start border-r border-muted z-999 px-8 py-8 gap-8 bg-background overflow-y-scroll">
-                <FieldSet>
-                    <FieldLegend>Update Credit Card</FieldLegend>
-                    <FieldDescription>Update {creditCardItem.cardHolderName}.</FieldDescription>
-                </FieldSet>
+        <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">
+            <DrawerContent className="w-[50vw]">
+                <DrawerHeader>
+                    <DrawerTitle>Update Credit Card</DrawerTitle>
+                    <DrawerDescription>Update {creditCardItem.cardHolderName}.</DrawerDescription>
+                </DrawerHeader>
 
-                <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
+                <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 p-4">
                     <Field>
                         <FieldLabel>Card Holder Name</FieldLabel>
                         <Input type="text" placeholder="Name of credit card item" id="name" value={cardHolderName} onChange={(e) => { setCardHolderName(e.target.value) }} className="h-12" />
@@ -108,9 +94,8 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
                     </Field>
                 </FieldGroup>
 
-                <FieldSeparator />
-                <Field orientation="horizontal">
-                    <Button variant="outline" onClick={cancel}>Cancel</Button>
+                <DrawerFooter className="flex flex-row">
+                    <DrawerClose>Cancel</DrawerClose>
                     <Button disabled={isPending || !cardHolderName || !cardNumber || !cvv || !expiryDate || !billingAddress2 || !zipCode || !city || !country} onClick={handleSubmit} className="font-bold">
                         {isPending ? (
                             <>
@@ -124,9 +109,8 @@ export default function UpdateCreditCardItem({ creditCardItem, cancel }: { credi
                             </>
                         )}
                     </Button>
-                </Field>
-            </Field>
-            <Button variant="ghost" size="icon-lg" onClick={cancel} className="absolute top-4 right-4 z-999"><X className="size-4" /></Button>
-        </motion.div>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
     )
 }

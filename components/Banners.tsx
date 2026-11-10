@@ -8,12 +8,13 @@ import { SidebarMenuButton } from "./ui/sidebar"
 
 export function EmailDeliveryNotWorkingBanner() {
     return (
-        <Drawer direction="top">
-            <DrawerTrigger asChild>
+        <Drawer swipeDirection="up">
+            <DrawerTrigger render={
                 <SidebarMenuButton size="lg" className="w-full flex justify-start">
                     <OctagonAlert size={32} className="text-primary" />
                     <span className="text-sm font-bold text-primary">URGENT NOTICE</span>
                 </SidebarMenuButton>
+            }>
             </DrawerTrigger>
             <DrawerContent>
                 <div className="bg-primary">
@@ -33,10 +34,11 @@ export function EmailDeliveryNotWorkingBanner() {
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <DrawerClose asChild>
+                            <DrawerClose render={
                                 <Button className="size-8 hover:bg-transparent" size="icon" variant="ghost">
                                     <X className="size-4 text-background" />
                                 </Button>
+                            }>
                             </DrawerClose>
                         </div>
                     </div>

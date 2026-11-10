@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, isNotNull, sql } from "drizzle-orm";
 import { db } from "@/drizzle/client";
 import { vault, vaultItem } from "@/drizzle/schema";
 
@@ -63,6 +63,33 @@ export async function getTrashedVaultForUser(userId: string, vaultId: string) {
       row.item && row.item.deletedAt !== null ? [row.item] : [],
     ),
   };
+}
+
+export async function getAllTrashedVaultsForUser(userId: string) {
+  const rows = await db
+    .select({ vault, item: vaultItem })
+    .from(vault)
+    .leftJoin(
+      vaultItem,
+      and(eq(vaultItem.vaultId, vault.id), isNotNull(vaultItem.deletedAt))
+    )
+    .where(eq(vault.userId, userId))
+    .orderBy(asc(vault.name), desc(vaultItem.updatedAt));
+
+  const map = new Map<string, typeof rows[0]["vault"] & { vaultItems: NonNullable<typeof rows[0]["item"]>[] }>();
+  for (const row of rows) {
+    if (!map.has(row.vault.id)) {
+      map.set(row.vault.id, {
+        ...row.vault,
+        vaultItems: [],
+      });
+    }
+    if (row.item && row.item.deletedAt !== null) {
+      map.get(row.vault.id)!.vaultItems.push(row.item);
+    }
+  }
+
+  return Array.from(map.values());
 }
 
 export async function getVaultMetadataForUser(userId: string, vaultId: string) {

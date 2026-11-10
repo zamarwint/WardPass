@@ -24,8 +24,8 @@ export async function createVault(
     .from(vault)
     .where(eq(vault.userId, userId));
 
-  if (vaultCount.count >= 3) {
-    throw new Error("You can create at most 3 vaults.");
+  if (vaultCount.count >= 5) {
+    throw new Error("You can create at most 5 vaults.");
   }
 
   const slug = name.toLowerCase().replace(/\s/g, "-");

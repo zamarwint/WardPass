@@ -169,7 +169,7 @@ const AdminUsersChart = () => {
                                 dataKey="bannedUsers"
                                 position="center"
                                 className="fill-white text-xs font-medium"
-                                formatter={(value: number) => (value > 0 ? value : "")}
+                                formatter={(value: any) => (Number(value) > 0 ? value : "")}
                             />
                         </Bar>
                         <ChartTooltip content={<ChartTooltipContent />} />
