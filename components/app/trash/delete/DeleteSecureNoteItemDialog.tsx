@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 
 import {
     AlertDialog,
@@ -30,9 +30,8 @@ export default function DeleteSecureNoteItemDialog({ secureNoteItem }: { secureN
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger render={
-                <Button variant="ghost" size="icon"><Trash2Icon className="text-destructive" /></Button>
-            }>
+            <AlertDialogTrigger className={buttonVariants({ variant: "ghost", size: "icon" })}>
+                <Trash2Icon className="text-destructive" />
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>

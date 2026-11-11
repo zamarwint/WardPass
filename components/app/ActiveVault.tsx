@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useMemo, type MouseEvent } from "react";
-import { CreditCard, Globe, IdCard, LayoutList, NotebookPen, PlusIcon, XIcon } from "lucide-react";
+import { CreditCard, Globe, IdCard, LayoutList, NotebookPen, PlusIcon, Search, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -13,7 +13,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { CustomLoadingState } from "@/components/LoadingStates";
 import { SvgCircle } from "@/components/app/SVG";
@@ -50,11 +51,15 @@ type DecryptedItem = (LoginJSON | SecureNoteJSON | CreditCardJSON | IdentityJSON
     updatedAt?: Date | string | null;
 };
 
-const ITEM_TYPE_FILTERS: { value: VaultItemType; label: string }[] = [
-    { value: VaultItemType.LOGIN, label: "LOGIN" },
-    { value: VaultItemType.SECURE_NOTE, label: "SECURE NOTE" },
-    { value: VaultItemType.CREDIT_CARD, label: "CREDIT CARD" },
-    { value: VaultItemType.IDENTITY, label: "IDENTITY" },
+type ItemTypeFilter = "ALL" | VaultItemType;
+
+// OPTIONS FOR THE ITEM TYPE SELECT
+const ITEM_TYPE_OPTIONS: { value: ItemTypeFilter; label: string }[] = [
+    { value: "ALL", label: "All types" },
+    { value: VaultItemType.LOGIN, label: "Login" },
+    { value: VaultItemType.SECURE_NOTE, label: "Secure note" },
+    { value: VaultItemType.CREDIT_CARD, label: "Credit card" },
+    { value: VaultItemType.IDENTITY, label: "Identity" },
 ];
 
 const ROW_BASE_CLASSES =
@@ -62,11 +67,42 @@ const ROW_BASE_CLASSES =
 
 const formatDate = (date?: Date | string | null) => (date ? new Date(date).toDateString() : "—");
 
+// MILLISECONDS SINCE EPOCH FOR SORTING. MISSING/INVALID DATES COUNT AS 0, SO THEY SINK TO THE BOTTOM
+const toTimestamp = (date?: Date | string | null) => {
+    const time = date ? new Date(date).getTime() : 0;
+    return Number.isNaN(time) ? 0 : time;
+};
+
 // NEVER SHOW A FULL CARD NUMBER IN THE LIST
 const maskCardNumber = (value: unknown) => {
     const digits = String(value ?? "").replace(/\D/g, "");
     return digits ? `•••• ${digits.slice(-4)}` : "—";
 };
+
+// THE TEXT A SEARCH IS MATCHED AGAINST, PER ITEM TYPE.
+// SECRETS (CARD NUMBER, CVV, PASSWORDS) ARE DELIBERATELY NOT SEARCHABLE.
+function getSearchableText(item: DecryptedItem): string {
+    switch (item.itemType) {
+        case VaultItemType.LOGIN: {
+            const login = item as LoginJSON;
+            return [login.name, login.email, login.username, login.url].filter(Boolean).join(" ");
+        }
+        case VaultItemType.SECURE_NOTE: {
+            const note = item as SecureNoteJSON;
+            return [note.title, note.content].filter(Boolean).join(" ");
+        }
+        case VaultItemType.CREDIT_CARD: {
+            const card = item as CreditCardJSON;
+            return [card.cardHolderName].filter(Boolean).join(" ");
+        }
+        case VaultItemType.IDENTITY: {
+            const identity = item as IdentityJSON;
+            return [identity.name, identity.email, identity.phoneNumber].filter(Boolean).join(" ");
+        }
+        default:
+            return "";
+    }
+}
 
 // SUMMARY SHOWN IN THE LEFT-HAND LIST, ONE LAYOUT PER ITEM TYPE
 function ItemSummary({ item }: { item: DecryptedItem }) {
@@ -179,14 +215,17 @@ function ItemDetails({ item }: { item: DecryptedItem }) {
     }
 }
 
-// THE PURPOSE OF THIS PAGE IS TO DISPLAY ALL THE VAULT ITEMS IN A VAULT IN A LIST ON THE LEFT SIDE, AND WHEN SELECTED, DISPLAY THE ITEM DETAILS ON THE RIGHT SIDE.
-// LIKE LOGIN ITEMS, SECURE NOTE ITEMS, CREDIT CARD ITEMS, AND IDENTITY ITEMS
+// THE PURPOSE OF THIS PAGE IS TO DISPLAY ALL THE VAULT ITEMS IN A VAULT IN A LIST ON THE LEFT SIDE (NEWEST CHANGES FIRST),
+// AND WHEN SELECTED, DISPLAY THE ITEM DETAILS ON THE RIGHT SIDE.
+// ITEMS ARE ENCRYPTED, SO SEARCHING AND FILTERING HAPPEN CLIENT-SIDE ON THE ITEMS DECRYPTED BELOW.
 export default function ActiveVault() {
     const params = useParams();
     const router = useRouter();
     const vaultId = params.vaultId as string;
 
-    const [selectedItemType, setSelectedItemType] = useState<VaultItemType>(VaultItemType.LOGIN);
+    // SEARCH + TYPE FILTER STATE
+    const [searchText, setSearchText] = useState<string>("");
+    const [typeFilter, setTypeFilter] = useState<ItemTypeFilter>("ALL");
 
     // STORE THE ID, NOT THE ITEM. THE ITEM IS DERIVED BELOW SO IT NEVER GOES STALE AFTER AN EDIT, REFETCH OR DELETE
     const [selectedItemId, setSelectedItemId] = useState<DecryptedItem["id"] | null>(null);
@@ -270,11 +309,25 @@ export default function ActiveVault() {
         // DEPEND ON store.vaultKeys (THE WHOLE RECORD): A NEW OBJECT REFERENCE IS PRODUCED ON EVERY UNLOCK/LOCK
     }, [vaultItems, vaultId, store.vaultKeys]);
 
-    // FILTER ONCE BY THE SELECTED TYPE, THEN RENDER BY TYPE
-    const filteredItems = useMemo(
-        () => (decryptedItems ?? []).filter((item) => item.itemType === selectedItemType),
-        [decryptedItems, selectedItemType]
+    // SORT BY LAST MODIFIED, MOST RECENT FIRST (COPY FIRST: NEVER SORT THE MEMOIZED ARRAY IN PLACE)
+    const sortedItems = useMemo(
+        () => [...(decryptedItems ?? [])].sort((a, b) => toTimestamp(b.updatedAt) - toTimestamp(a.updatedAt)),
+        [decryptedItems]
     );
+
+    // THE SEARCH AND THE TYPE SELECT COMBINE: AN ITEM MUST MATCH THE SELECTED TYPE AND EVERY WORD OF THE SEARCH
+    const query = searchText.trim().toLowerCase();
+    const filteredItems = useMemo(() => {
+        const terms = query ? query.split(/\s+/) : [];
+
+        return sortedItems.filter((item) => {
+            if (typeFilter !== "ALL" && item.itemType !== typeFilter) return false;
+            if (terms.length === 0) return true;
+
+            const haystack = getSearchableText(item).toLowerCase();
+            return terms.every((term) => haystack.includes(term));
+        });
+    }, [sortedItems, typeFilter, query]);
 
     // DERIVE THE SELECTED ITEM FROM THE LATEST DECRYPTED DATA
     const selectedItem = useMemo(
@@ -285,15 +338,24 @@ export default function ActiveVault() {
     if (vaultItemsError) return null;
 
     const isListLoading = vaultItemsLoading || isAutoUnlocking;
-    const activeFilter = ITEM_TYPE_FILTERS.find((filter) => filter.value === selectedItemType);
+    const isFiltering = query !== "" || typeFilter !== "ALL";
+    const hasItems = !!decryptedItems && decryptedItems.length > 0;
+    const activeTypeLabel = ITEM_TYPE_OPTIONS.find((option) => option.value === typeFilter)?.label.toLowerCase() ?? "";
 
     const emptyMessage = needsUnlock
         ? "This vault is locked."
-        : !decryptedItems || decryptedItems.length === 0
+        : !hasItems
             ? "No items found. Create a new item to continue."
-            : `No ${activeFilter?.label.toLowerCase() ?? ""} items found.`;
+            : query
+                ? `No results for "${searchText.trim()}"${typeFilter !== "ALL" ? ` in ${activeTypeLabel} items` : ""}.`
+                : `No ${activeTypeLabel} items found.`;
 
     const toggleDropdown = () => setOpenDropdown((prev) => !prev);
+
+    const resetFilters = () => {
+        setSearchText("");
+        setTypeFilter("ALL");
+    };
 
     // DOUBLE CLICKING EMPTY SPACE (NOT AN ITEM) CLEARS THE SELECTION
     const handleListDoubleClick = (e: MouseEvent<HTMLDivElement>) => {
@@ -348,23 +410,65 @@ export default function ActiveVault() {
                         </DropdownMenu>
                         <Separator className="bg-muted" />
 
-                        {/* VAULT ITEM TYPE FILTER TOGGLES */}
-                        <div className="w-full h-fit p-4 overflow-x-auto no-scrollbar flex items-center justify-center">
-                            <ToggleGroup
-                                value={[selectedItemType]}
+                        {/* VAULT ITEM SEARCH BAR + TYPE SELECT */}
+                        <div className="w-full flex items-center gap-2 px-8 py-4">
+                            <InputGroup className="flex-1 min-w-0 h-8.5">
+                                <InputGroupInput
+                                    id="vault-item-search"
+                                    aria-label="Search vault items"
+                                    placeholder="Search vault items..."
+                                    autoComplete="off"
+                                    spellCheck={false}
+                                    disabled={!hasItems}
+                                    // THE PANEL IS select-none, WHICH SAFARI APPLIES TO INPUTS TOO: KEEP THE FIELD TYPEABLE
+                                    className="select-text"
+                                    onChange={(e) => setSearchText(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Escape" && searchText) {
+                                            e.preventDefault();
+                                            setSearchText("");
+                                        }
+                                    }}
+                                    value={searchText}
+                                />
+                                <InputGroupAddon>
+                                    <Search className="size-4 text-muted-foreground" />
+                                </InputGroupAddon>
+                                {searchText && (
+                                    <InputGroupAddon align="inline-end">
+                                        <button
+                                            type="button"
+                                            aria-label="Clear search"
+                                            onClick={() => setSearchText("")}
+                                            className="flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                                        >
+                                            <XIcon className="size-4" />
+                                        </button>
+                                    </InputGroupAddon>
+                                )}
+                            </InputGroup>
+
+                            {/* ITEM TYPE FILTER */}
+                            <Select
+                                items={ITEM_TYPE_OPTIONS}
+                                value={typeFilter as VaultItemType}
                                 onValueChange={(value) => {
-                                    // BASE UI ALWAYS PASSES AN ARRAY, AND IT IS EMPTY WHEN THE ACTIVE TOGGLE IS CLICKED AGAIN
-                                    const next = value[0] as VaultItemType | undefined;
-                                    if (next) setSelectedItemType(next);
+                                    // BASE UI CAN PASS null, SO IGNORE IT
+                                    if (value) setTypeFilter(value as ItemTypeFilter);
                                 }}
-                                className="w-full h-fit flex items-center justify-around overflow-x-auto no-scrollbar"
+                                disabled={!hasItems}
                             >
-                                {ITEM_TYPE_FILTERS.map((filter) => (
-                                    <ToggleGroupItem key={filter.value} value={filter.value}>
-                                        {filter.label}
-                                    </ToggleGroupItem>
-                                ))}
-                            </ToggleGroup>
+                                <SelectTrigger aria-label="Filter by item type" className="w-40 shrink-0 h-8.5 data-[size=default]:h-8.5">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {ITEM_TYPE_OPTIONS.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <Separator className="bg-muted" />
 
@@ -375,9 +479,21 @@ export default function ActiveVault() {
                                     <span className="shimmer shimmer-duration-1000"> Loading... </span>
                                 </CustomLoadingState>
                             ) : filteredItems.length === 0 ? (
-                                <div className="text-muted-foreground mt-4 text-center max-w-fit">{emptyMessage}</div>
+                                <div className="text-muted-foreground mt-4 flex flex-col items-center gap-3 text-center max-w-fit">
+                                    <p>{emptyMessage}</p>
+                                    {isFiltering && hasItems && (
+                                        <Button variant="outline" size="sm" onClick={resetFilters} className="cursor-pointer">
+                                            Clear search and filter
+                                        </Button>
+                                    )}
+                                </div>
                             ) : (
                                 <div className="size-full text-left p-4 flex flex-col items-start justify-start no-scrollbar rounded-none">
+                                    {isFiltering && (
+                                        <p className="text-xs font-medium text-muted-foreground px-2 pb-2" aria-live="polite">
+                                            {filteredItems.length} result{filteredItems.length !== 1 ? "s" : ""}
+                                        </p>
+                                    )}
                                     {filteredItems.map((item) => {
                                         const isSelected = selectedItemId === item.id;
                                         const select = () => setSelectedItemId(item.id);

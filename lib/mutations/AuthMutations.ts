@@ -1,3 +1,4 @@
+import googleSignIn from "@/app/actions/auth/googleSignIn";
 import {
   requestPasswordReset,
   resetPassword,
@@ -33,6 +34,26 @@ export function useSignIn(email: string, password: string) {
       // display the error message
       toast.dismiss();
       toast.error(error.message);
+    },
+  });
+}
+
+export function useGoogleSignIn() {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: () => googleSignIn(),
+    onMutate: () => {
+      toast.loading("Signing you up with Google...");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Successfully signed in!");
+      router.push(process.env.NEXT_PUBLIC_SIGN_IN_REDIRECT_URL as string);
+    },
+    onError: (error) => {
+      toast.error("Internal server error. Please try again.");
+      console.log(error);
     },
   });
 }

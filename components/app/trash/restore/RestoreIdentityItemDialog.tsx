@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 
 import {
     AlertDialog,
@@ -26,9 +26,8 @@ export default function RestoreIdentityItemDialog({ identityItem }: { identityIt
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger render={
-                <Button variant="ghost" size="icon"><ArchiveRestore className="text-foreground" /></Button>
-            }>
+            <AlertDialogTrigger className={buttonVariants({ variant: "ghost", size: "icon" })}>
+                <ArchiveRestore className="text-foreground" />
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>

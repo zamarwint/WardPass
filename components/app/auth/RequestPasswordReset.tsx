@@ -28,12 +28,12 @@ export default function RequestPasswordReset() {
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-12 border-r border-foreground/5">
                     <FieldSet>
                         <FieldGroup className="w-xl">
-                            <Field className="space-y-2">
-                                <FieldTitle className="text-7xl font-bold text-center">Reset Password</FieldTitle>
-                                {!email && <FieldDescription className="text-center text-xl">Enter your email address to receive a password reset link.</FieldDescription>}
+                            <Field>
+                                <FieldTitle className="text-4xl font-bold text-left">Reset Password</FieldTitle>
+                                {!email && <FieldDescription className="text-left text-md">Enter your email address to receive a password reset link.</FieldDescription>}
                             </Field>
 
-                            <Separator className="mt-4" />
+                            <Separator />
 
                             <Field>
                                 <FieldLabel htmlFor="email" className="text-muted-foreground">Email</FieldLabel>

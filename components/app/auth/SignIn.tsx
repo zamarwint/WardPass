@@ -6,13 +6,11 @@ import { Button } from "@/components/ui/button";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/utils/auth-client";
 import { LockKeyholeOpen } from "lucide-react";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { EmailDeliveryNotWorkingAlert } from "@/components/Banners";
-import { useSignIn } from "@/lib/mutations/AuthMutations";
+import { useGoogleSignIn, useSignIn } from "@/lib/mutations/AuthMutations";
 import { CustomLoadingState } from "@/components/LoadingStates";
 
 export default function SignIn() {
@@ -24,34 +22,19 @@ export default function SignIn() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
+    const googleSignIn = useGoogleSignIn();
+
     const signInWithGoogle = async () => {
         startGoogleTransition(async () => {
-            await authClient.signIn.social({
-                provider: "google",
-                callbackURL: process.env.NEXT_PUBLIC_APP_URL + process.env.NEXT_PUBLIC_SIGN_IN_REDIRECT_URL!,
-                fetchOptions: {
-                    onRequest: () => {
-                        toast.loading("Signing you up with Google...");
-                    },
-                    onSuccess: () => {
-                        toast.dismiss();
-                        toast.success("Successfully signed in!")
-                        router.push(process.env.NEXT_PUBLIC_SIGN_IN_REDIRECT_URL as string);
-                    },
-                    onError: (error) => {
-                        toast.error("Internal server error. Please try again.")
-                        console.log(error);
-                    }
-                }
-            });
+            googleSignIn.mutate();
         })
     }
 
-    const { mutate, isPending: emailIsPending } = useSignIn(email, password);
+    const emailSignIn = useSignIn(email, password);
 
     const signInWithEmail = () => {
         startEmailTransition(() => {
-            mutate();
+            emailSignIn.mutate();
         })
     }
 
@@ -98,8 +81,8 @@ export default function SignIn() {
                         </FieldGroup>
 
                         <Field orientation="horizontal">
-                            <Button disabled={emailPending || emailIsPending} variant="default" size="lg" className="w-full h-12" onClick={signInWithEmail}>
-                                {emailPending || emailIsPending ? (
+                            <Button disabled={emailPending || emailSignIn.isPending} variant="default" size="lg" className="w-full h-12" onClick={signInWithEmail}>
+                                {emailPending || emailSignIn.isPending ? (
                                     <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
                                         <span className="shimmer shimmer-duration-1000"> UNLOCKING WARDPASS </span>
                                     </CustomLoadingState>

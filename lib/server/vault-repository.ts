@@ -30,7 +30,10 @@ export async function getVaultPageDataForUser(userId: string, vaultId: string) {
       )`,
     })
     .from(vault)
-    .leftJoin(vaultItem, and(eq(vaultItem.vaultId, vault.id), isNull(vaultItem.deletedAt)))
+    .leftJoin(
+      vaultItem,
+      and(eq(vaultItem.vaultId, vault.id), isNull(vaultItem.deletedAt)),
+    )
     .where(and(eq(vault.id, vaultId), eq(vault.userId, userId)))
     .orderBy(asc(vaultItem.updatedAt));
 
@@ -71,12 +74,17 @@ export async function getAllTrashedVaultsForUser(userId: string) {
     .from(vault)
     .leftJoin(
       vaultItem,
-      and(eq(vaultItem.vaultId, vault.id), isNotNull(vaultItem.deletedAt))
+      and(eq(vaultItem.vaultId, vault.id), isNotNull(vaultItem.deletedAt)),
     )
     .where(eq(vault.userId, userId))
     .orderBy(asc(vault.name), desc(vaultItem.updatedAt));
 
-  const map = new Map<string, typeof rows[0]["vault"] & { vaultItems: NonNullable<typeof rows[0]["item"]>[] }>();
+  const map = new Map<
+    string,
+    (typeof rows)[0]["vault"] & {
+      vaultItems: NonNullable<(typeof rows)[0]["item"]>[];
+    }
+  >();
   for (const row of rows) {
     if (!map.has(row.vault.id)) {
       map.set(row.vault.id, {

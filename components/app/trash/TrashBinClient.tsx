@@ -17,6 +17,7 @@ import {
     X,
     Eye,
     EyeOff,
+    Search,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,8 @@ import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import {
     Dialog,
@@ -73,12 +75,13 @@ type TrashedCard = Extract<DecryptedTrashedItem, { itemType: VaultItemType.CREDI
 
 type ItemTypeFilter = "ALL" | VaultItemType;
 
-const ITEM_TYPE_FILTERS: { value: ItemTypeFilter; label: string }[] = [
-    { value: "ALL", label: "ALL TYPES" },
-    { value: VaultItemType.LOGIN, label: "LOGINS" },
-    { value: VaultItemType.SECURE_NOTE, label: "NOTES" },
-    { value: VaultItemType.CREDIT_CARD, label: "CARDS" },
-    { value: VaultItemType.IDENTITY, label: "IDENTITIES" },
+// OPTIONS FOR THE ITEM TYPE SELECT
+const ITEM_TYPE_OPTIONS: { value: ItemTypeFilter; label: string }[] = [
+    { value: "ALL", label: "All types" },
+    { value: VaultItemType.LOGIN, label: "Login" },
+    { value: VaultItemType.SECURE_NOTE, label: "Secure note" },
+    { value: VaultItemType.CREDIT_CARD, label: "Credit card" },
+    { value: VaultItemType.IDENTITY, label: "Identity" },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -86,6 +89,15 @@ const ITEM_TYPE_FILTERS: { value: ItemTypeFilter; label: string }[] = [
 /* -------------------------------------------------------------------------- */
 
 const formatDate = (date?: Date | string | null) => (date ? new Date(date).toLocaleDateString() : "—");
+
+// MILLISECONDS SINCE EPOCH FOR SORTING. MISSING/INVALID DATES COUNT AS 0, SO THEY SINK TO THE BOTTOM
+const toTimestamp = (date?: Date | string | null) => {
+    const time = date ? new Date(date).getTime() : 0;
+    return Number.isNaN(time) ? 0 : time;
+};
+
+// WHEN THE ITEM WAS MOVED TO THE TRASH (FALLS BACK TO updatedAt IF deletedAt IS MISSING)
+const getDeletedTimestamp = (item: DecryptedTrashedItem) => toTimestamp(item.deletedAt ?? item.updatedAt);
 
 // SHOW ONLY THE LAST 4 DIGITS
 const maskCardNumber = (value: unknown) => {
@@ -136,6 +148,33 @@ function getItemSubtitle(item: DecryptedTrashedItem) {
         default:
             return "";
     }
+}
+
+// THE TEXT A SEARCH IS MATCHED AGAINST, PER ITEM TYPE (PLUS THE VAULT NAME, WHICH EVERY ROW DISPLAYS).
+// SECRETS (CARD NUMBER, CVV) ARE DELIBERATELY NOT SEARCHABLE.
+function getSearchableText(item: DecryptedTrashedItem): string {
+    let fields: unknown[];
+
+    switch (item.itemType) {
+        case VaultItemType.LOGIN:
+            fields = [item.name, item.email, item.username, item.url];
+            break;
+        case VaultItemType.SECURE_NOTE:
+            fields = [item.title, item.content];
+            break;
+        case VaultItemType.CREDIT_CARD:
+            fields = [item.cardHolderName];
+            break;
+        case VaultItemType.IDENTITY:
+            fields = [item.name, item.email, item.phoneNumber];
+            break;
+        default:
+            fields = [];
+    }
+
+    return [...fields, item.vaultName]
+        .filter((value): value is string => typeof value === "string" && value.length > 0)
+        .join(" ");
 }
 
 /* -------------------------------------------------------------------------- */
@@ -400,7 +439,8 @@ export default function TrashBinClient() {
 
     // Filters & Selection
     const [selectedVaultFilter, setSelectedVaultFilter] = useState<string>("ALL");
-    const [selectedItemType, setSelectedItemType] = useState<ItemTypeFilter>("ALL");
+    const [typeFilter, setTypeFilter] = useState<ItemTypeFilter>("ALL");
+    const [searchText, setSearchText] = useState<string>("");
     // STORE THE ID, NOT THE ITEM: THE ITEM IS DERIVED BELOW SO IT DISAPPEARS WHEN IT'S RESTORED / PERMANENTLY DELETED
     const [selectedItemId, setSelectedItemId] = useState<DecryptedTrashedItem["id"] | null>(null);
 
@@ -498,18 +538,25 @@ export default function TrashBinClient() {
             }
         }
 
-        // Sort descending by updatedAt
-        return items.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+        // Sort by deletion date, newest first
+        return items.sort((a, b) => getDeletedTimestamp(b) - getDeletedTimestamp(a));
     }, [vaults, store.vaultKeys]);
 
-    // Filter decrypted items by vault and itemType
+    // THE VAULT BUTTONS, THE TYPE SELECT AND THE SEARCH COMBINE: AN ITEM MUST PASS ALL THREE.
+    // SEARCHING ONLY COVERS ITEMS ALREADY DECRYPTED (I.E. UNLOCKED VAULTS), SINCE THE REST ARE STILL ENCRYPTED.
+    const query = searchText.trim().toLowerCase();
     const filteredItems = useMemo(() => {
-        return decryptedItems.filter(
-            (item) =>
-                (selectedVaultFilter === "ALL" || item.vaultId === selectedVaultFilter) &&
-                (selectedItemType === "ALL" || item.itemType === selectedItemType)
-        );
-    }, [decryptedItems, selectedVaultFilter, selectedItemType]);
+        const terms = query ? query.split(/\s+/) : [];
+
+        return decryptedItems.filter((item) => {
+            if (selectedVaultFilter !== "ALL" && item.vaultId !== selectedVaultFilter) return false;
+            if (typeFilter !== "ALL" && item.itemType !== typeFilter) return false;
+            if (terms.length === 0) return true;
+
+            const haystack = getSearchableText(item).toLowerCase();
+            return terms.every((term) => haystack.includes(term));
+        });
+    }, [decryptedItems, selectedVaultFilter, typeFilter, query]);
 
     // The selected item always comes from the latest decrypted data
     const selectedItem = useMemo(
@@ -640,11 +687,36 @@ export default function TrashBinClient() {
         setInlinePassword("");
     };
 
+    // CLEARS THE SEARCH, THE TYPE SELECT AND THE VAULT BUTTONS
+    const resetFilters = () => {
+        setSearchText("");
+        setTypeFilter("ALL");
+        selectVaultFilter("ALL");
+    };
+
     // DOUBLE CLICKING EMPTY SPACE (NOT A ROW) CLEARS THE SELECTION
     const handleListDoubleClick = (e: MouseEvent<HTMLDivElement>) => {
         if ((e.target as HTMLElement).closest("[data-trash-item]")) return;
         setSelectedItemId(null);
     };
+
+    // SEARCH / SELECT STATE USED BY THE TOOLBAR AND THE EMPTY STATE
+    const isFiltering = query !== "" || typeFilter !== "ALL";
+    const isNarrowed = isFiltering || selectedVaultFilter !== "ALL";
+    // NOTHING TO SEARCH YET (LOADING, LOCKED OR EMPTY), UNLESS A FILTER IS ALREADY SET (SO IT CAN STILL BE CLEARED)
+    const isToolbarDisabled = isLoading || (decryptedItems.length === 0 && !isFiltering);
+    const activeTypeLabel = ITEM_TYPE_OPTIONS.find((option) => option.value === typeFilter)?.label.toLowerCase() ?? "";
+    const hasLockedVaultsInView = lockedVaults.length > 0 && selectedVaultFilter === "ALL";
+    const lockedVaultsNote = `${lockedVaults.length} locked vault${lockedVaults.length !== 1 ? "s" : ""}`;
+
+    const emptyTitle = query ? "No results" : "No trashed items";
+    const emptyDescription = query
+        ? `No trashed items match "${searchText.trim()}"${typeFilter !== "ALL" ? ` in ${activeTypeLabel} items` : ""}.`
+        : typeFilter !== "ALL"
+            ? `There are no trashed ${activeTypeLabel} items${selectedVaultFilter !== "ALL" ? " in this vault" : ""}.`
+            : hasLockedVaultsInView
+                ? `${lockedVaults.length} vault(s) are still locked. Unlock them to check for trashed items.`
+                : "There are no deleted items matching your current filter.";
 
     if (error) {
         return (
@@ -717,23 +789,63 @@ export default function TrashBinClient() {
                         )}
                     </div>
 
-                    {/* ITEM TYPE TOGGLE GROUP */}
-                    <div className="w-full p-2.5 border-b border-muted overflow-x-auto no-scrollbar flex items-center justify-center bg-background/30">
-                        <ToggleGroup
-                            value={[selectedItemType]}
+                    {/* TRASHED ITEM SEARCH BAR + TYPE SELECT */}
+                    <div className="w-full p-3 border-b border-muted flex items-center gap-2 bg-background/30">
+                        <InputGroup className="flex-1 min-w-0 h-8.5">
+                            <InputGroupInput
+                                id="trashed-item-search"
+                                aria-label="Search trashed items"
+                                placeholder="Search trashed items..."
+                                autoComplete="off"
+                                spellCheck={false}
+                                disabled={isToolbarDisabled}
+                                onChange={(e) => setSearchText(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Escape" && searchText) {
+                                        e.preventDefault();
+                                        setSearchText("");
+                                    }
+                                }}
+                                value={searchText}
+                            />
+                            <InputGroupAddon>
+                                <Search className="size-4 text-muted-foreground" />
+                            </InputGroupAddon>
+                            {searchText && (
+                                <InputGroupAddon align="inline-end">
+                                    <button
+                                        type="button"
+                                        aria-label="Clear search"
+                                        onClick={() => setSearchText("")}
+                                        className="flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                                    >
+                                        <X className="size-4" />
+                                    </button>
+                                </InputGroupAddon>
+                            )}
+                        </InputGroup>
+
+                        {/* ITEM TYPE FILTER */}
+                        <Select
+                            items={ITEM_TYPE_OPTIONS}
+                            value={typeFilter as VaultItemType}
                             onValueChange={(value) => {
-                                // BASE UI ALWAYS PASSES AN ARRAY, AND IT IS EMPTY WHEN THE ACTIVE TOGGLE IS CLICKED AGAIN
-                                const next = value[0] as ItemTypeFilter | undefined;
-                                if (next) setSelectedItemType(next);
+                                // BASE UI CAN PASS null, SO IGNORE IT
+                                if (value) setTypeFilter(value as ItemTypeFilter);
                             }}
-                            className="w-full justify-center flex-wrap gap-1"
+                            disabled={isToolbarDisabled}
                         >
-                            {ITEM_TYPE_FILTERS.map((filter) => (
-                                <ToggleGroupItem key={filter.value} value={filter.value} className="text-xs h-8 px-3">
-                                    {filter.label}
-                                </ToggleGroupItem>
-                            ))}
-                        </ToggleGroup>
+                            <SelectTrigger aria-label="Filter by item type" className="w-40 shrink-0 h-8.5 data-[size=default]:h-8.5">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {ITEM_TYPE_OPTIONS.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     {/* ITEMS LIST CONTAINER */}
@@ -789,28 +901,44 @@ export default function TrashBinClient() {
                             /* NO MATCHING ITEMS */
                             <div className="flex flex-col items-center justify-center size-full gap-3 text-center p-8">
                                 <Trash2Icon className="size-12 text-muted-foreground/40" />
-                                <h2 className="text-lg font-medium text-muted-foreground">No trashed items</h2>
-                                <p className="text-sm text-muted-foreground/70 max-w-xs">
-                                    {lockedVaults.length > 0 && selectedVaultFilter === "ALL"
-                                        ? `${lockedVaults.length} vault(s) are still locked. Unlock them to check for trashed items.`
-                                        : "There are no deleted items matching your current filter."}
-                                </p>
-                                {lockedVaults.length > 0 && selectedVaultFilter === "ALL" && (
-                                    <Button variant="secondary" size="sm" onClick={() => openUnlockDialog("ALL")}>
-                                        <KeyRound className="size-3.5 mr-1.5" /> Unlock Locked Vaults
-                                    </Button>
+                                <h2 className="text-lg font-medium text-muted-foreground">{emptyTitle}</h2>
+                                <p className="text-sm text-muted-foreground/70 max-w-xs">{emptyDescription}</p>
+                                {hasLockedVaultsInView && isFiltering && (
+                                    <p className="text-xs text-muted-foreground/70 max-w-xs">
+                                        {lockedVaultsNote} can&apos;t be searched until unlocked.
+                                    </p>
                                 )}
+                                <div className="flex items-center justify-center gap-2">
+                                    {isNarrowed && decryptedItems.length > 0 && (
+                                        <Button variant="outline" size="sm" onClick={resetFilters} className="cursor-pointer">
+                                            Clear search and filters
+                                        </Button>
+                                    )}
+                                    {hasLockedVaultsInView && (
+                                        <Button variant="secondary" size="sm" onClick={() => openUnlockDialog("ALL")}>
+                                            <KeyRound className="size-3.5 mr-1.5" /> Unlock Locked Vaults
+                                        </Button>
+                                    )}
+                                </div>
                             </div>
                         ) : (
-                            /* LIST OF DECRYPTED TRASHED ITEMS */
-                            filteredItems.map((item) => (
-                                <TrashRow
-                                    key={item.id}
-                                    item={item}
-                                    isSelected={selectedItemId === item.id}
-                                    onSelect={() => setSelectedItemId(item.id)}
-                                />
-                            ))
+                            /* LIST OF DECRYPTED TRASHED ITEMS (NEWEST DELETION FIRST) */
+                            <>
+                                {isFiltering && (
+                                    <p className="text-xs font-medium text-muted-foreground px-1" aria-live="polite">
+                                        {filteredItems.length} result{filteredItems.length !== 1 ? "s" : ""}
+                                        {hasLockedVaultsInView && ` · ${lockedVaultsNote} not included`}
+                                    </p>
+                                )}
+                                {filteredItems.map((item) => (
+                                    <TrashRow
+                                        key={item.id}
+                                        item={item}
+                                        isSelected={selectedItemId === item.id}
+                                        onSelect={() => setSelectedItemId(item.id)}
+                                    />
+                                ))}
+                            </>
                         )}
                     </div>
                 </ResizablePanel>

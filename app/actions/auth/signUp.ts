@@ -14,7 +14,7 @@ export default async function signUp(
       email, // required, The email address of the user.
       password, // required, The password of the user. It should be at least 8 characters long and max 128 by default.
       image, // An optional profile image of the user.
-      callbackURL: process.env.NEXT_PUBLIC_APP_URL + "/sign-in", // An optional URL to redirect to after the user signs up.
+      callbackURL: process.env.BETTER_AUTH_URL + "/sign-in", // An optional URL to redirect to after the user signs up.
     },
   });
 
