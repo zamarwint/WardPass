@@ -24,11 +24,10 @@ export function UserActionsDropdown({ user }: { user: any }) {
             }>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-                <DropdownMenuLabel>
-                    User Actions
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
                 <DropdownMenuGroup>
+                    <DropdownMenuLabel>
+                        User Actions
+                    </DropdownMenuLabel>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSetUserRole(true)}>Set Role</DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSetUserPassword(true)}>Set User Password</DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUpdateUser(true)}>Update User</DropdownMenuItem>
@@ -36,25 +35,25 @@ export function UserActionsDropdown({ user }: { user: any }) {
                     {user.banned && <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUnbanUser(true)} disabled={!user.banned}>Unban User</DropdownMenuItem>}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuLabel>
-                    Sessions Actions
-                </DropdownMenuLabel>
                 <DropdownMenuGroup>
+                    <DropdownMenuLabel>
+                        Sessions Actions
+                    </DropdownMenuLabel>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenRevokeAllUserSessions(true)}>Revoke all User Sessions</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuLabel>
-                    Impersonation
-                </DropdownMenuLabel>
                 <DropdownMenuGroup>
+                    <DropdownMenuLabel>
+                        Impersonation
+                    </DropdownMenuLabel>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenImpersonateUser(true)}>Impersonate User</DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenStopImpersonation(true)}>Stop Impersonation</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuLabel>
-                    Delete User
-                </DropdownMenuLabel>
                 <DropdownMenuGroup>
+                    <DropdownMenuLabel>
+                        Delete User
+                    </DropdownMenuLabel>
                     <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenRemoveUser(true)}>Remove User</DropdownMenuItem>
                 </DropdownMenuGroup>
             </DropdownMenuContent>

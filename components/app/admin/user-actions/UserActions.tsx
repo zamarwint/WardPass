@@ -21,7 +21,7 @@ import { EyeIcon, EyeOffIcon } from "lucide-react"
 import { useState, useTransition } from "react"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
-import ProfileAvatar from "@/components/app/settings/ProfileAvatar"
+import { ProfilePictureUpload } from "../../settings/ProfilePicUpload"
 
 export function SetUserRoleAlert({ open, onOpenChange, userId, currentRole }: { open: boolean, onOpenChange: (open: boolean) => void, userId: string, currentRole: "admin" | "user" | ("admin" | "user")[] }) {
     const [role, setRole] = useState<"admin" | "user" | ("admin" | "user")[]>(currentRole)
@@ -170,10 +170,9 @@ export function UpdateUserAlert({ open, onOpenChange, user }: { open: boolean, o
 
     const [name, setName] = useState<string>(user.name);
     const [email, setEmail] = useState<string>(user.email);
-    const [image, setImage] = useState<string>(user.image);
 
     const handleSubmit = () => {
-        mutate({ userId: user.id, userData: { name, email, image } });
+        mutate({ userId: user.id, userData: { name, email } });
         onOpenChange(false);
     }
 
@@ -197,13 +196,12 @@ export function UpdateUserAlert({ open, onOpenChange, user }: { open: boolean, o
                     <FieldError errors={[]} />
                 </Field>
                 <Field>
-                    <FieldLabel htmlFor="image">Image (Coming soon)</FieldLabel>
+                    <FieldLabel htmlFor="image">Profile Picture</FieldLabel>
                     <div className="flex flex-col items-center justify-center gap-2">
-                        <ProfileAvatar size="size-32" image={image} alt={name || "Profile picture"} fallback={`${name.split(" ")[0][0]}${name.split(" ")[1][0]}`} />
-                        <div className="w-fit flex items-center justify-center gap-2">
-                            <Button disabled>Edit Image</Button>
-                            <Button variant="destructive" disabled>Remove Image</Button>
-                        </div>
+                        <ProfilePictureUpload
+                            imageUrl={user.image}
+                            userName={user.name}
+                        />
                     </div>
                     <FieldError errors={[]} />
                 </Field>

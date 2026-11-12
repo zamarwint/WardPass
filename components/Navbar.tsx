@@ -60,7 +60,7 @@ export default function Navbar() {
         </nav>
 
         {/* RIGHT ACTIONS */}
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center justify-center gap-3 lg:flex">
           <ModeToggleIcon />
 
           {session.isPending ? (

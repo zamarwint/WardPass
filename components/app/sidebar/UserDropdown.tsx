@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown, EllipsisVertical, Loader2Icon, LogOut, Settings, Shield, Trash } from "lucide-react";
-import ProfileAvatar from "../settings/ProfileAvatar";
+import { ProfileAvatar } from "@/components/app/settings/Profile"
 import { useState } from "react";
 import SignOutAlert from "@/components/app/auth/SignOutAlert";
 import { useRouter } from "next/navigation";
