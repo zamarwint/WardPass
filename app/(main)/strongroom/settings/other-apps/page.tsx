@@ -29,7 +29,7 @@ const otherApps = [
     {
         title: "Rite",
         description: "Professional writing software. Coming soon.",
-        url: "https://rite.netlify.app/",
+        url: "https://rite.vercel.app/",
         comingSoon: true
     },
     {
@@ -41,7 +41,7 @@ const otherApps = [
     {
         title: "Reckon",
         description: "Investment and arithmetic calculator application.",
-        url: "https://reckon-p.netlify.app/",
+        url: "https://reckon-p.vercel.app/",
         comingSoon: false
     },
 ]

@@ -1,38 +1,28 @@
-"use client";
+import { buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { MoveLeft } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { MoveLeft, TriangleAlert } from "lucide-react";
-import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
+export const metadata: Metadata = {
+    title: "404 Not Found | WardPass",
+    description:
+        "WardPass is an open-source, zero-knowledge credential and secrets management platform with client-side Argon2id key derivation and AES-256-GCM authenticated encryption.",
+};
 
 export default function NotFoundPage() {
-    const router = useRouter();
-
-    const handleBackButton = () => {
-        router.back();
-    }
-
     return (
-        <motion.div className="flex flex-col w-screen h-screen items-center justify-center gap-4 text-center">
-            <TriangleAlert size={128} className="text-primary" />
-            <h1 className="text-4xl md:text-8xl font-bold text-primary">404</h1>
-            <p className="text-muted-foreground">Page Not Found</p>
-            <div className="w-full flex items-center justify-center">
-                <svg height="20" width="2000" xmlns="http://www.w3.org/2000/svg">
-                    <line
-                        x1="0"
-                        y1="10"
-                        x2="2000"
-                        y2="10"
-                        className="stroke-1 stroke-white/5"
-                    />
-                </svg>
+        <div className="w-screen h-screen flex items-center justify-center">
+            <div className="flex flex-col w-[80%] h-screen border-x border-border items-center justify-center gap-4 text-center">
+                <h1 className="text-primary text-2xl font-bold">404</h1>
+                <h1 className="text-4xl md:text-8xl font-bold">Page Not Found</h1>
+                <p className="text-muted-foreground">We are sorry, the page you requested could not be found. Please go back to the homepage.</p>
+                <Separator className="my-2" />
+                <Link href="/" className={buttonVariants({ variant: "default", size: "lg" })}>
+                    <MoveLeft />
+                    <span>Go Back</span>
+                </Link>
             </div>
-            <p className="text-muted-foreground">We are sorry, the page you requested could not be found. Please go back to the homepage.</p>
-            <Button variant="default" size="lg" className="p-6" onClick={handleBackButton}>
-                <MoveLeft />
-                <span>Go Back</span>
-            </Button>
-        </motion.div>
+        </div>
     )
 }

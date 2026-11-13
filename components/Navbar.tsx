@@ -11,6 +11,7 @@ import UserDropdown from "./app/sidebar/UserDropdown";
 import { CustomLoadingState } from "./LoadingStates";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { OpenSourceProjectAlert } from "./Banners";
 
 const links = [
   { label: "Features", path: "/#features" },
@@ -33,11 +34,12 @@ export default function Navbar() {
       transition={{ duration: 0.35 }}
       className="fixed inset-x-0 top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur-xl"
     >
+      <OpenSourceProjectAlert />
       <div className="landing-shell flex h-17.5 items-center justify-between gap-6">
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-2.5 group" aria-label="WardPass home">
           <LogoSwitch />
-          <span className="text-base font-semibold tracking-tight text-foreground uppercase flex items-center gap-1">
+          <span className="text-base font-semibold tracking-tight text-foreground uppercase flex items-center">
             WardPass
             <span className="text-primary text-lg leading-none">.</span>
           </span>

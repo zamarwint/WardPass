@@ -5,6 +5,7 @@ import { BankCard1, BankCard2, BankCard3 } from "@/components/app/BankCards";
 import { type CarouselApi } from "@/components/ui/carousel"
 import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { motion } from "motion/react";
 
 export default function PlaygroundPage() {
     const [api, setApi] = React.useState<CarouselApi>()
@@ -25,7 +26,11 @@ export default function PlaygroundPage() {
     }, [api])
 
     return (
-        <div className="h-screen flex items-center justify-center">
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="h-screen flex items-center justify-center">
             <Card>
                 <CardHeader>
                     <CardTitle>Welcome to the WardPass Play Area!</CardTitle>
@@ -48,6 +53,6 @@ export default function PlaygroundPage() {
                     </div>
                 </CardFooter>
             </Card>
-        </div>
+        </motion.div>
     )
 }

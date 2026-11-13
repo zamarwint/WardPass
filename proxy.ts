@@ -14,7 +14,7 @@ export async function proxy(request: NextRequest) {
   const { data: session } = await betterFetch<BetterAuthSessionType>(
     "/api/auth/get-session",
     {
-      baseURL: request.nextUrl.origin, // e.g. https://your-site.netlify.app
+      baseURL: request.nextUrl.origin, // e.g. https://your-site.vercel.app
       headers: {
         // Forward the user's cookies so BetterAuth can find the session token
         cookie: request.headers.get("cookie") ?? "",

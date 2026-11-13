@@ -10,25 +10,15 @@ import { LockKeyholeOpen } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { EmailDeliveryNotWorkingAlert } from "@/components/Banners";
-import { useGoogleSignIn, useSignIn } from "@/lib/mutations/AuthMutations";
+import { useSignIn } from "@/lib/mutations/AuthMutations";
 import { CustomLoadingState } from "@/components/LoadingStates";
 
 export default function SignIn() {
     const router = useRouter();
 
-    const [googlePending, startGoogleTransition] = useTransition()
     const [emailPending, startEmailTransition] = useTransition()
-
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-
-    const googleSignIn = useGoogleSignIn();
-
-    const signInWithGoogle = async () => {
-        startGoogleTransition(async () => {
-            googleSignIn.mutate();
-        })
-    }
 
     const emailSignIn = useSignIn(email, password);
 
@@ -46,27 +36,7 @@ export default function SignIn() {
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-10 border-r border-foreground/5">
                     <FieldSet>
                         <FieldTitle className="text-4xl font-bold">Login</FieldTitle>
-                        <FieldDescription>Access your secure vault.</FieldDescription>
-
-                        <Field>
-                            <FieldTitle className="text-muted-foreground">Continue with Google</FieldTitle>
-                            <Button variant="outline" size="lg" disabled={googlePending} onClick={signInWithGoogle} className="h-12">
-                                {googlePending ? (
-                                    <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
-                                        <span className="shimmer shimmer-duration-1000"> AUTHENTICATING WITH GOOGLE </span>
-                                    </CustomLoadingState>
-                                ) : (
-                                    <>
-                                        Sign in with Google
-                                    </>
-                                )}
-                            </Button>
-                        </Field>
-
-                        <div className="flex flex-col justify-center items-center">
-                            <FieldSeparator className="w-full" />
-                            <div className="bg-background text-muted-foreground z-9 -translate-y-3.5 px-4">OR</div>
-                        </div>
+                        <FieldDescription>Access vaults in your strongroom.</FieldDescription>
 
                         <FieldGroup className="w-xl">
                             <Field>

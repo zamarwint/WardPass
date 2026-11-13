@@ -67,7 +67,7 @@ export default function SignUp() {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FieldGroup className="w-xl">
                             <FieldTitle className="text-4xl text-primary font-bold">Sign Up</FieldTitle>
-                            <FieldDescription><span className="font-bold">Create an account </span> for a vault.</FieldDescription>
+                            <FieldDescription>Create a new <strong>strongroom.</strong></FieldDescription>
 
                             {/* Name Field */}
                             <Controller
