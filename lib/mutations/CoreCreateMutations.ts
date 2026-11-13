@@ -6,7 +6,7 @@ import {
   encryptVaultKey,
   generateVaultKey,
 } from "../crypto/aes";
-import { createVault } from "@/app/actions/vault/createVault";
+import { createVault } from "@/actions/vault/createVault";
 import { useVaultStore } from "@/stores/vault";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,7 +16,7 @@ import {
   LoginJSONRaw,
   SecureNoteJSONRaw,
 } from "../types/RawVaultItemType";
-import createVaultItem from "@/app/actions/vault-item/createVaultItem";
+import createVaultItem from "@/actions/vault-item/createVaultItem";
 import { VaultItemType } from "../types/VaultType";
 
 export function useCreateVault(

@@ -1,4 +1,4 @@
-import { getVaultUnique } from "@/app/actions/vault/getVaultUnique";
+import { getVaultUnique } from "@/actions/vault/getVaultUnique";
 import ActiveVault from "@/components/app/ActiveVault";
 import type { Metadata } from "next";
 

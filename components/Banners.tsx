@@ -61,7 +61,7 @@ export function OpenSourceProjectAlert() {
         <Alert className="flex items-center justify-center gap-4 border-none bg-background text-primary rounded-none z-999">
             <AlertTitle className="font-bold">OPEN SOURCE NOTICE</AlertTitle>
             <AlertDescription>
-                <span>WardPass is free and open source under the MIT License. We do not collect any of your information or sell anything on this website. This is a <a href="https://github.com/zamarwint/WardPass" target="_blank">hobby project</a>. If you would like to donate, feel free to do so using the <a href="#" target="_blank">link</a> provided.</span>
+                <span>WardPass is free and <a href="https://github.com/zamarwint/WardPass" target="_blank">open source</a> under the MIT License. We do not collect information or sell anything on this website. If you would like to donate, feel free to do so using the <a href="#" target="_blank">link</a> provided.</span>
             </AlertDescription>
         </Alert>
     )

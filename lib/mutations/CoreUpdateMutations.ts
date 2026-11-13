@@ -5,11 +5,11 @@ import {
   encryptData,
   encryptVaultKey,
 } from "../crypto/aes";
-import { updateVault } from "@/app/actions/vault/updateVault";
+import { updateVault } from "@/actions/vault/updateVault";
 import { useVaultStore } from "@/stores/vault";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import updateVaultItem from "@/app/actions/vault-item/updateVaultItem";
+import updateVaultItem from "@/actions/vault-item/updateVaultItem";
 import {
   CreditCardJSONRaw,
   IdentityJSONRaw,

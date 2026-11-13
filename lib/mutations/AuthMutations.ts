@@ -1,10 +1,10 @@
 import {
   requestPasswordReset,
   resetPassword,
-} from "@/app/actions/auth/reset-password";
-import signIn from "@/app/actions/auth/signIn";
-import signOut from "@/app/actions/auth/signOut";
-import signUp from "@/app/actions/auth/signUp";
+} from "@/actions/auth/reset-password";
+import signIn from "@/actions/auth/signIn";
+import signOut from "@/actions/auth/signOut";
+import signUp from "@/actions/auth/signUp";
 import { useVaultStore } from "@/stores/vault";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";

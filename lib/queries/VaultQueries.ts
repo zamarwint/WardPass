@@ -1,10 +1,10 @@
 import {
   getAllVaultsWithTrashedItems,
   getVaultWithTrashedItems,
-} from "@/app/actions/getVaultWithTrashedItems";
-import { getVaultItems } from "@/app/actions/vault/getVaultItems";
-import { getVaults } from "@/app/actions/vault/getVaults";
-import { getVaultPageData } from "@/app/actions/vault/getVaultPageData";
+} from "@/actions/getVaultWithTrashedItems";
+import { getVaultItems } from "@/actions/vault/getVaultItems";
+import { getVaults } from "@/actions/vault/getVaults";
+import { getVaultPageData } from "@/actions/vault/getVaultPageData";
 import { useQuery } from "@tanstack/react-query";
 
 // GET CURRENT VAULTS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED

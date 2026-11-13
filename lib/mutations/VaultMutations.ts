@@ -1,4 +1,4 @@
-import { deleteVault } from "@/app/actions/vault/deleteVault";
+import { deleteVault } from "@/actions/vault/deleteVault";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 

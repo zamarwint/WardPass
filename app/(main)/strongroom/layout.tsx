@@ -1,5 +1,5 @@
 import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getUserSession } from "@/app/actions/getSession";
+import { getUserSession } from "@/actions/getSession";
 import { listVaultsForUser } from "@/lib/server/vault-repository";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
