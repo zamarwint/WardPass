@@ -3,49 +3,74 @@
 import { Button } from "@/components/ui/button";
 import {
     Field,
+    FieldError,
     FieldGroup,
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Loader2Icon, PlusIcon } from "lucide-react";
-import { useState } from "react";
 import { PasswordInput } from "@/components/PasswordInput";
 import { VaultItemType } from "@/lib/types/VaultType";
 import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { CreditCardJSONRaw } from "@/lib/types/RawVaultItemType";
+import { creditCardSchema } from "@/lib/validations/vaultItemSchemas";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function CreateCreditCardItem({ open, onOpenChange, vaultId }: { open: boolean, onOpenChange: (open: boolean) => void, vaultId: string }) {
-    const [cardHolderName, setCardHolderName] = useState<string>("")
-    const [cardNumber, setCardNumber] = useState<string>("")
-    const [cvv, setCvv] = useState<string>("")
-    const [expiryDate, setExpiryDate] = useState<string>("")
-    const [billingAddress1, setBillingAddress1] = useState<string>("")
-    const [billingAddress2, setBillingAddress2] = useState<string>("")
-    const [zipCode, setZipCode] = useState<string>("")
-    const [city, setCity] = useState<string>("")
-    const [state, setState] = useState<string>("")
-    const [country, setCountry] = useState<string>("")
+    // 2. Create form instance with resolver
+    const form = useForm<z.infer<typeof creditCardSchema>>({
+        resolver: zodResolver(creditCardSchema),
+        mode: "onChange",
+        defaultValues: {
+            cardHolderName: "",
+            cardNumber: "",
+            cvv: "",
+            expiryDate: "",
+            billingAddress1: "",
+            billingAddress2: "",
+            zipCode: "",
+            city: "",
+            state: "",
+            country: ""
+        }
+    })
 
-    const data = {
-        cardHolderName, cardNumber, cvv: Number(cvv), expiryDate,
-        billingAddress1, billingAddress2, zipCode, city, state, country
+    const data: CreditCardJSONRaw = {
+        cardHolderName: form.getValues().cardHolderName,
+        cardNumber: form.getValues().cardNumber,
+        cvv: Number(form.getValues().cvv),
+        expiryDate: String(form.getValues().expiryDate),
+        billingAddress1: form.getValues().billingAddress1,
+        billingAddress2: form.getValues().billingAddress2,
+        zipCode: form.getValues().zipCode,
+        city: form.getValues().city,
+        state: form.getValues().state,
+        country: form.getValues().country
     };
+
     const { mutate, isPending } = useCreateVaultItem(vaultId, data, VaultItemType.CREDIT_CARD);
 
-    const handleSubmit = () => {
+    {/* SUBMISSION */ }
+    const onSubmit = () => {
         mutate();
 
         // EMPTY VALUES
-        setCardHolderName("");
-        setCardNumber("");
-        setCvv("");
-        setExpiryDate("");
-        setBillingAddress1("");
-        setBillingAddress2("");
-        setZipCode("");
-        setCity("");
-        setState("");
-        setCountry("");
+
+        form.setValues({
+            cardHolderName: "",
+            cardNumber: "",
+            cvv: "",
+            expiryDate: "",
+            billingAddress1: "",
+            billingAddress2: "",
+            zipCode: "",
+            city: "",
+            state: "",
+            country: ""
+        })
     }
 
     return (
@@ -56,72 +81,255 @@ export default function CreateCreditCardItem({ open, onOpenChange, vaultId }: { 
                     <DrawerDescription>Create a new credit card item.</DrawerDescription>
                 </DrawerHeader>
 
-                <FieldGroup className="grid grid-cols-2 gap-4 p-4">
-                    <Field>
-                        <FieldLabel>Card Holder Name</FieldLabel>
-                        <Input type="text" placeholder="Name of credit card item" id="name" value={cardHolderName} onChange={(e) => { setCardHolderName(e.target.value) }} className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Card Number</FieldLabel>
-                        <PasswordInput placeholder="1234 5678 9012 3456" id="cardNumber" value={cardNumber} onChange={(e) => { setCardNumber(e.target.value) }} className="h-12" maxLength={16} number={true} />
-                    </Field>
-                    <Field>
-                        <FieldLabel>CVV</FieldLabel>
-                        <PasswordInput placeholder="123" id="cvv" value={cvv} onChange={(e) => { setCvv(e.target.value) }} className="h-12" maxLength={3} number={true} />
-                    </Field>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 size-full p-4">
+                    <FieldGroup className="grid grid-cols-2 gap-4">
+                        <Controller
+                            name="cardHolderName"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="cardHolderName">Card Holder Name</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="Card Holder Name"
+                                        id="cardHolderName"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            name="cardNumber"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="cardNumber">Card Number</FieldLabel>
+                                    <PasswordInput
+                                        {...field}
+                                        type="text"
+                                        placeholder="1234 5678 9012 3456"
+                                        id="cardNumber"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>Expiry Date</FieldLabel>
-                        <PasswordInput placeholder="12/24" id="expiryDate" value={expiryDate} onChange={(e) => { setExpiryDate(e.target.value) }} className="h-12" maxLength={5} number={true} />
-                    </Field>
+                        <Controller
+                            name="cvv"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="cvv">CVV</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="123"
+                                        id="cvv"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>Billing Address 1</FieldLabel>
-                        <Input type="text" placeholder="Address line 1" id="billingAddress1" value={billingAddress1} onChange={(e) => { setBillingAddress1(e.target.value) }} className="h-12" />
-                    </Field>
+                        <Controller
+                            name="expiryDate"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="expiryDate">Expiry Date</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="month"
+                                        placeholder="12/24"
+                                        id="expiryDate"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>Billing Address 2</FieldLabel>
-                        <Input type="text" placeholder="Address line 2" id="billingAddress2" value={billingAddress2} onChange={(e) => { setBillingAddress2(e.target.value) }} className="h-12" />
-                    </Field>
+                        <Controller
+                            name="billingAddress1"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="billingAddress1">Billing Address 1</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="Address line 1"
+                                        id="billingAddress1"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>Zip Code</FieldLabel>
-                        <Input type="text" placeholder="12345" id="zipCode" value={zipCode} onChange={(e) => { setZipCode(e.target.value) }} className="h-12" />
-                    </Field>
+                        <Controller
+                            name="billingAddress2"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="billingAddress2">Billing Address 2</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="Address line 2"
+                                        id="billingAddress2"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>City</FieldLabel>
-                        <Input type="text" placeholder="City" id="city" value={city} onChange={(e) => { setCity(e.target.value) }} className="h-12" />
-                    </Field>
+                        <Controller
+                            name="zipCode"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="zipCode">Zip Code</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="12345"
+                                        id="zipCode"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>State</FieldLabel>
-                        <Input type="text" placeholder="State" id="state" value={state} onChange={(e) => { setState(e.target.value) }} className="h-12" />
-                    </Field>
+                        <Controller
+                            name="city"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="city">City</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="City"
+                                        id="city"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                    <Field>
-                        <FieldLabel>Country</FieldLabel>
-                        <Input type="text" placeholder="Country" id="country" value={country} onChange={(e) => { setCountry(e.target.value) }} className="h-12" />
-                    </Field>
-                </FieldGroup>
+                        <Controller
+                            name="state"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="state">State</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="State"
+                                        id="state"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
 
-                <DrawerFooter className="flex flex-row">
-                    <DrawerClose>Cancel</DrawerClose>
-                    <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !cardHolderName || !cardNumber || !cvv || !expiryDate || !billingAddress1 || !zipCode || !city || !country}>
-                        {isPending ? (
-                            <>
-                                <Loader2Icon className="size-4 animate-spin" />
-                                <span>Adding...</span>
-                            </>
-                        ) : (
-                            <>
-                                <PlusIcon className="size-4" />
-                                <span>Add Credit Card</span>
-                            </>
-                        )}
-                    </Button>
-                </DrawerFooter>
+                        <Controller
+                            name="country"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="country">Country</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        placeholder="Country"
+                                        id="country"
+                                        aria-invalid={fieldState.invalid}
+                                        className="h-12"
+                                        autoComplete="off"
+                                        maxLength={50}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                    </FieldGroup>
+
+                    <DrawerFooter className="flex flex-row">
+                        <DrawerClose>Cancel</DrawerClose>
+                        <Button type="submit" className="font-bold" disabled={isPending || form.formState.isSubmitting}>
+                            {isPending ? (
+                                <>
+                                    <Loader2Icon className="size-4 animate-spin" />
+                                    <span>Adding...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <PlusIcon className="size-4" />
+                                    <span>Add Credit Card</span>
+                                </>
+                            )}
+                        </Button>
+                    </DrawerFooter>
+                </form>
             </DrawerContent>
         </Drawer>
     )

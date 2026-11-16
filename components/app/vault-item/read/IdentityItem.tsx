@@ -39,14 +39,10 @@ export default function IdentityItem({ identityItem }: { identityItem: IdentityJ
                     </Field>
                 </FieldGroup>
 
-                {/* Organization Details */}
-                <FieldTitle className="text-2xl font-semibold pt-8">Organization Details</FieldTitle>
+                {/* Location Details */}
+                <FieldTitle className="text-2xl font-semibold pt-8">Location Details</FieldTitle>
                 <FieldSeparator />
                 <FieldGroup className="hidden lg:grid grid-cols-2">
-                    <Field>
-                        <FieldLabel>Organization Name</FieldLabel>
-                        <Input type="text" placeholder="Organization Name" id="organizationName" value={identityItem.organizationName} readOnly className="h-12" />
-                    </Field>
                     <Field>
                         <FieldLabel>Address Line 1</FieldLabel>
                         <Input type="text" placeholder="Address Line 1" id="address1" value={identityItem.address1} readOnly className="h-12" />

@@ -49,7 +49,7 @@ export default function PlaygroundPage() {
                 </CardContent>
                 <CardFooter>
                     <div>
-                        Slide {current} / {count}
+                        Card {current} / {count}
                     </div>
                 </CardFooter>
             </Card>

@@ -29,10 +29,9 @@ export type IdentityJSONRaw = {
   // PERSONAL DETAILS
   name: string;
   email: string;
-  phoneNumber: string;
+  phoneNumber: number;
 
-  // ORGANIZATION DETAILS
-  organizationName?: string;
+  // LOCATION DETAILS
   address1?: string;
   address2?: string;
   zipCode?: string;
@@ -41,12 +40,12 @@ export type IdentityJSONRaw = {
   country?: string;
   floor?: string;
   county?: string;
-  poBox?: string;
+  poBox?: number;
 
   // ID DETAILS
-  socialSecurityNumber?: string;
-  passportNumber?: string;
-  licenseNumber?: string;
+  socialSecurityNumber?: number;
+  passportNumber?: number;
+  licenseNumber?: number;
 
   // WORK DETAILS
   companyName?: string;

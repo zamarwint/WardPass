@@ -58,7 +58,7 @@ export default function UpdateLoginItem({ open, onOpenChange, loginItem }: { ope
     {/* SUBMISSION */ }
     const { mutate, isPending } = useUpdateVaultItem(loginItem.id, loginItem.vaultId, data);
 
-    const handleSubmit = () => {
+    const onSubmit = () => {
         mutate();
     }
 
@@ -70,7 +70,7 @@ export default function UpdateLoginItem({ open, onOpenChange, loginItem }: { ope
                     <FieldDescription>Update {loginItem.name}.</FieldDescription>
                 </DrawerHeader>
 
-                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-4 p-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-4">
                     <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
                         <Controller
                             name="name"

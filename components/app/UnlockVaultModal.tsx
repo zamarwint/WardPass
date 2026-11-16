@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2Icon, LockIcon } from "lucide-react";
+import { BrickWallShield, Loader2Icon } from "lucide-react";
 import { useVaultStore } from "@/stores/vault";
 import { toast } from "sonner";
 import { deriveKey, fromBase64 } from "@/lib/crypto/argon2";
@@ -66,7 +66,7 @@ export function UnlockVaultModal({
             <div className="flex items-center justify-center">
                 <div className="flex flex-col items-center gap-6">
                     <SvgCircle>
-                        <LockIcon className="text-primary w-10 h-10" />
+                        <BrickWallShield className="text-primary size-20" />
                     </SvgCircle>
                     <div className="flex flex-col items-center gap-1 text-center">
                         <h1 className="text-2xl font-bold">WardPass Vaults Locked</h1>

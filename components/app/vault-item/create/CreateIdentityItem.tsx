@@ -3,90 +3,112 @@
 import { Button } from "@/components/ui/button";
 import {
     Field,
+    FieldError,
     FieldGroup,
     FieldLabel,
     FieldTitle,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Loader2Icon, PlusIcon } from "lucide-react";
-import { useState } from "react";
 import { VaultItemType } from "@/lib/types/VaultType";
 import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { identitySchema } from "@/lib/validations/vaultItemSchemas";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { IdentityJSONRaw } from "@/lib/types/RawVaultItemType";
 
 export default function CreateIdentityItem({ open, onOpenChange, vaultId }: { open: boolean, onOpenChange: (open: boolean) => void, vaultId: string }) {
-    // Personal details
-    const [name, setName] = useState<string>("")
-    const [email, setEmail] = useState<string>("")
-    const [phoneNumber, setPhoneNumber] = useState<string>("")
+    // 2. Create form instance with resolver
+    const form = useForm<z.infer<typeof identitySchema>>({
+        resolver: zodResolver(identitySchema),
+        mode: "onChange",
+        defaultValues: {
+            name: "",
+            email: "",
+            phoneNumber: undefined,
+            address1: "",
+            address2: "",
+            zipCode: "",
+            city: "",
+            state: "",
+            country: "",
+            floor: "",
+            county: "",
+            poBox: undefined,
+            socialSecurityNumber: undefined,
+            passportNumber: undefined,
+            licenseNumber: undefined,
+            companyName: "",
+            occupation: "",
+            x: "",
+            linkedin: "",
+            instagram: "",
+            tiktok: "",
+            facebook: "",
+            github: "",
+            other: "",
+        }
+    })
 
-    // Organization details
-    const [organizationName, setOrganizationName] = useState<string>("")
-    const [address1, setAddress1] = useState<string>("")
-    const [address2, setAddress2] = useState<string>("")
-    const [zipCode, setZipCode] = useState<string>("")
-    const [city, setCity] = useState<string>("")
-    const [state, setState] = useState<string>("")
-    const [country, setCountry] = useState<string>("")
-    const [floor, setFloor] = useState<string>("")
-    const [county, setCounty] = useState<string>("")
-    const [poBox, setPoBox] = useState<string>("")
-
-    // ID details
-    const [socialSecurityNumber, setSocialSecurityNumber] = useState<string>("")
-    const [passportNumber, setPassportNumber] = useState<string>("")
-    const [licenseNumber, setLicenseNumber] = useState<string>("")
-
-    // Work details
-    const [companyName, setCompanyName] = useState<string>("")
-    const [occupation, setOccupation] = useState<string>("")
-
-    // Social details
-    const [x, setX] = useState<string>("")
-    const [linkedin, setLinkedin] = useState<string>("")
-    const [instagram, setInstagram] = useState<string>("")
-    const [tiktok, setTiktok] = useState<string>("")
-    const [facebook, setFacebook] = useState<string>("")
-    const [github, setGithub] = useState<string>("")
-    const [other, setOther] = useState<string>("")
-
-    const data = {
-        name, email, phoneNumber, organizationName, address1, address2,
-        zipCode, city, state, country, floor, county, poBox,
-        socialSecurityNumber, passportNumber, licenseNumber,
-        companyName, occupation, x, linkedin, instagram,
-        tiktok, facebook, github, other
+    const data: IdentityJSONRaw = {
+        name: form.getValues().name,
+        email: form.getValues().email,
+        phoneNumber: form.getValues().phoneNumber,
+        address1: form.getValues().address1,
+        address2: form.getValues().address2,
+        zipCode: form.getValues().zipCode,
+        city: form.getValues().city,
+        state: form.getValues().state,
+        country: form.getValues().country,
+        floor: form.getValues().floor,
+        county: form.getValues().county,
+        poBox: form.getValues().poBox,
+        socialSecurityNumber: form.getValues().socialSecurityNumber,
+        passportNumber: form.getValues().passportNumber,
+        licenseNumber: form.getValues().licenseNumber,
+        companyName: form.getValues().companyName,
+        occupation: form.getValues().occupation,
+        x: form.getValues().x,
+        linkedin: form.getValues().linkedin,
+        instagram: form.getValues().instagram,
+        tiktok: form.getValues().tiktok,
+        facebook: form.getValues().facebook,
+        github: form.getValues().github,
+        other: form.getValues().other
     };
     const { mutate, isPending } = useCreateVaultItem(vaultId, data, VaultItemType.IDENTITY);
 
-    const handleSubmit = () => {
+    const onSubmit = () => {
         mutate();
 
-        setName("");
-        setEmail("");
-        setPhoneNumber("");
-        setOrganizationName("");
-        setAddress1("")
-        setAddress2("");
-        setZipCode("");
-        setCity("");
-        setState("");
-        setCountry("");
-        setFloor("");
-        setCounty("");
-        setPoBox("");
-        setSocialSecurityNumber("");
-        setPassportNumber("");
-        setLicenseNumber("");
-        setCompanyName("");
-        setOccupation("");
-        setX("");
-        setLinkedin("");
-        setInstagram("");
-        setTiktok("");
-        setFacebook("");
-        setGithub("");
-        setOther("");
+        form.setValues({
+            name: "",
+            email: "",
+            phoneNumber: undefined,
+            address1: "",
+            address2: "",
+            zipCode: "",
+            city: "",
+            state: "",
+            country: "",
+            floor: "",
+            county: "",
+            poBox: undefined,
+            socialSecurityNumber: undefined,
+            passportNumber: undefined,
+            licenseNumber: undefined,
+            companyName: "",
+            occupation: "",
+            x: "",
+            linkedin: "",
+            instagram: "",
+            tiktok: "",
+            facebook: "",
+            github: "",
+            other: "",
+        })
     }
 
     return (
@@ -97,154 +119,612 @@ export default function CreateIdentityItem({ open, onOpenChange, vaultId }: { op
                     <DrawerDescription>Create a new Identity item.</DrawerDescription>
                 </DrawerHeader>
 
-                <FieldGroup className="flex flex-col gap-4 p-4 overflow-y-scroll">
-                    {/* Personal details */}
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 size-full p-4 overflow-y-scroll">
+                    <FieldGroup className="flex flex-col gap-4 overflow-y-scroll">
+                        {/* Personal details */}
 
-                    <FieldTitle className="text-2xl font-semibold">Personal Details</FieldTitle>
+                        <FieldTitle className="text-2xl font-semibold">Personal Details</FieldTitle>
 
-                    <FieldGroup className="hidden lg:grid grid-cols-2">
-                        <Field>
-                            <FieldLabel>Name</FieldLabel>
-                            <Input type="text" placeholder="Name of identity item" id="name" value={name} onChange={(e) => { setName(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Email</FieldLabel>
-                            <Input type="email" placeholder="Email" id="email" value={email} onChange={(e) => { setEmail(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Phone Number</FieldLabel>
-                            <Input type="tel" placeholder="+1 234 567 890" id="phoneNumber" value={phoneNumber} onChange={(e) => { setPhoneNumber(e.target.value) }} className="h-12" />
-                        </Field>
+                        <FieldGroup className="hidden lg:grid grid-cols-2">
+                            <Controller
+                                name="name"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="name">Name</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="Name of identity item"
+                                            id="name"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="email"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Email</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="email"
+                                            placeholder="Email"
+                                            id="email"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="phoneNumber"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Phone Number</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                                            value={field.value ?? ""}
+                                            type="tel"
+                                            placeholder="+1 234 567 890"
+                                            id="phoneNumber"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </FieldGroup>
+
+                        {/* Location details */}
+                        <FieldTitle className="text-2xl font-semibold pt-8">Location Details</FieldTitle>
+
+                        <FieldGroup className="hidden lg:grid grid-cols-2">
+                            <Controller
+                                name="address1"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="address1">Address 1</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="Address line 1"
+                                            id="address1"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={50}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="address2"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="address2">Address 2</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="Address line 2"
+                                            id="address2"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={50}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="zipCode"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="zipCode">Zip Code</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="12345"
+                                            id="zipCode"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={50}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="city"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="city">City</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="City"
+                                            id="city"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={50}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="state"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="state">State</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="State"
+                                            id="state"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={50}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="country"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="country">Country</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="Country"
+                                            id="country"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={50}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="floor"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="floor">Floor</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="Floor"
+                                            id="floor"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={50}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="county"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="county">County</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="County"
+                                            id="county"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={50}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="poBox"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="floor">PO Box</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                                            value={field.value ?? ""}
+                                            type="number"
+                                            placeholder="PO Box"
+                                            id="pobox"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={50}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </FieldGroup>
+
+                        {/* ID details */}
+                        <FieldTitle className="text-2xl font-semibold pt-8">ID Details</FieldTitle>
+
+                        <FieldGroup className="hidden lg:grid grid-cols-2">
+                            <Controller
+                                name="socialSecurityNumber"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="socialSecurityNumber">Social Security Number</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                                            value={field.value ?? ""}
+                                            type="number"
+                                            placeholder="SSN"
+                                            id="socialSecurityNumber"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="passportNumber"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="passportNumber">Passport Number</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                                            value={field.value ?? ""}
+                                            type="number"
+                                            placeholder="Passport Number"
+                                            id="passportNumber"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="licenseNumber"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="licenseNumber">License Number</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                                            value={field.value ?? ""}
+                                            type="number"
+                                            placeholder="License Number"
+                                            id="licenseNumber"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </FieldGroup>
+
+                        {/* Work details */}
+                        <FieldTitle className="text-2xl font-semibold pt-8">Work Details</FieldTitle>
+
+                        <FieldGroup className="hidden lg:grid grid-cols-2">
+                            <Controller
+                                name="companyName"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="companyName">Company Name</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="Company Name"
+                                            id="companyName"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="occupation"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="occupation">Occupation</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="Occupation"
+                                            id="occupation"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </FieldGroup>
+
+                        {/* Social details */}
+                        <FieldTitle className="text-2xl font-semibold pt-8">Social Details</FieldTitle>
+
+                        <FieldGroup className="hidden lg:grid grid-cols-2">
+                            <Controller
+                                name="x"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>X</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="https://x.com/johndoe"
+                                            id="x"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="linkedin"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Linkedin</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="https://linkedin.com/in/johndoe"
+                                            id="linkedin"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="instagram"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Instagram</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="https://instagram.com/johndoe"
+                                            id="instagram"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="tiktok"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>TikTok</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="https://tiktok.com/johndoe"
+                                            id="tiktok"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="facebook"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Facebook</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="https://facebook.com/johndoe"
+                                            id="facebook"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="github"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Github</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="https://github.com/johndoe"
+                                            id="github"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="other"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Other URL</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="https://example.com"
+                                            id="other"
+                                            aria-invalid={fieldState.invalid}
+                                            className="h-12"
+                                            autoComplete="off"
+                                            maxLength={31}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </FieldGroup>
                     </FieldGroup>
-
-                    {/* Organization details */}
-                    <FieldTitle className="text-2xl font-semibold pt-8">Organization Details</FieldTitle>
-
-                    <FieldGroup className="hidden lg:grid grid-cols-2">
-                        <Field>
-                            <FieldLabel>Organization Name</FieldLabel>
-                            <Input type="text" placeholder="Organization Name" id="organizationName" value={organizationName} onChange={(e) => { setOrganizationName(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Address Line 1</FieldLabel>
-                            <Input type="text" placeholder="Address Line 1" id="address1" value={address1} onChange={(e) => { setAddress1(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Address Line 2</FieldLabel>
-                            <Input type="text" placeholder="Address Line 2" id="address2" value={address2} onChange={(e) => { setAddress2(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>ZIP Code</FieldLabel>
-                            <Input type="text" placeholder="ZIP Code" id="zipCode" value={zipCode} onChange={(e) => { setZipCode(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>City</FieldLabel>
-                            <Input type="text" placeholder="City" id="city" value={city} onChange={(e) => { setCity(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>State</FieldLabel>
-                            <Input type="text" placeholder="State" id="state" value={state} onChange={(e) => { setState(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Country</FieldLabel>
-                            <Input type="text" placeholder="Country" id="country" value={country} onChange={(e) => { setCountry(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Floor</FieldLabel>
-                            <Input type="text" placeholder="Floor" id="floor" value={floor} onChange={(e) => { setFloor(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>County</FieldLabel>
-                            <Input type="text" placeholder="County" id="county" value={county} onChange={(e) => { setCounty(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>PO Box</FieldLabel>
-                            <Input type="text" placeholder="PO Box" id="poBox" value={poBox} onChange={(e) => { setPoBox(e.target.value) }} className="h-12" />
-                        </Field>
-                    </FieldGroup>
-
-                    {/* ID details */}
-                    <FieldTitle className="text-2xl font-semibold pt-8">ID Details</FieldTitle>
-
-                    <FieldGroup className="hidden lg:grid grid-cols-2">
-                        <Field>
-                            <FieldLabel>Social Security Number</FieldLabel>
-                            <Input type="text" placeholder="Social Security Number" id="socialSecurityNumber" value={socialSecurityNumber} onChange={(e) => { setSocialSecurityNumber(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Passport Number</FieldLabel>
-                            <Input type="text" placeholder="Passport Number" id="passportNumber" value={passportNumber} onChange={(e) => { setPassportNumber(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>License Number</FieldLabel>
-                            <Input type="text" placeholder="License Number" id="licenseNumber" value={licenseNumber} onChange={(e) => { setLicenseNumber(e.target.value) }} className="h-12" />
-                        </Field>
-                    </FieldGroup>
-
-                    {/* Work details */}
-                    <FieldTitle className="text-2xl font-semibold pt-8">Work Details</FieldTitle>
-
-                    <FieldGroup className="hidden lg:grid grid-cols-2">
-                        <Field>
-                            <FieldLabel>Company Name</FieldLabel>
-                            <Input type="text" placeholder="Company Name" id="companyName" value={companyName} onChange={(e) => { setCompanyName(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Occupation</FieldLabel>
-                            <Input type="text" placeholder="Occupation" id="occupation" value={occupation} onChange={(e) => { setOccupation(e.target.value) }} className="h-12" />
-                        </Field>
-                    </FieldGroup>
-
-                    {/* Social details */}
-                    <FieldTitle className="text-2xl font-semibold pt-8">Social Details</FieldTitle>
-
-                    <FieldGroup className="hidden lg:grid grid-cols-2">
-                        <Field>
-                            <FieldLabel>X</FieldLabel>
-                            <Input type="text" placeholder="X" id="x" value={x} onChange={(e) => { setX(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Linkedin</FieldLabel>
-                            <Input type="text" placeholder="Linkedin" id="linkedin" value={linkedin} onChange={(e) => { setLinkedin(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Instagram</FieldLabel>
-                            <Input type="text" placeholder="Instagram" id="instagram" value={instagram} onChange={(e) => { setInstagram(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Tiktok</FieldLabel>
-                            <Input type="text" placeholder="Tiktok" id="tiktok" value={tiktok} onChange={(e) => { setTiktok(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Facebook</FieldLabel>
-                            <Input type="text" placeholder="Facebook" id="facebook" value={facebook} onChange={(e) => { setFacebook(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Github</FieldLabel>
-                            <Input type="text" placeholder="Github" id="github" value={github} onChange={(e) => { setGithub(e.target.value) }} className="h-12" />
-                        </Field>
-                        <Field>
-                            <FieldLabel>Other</FieldLabel>
-                            <Input type="text" placeholder="Other" id="other" value={other} onChange={(e) => { setOther(e.target.value) }} className="h-12" />
-                        </Field>
-                    </FieldGroup>
-                </FieldGroup>
-                <DrawerFooter className="flex flex-row">
-                    <DrawerClose>Cancel</DrawerClose>
-                    <Button onClick={handleSubmit} className="font-bold" disabled={isPending || !name || !email || !phoneNumber}>
-                        {isPending ? (
-                            <>
-                                <Loader2Icon className="size-4 animate-spin" />
-                                <span>Adding...</span>
-                            </>
-                        ) : (
-                            <>
-                                <PlusIcon className="size-4" />
-                                <span>Add Identity</span>
-                            </>
-                        )}
-                    </Button>
-                </DrawerFooter>
+                    <DrawerFooter className="flex flex-row">
+                        <DrawerClose>Cancel</DrawerClose>
+                        <Button type="submit" className="font-bold" disabled={isPending || form.formState.isSubmitting}>
+                            {isPending ? (
+                                <>
+                                    <Loader2Icon className="size-4 animate-spin" />
+                                    <span>Adding...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <PlusIcon className="size-4" />
+                                    <span>Add Identity</span>
+                                </>
+                            )}
+                        </Button>
+                    </DrawerFooter>
+                </form>
             </DrawerContent>
         </Drawer>
     )

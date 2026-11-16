@@ -1,6 +1,6 @@
 {
   "name": "wpmain",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
@@ -79,7 +79,6 @@
     "typescript": "^5"
   },
   "ignoreScripts": [
-    "sharp",
     "unrs-resolver"
   ],
   "trustedDependencies": [

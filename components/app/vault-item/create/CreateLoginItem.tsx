@@ -56,7 +56,7 @@ export default function CreateLoginItem({ open, onOpenChange, vaultId }: { open:
     {/* SUBMISSION */ }
     const { mutate, isPending } = useCreateVaultItem(vaultId, data, VaultItemType.LOGIN);
 
-    const handleSubmit = () => {
+    const onSubmit = () => {
         mutate();
         form.setValues({
             name: "",
@@ -75,7 +75,7 @@ export default function CreateLoginItem({ open, onOpenChange, vaultId }: { open:
                     <DrawerTitle>Create Login Item</DrawerTitle>
                     <DrawerDescription>Create a new login item.</DrawerDescription>
                 </DrawerHeader>
-                <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-4 size-full p-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 size-full p-4">
                     <FieldGroup className="hidden lg:grid grid-cols-2 gap-4 w-full">
                         <Controller
                             name="name"
