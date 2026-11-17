@@ -294,18 +294,30 @@ export default function ActiveVault() {
     // DECRYPT EVERY ITEM IN THE VAULT
     const decryptedItems = useMemo<DecryptedItem[] | null>(() => {
         if (!vaultItems || !store.isVaultUnlocked(vaultId)) return null;
-        try {
-            const key = store.getVaultKey(vaultId);
-            const decryptItem = (item: VaultItem) => {
-                if (!item.encryptedData || !item.iv) return item;
+        const key = store.getVaultKey(vaultId);
+        if (!key) return null;
+
+        const decryptItem = (item: VaultItem): DecryptedItem | null => {
+            if (!item || !item.id) return null;
+            if (!item.encryptedData || !item.iv) {
+                return item as unknown as DecryptedItem;
+            }
+            try {
                 const json = decryptData(item.encryptedData, item.iv, key);
-                return { ...item, ...JSON.parse(json) };
-            };
-            return (vaultItems.vaultItems?.map(decryptItem) ?? []) as DecryptedItem[];
-        } catch (err) {
-            console.error("Failed to decrypt items", err);
-            return null;
-        }
+                const parsed = JSON.parse(json);
+                return { ...item, ...parsed } as DecryptedItem;
+            } catch (err) {
+                console.error(`Failed to decrypt item ${item.id}:`, err);
+                return {
+                    ...item,
+                    name: "Decryption failed",
+                    title: "Decryption failed",
+                    cardHolderName: "Decryption failed",
+                } as unknown as DecryptedItem;
+            }
+        };
+
+        return (vaultItems.vaultItems?.map(decryptItem).filter((item): item is DecryptedItem => item !== null) ?? []);
         // DEPEND ON store.vaultKeys (THE WHOLE RECORD): A NEW OBJECT REFERENCE IS PRODUCED ON EVERY UNLOCK/LOCK
     }, [vaultItems, vaultId, store.vaultKeys]);
 

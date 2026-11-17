@@ -38,24 +38,19 @@ export default function UpdateCreditCardItem({ open, onOpenChange, creditCardIte
         }
     })
 
-    const data: CreditCardJSONRaw = {
-        cardHolderName: form.getValues().cardHolderName,
-        cardNumber: form.getValues().cardNumber,
-        cvv: Number(form.getValues().cvv),
-        expiryDate: String(form.getValues().expiryDate),
-        billingAddress1: form.getValues().billingAddress1,
-        billingAddress2: form.getValues().billingAddress2,
-        zipCode: form.getValues().zipCode,
-        city: form.getValues().city,
-        state: form.getValues().state,
-        country: form.getValues().country
+    const { mutate, isPending } = useUpdateVaultItem<CreditCardJSONRaw>(
+        creditCardItem.id,
+        creditCardItem.vaultId,
+        () => onOpenChange(false)
+    );
+
+    const onSubmit = (values: z.infer<typeof creditCardSchema>) => {
+        mutate({
+            ...values,
+            cvv: Number(values.cvv),
+            expiryDate: String(values.expiryDate),
+        });
     };
-
-    const { mutate, isPending } = useUpdateVaultItem(creditCardItem.id, creditCardItem.vaultId, data)
-
-    const onSubmit = () => {
-        mutate();
-    }
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">

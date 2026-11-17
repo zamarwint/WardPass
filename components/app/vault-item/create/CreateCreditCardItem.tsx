@@ -38,40 +38,23 @@ export default function CreateCreditCardItem({ open, onOpenChange, vaultId }: { 
         }
     })
 
-    const data: CreditCardJSONRaw = {
-        cardHolderName: form.getValues().cardHolderName,
-        cardNumber: form.getValues().cardNumber,
-        cvv: Number(form.getValues().cvv),
-        expiryDate: String(form.getValues().expiryDate),
-        billingAddress1: form.getValues().billingAddress1,
-        billingAddress2: form.getValues().billingAddress2,
-        zipCode: form.getValues().zipCode,
-        city: form.getValues().city,
-        state: form.getValues().state,
-        country: form.getValues().country
+    const { mutate, isPending } = useCreateVaultItem<CreditCardJSONRaw>(
+        vaultId,
+        VaultItemType.CREDIT_CARD,
+        () => {
+            form.reset();
+            onOpenChange(false);
+        }
+    );
+
+    {/* SUBMISSION */}
+    const onSubmit = (values: z.infer<typeof creditCardSchema>) => {
+        mutate({
+            ...values,
+            cvv: Number(values.cvv),
+            expiryDate: String(values.expiryDate),
+        });
     };
-
-    const { mutate, isPending } = useCreateVaultItem(vaultId, data, VaultItemType.CREDIT_CARD);
-
-    {/* SUBMISSION */ }
-    const onSubmit = () => {
-        mutate();
-
-        // EMPTY VALUES
-
-        form.setValues({
-            cardHolderName: "",
-            cardNumber: "",
-            cvv: "",
-            expiryDate: "",
-            billingAddress1: "",
-            billingAddress2: "",
-            zipCode: "",
-            city: "",
-            state: "",
-            country: ""
-        })
-    }
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">

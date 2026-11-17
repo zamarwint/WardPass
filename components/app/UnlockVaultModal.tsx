@@ -26,7 +26,7 @@ export function UnlockVaultModal({
         e.preventDefault();
 
         if (!password) {
-            toast.error("Please enter your master password.");
+            toast.error("Please enter your account password.");
             return;
         }
 
@@ -46,14 +46,14 @@ export function UnlockVaultModal({
                 // ✅ After creating the vault, unlock it immediately by passing its ID
                 useVaultStore.getState().unlock(vault.id, vaultKey);
                 toast.dismiss();
-                toast.success("WardPass vaults unlocked successfully!");
+                toast.success("Strongroom unlocked successfully!");
             } else {
                 toast.dismiss();
-                toast.error("Incorrect master password or corrupted data.");
+                toast.error("Incorrect account password.");
             }
         } catch (error) {
             toast.dismiss();
-            toast.error("Failed to unlock WardPass. Please check your password.");
+            toast.error("Failed to unlock strongroom. Please check your password.");
             console.error(error);
         } finally {
             setIsUnlocking(false);
@@ -69,18 +69,18 @@ export function UnlockVaultModal({
                         <BrickWallShield className="text-primary size-20" />
                     </SvgCircle>
                     <div className="flex flex-col items-center gap-1 text-center">
-                        <h1 className="text-2xl font-bold">WardPass Vaults Locked</h1>
-                        <p className="text-muted-foreground w-xl">Your WardPass vaults are locked. Please enter your master password to decrypt your data.</p>
+                        <h1 className="text-2xl font-bold">WardPass Strongroom Vaults Locked</h1>
+                        <p className="text-muted-foreground w-xl">Your strongroom&apos;s vaults are locked. Please enter your account password to decrypt your data.</p>
                     </div>
                 </div>
             </div>
             <form onSubmit={handleUnlock} className="flex flex-col gap-4 mt-4 min-w-lg max-w-full">
                 <div className="flex flex-col gap-2">
-                    <Label htmlFor="masterPassword">Master Password</Label>
+                    <Label htmlFor="masterPassword">Account Password</Label>
                     <Input
                         id="masterPassword"
                         type="password"
-                        placeholder="Enter your master password"
+                        placeholder="Enter your account password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         autoFocus

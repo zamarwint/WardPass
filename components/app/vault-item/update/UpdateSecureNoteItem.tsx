@@ -23,8 +23,6 @@ import { secureNoteSchema } from "@/lib/validations/vaultItemSchemas";
 import { SecureNoteJSONRaw } from "@/lib/types/RawVaultItemType";
 
 export default function UpdateSecureNoteItem({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: SecureNoteJSON }) {
-    const [characterLength, setCharacterLength] = useState<number>(0);
-
     // 2. Create form instance with resolver
     const form = useForm<z.infer<typeof secureNoteSchema>>({
         resolver: zodResolver(secureNoteSchema),
@@ -35,26 +33,18 @@ export default function UpdateSecureNoteItem({ open, onOpenChange, secureNoteIte
         }
     })
 
-    const data: SecureNoteJSONRaw = {
-        title: form.getValues().title,
-        content: form.getValues().content
+    const content = form.watch("content");
+    const characterLength = content?.length ?? 0;
+
+    const { mutate, isPending } = useUpdateVaultItem<SecureNoteJSONRaw>(
+        secureNoteItem.id,
+        secureNoteItem.vaultId,
+        () => onOpenChange(false)
+    );
+
+    const onSubmit = (values: z.infer<typeof secureNoteSchema>) => {
+        mutate(values);
     };
-
-    // WATCH THE CONTENT CHARACTER LENGTH
-    useEffect(() => {
-        const value = form.getValues().content;
-
-        if (value.length <= 2000) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setCharacterLength(value.length);
-        }
-    }, [form]);
-
-    const { mutate, isPending } = useUpdateVaultItem(secureNoteItem.id, secureNoteItem.vaultId, data)
-
-    const onSubmit = () => {
-        mutate();
-    }
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">

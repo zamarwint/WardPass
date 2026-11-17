@@ -2,13 +2,14 @@
 
 import { motion } from "motion/react"
 import { Field, FieldContent, FieldDescription, FieldGroup, FieldTitle } from "@/components/ui/field";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useState } from "react";
 import HandleUserSessions from "@/components/app/admin/users/UserSessions";
 import HandleListUsers from "@/components/app/admin/users/Users";
 import AdminCreateUser from "@/components/app/admin/users/CreateUser";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ContentSection = "users" | "user-sessions" | "create-user";
+
+const ContentSectionValues = ["users", "user-sessions", "create-user"];
 
 const CONTENT_SECTIONS: { value: ContentSection; label: string }[] = [
     { value: "users", label: "All Users" },
@@ -17,8 +18,6 @@ const CONTENT_SECTIONS: { value: ContentSection; label: string }[] = [
 ];
 
 export default function UserManagementPage() {
-    const [selectedContent, setSelectedContent] = useState<ContentSection>("users");
-
     return (
         <motion.div className="flex flex-col gap-10 items-start justify-start pt-5 px-10 py-5">
             <Field className="flex flex-col gap-10">
@@ -29,24 +28,19 @@ export default function UserManagementPage() {
                     </Field>
                     <Field>
                         <FieldContent className="space-y-5">
-                            <ToggleGroup
-                                value={[selectedContent]}
-                                onValueChange={(value) => {
-                                    // BASE UI ALWAYS PASSES AN ARRAY, AND IT IS EMPTY WHEN THE ACTIVE TOGGLE IS CLICKED AGAIN
-                                    const next = value[0] as ContentSection | undefined;
-                                    if (next) setSelectedContent(next);
-                                }}
-                            >
-                                {CONTENT_SECTIONS.map((section) => (
-                                    <ToggleGroupItem key={section.value} size="sm" value={section.value} className="text-md p-6 rounded-xl">
-                                        {section.label}
-                                    </ToggleGroupItem>
-                                ))}
-                            </ToggleGroup>
+                            <Tabs>
+                                <TabsList className="mb-2">
+                                    {CONTENT_SECTIONS.map((section) => (
+                                        <TabsTrigger key={section.value} value={section.value}>
+                                            {section.label}
+                                        </TabsTrigger>
+                                    ))}
+                                </TabsList>
 
-                            {selectedContent === "users" && <HandleListUsers />}
-                            {selectedContent === "user-sessions" && <HandleUserSessions />}
-                            {selectedContent === "create-user" && <AdminCreateUser />}
+                                <TabsContent value={ContentSectionValues[0]}><HandleListUsers /></TabsContent>
+                                <TabsContent value={ContentSectionValues[1]}><HandleUserSessions /></TabsContent>
+                                <TabsContent value={ContentSectionValues[2]}><AdminCreateUser /></TabsContent>
+                            </Tabs>
                         </FieldContent>
                     </Field>
                 </FieldGroup>

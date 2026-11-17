@@ -46,21 +46,15 @@ export default function UpdateLoginItem({ open, onOpenChange, loginItem }: { ope
         [watchedPassword]
     );
 
-    const data: LoginJSONRaw = {
-        name: form.getValues().name,
-        url: form.getValues().url,
-        username: form.getValues().username,
-        email: form.getValues().email,
-        password: form.getValues().password,
-        note: form.getValues().note
+    const { mutate, isPending } = useUpdateVaultItem<LoginJSONRaw>(
+        loginItem.id,
+        loginItem.vaultId,
+        () => onOpenChange(false)
+    );
+
+    const onSubmit = (values: z.infer<typeof loginItemSchema>) => {
+        mutate(values);
     };
-
-    {/* SUBMISSION */ }
-    const { mutate, isPending } = useUpdateVaultItem(loginItem.id, loginItem.vaultId, data);
-
-    const onSubmit = () => {
-        mutate();
-    }
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">

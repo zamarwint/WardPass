@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { IconMap, RenderIcon } from "@/components/IconMap";
 import { useCreateVault } from "@/lib/mutations/CoreCreateMutations";
+import { useVaultStore } from "@/stores/vault";
 import { useTheme } from "next-themes";
 
 export default function CreateVault({ disabled }: { disabled: boolean }) {
@@ -28,9 +29,18 @@ export default function CreateVault({ disabled }: { disabled: boolean }) {
     const [vaultColor, setVaultColor] = useState<string>("");
     const [open, setOpen] = useState<boolean>(false);
 
-    // ✅ Master password lives in local state — form input only
-    const [masterPassword, setMasterPassword] = useState<string>("");
-    const { mutate, isPending } = useCreateVault(vaultName, selectedIcon!, vaultColor, masterPassword, setMasterPassword, setOpen);
+    const storePassword = useVaultStore((state) => state.masterPassword);
+    const [passwordInput, setPasswordInput] = useState<string>("");
+    const effectivePassword = storePassword || passwordInput;
+
+    const { mutate, isPending } = useCreateVault(
+        vaultName,
+        selectedIcon!,
+        vaultColor,
+        effectivePassword,
+        setPasswordInput,
+        setOpen
+    );
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -42,7 +52,7 @@ export default function CreateVault({ disabled }: { disabled: boolean }) {
                 <DialogHeader>
                     <DialogTitle className="font-bold">New Vault</DialogTitle>
                     <DialogDescription>
-                        Create a new vault.
+                        Create a new vault encrypted with your account password.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-col gap-3">
@@ -69,13 +79,25 @@ export default function CreateVault({ disabled }: { disabled: boolean }) {
                     <Label htmlFor="vaultColor">Enter Vault Color</Label>
                     <Input id="vaultColor" placeholder="e.g. red, green, blue" value={vaultColor} onChange={(e) => setVaultColor(e.target.value)} />
                 </div>
-                <div className="flex flex-col gap-3">
-                    <Label htmlFor="masterPassword">Enter Master Password</Label>
-                    <Input type="password" id="masterPassword" placeholder="Enter your master password to create vault" value={masterPassword} onChange={(e) => setMasterPassword(e.target.value)} />
-                </div>
+                {!storePassword ? (
+                    <div className="flex flex-col gap-3">
+                        <Label htmlFor="accountPassword">Enter Account Password</Label>
+                        <Input
+                            type="password"
+                            id="accountPassword"
+                            placeholder="Enter your account password"
+                            value={passwordInput}
+                            onChange={(e) => setPasswordInput(e.target.value)}
+                        />
+                    </div>
+                ) : (
+                    <p className="text-xs text-muted-foreground">
+                        This vault will be encrypted using your active account password.
+                    </p>
+                )}
                 <DialogFooter>
                     <DialogClose className="text-md mr-1">Cancel</DialogClose>
-                    <Button disabled={isPending || !vaultName || !selectedIcon || !vaultColor || !masterPassword} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
+                    <Button disabled={isPending || !vaultName || !selectedIcon || !vaultColor || !effectivePassword} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

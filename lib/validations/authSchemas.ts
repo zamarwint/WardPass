@@ -10,6 +10,7 @@ export const passwordSchema = z
     .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character");
 
 export const resetPasswordSchema = z.object({
+    currentPassword: z.string().optional(),
     password: passwordSchema,
     confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {

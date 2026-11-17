@@ -1,6 +1,8 @@
 import {
   requestPasswordReset,
-  resetPassword,
+  resetPasswordAndReencryptVaults,
+  type UpdatedItemPayload,
+  type UpdatedVaultPayload,
 } from "@/actions/auth/reset-password";
 import signIn from "@/actions/auth/signIn";
 import signOut from "@/actions/auth/signOut";
@@ -74,8 +76,9 @@ export function useSignOut() {
       toast.loading("Signing you out...");
     },
     onSuccess: () => {
-      //clear the master password from memory
+      // Clear all master password and vault keys from memory
       useVaultStore.getState().clearMasterPassword();
+      useVaultStore.getState().lockAll();
 
       //redirect to the home page
       toast.dismiss();
@@ -108,24 +111,34 @@ export function useRequestPasswordReset(email: string) {
   });
 }
 
-export function useResetPassword(newPassword: string, token: string) {
+export function useResetPassword() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   return useMutation({
-    mutationFn: () => resetPassword(newPassword, token),
+    mutationFn: (payload: {
+      newPassword: string;
+      token: string;
+      updatedVaults?: UpdatedVaultPayload[];
+      updatedItems?: UpdatedItemPayload[];
+      wipeVaults?: boolean;
+    }) => resetPasswordAndReencryptVaults(payload),
     onMutate: () => {
-      toast.loading("Resetting your password...");
+      toast.loading("Resetting password and re-encrypting vaults...");
     },
     onSuccess: () => {
+      useVaultStore.getState().clearMasterPassword();
+      useVaultStore.getState().lockAll();
       toast.dismiss();
-      toast.success("Password reset successfully!");
-      queryClient.invalidateQueries({ queryKey: ["session"] });
+      toast.success(
+        "Password reset and vaults re-encrypted successfully! Please sign in with your new password.",
+      );
+      queryClient.clear();
       router.push("/sign-in");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.dismiss();
-      toast.error("Failed to reset password" + error);
+      toast.error(error?.message || "Failed to reset password.");
     },
   });
 }

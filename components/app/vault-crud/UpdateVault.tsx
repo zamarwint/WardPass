@@ -30,9 +30,9 @@ export default function UpdateVault({ open, onOpenChange, vault }: { open: boole
     const [vaultName, setVaultName] = useState<string>(vault.name);
     const [vaultColor, setVaultColor] = useState<string>(vault.iconColor!);
 
-    // ✅ Master password lives in local state — form input only
-    const [masterPassword, setMasterPassword] = useState<string>(useVaultStore.getState().masterPassword || "");
-    const { mutate, isPending } = useUpdateVault(vault.id, vaultName, selectedIcon as string, vaultColor, masterPassword, setMasterPassword, onOpenChange)
+    const { mutate, isPending } = useUpdateVault(vault.id, vaultName, selectedIcon as string, vaultColor, onOpenChange);
+
+    const hasChanges = vaultName !== vault.name || selectedIcon !== vault.icon || vaultColor !== vault.iconColor;
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -67,13 +67,9 @@ export default function UpdateVault({ open, onOpenChange, vault }: { open: boole
                     <Label htmlFor="vaultColor">Update Vault Color</Label>
                     <Input id="vaultColor" placeholder="e.g. red, green, blue" value={vaultColor} onChange={(e) => setVaultColor(e.target.value)} />
                 </div>
-                <div className="flex flex-col gap-3">
-                    <Label htmlFor="masterPassword">Update Master Password</Label>
-                    <Input type="password" id="masterPassword" placeholder="Enter your master password to update vault" value={masterPassword} onChange={(e) => setMasterPassword(e.target.value)} />
-                </div>
                 <DialogFooter>
                     <DialogClose className="text-md mr-1">Cancel</DialogClose>
-                    <Button disabled={isPending || (vaultName === vault.name && selectedIcon === vault.icon && vaultColor === vault.iconColor && !masterPassword)} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
+                    <Button disabled={isPending || !hasChanges || !vaultName} variant="default" size="lg" className="text-md font-bold" onClick={() => mutate()}>
                         {isPending ? (
                             <>
                                 <Loader2Icon className="size-4 animate-spin" />

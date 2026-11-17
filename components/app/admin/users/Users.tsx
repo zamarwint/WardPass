@@ -14,11 +14,13 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useGetUser, useListUsers } from "@/lib/queries/AdminQueries";
 import { UserActionsDropdown } from "@/components/app/admin/user-actions/UserActionsDropdown";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type UserAction = "list-users" | "get-user";
+
+const UserAction = ["list-users", "get-user"];
 
 const USER_ACTIONS: { value: UserAction; label: string }[] = [
     { value: "list-users", label: "List All Users" },
@@ -179,8 +181,6 @@ function ListUsers() {
 }
 
 export default function HandleListUsers() {
-    const [selectedAction, setSelectedAction] = useState<UserAction>("list-users");
-
     return (
         <div className="size-full">
             <FieldGroup className="border border-border rounded-xl p-10">
@@ -189,23 +189,18 @@ export default function HandleListUsers() {
                     <FieldDescription>Select an action to perform.</FieldDescription>
                 </Field>
                 <FieldSeparator />
-                <ToggleGroup
-                    value={[selectedAction]}
-                    onValueChange={(value) => {
-                        // BASE UI ALWAYS PASSES AN ARRAY, AND IT IS EMPTY WHEN THE ACTIVE TOGGLE IS CLICKED AGAIN
-                        const next = value[0] as UserAction | undefined;
-                        if (next) setSelectedAction(next);
-                    }}
-                >
-                    {USER_ACTIONS.map((action) => (
-                        <ToggleGroupItem key={action.value} size="sm" value={action.value} className="text-md p-6 rounded-xl">
-                            {action.label}
-                        </ToggleGroupItem>
-                    ))}
-                </ToggleGroup>
+                <Tabs>
+                    <TabsList className="mb-2">
+                        {USER_ACTIONS.map((action) => (
+                            <TabsTrigger key={action.value} value={action.value}>
+                                {action.label}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
 
-                {selectedAction === "list-users" && <ListUsers />}
-                {selectedAction === "get-user" && <GetUser />}
+                    <TabsContent value={UserAction[0]}><ListUsers /></TabsContent>
+                    <TabsContent value={UserAction[1]}><GetUser /></TabsContent>
+                </Tabs>
             </FieldGroup>
         </div>
     );

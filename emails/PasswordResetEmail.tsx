@@ -19,8 +19,8 @@ import {
   Text,
 } from 'react-email';
 
-import { CollageFonts } from '@/components/emails/collage-fonts';
-import { collageTailwindConfig } from '@/components/emails/theme';
+import { CollageFonts } from './collage-fonts';
+import { collageTailwindConfig } from './theme';
 
 const baseUrl = process.env.BETTER_AUTH_URL
   ? `https://${process.env.BETTER_AUTH_URL}`

@@ -22,8 +22,6 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
 export default function CreateSecureNoteItem({ open, onOpenChange, vaultId }: { open: boolean, onOpenChange: (open: boolean) => void, vaultId: string }) {
-    const [characterLength, setCharacterLength] = useState<number>(0)
-
     // 2. Create form instance with resolver
     const form = useForm<z.infer<typeof secureNoteSchema>>({
         resolver: zodResolver(secureNoteSchema),
@@ -34,30 +32,21 @@ export default function CreateSecureNoteItem({ open, onOpenChange, vaultId }: { 
         }
     })
 
-    const data: SecureNoteJSONRaw = {
-        title: form.getValues().title,
-        content: form.getValues().content
-    };
-
-    // WATCH THE CONTENT CHARACTER LENGTH
-    useEffect(() => {
-        const value = form.getValues().content;
-
-        if (value.length <= 2000) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setCharacterLength(value.length);
-        }
-    }, [form]);
+    const content = form.watch("content");
+    const characterLength = content?.length ?? 0;
 
     {/* SUBMISSION */ }
-    const { mutate, isPending } = useCreateVaultItem(vaultId, data, VaultItemType.SECURE_NOTE);
+    const { mutate, isPending } = useCreateVaultItem<SecureNoteJSONRaw>(
+        vaultId,
+        VaultItemType.SECURE_NOTE,
+        () => {
+            form.reset();
+            onOpenChange(false);
+        }
+    );
 
-    const onSubmit = () => {
-        mutate();
-        form.setValues({
-            title: "",
-            content: ""
-        })
+    const onSubmit = (values: z.infer<typeof secureNoteSchema>) => {
+        mutate(values);
     }
 
     return (

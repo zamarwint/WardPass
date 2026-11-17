@@ -1,6 +1,6 @@
 # WardPass 🔑🔒
 
-WardPass is a secure password management solution. With WardPass, you can easily organize your passwords into different folders, and use them when you want to sign in to any service.
+WardPass is a free secure password management solution. With WardPass, you can easily organize your passwords into different folders, and use them when you want to sign in to any service.
 
 ## How it works?
 
@@ -18,6 +18,8 @@ It's very simple. **Here are the instructions:**
 Visit [the website.](https://wardpass.vercel.app/)
 
 Try WardPass today! Available under the MIT License.
+
+_NB: This is a hobby project made by ZW. Feel free to report any issues you may face while using the app._
 
 ## Feedback
 

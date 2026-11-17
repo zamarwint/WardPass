@@ -61,7 +61,7 @@ export default function About() {
       step: "01",
       icon: <FolderLock className="size-5 text-primary" />,
       title: "Create Dedicated Vaults",
-      text: "Isolate your passwords by context: Personal, Work, Client Projects, or Finance. Each vault maintains its own password and independent cryptographic envelope."
+      text: "Isolate your credentials by context: Personal, Work, Client Projects, or Finance. Each vault maintains its own icon, color and independent cryptographic envelope."
     },
     {
       step: "02",

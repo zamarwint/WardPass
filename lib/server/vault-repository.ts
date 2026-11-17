@@ -40,7 +40,7 @@ export async function getVaultPageDataForUser(userId: string, vaultId: string) {
   if (rows.length === 0) return null;
 
   const currentVault = rows[0].vault;
-  const vaultItems = rows.flatMap((row) => (row.item ? [row.item] : []));
+  const vaultItems = rows.flatMap((row) => (row.item && row.item.id ? [row.item] : []));
 
   return {
     ...currentVault,

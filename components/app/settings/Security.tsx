@@ -79,7 +79,7 @@ export default function Security() {
                         <LockKeyholeIcon className="w-5 h-5 text-primary" />
                         <div>
                             <p className="font-semibold">End-to-End Encryption Enabled</p>
-                            <p className="text-sm text-muted-foreground">Your vault is secured using your login password. WardPass cannot access your data.</p>
+                            <p className="text-sm text-muted-foreground">Your strongroom is secured using your login password. WardPass cannot access your data.</p>
                         </div>
                     </div>
 

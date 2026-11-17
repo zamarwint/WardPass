@@ -17,12 +17,14 @@ import {
     FieldTitle,
 } from "@/components/ui/field";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useRevokeUserSessionMutation } from "@/lib/mutations/AdminMutations";
 import { useDBListUserSessions, useSearchUserSession } from "@/lib/queries/AdminQueries";
 import { UserImpersonation } from "./UserImpersonation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type SessionAction = "list-all-sessions" | "user-sessions" | "impersonation";
+
+const SessionActionValues = ["list-all-sessions", "user-sessions", "impersonation"];
 
 const SESSION_ACTIONS: { value: SessionAction; label: string }[] = [
     { value: "list-all-sessions", label: "List All Sessions" },
@@ -248,8 +250,6 @@ function SearchUserSessions() {
 }
 
 export default function UserSessions() {
-    const [selectedAction, setSelectedAction] = useState<SessionAction>("list-all-sessions");
-
     return (
         <div className="size-full">
             <FieldGroup className="border border-border rounded-xl p-10">
@@ -258,24 +258,18 @@ export default function UserSessions() {
                     <FieldDescription>Select an action to perform.</FieldDescription>
                 </Field>
                 <FieldSeparator />
-                <ToggleGroup
-                    value={[selectedAction]}
-                    onValueChange={(value) => {
-                        // BASE UI ALWAYS PASSES AN ARRAY, AND IT IS EMPTY WHEN THE ACTIVE TOGGLE IS CLICKED AGAIN
-                        const next = value[0] as SessionAction | undefined;
-                        if (next) setSelectedAction(next);
-                    }}
-                >
-                    {SESSION_ACTIONS.map((action) => (
-                        <ToggleGroupItem key={action.value} size="sm" value={action.value} className="text-md p-6 rounded-xl">
-                            {action.label}
-                        </ToggleGroupItem>
-                    ))}
-                </ToggleGroup>
-
-                {selectedAction === "list-all-sessions" && <ListAllUserSessions />}
-                {selectedAction === "user-sessions" && <SearchUserSessions />}
-                {selectedAction === "impersonation" && <UserImpersonation />}
+                <Tabs>
+                    <TabsList className="mb-2">
+                        {SESSION_ACTIONS.map((action) => (
+                            <TabsTrigger key={action.value} value={action.value}>
+                                {action.label}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                    <TabsContent value={SessionActionValues[0]}><ListAllUserSessions /></TabsContent>
+                    <TabsContent value={SessionActionValues[1]}><SearchUserSessions /></TabsContent>
+                    <TabsContent value={SessionActionValues[2]}><UserImpersonation /></TabsContent>
+                </Tabs>
             </FieldGroup>
         </div>
     );

@@ -125,7 +125,7 @@ export async function deriveKey(
     // not JavaScript strings.
     const passwordBytes = new TextEncoder().encode(masterPassword);
 
-    if (typeof Worker === "undefined") {
+    if (typeof window === "undefined" || typeof Worker === "undefined") {
         return argon2id(passwordBytes, salt, {
             t: ARGON2_PARAMS.TIME,
             m: ARGON2_PARAMS.MEM,

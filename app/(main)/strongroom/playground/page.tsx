@@ -30,10 +30,14 @@ export default function PlaygroundPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="h-screen flex items-center justify-center">
+            className="h-screen flex flex-col items-center justify-center gap-15">
+            <div className="text-center space-y-2">
+                <h1 className="text-4xl font-bold">The WardPass <span className="text-primary">Playground!</span></h1>
+                <p className="text-muted-foreground max-w-md">Welcome to the WardPass Play Area! Here you can play games offered by the WardPass team!</p>
+            </div>
             <Card>
                 <CardHeader>
-                    <CardTitle>Welcome to the WardPass Play Area!</CardTitle>
+                    <CardTitle>Bank Cards</CardTitle>
                     <CardDescription>Play around with these Bank Cards! Put in your own data if you so desire!</CardDescription>
                 </CardHeader>
                 <CardContent className="size-full">

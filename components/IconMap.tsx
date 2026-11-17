@@ -81,7 +81,7 @@ export const IconMap: Record<string, LucideIcon> = {
   'wrench-off': WrenchOff
 };
 
-export const RenderIcon = ({ name, size = 24, color = "text-white", className = "" }: { name: string, size?: number, color: string, className?: string }) => {
+export const RenderIcon = ({ name, size = 24, color = "currentColor", className = "" }: { name: string, size?: number, color?: string, className?: string }) => {
   const Icon = IconMap[name] || HelpCircle;
   return <Icon size={size} color={color} className={className} />;
 };

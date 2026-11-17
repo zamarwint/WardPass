@@ -9,7 +9,7 @@ import {
     SidebarRail,
 } from "@/components/ui/sidebar"
 
-import { BugPlay, FolderDown, Upload } from "lucide-react"
+import { BugPlay, FolderSync } from "lucide-react"
 import { Separator } from "./ui/separator"
 import { LinkSideButton, LockSideButton, SideLogo, VaultSideButton } from "./app/sidebar/SideButtons"
 import UserDropdown from "./app/sidebar/UserDropdown"
@@ -31,8 +31,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarGroup>
                         <SidebarGroupLabel>Utilities</SidebarGroupLabel>
-                        <LinkSideButton hrefExact={true} href="/strongroom/import" text="Import Credentials" Icon={<Upload />} />
-                        <LinkSideButton hrefExact={true} href="/strongroom/export" text="Export Credentials" Icon={<FolderDown />} />
+                        <LinkSideButton hrefExact={true} href="/strongroom/transfer-credentials" text="Transfer Credentials" Icon={<FolderSync />} />
                         <LinkSideButton hrefExact={true} href="/strongroom/playground" text="Playground" Icon={<BugPlay />} />
                     </SidebarGroup>
                     <SidebarGroup>

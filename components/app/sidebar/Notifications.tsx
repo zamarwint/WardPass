@@ -38,35 +38,6 @@ export const Manual = () => {
     )
 }
 
-export const ChangingPasswords = () => {
-    return (
-        <Dialog>
-            <DialogTrigger render={
-                <SidebarMenuButton size="lg" className="w-full flex justify-start text-left">
-                    <strong>TIP:</strong> Changing Account and Vault Password
-                </SidebarMenuButton>
-            }>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogTitle className="font-bold">CHANGING ACCOUNT AND VAULT PASSWORDS</DialogTitle>
-                <DialogDescription>
-                    Whenever you change your account password, you must also change your vault password.
-                    This is because the vault password is encrypted with the account password.
-                </DialogDescription>
-                <DialogDescription>
-                    If you forget your account password, you will not be able to decrypt your vault password.
-                    If you forget your vault password, you will not be able to access your vaults.
-                    So please remember to change your vault password when changing your account password.
-                </DialogDescription>
-                <DialogDescription>
-                    NB: You can create different passwords for vaults. However, if do this, please note that the vault whose password is not your master password will not auto-lock on sign-in.
-                    You will have to unlock it using its own password.
-                </DialogDescription>
-            </DialogContent>
-        </Dialog>
-    )
-}
-
 export const NumberOfVaultandVaultItems = () => {
     return (
         <Dialog>
@@ -142,7 +113,6 @@ export default function Notifications() {
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>Main Notifications</DropdownMenuLabel>
                     <DropdownMenuItem render={<Manual />} />
-                    <DropdownMenuItem render={<ChangingPasswords />} />
                     <DropdownMenuItem render={<NumberOfVaultandVaultItems />} />
                     <DropdownMenuItem render={<KeyboardShortcuts />} />
                 </DropdownMenuGroup>

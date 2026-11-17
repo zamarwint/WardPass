@@ -636,13 +636,11 @@ export default function TrashBinClient() {
                 return true;
             } else {
                 toast.success(`Unlocked: ${successfullyUnlocked.join(", ")}`);
-                toast.error(
-                    `Incorrect password for: ${failedVaults.join(", ")}. These vaults may use a different password.`
-                );
+                toast.error(`Incorrect account password for remaining locked vaults.`);
                 return false;
             }
         } else {
-            toast.error("Incorrect password. Please verify the password for this vault.");
+            toast.error("Incorrect account password.");
             return false;
         }
     };
@@ -1078,9 +1076,7 @@ export default function TrashBinClient() {
                                 : `Unlock ${vaults.find((v) => v.id === targetVaultIdForModal)?.name ?? "Vault"}`}
                         </DialogTitle>
                         <DialogDescription>
-                            {targetVaultIdForModal === "ALL"
-                                ? "Enter your vault password to decrypt and view trashed items across locked vaults."
-                                : "Enter the master password for this specific vault."}
+                            Enter your account password to decrypt and view trashed items across your vaults.
                         </DialogDescription>
                     </DialogHeader>
 
@@ -1101,10 +1097,10 @@ export default function TrashBinClient() {
                         )}
 
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="unlockModalPassword">Vault Password</Label>
+                            <Label htmlFor="unlockModalPassword">Account Password</Label>
                             <PasswordField id="unlockModalPassword" value={modalPassword} onChange={setModalPassword} />
                             <p className="text-[11px] text-muted-foreground">
-                                If your vaults have different passwords, entering a password will unlock any vault that matches it.
+                                Your account password will unlock all your vaults.
                             </p>
                         </div>
 

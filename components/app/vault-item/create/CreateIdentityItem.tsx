@@ -52,64 +52,18 @@ export default function CreateIdentityItem({ open, onOpenChange, vaultId }: { op
         }
     })
 
-    const data: IdentityJSONRaw = {
-        name: form.getValues().name,
-        email: form.getValues().email,
-        phoneNumber: form.getValues().phoneNumber,
-        address1: form.getValues().address1,
-        address2: form.getValues().address2,
-        zipCode: form.getValues().zipCode,
-        city: form.getValues().city,
-        state: form.getValues().state,
-        country: form.getValues().country,
-        floor: form.getValues().floor,
-        county: form.getValues().county,
-        poBox: form.getValues().poBox,
-        socialSecurityNumber: form.getValues().socialSecurityNumber,
-        passportNumber: form.getValues().passportNumber,
-        licenseNumber: form.getValues().licenseNumber,
-        companyName: form.getValues().companyName,
-        occupation: form.getValues().occupation,
-        x: form.getValues().x,
-        linkedin: form.getValues().linkedin,
-        instagram: form.getValues().instagram,
-        tiktok: form.getValues().tiktok,
-        facebook: form.getValues().facebook,
-        github: form.getValues().github,
-        other: form.getValues().other
+    const { mutate, isPending } = useCreateVaultItem<IdentityJSONRaw>(
+        vaultId,
+        VaultItemType.IDENTITY,
+        () => {
+            form.reset();
+            onOpenChange(false);
+        }
+    );
+
+    const onSubmit = (values: z.infer<typeof identitySchema>) => {
+        mutate(values as unknown as IdentityJSONRaw);
     };
-    const { mutate, isPending } = useCreateVaultItem(vaultId, data, VaultItemType.IDENTITY);
-
-    const onSubmit = () => {
-        mutate();
-
-        form.setValues({
-            name: "",
-            email: "",
-            phoneNumber: undefined,
-            address1: "",
-            address2: "",
-            zipCode: "",
-            city: "",
-            state: "",
-            country: "",
-            floor: "",
-            county: "",
-            poBox: undefined,
-            socialSecurityNumber: undefined,
-            passportNumber: undefined,
-            licenseNumber: undefined,
-            companyName: "",
-            occupation: "",
-            x: "",
-            linkedin: "",
-            instagram: "",
-            tiktok: "",
-            facebook: "",
-            github: "",
-            other: "",
-        })
-    }
 
     return (
         <Drawer open={open} onOpenChange={onOpenChange} swipeDirection="right">

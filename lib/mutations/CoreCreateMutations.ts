@@ -23,30 +23,30 @@ export function useCreateVault(
   vaultName: string,
   selectedIcon: string,
   vaultColor: string,
-  masterPassword: string,
-  setMasterPassword: (value: string) => void,
-  setOpen: (value: boolean) => void,
+  masterPassword?: string,
+  setMasterPassword?: (value: string) => void,
+  setOpen?: (value: boolean) => void,
 ) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ["create-vault", vaultName],
     mutationFn: async () => {
-      // ✅ Read directly from local state, not the Zustand store
-      if (!masterPassword) {
-        throw new Error("Please enter your master password.");
+      // Use provided password or fall back to the in-memory account password
+      const password = masterPassword || useVaultStore.getState().masterPassword;
+      if (!password) {
+        throw new Error("Please enter your account password to create a vault.");
       }
 
       const salt = generateSalt();
-      const derivedKey = await deriveKey(masterPassword, salt);
+      const derivedKey = await deriveKey(password, salt);
       const vaultKey = generateVaultKey();
 
       const { encryptedKey, keyIv } = encryptVaultKey(vaultKey, derivedKey);
       const { hash: verificationHash, hashIv } =
         createVerificationHash(vaultKey);
 
-      // ✅ After vault is created, unlock it immediately so the user
-      //    doesn't have to re-enter their password right away
+      // ✅ After vault is created, unlock it immediately using the account password
       const result = await createVault(
         vaultName,
         selectedIcon,
@@ -58,7 +58,8 @@ export function useCreateVault(
         hashIv,
       );
 
-      // ✅ After creating the vault, unlock it immediately by passing its ID
+      // ✅ Ensure masterPassword is saved and vault is unlocked immediately
+      useVaultStore.getState().setMasterPassword(password);
       useVaultStore.getState().unlock(result!.id, vaultKey);
 
       return result;
@@ -69,8 +70,8 @@ export function useCreateVault(
     },
     onSuccess: () => {
       toast.dismiss();
-      setMasterPassword("");
-      setOpen(false);
+      if (setMasterPassword) setMasterPassword("");
+      if (setOpen) setOpen(false);
       queryClient.invalidateQueries({
         queryKey: ["vaults"],
         refetchType: "active",
@@ -79,7 +80,7 @@ export function useCreateVault(
     },
     onError: (error) => {
       toast.dismiss();
-      setOpen(false);
+      if (setOpen) setOpen(false);
       toast.error(
         error.message ||
           "There was an error creating your vault. Please try again later.",
@@ -88,20 +89,25 @@ export function useCreateVault(
   });
 }
 
-export function useCreateVaultItem(
+export function useCreateVaultItem<
+  T extends CreditCardJSONRaw | IdentityJSONRaw | SecureNoteJSONRaw | LoginJSONRaw,
+>(
   vaultId: string,
-  data: CreditCardJSONRaw | IdentityJSONRaw | SecureNoteJSONRaw | LoginJSONRaw,
   type: VaultItemType,
+  onSuccessCallback?: () => void,
 ) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ["create-vault-item", vaultId],
-    mutationFn: () => {
+    mutationFn: async (data: T) => {
       const vaultKey = useVaultStore.getState().getVaultKey(vaultId);
+      if (!vaultKey) {
+        throw new Error("Vault is locked. Please unlock the vault first.");
+      }
       const payload = JSON.stringify(data);
       const { ciphertext, iv } = encryptData(payload, vaultKey);
-      return createVaultItem({
+      return await createVaultItem({
         vaultId,
         encryptedData: ciphertext,
         iv,
@@ -114,6 +120,7 @@ export function useCreateVaultItem(
     onSuccess: () => {
       toast.dismiss();
       toast.success("Vault item added successfully");
+      if (onSuccessCallback) onSuccessCallback();
       queryClient.invalidateQueries({
         queryKey: ["vaultPage", vaultId],
         refetchType: "active",

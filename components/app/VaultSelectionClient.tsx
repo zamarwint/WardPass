@@ -63,7 +63,7 @@ function GetStarted() {
           <CarouselItem className="basis-1/3">
             <Card className="p-4 select-none">
               <CardTitle>Lock up when ready</CardTitle>
-              <CardDescription>Lock up your vaults whenever you are away from your computer! Remember: Keep your credentials safe at all times.</CardDescription>
+              <CardDescription>Lock up your strongroom whenever you are away from your computer! Remember: Keep your credentials safe at all times.</CardDescription>
               <Button disabled>Lock WardPass on sidebar</Button>
             </Card>
           </CarouselItem>

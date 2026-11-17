@@ -50,7 +50,8 @@ export const creditCardSchema = z.object({
     .max(30, "Billing addresses must not exceed 30 characters."),
   billingAddress2: z
     .string()
-    .max(30, "Billing addresses must not exceed 30 characters."),
+    .max(30, "Billing addresses must not exceed 30 characters.")
+    .optional(),
   zipCode: z
     .string()
     .min(5, "Zip / Postal codes must be at least 5 characters.")
