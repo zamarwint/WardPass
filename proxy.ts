@@ -1,60 +1,58 @@
 import { NextRequest, NextResponse } from "next/server";
-import { betterFetch } from "@better-fetch/fetch"; // ✅ already installed with better-auth
+import { betterFetch } from "@better-fetch/fetch"; // already installed with better-auth
 import { BetterAuthSessionType } from "@/lib/types/BetterAuthSessionType";
 
-const PROTECTED = ["/strongroom", "/strongroom/admin"];
+const APP_HOME = "/strongroom";
+const ADMIN_PATH = "/strongroom/admin";
 const AUTH_PAGES = ["/sign-in", "/sign-up"];
+
+// MATCHES THE PATH ITSELF OR ANYTHING UNDER IT: "/strongroom" AND "/strongroom/abc", BUT NOT "/strongroomfoo"
+const isUnder = (pathname: string, base: string) =>
+  pathname === base || pathname.startsWith(`${base}/`);
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // betterFetch is just a thin wrapper around native fetch — safe in edge runtime.
-  // It calls your /api/auth/get-session route handler, which runs in Node.js
-  // and is where Prisma actually does the database lookup.
+  const isProtected = isUnder(pathname, APP_HOME); // includes the admin pages
+  const isAdminPage = isUnder(pathname, ADMIN_PATH);
+  const isAuthPage = AUTH_PAGES.some((page) => isUnder(pathname, page));
+
+  // NOT A PAGE WE GUARD: SKIP THE SESSION LOOKUP ENTIRELY
+  if (!isProtected && !isAuthPage) return NextResponse.next();
+
+  // betterFetch is a thin wrapper around native fetch, so it is safe here.
+  // It calls the /api/auth/get-session route handler, which runs in Node.js and does the database lookup.
   const { data: session } = await betterFetch<BetterAuthSessionType>(
     "/api/auth/get-session",
     {
-      baseURL: request.nextUrl.origin, // e.g. https://your-site.vercel.app
+      baseURL: request.nextUrl.origin,
       headers: {
-        // Forward the user's cookies so BetterAuth can find the session token
+        // Forward the user's cookies so Better Auth can find the session token
         cookie: request.headers.get("cookie") ?? "",
       },
     },
   );
 
-  const isAdmin = session?.user.role.toLowerCase() === "admin";
-
-  // AUTH AND PROTECTED PAGES
-  const isProtected = PROTECTED.some((r) => pathname.startsWith(r));
-  const isAdminPage = PROTECTED[1].startsWith(pathname);
-  const isAuthPage = AUTH_PAGES.some((r) => pathname.startsWith(r));
-
-  // // Clone the headers object to avoid modifying the original
-  // const requestHeaders = new Headers(request.headers);
-
-  // // Set custom headers for pathname, search, and full URL
-  // requestHeaders.set('x-pathname', request.nextUrl.pathname);
-
-  // CHECKS IF THERE'S A SESSION OR NOT. IF NO SESSION, REDIRECT TO LOGIN OR SIGN UP, IF SESSION, REDIRECT TO USER VAULTS.
-  // Unauthenticated user hitting a protected route → send to login
+  // Unauthenticated user hitting a protected route: send to sign in
   if (isProtected && !session) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
-  // Authenticated user hitting login/signup → send to app
+  // Authenticated user hitting sign in / sign up: send to the app
   if (isAuthPage && session) {
-    return NextResponse.redirect(new URL("/strongroom", request.url));
+    return NextResponse.redirect(new URL(APP_HOME, request.url));
   }
 
-  if (isAdminPage && !isAdmin && session) {
-    return NextResponse.redirect(new URL("/strongroom", request.url));
+  // Non-admin hitting an admin page: send to the app (role can be null on older accounts, so it is guarded)
+  if (isAdminPage && session?.user.role?.toLowerCase() !== "admin") {
+    return NextResponse.redirect(new URL(APP_HOME, request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  // The regex pattern /((?!api|_next/static|_next/image|favicon.ico).*)/ is used in Next.js middleware configuration to exclude specific routes from processing.
-  // It ensures that requests for API endpoints, static assets, images, and the favicon bypass the middleware logic, improving performance and preventing errors.
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // ONLY RUN ON THE PAGES THAT NEED A SESSION CHECK.
+  // THE OLD "EVERYTHING EXCEPT /api AND _next" MATCHER ALSO RAN (AND CALLED get-session) FOR EVERY IMAGE, FONT AND ICON.
+  matcher: ["/strongroom/:path*", "/sign-in/:path*", "/sign-up/:path*"],
 };

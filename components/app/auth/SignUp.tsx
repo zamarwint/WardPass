@@ -18,7 +18,6 @@ import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { passwordStrength } from "check-password-strength";
 import { PasswordInput } from "@/components/PasswordInput";
-import { EmailDeliveryNotWorkingAlert } from "@/components/Banners";
 
 // import PasswordStrengthBar from "@/app/_components/PasswordStrengthBar";
 import { signUpSchema } from "@/lib/validations/authSchemas";
@@ -42,11 +41,16 @@ export default function SignUp() {
         }
     })
 
+    // PASSWORD STRENGTH
     const watchedPassword = form.watch("password");
     const passStrength = useMemo(
         () => (watchedPassword ? passwordStrength(watchedPassword).value : ""),
         [watchedPassword]
     );
+
+    // CONFIRM PASSWORD SUCCESS
+    const watchConfirmPassword = form.watch("password").length > 8 && (form.watch("password") === form.watch("confirmPassword"));
+    const confirmPasswordSuccess = useMemo(() => watchConfirmPassword ? "Good! Passwords are the same." : "", [watchConfirmPassword])
 
     const { mutate, isPending: signUpIsPending } = useSignUp(form.getValues().name, form.getValues().email, form.getValues().password);
 
@@ -60,7 +64,6 @@ export default function SignUp() {
 
     return (
         <>
-            <EmailDeliveryNotWorkingAlert />
             <div className="flex items-center justify-center w-screen h-screen z-998">
                 {/* SIGN UP CARD */}
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-5 border-r border-foreground/5">
@@ -170,6 +173,9 @@ export default function SignUp() {
                                             className="h-12"
                                             autoComplete="off"
                                         />
+                                        <div className="w-full text-xs text-green-600">
+                                            <p>{confirmPasswordSuccess}</p>
+                                        </div>
                                         {fieldState.invalid && (
                                             <FieldError errors={[fieldState.error]} />
                                         )}

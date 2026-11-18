@@ -7,6 +7,7 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Bell } from "lucide-react"
@@ -14,7 +15,6 @@ import { Bell } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Link from "next/link";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { EmailDeliveryNotWorkingBanner } from "@/components/Banners";
 
 export const Manual = () => {
     return (
@@ -108,8 +108,9 @@ export default function Notifications() {
             <DropdownMenuContent align="start" className="w-full">
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>Alerts!</DropdownMenuLabel>
-                    <DropdownMenuItem render={<EmailDeliveryNotWorkingBanner />} />
+                    <DropdownMenuItem>No Alerts at this time.</DropdownMenuItem>
                 </DropdownMenuGroup>
+                <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                     <DropdownMenuLabel>Main Notifications</DropdownMenuLabel>
                     <DropdownMenuItem render={<Manual />} />

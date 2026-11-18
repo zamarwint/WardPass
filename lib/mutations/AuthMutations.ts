@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export function useSignIn(email: string, password: string) {
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   return useMutation({
@@ -26,8 +27,9 @@ export function useSignIn(email: string, password: string) {
 
       //redirect to the user vault page
       toast.dismiss();
-      toast.success("Success! Check your email to verify your account.");
-      router.push(`/verify-email?email=${email}`);
+      toast.success("Success!");
+      router.push("/strongroom");
+      queryClient.invalidateQueries({ queryKey: ["session"] });
     },
     onError: (error) => {
       // display the error message
@@ -134,7 +136,7 @@ export function useResetPassword() {
       queryClient.clear();
       router.push("/sign-in");
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.dismiss();
       toast.error(error?.message || "Failed to reset password.");
     },

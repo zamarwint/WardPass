@@ -1,6 +1,6 @@
 import { emailUserData } from '@/lib/types/BetterAuthSessionType';
 import React from 'react';
-import { Html, Head, Body, Container, Font, Section, Row, Column, Heading, Text, Button, Link, CodeBlock, atomDark } from 'react-email';
+import { Html, Head, Body, Container, Font, Section, Row, Column, Heading, Text, Button, Link } from 'react-email';
 
 export default function VerifyEmail({ user, url }: { user: emailUserData, url: string }) {
     return (
@@ -42,15 +42,9 @@ export default function VerifyEmail({ user, url }: { user: emailUserData, url: s
                     <Section style={style5}>
                         <Text style={style6}>Verify your address</Text>
                         <Heading as="h1" style={style7}>CONFIRM<br />THIS EMAIL.</Heading>
-                        <Text style={style8}>Tap the button below to confirm {user.email} . The link expires in 24 hours.</Text>
+                        <Text style={style8}>Tap the button below to confirm {user.email}. The link expires in 24 hours.</Text>
                         <Button href={url} style={style9}>Verify email address</Button>
                     </Section>
-                    {/* <Section style={style10}>
-                        <Text style={style11}>Button not working? Paste this into your browser:</Text>
-                        <Section style={{ height: '12px' }} />
-                        <CodeBlock theme={atomDark} code={url} language="bash" style={style12} />
-                        <Text style={style11}>If you didn’t create a WardPass account, ignore this email — nothing happens without confirmation.</Text>
-                    </Section> */}
                     <Section style={style13}>
                         <Text style={style14}>WARDPASS.</Text>
                         <Text style={style15}>Secure credential management.<br />Designed and developed by WardPass team. Contact support for more information.</Text>
@@ -161,31 +155,6 @@ const style9: React.CSSProperties = {
     textDecoration: "none",
     display: "inline-block",
     margin: "28px 0 0 0",
-};
-
-const style10: React.CSSProperties = {
-    backgroundColor: "#FBFAF7",
-    padding: "36px 32px",
-};
-
-const style11: React.CSSProperties = {
-    margin: "14px 0 0 0",
-    fontFamily: "Arial, Helvetica, sans-serif",
-    fontSize: "13px",
-    lineHeight: "20px",
-    color: "#7C9299",
-};
-
-const style12: React.CSSProperties = {
-    margin: "0px",
-    padding: "16px",
-    backgroundColor: "#F4F2ED",
-    fontFamily: "'Courier New', Courier, monospace",
-    fontSize: "12px",
-    lineHeight: "20px",
-    color: "#0B0B14",
-    whiteSpace: "pre-wrap",
-    wordBreak: "break-all",
 };
 
 const style13: React.CSSProperties = {

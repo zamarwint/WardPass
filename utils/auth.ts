@@ -23,17 +23,11 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     revokeSessionsOnPasswordReset: true,
-    onExistingUserSignUp: async ({ user }) => {
-      // Notify the existing user about the sign-up attempt
-      console.log(
-        `Someone tried to sign up with ${user.email}. This user already exists.`,
-      );
-    },
     sendResetPassword: async ({ user, url }) => {
       void resend.emails.send({
         from: process.env.EMAIL_FROM as string,
         to: user.email,
-        subject: "Reset Password",
+        subject: "Confirm Reset Password Request",
         react: PasswordReset({ user, url }),
       });
     },
@@ -43,16 +37,15 @@ export const auth = betterAuth({
   },
   emailVerification: {
     sendOnSignUp: true,
-    autoSignInAfterVerification: true,
+    autoSignInAfterVerification: false,
     sendVerificationEmail: async ({ user, url }) => {
       void resend.emails.send({
         from: process.env.EMAIL_FROM as string,
         to: user.email,
-        subject: "Verify Email",
+        subject: "Verify Email for WardPass",
         react: VerifyEmail({ user, url }),
       });
     },
-    sendOnSignIn: true,
     async afterEmailVerification(user) {
       console.log(`User ${user.email} has been successfully verified.`);
     },
@@ -64,7 +57,7 @@ export const auth = betterAuth({
         void resend.emails.send({
           from: process.env.EMAIL_FROM as string,
           to: user.email, // Sent to the CURRENT email
-          subject: "Confirm Email Change",
+          subject: "Confirm Email Change Request",
           react: ChangeEmail({ user, newEmail, url }),
         });
       },
@@ -79,7 +72,7 @@ export const auth = betterAuth({
         void resend.emails.send({
           from: process.env.EMAIL_FROM as string,
           to: user.email,
-          subject: "Confirm Account Deletion",
+          subject: "Confirm Account Deletion Request",
           react: DeleteAccount({ user, url }),
         });
       },

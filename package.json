@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "dev-fast": "next dev --turbo",
+    "dev-slow": "next dev",
     "dev-wp": "next dev --webpack",
     "build": "next build",
     "start": "next start",
@@ -13,6 +13,7 @@
     "db:pull": "drizzle-kit pull",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio --port=4000",
     "email:dev": "email dev"
   },
   "dependencies": {

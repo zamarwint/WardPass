@@ -27,6 +27,7 @@ interface UserDropdownProps {
 export default function UserDropdown({ onSidebar }: UserDropdownProps) {
     const session = useGetSession();
     const checkAdmin = useCheckAdminSession();
+    console.log(checkAdmin.data);
 
     const [openSignOut, setOpenSignOut] = useState(false);
 
@@ -83,10 +84,10 @@ export default function UserDropdown({ onSidebar }: UserDropdownProps) {
                     </DropdownMenuTrigger>
                 )}
                 <DropdownMenuContent align="end">
-                    {checkAdmin && <DropdownMenuGroup>
-                        {checkAdmin && <DropdownMenuLabel>Admin Controls</DropdownMenuLabel>}
-                        {checkAdmin && <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/admin')}><Shield className="mr-0.5" /> Admin Panel</DropdownMenuItem>}
-                        {checkAdmin && <DropdownMenuSeparator />}
+                    {checkAdmin.data && <DropdownMenuGroup>
+                        {checkAdmin.data && <DropdownMenuLabel>Admin Controls</DropdownMenuLabel>}
+                        {checkAdmin.data && <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/admin')}><Shield className="mr-0.5" /> Admin Panel</DropdownMenuItem>}
+                        {checkAdmin.data && <DropdownMenuSeparator />}
                     </DropdownMenuGroup>}
 
                     <DropdownMenuGroup>

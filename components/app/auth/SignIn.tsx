@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { LockKeyholeOpen } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { EmailDeliveryNotWorkingAlert } from "@/components/Banners";
 import { useSignIn } from "@/lib/mutations/AuthMutations";
 import { CustomLoadingState } from "@/components/LoadingStates";
 
@@ -30,7 +29,6 @@ export default function SignIn() {
 
     return (
         <>
-            <EmailDeliveryNotWorkingAlert />
             <div className="flex items-center justify-center w-screen h-screen z-998">
                 {/* SIGN IN CARD */}
                 <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-10 border-r border-foreground/5">
