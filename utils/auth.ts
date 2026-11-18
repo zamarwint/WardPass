@@ -2,9 +2,15 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/drizzle/client";
 import { schema } from "@/drizzle/schema";
-import { sendEmail } from "@/lib/sendEmail";
+import { Resend } from "resend";
 import { admin } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
+import PasswordReset from "@/emails/PasswordReset";
+import VerifyEmail from "@/emails/VerifyEmail";
+import ChangeEmail from "@/emails/ChangeEmail";
+import DeleteAccount from "@/emails/DeleteAccount";
+
+const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -17,11 +23,18 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     revokeSessionsOnPasswordReset: true,
+    onExistingUserSignUp: async ({ user }) => {
+      // Notify the existing user about the sign-up attempt
+      console.log(
+        `Someone tried to sign up with ${user.email}. This user already exists.`,
+      );
+    },
     sendResetPassword: async ({ user, url }) => {
-      sendEmail({
+      void resend.emails.send({
+        from: process.env.EMAIL_FROM as string,
         to: user.email,
-        subject: "Reset your WardPass password",
-        text: `<div><p>Click the link to reset your password:</p><a href="${url}">Reset password</a></div>`,
+        subject: "Reset Password",
+        react: PasswordReset({ user, url }),
       });
     },
     onPasswordReset: async ({ user }) => {
@@ -32,12 +45,14 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      sendEmail({
+      void resend.emails.send({
+        from: process.env.EMAIL_FROM as string,
         to: user.email,
-        subject: "Verify your email address for WardPass.",
-        text: `<div><p>Click the link to verify your email:</p> <a href="${url}">Verify your email</a></div>`,
+        subject: "Verify Email",
+        react: VerifyEmail({ user, url }),
       });
     },
+    sendOnSignIn: true,
     async afterEmailVerification(user) {
       console.log(`User ${user.email} has been successfully verified.`);
     },
@@ -46,10 +61,11 @@ export const auth = betterAuth({
     changeEmail: {
       enabled: true,
       sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
-        sendEmail({
+        void resend.emails.send({
+          from: process.env.EMAIL_FROM as string,
           to: user.email, // Sent to the CURRENT email
-          subject: "Approve email change",
-          text: `<div><p>Click the link to approve the change to ${newEmail}:</p> <a href="${url}">Verify email change.</a></div>`,
+          subject: "Confirm Email Change",
+          react: ChangeEmail({ user, newEmail, url }),
         });
       },
     },
@@ -60,10 +76,11 @@ export const auth = betterAuth({
         url, // The auto-generated URL for deletion
       }) => {
         // Your email sending logic here
-        sendEmail({
+        void resend.emails.send({
+          from: process.env.EMAIL_FROM as string,
           to: user.email,
-          subject: "Verify Deletion for your WardPass Account.",
-          text: `<div><p>Click the link to verify deletion:</p><a href="${url}">Verify Deletion</a></div>`,
+          subject: "Confirm Account Deletion",
+          react: DeleteAccount({ user, url }),
         });
       },
     },

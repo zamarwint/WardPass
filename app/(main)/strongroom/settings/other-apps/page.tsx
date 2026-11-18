@@ -27,9 +27,9 @@ const otherApps = [
         comingSoon: true
     },
     {
-        title: "Rite",
-        description: "Professional writing software. Coming soon.",
-        url: "https://rite.vercel.app/",
+        title: "Utilities Agent",
+        description: "Get assistance with your daily tasks! (Coming soon)",
+        url: "https://t.me/zutils_agent_bot",
         comingSoon: true
     },
     {
