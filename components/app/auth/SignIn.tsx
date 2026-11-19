@@ -66,7 +66,7 @@ export default function SignIn() {
 
                         <FieldDescription>
                             Forgot your Password?
-                            <Button variant="link" onClick={() => router.push('/request-password-reset')}>Reset Password</Button>
+                            <Button variant="link" onClick={() => router.push('/reset-password')}>Reset Password</Button>
                         </FieldDescription>
                     </FieldSet>
                 </div>
