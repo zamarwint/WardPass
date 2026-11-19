@@ -1,8 +1,7 @@
-import { emailUserData } from '@/lib/types/BetterAuthSessionType';
 import React from 'react';
-import { Html, Head, Body, Container, Font, Section, Row, Column, Heading, Text, Button, Link, Hr } from 'react-email';
+import { Html, Head, Body, Container, Font, Section, Row, Column, Heading, Text, Link, Hr } from 'react-email';
 
-export default function PasswordReset({ user, url }: { user: emailUserData, url: string }) {
+export default function PasswordResetOTP({ email, otp }: { email: string, otp: string }) {
     const requestTime = new Date();
     const formattedRequestTime = requestTime.toDateString();
 
@@ -45,8 +44,14 @@ export default function PasswordReset({ user, url }: { user: emailUserData, url:
                     <Section style={style5}>
                         <Text style={style6}>Password reset requested</Text>
                         <Heading as="h1" style={style7}>LET’S GET<br />YOU BACK IN.</Heading>
-                        <Text style={style8}>Someone asked to reset the password for {user.email} . If that was you, set a new one now. The link works for 60 minutes.</Text>
-                        <Button href={url} style={style9}>Reset password</Button>
+                        {/*  {email} */}
+                        <Text style={style8}>Someone asked to reset the password for {email}. If that was you, set a new one now. The code works for 60 minutes.</Text>
+                        <Row>
+                            {/* OTP */}
+                            <Column style={{ verticalAlign: 'top', color: "#FFFFFF", fontWeight: "bold" }}>
+                                <Text>{otp}</Text>
+                            </Column>
+                        </Row>
                     </Section>
                     <Section style={style10}>
                         <Section style={{ height: '24px' }} />

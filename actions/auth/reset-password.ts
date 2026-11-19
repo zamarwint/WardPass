@@ -1,49 +1,67 @@
 "use server";
 
 import { db } from "@/drizzle/client";
-import { session, vault, vaultItem, verification } from "@/drizzle/schema";
+import { session, user, vault, vaultItem } from "@/drizzle/schema";
 import { auth } from "@/utils/auth";
 import { and, eq, inArray } from "drizzle-orm";
 import { headers } from "next/headers";
 
 export async function requestPasswordReset(email: string) {
-  const data = await auth.api.requestPasswordReset({
+  if (!email || !email.trim()) {
+    throw new Error("Email address is required.");
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const data = await auth.api.requestPasswordResetEmailOTP({
     body: {
-      email, // required, The email address of the user to send a password reset email to
-      redirectTo: "/reset-password", // The URL to redirect the user to reset their password. If the token isn't valid or expired, it'll be redirected with a query parameter `?error=INVALID_TOKEN`. If the token is valid, it'll be redirected with a query parameter `?token=VALID_TOKEN
+      email: normalizedEmail,
     },
   });
 
   return data;
 }
 
-export async function resetPassword(newPassword: string, token: string) {
-  const data = await auth.api.resetPassword({
+export async function resetPassword(
+  email: string,
+  otp: string,
+  password: string,
+) {
+  if (!email || !otp || !password) {
+    throw new Error("Email, OTP code, and new password are required.");
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const data = await auth.api.resetPasswordEmailOTP({
     body: {
-      newPassword, // required, The new password to set
-      token, // required, The token to reset the password
+      email: normalizedEmail,
+      otp: otp.trim(),
+      password,
     },
   });
 
   return data;
 }
 
-export async function getVaultDataForPasswordReset(token: string) {
-  if (!token) {
-    throw new Error("Missing password reset token.");
+export async function getVaultDataForPasswordReset(email: string) {
+  if (!email || !email.trim()) {
+    throw new Error("Missing email address.");
   }
 
-  // Better-Auth stores reset password tokens as 'reset-password:<token>'
-  const [record] = await db
-    .select()
-    .from(verification)
-    .where(eq(verification.identifier, `reset-password:${token}`));
+  const normalizedEmail = email.trim().toLowerCase();
 
-  if (!record || record.expiresAt < new Date()) {
-    throw new Error("Invalid or expired password reset token.");
+  // Find user by email
+  const [userRecord] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(user.email, normalizedEmail));
+
+  if (!userRecord) {
+    throw new Error("No user found with that email address.");
   }
 
-  const userId = record.value;
+  const userId = userRecord.id;
 
   const userVaults = await db
     .select({
@@ -98,37 +116,68 @@ export interface UpdatedItemPayload {
 }
 
 export async function resetPasswordAndReencryptVaults({
-  token,
+  email,
+  otp,
   newPassword,
   updatedVaults,
   updatedItems,
   wipeVaults = false,
 }: {
-  token: string;
+  email: string;
+  otp: string;
   newPassword: string;
   updatedVaults?: UpdatedVaultPayload[];
   updatedItems?: UpdatedItemPayload[];
   wipeVaults?: boolean;
 }) {
-  if (!token) {
-    throw new Error("Missing password reset token.");
+  if (!email || !otp || !newPassword) {
+    throw new Error(
+      "Missing required fields: email, OTP code, or new password.",
+    );
   }
 
-  // 1. Verify token exists and retrieve user ID before Better-Auth consumes it
-  const [record] = await db
-    .select()
-    .from(verification)
-    .where(eq(verification.identifier, `reset-password:${token}`));
+  const normalizedEmail = email.trim().toLowerCase();
 
-  if (!record || record.expiresAt < new Date()) {
-    throw new Error("Invalid or expired password reset token.");
+  const [userRecord] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(user.email, normalizedEmail));
+
+  if (!userRecord) {
+    throw new Error("User not found.");
   }
 
-  const userId = record.value;
+  const userId = userRecord.id;
+
+  // 1. Reset password in Better-Auth via emailOTP (atomically verifies OTP, updates password, sets emailVerified)
+  let resetResult;
+  try {
+    resetResult = await auth.api.resetPasswordEmailOTP({
+      body: {
+        email: normalizedEmail,
+        otp: otp.trim(),
+        password: newPassword,
+      },
+    });
+  } catch (err: any) {
+    const errorMsg =
+      err?.body?.message ||
+      err?.message ||
+      "Invalid or expired verification code.";
+    throw new Error(errorMsg);
+  }
 
   // 2. Handle vault data re-encryption or wipe
   if (wipeVaults) {
-    await db.delete(vault).where(eq(vault.userId, userId));
+    const userVaults = await db
+      .select({ id: vault.id })
+      .from(vault)
+      .where(eq(vault.userId, userId));
+    const vIds = userVaults.map((v) => v.id);
+    if (vIds.length > 0) {
+      await db.delete(vaultItem).where(inArray(vaultItem.vaultId, vIds));
+      await db.delete(vault).where(eq(vault.userId, userId));
+    }
   } else {
     if (updatedVaults && updatedVaults.length > 0) {
       for (const v of updatedVaults) {
@@ -160,18 +209,10 @@ export async function resetPasswordAndReencryptVaults({
     }
   }
 
-  // 3. Reset password in Better-Auth (this also consumes the verification token)
-  const resetResult = await auth.api.resetPassword({
-    body: {
-      newPassword,
-      token,
-    },
-  });
-
-  // 4. Revoke all existing sessions for this user across all devices
+  // 3. Revoke all existing sessions for this user across all devices
   await db.delete(session).where(eq(session.userId, userId));
 
-  // 5. Sign out the current session
+  // 4. Sign out the current session
   try {
     await auth.api.signOut({
       headers: await headers(),
@@ -180,5 +221,5 @@ export async function resetPasswordAndReencryptVaults({
     // Ignore if response headers cannot be written
   }
 
-  return { success: true, ...resetResult };
+  return { ...resetResult, success: true };
 }

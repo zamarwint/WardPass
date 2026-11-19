@@ -94,19 +94,24 @@ export function useSignOut() {
   });
 }
 
-export function useRequestPasswordReset(email: string) {
+export function useRequestPasswordReset(defaultEmail?: string) {
   return useMutation({
-    mutationFn: () => requestPasswordReset(email),
+    mutationFn: (emailParam?: string) => {
+      const emailToUse = emailParam || defaultEmail || "";
+      return requestPasswordReset(emailToUse);
+    },
     onMutate: () => {
-      toast.loading("Sending reset password email...");
+      toast.loading("Sending reset password code...");
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Success. Check your email to reset your password.");
+      toast.success(
+        "Success. Check your email for the code to reset your password.",
+      );
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.dismiss();
-      toast.error("Failed to send reset password email" + error);
+      toast.error(error?.message || "Failed to send reset password code.");
     },
   });
 }
@@ -117,8 +122,9 @@ export function useResetPassword() {
 
   return useMutation({
     mutationFn: (payload: {
+      email: string;
+      otp: string;
       newPassword: string;
-      token: string;
       updatedVaults?: UpdatedVaultPayload[];
       updatedItems?: UpdatedItemPayload[];
       wipeVaults?: boolean;
@@ -136,7 +142,7 @@ export function useResetPassword() {
       queryClient.clear();
       router.push("/sign-in");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.dismiss();
       toast.error(error?.message || "Failed to reset password.");
     },

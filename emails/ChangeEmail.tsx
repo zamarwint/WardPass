@@ -1,8 +1,7 @@
-import { emailUserData } from '@/lib/types/BetterAuthSessionType';
 import React from 'react';
-import { Html, Head, Body, Container, Font, Section, Row, Column, Heading, Text, Button, Link } from 'react-email';
+import { Html, Head, Body, Container, Font, Section, Row, Column, Heading, Text, Link } from 'react-email';
 
-export default function ChangeEmail({ user, newEmail, url }: { user: emailUserData, newEmail: string, url: string }) {
+export default function ChangeEmailOTP({ email, otp }: { email: string, otp: string }) {
     return (
         <Html>
             <Head>
@@ -42,10 +41,16 @@ export default function ChangeEmail({ user, newEmail, url }: { user: emailUserDa
                     <Section style={style5}>
                         <Text style={style6}>EMAIL CHANGE REQUEST</Text>
                         <Heading as="h1" style={style7}>CONFIRM<br />THIS<br />EMAIL CHANGE.</Heading>
-                        <Text style={style8}>Someone requested to change your email address from {user.email} to {newEmail}. If that was you, set a new one now. The link works for 60 minutes.</Text>
+                        {/* {email} */}
+                        <Text style={style8}>Someone requested to change your email address to {email}. If that was you, set a new one now. The code works for 60 minutes.</Text>
                     </Section>
                     <Section style={style9}>
-                        <Button href={url} style={style13}>VERIFY EMAIL CHANGE</Button>
+                        <Row>
+                            {/* OTP */}
+                            <Column style={{ verticalAlign: 'top' }}>
+                                <Text>{otp}</Text>
+                            </Column>
+                        </Row>
                         <Text style={style14}>If you didn’t request an email change for your WardPass account, ignore this email — nothing happens without confirmation.</Text>
                     </Section>
                     <Section style={style15}>

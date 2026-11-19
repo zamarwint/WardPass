@@ -1,8 +1,7 @@
-import { emailUserData } from '@/lib/types/BetterAuthSessionType';
 import React from 'react';
-import { Html, Head, Body, Container, Font, Section, Row, Column, Heading, Text, Button, Link } from 'react-email';
+import { Html, Head, Body, Container, Font, Section, Row, Column, Heading, Text, Link } from 'react-email';
 
-export default function VerifyEmail({ user, url }: { user: emailUserData, url: string }) {
+export default function VerifyEmailOTP({ email, otp }: { email: string, otp: string }) {
     return (
         <Html>
             <Head>
@@ -42,8 +41,14 @@ export default function VerifyEmail({ user, url }: { user: emailUserData, url: s
                     <Section style={style5}>
                         <Text style={style6}>Verify your address</Text>
                         <Heading as="h1" style={style7}>CONFIRM<br />THIS EMAIL.</Heading>
-                        <Text style={style8}>Tap the button below to confirm {user.email}. The link expires in 24 hours.</Text>
-                        <Button href={url} style={style9}>Verify email address</Button>
+                        {/*  {email} */}
+                        <Text style={style8}>Enter the code below to verify {email}. The code expires in 24 hours.</Text>
+                        <Row>
+                            {/* OTP */}
+                            <Column style={{ verticalAlign: 'top', color: "#000000", fontWeight: "bold" }}>
+                                <Text>{otp}</Text>
+                            </Column>
+                        </Row>
                     </Section>
                     <Section style={style13}>
                         <Text style={style14}>WARDPASS.</Text>

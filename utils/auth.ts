@@ -3,11 +3,11 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/drizzle/client";
 import { schema } from "@/drizzle/schema";
 import { Resend } from "resend";
-import { admin } from "better-auth/plugins";
+import { admin, emailOTP } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
-import PasswordReset from "@/emails/PasswordReset";
-import VerifyEmail from "@/emails/VerifyEmail";
-import ChangeEmail from "@/emails/ChangeEmail";
+import PasswordResetOTP from "@/emails/PasswordReset";
+import VerifyEmailOTP from "@/emails/VerifyEmail";
+import ChangeEmailOTP from "@/emails/ChangeEmail";
 import DeleteAccount from "@/emails/DeleteAccount";
 
 const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
@@ -18,19 +18,45 @@ export const auth = betterAuth({
     schema,
   }),
   baseURL: process.env.BETTER_AUTH_URL,
-  plugins: [admin(), nextCookies()],
+  plugins: [
+    admin(),
+    emailOTP({
+      changeEmail: {
+        enabled: true,
+      },
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "email-verification") {
+          // Send the OTP for email verification
+          void resend.emails.send({
+            from: process.env.EMAIL_FROM as string,
+            to: email,
+            subject: "Verify Email for WardPass",
+            react: VerifyEmailOTP({ email, otp }),
+          });
+        } else if (type === "forget-password") {
+          // Send the OTP for password reset
+          void resend.emails.send({
+            from: process.env.EMAIL_FROM as string,
+            to: email,
+            subject: "Confirm Reset Password Request",
+            react: PasswordResetOTP({ email, otp }),
+          });
+        } else if (type === "change-email") {
+          // Send the OTP for change email
+          void resend.emails.send({
+            from: process.env.EMAIL_FROM as string,
+            to: email, // Sent to the CURRENT email
+            subject: "Confirm Email Change Request",
+            react: ChangeEmailOTP({ email, otp }),
+          });
+        }
+      },
+    }),
+    nextCookies(),
+  ],
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
     revokeSessionsOnPasswordReset: true,
-    sendResetPassword: async ({ user, url }) => {
-      void resend.emails.send({
-        from: process.env.EMAIL_FROM as string,
-        to: user.email,
-        subject: "Confirm Reset Password Request",
-        react: PasswordReset({ user, url }),
-      });
-    },
     onPasswordReset: async ({ user }) => {
       console.log(`User ${user.email} has successfully reset their password.`);
     },
@@ -38,30 +64,11 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: false,
-    sendVerificationEmail: async ({ user, url }) => {
-      void resend.emails.send({
-        from: process.env.EMAIL_FROM as string,
-        to: user.email,
-        subject: "Verify Email for WardPass",
-        react: VerifyEmail({ user, url }),
-      });
-    },
     async afterEmailVerification(user) {
       console.log(`User ${user.email} has been successfully verified.`);
     },
   },
   user: {
-    changeEmail: {
-      enabled: true,
-      sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
-        void resend.emails.send({
-          from: process.env.EMAIL_FROM as string,
-          to: user.email, // Sent to the CURRENT email
-          subject: "Confirm Email Change Request",
-          react: ChangeEmail({ user, newEmail, url }),
-        });
-      },
-    },
     deleteUser: {
       enabled: true,
       sendDeleteAccountVerification: async ({

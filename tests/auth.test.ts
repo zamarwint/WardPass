@@ -379,41 +379,45 @@ describe("Authentication & Security Test Suite", () => {
       assert.strictEqual(decryptedItem.password, "UltraSecretVPNPassword123!");
     });
 
-    it("should validate verification token expiry during password reset", () => {
+    it("should validate email OTP verification record expiry during password reset", () => {
       const now = new Date();
+      const testEmail = "user@example.com";
 
-      // Valid token (expires in 10 minutes)
-      const validTokenRecord = {
-        identifier: "reset-password:valid-token-123",
-        value: "user_uuid_1",
+      // Valid OTP record (expires in 10 minutes)
+      const validOtpRecord = {
+        identifier: `forget-password-otp-${testEmail.toLowerCase()}`,
+        value: "123456:0",
         expiresAt: new Date(now.getTime() + 10 * 60 * 1000),
       };
 
-      const checkToken = (record: any) => {
+      const checkOtpRecord = (record: any) => {
         if (!record || record.expiresAt < new Date()) {
-          throw new Error("Invalid or expired password reset token.");
+          throw new Error("Invalid or expired verification code.");
         }
-        return record.value; // user ID
+        return record.identifier;
       };
 
-      assert.strictEqual(checkToken(validTokenRecord), "user_uuid_1");
+      assert.strictEqual(
+        checkOtpRecord(validOtpRecord),
+        `forget-password-otp-${testEmail.toLowerCase()}`
+      );
 
-      // Expired token (expired 5 minutes ago)
-      const expiredTokenRecord = {
-        identifier: "reset-password:expired-token-456",
-        value: "user_uuid_2",
+      // Expired OTP record (expired 5 minutes ago)
+      const expiredOtpRecord = {
+        identifier: `forget-password-otp-${testEmail.toLowerCase()}`,
+        value: "123456:3",
         expiresAt: new Date(now.getTime() - 5 * 60 * 1000),
       };
 
       assert.throws(
-        () => checkToken(expiredTokenRecord),
-        /Invalid or expired password reset token/
+        () => checkOtpRecord(expiredOtpRecord),
+        /Invalid or expired verification code/
       );
 
-      // Null / missing token record
+      // Missing record
       assert.throws(
-        () => checkToken(null),
-        /Invalid or expired password reset token/
+        () => checkOtpRecord(null),
+        /Invalid or expired verification code/
       );
     });
   });
