@@ -8,6 +8,7 @@ import { session } from "@/drizzle/schema";
 import { requireAdminSession } from "@/lib/server/auth";
 
 export async function searchUserSession({ userId }: { userId: string }) {
+    await requireAdminSession();
     if (!userId) return null;
 
     const data = await auth.api.listUserSessions({

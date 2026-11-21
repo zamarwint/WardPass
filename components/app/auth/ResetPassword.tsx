@@ -65,6 +65,7 @@ import {
   generateVaultKey,
   verifyVaultKey,
 } from "@/lib/crypto/aes";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 interface VaultData {
   id: string;
@@ -300,68 +301,312 @@ export default function ResetPassword() {
   const isBusy = resetPasswordPending || resetPasswordMutation.isPending;
 
   return (
-    <>
-      <div className="bg-background flex items-center justify-center w-screen h-screen z-999 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden">
-        {/* RESET PASSWORD CARD / FORM COLUMN */}
-        <div className="bg-background w-full h-full flex flex-col items-center justify-center border-r border-foreground/5 p-6 overflow-y-auto">
-          <div className="w-full max-w-lg my-auto py-8">
-            {step === "email" ? (
-              /* ── STAGE 1: ENTER EMAIL ────────────────────────────────────────── */
+    <ResizablePanelGroup className="w-screen h-screen">
+      {/* RESET PASSWORD CARD / FORM COLUMN */}
+      <ResizablePanel className="z-11 bg-background/90 size-full flex items-center justify-center p-6 overflow-y-auto">
+        <div className="w-full max-w-lg my-auto py-8">
+          {step === "email" ? (
+            /* ── STAGE 1: ENTER EMAIL ────────────────────────────────────────── */
+            <FieldSet className="space-y-6">
+              <Field className="space-y-1">
+                <FieldTitle className="text-4xl font-bold text-left">Reset Password</FieldTitle>
+                <FieldDescription className="text-left text-md">
+                  Enter your email address to receive a 6-digit verification code.
+                </FieldDescription>
+              </Field>
+
+              <FieldGroup className="space-y-4">
+                <Field>
+                  <FieldLabel htmlFor="email" className="text-sm font-medium">
+                    Email address
+                  </FieldLabel>
+                  <div className="relative">
+                    <Input
+                      type="email"
+                      id="email"
+                      required
+                      placeholder="e.g. alexpeart@gmail.com"
+                      value={email}
+                      className="h-12 pr-10"
+                      autoComplete="email"
+                      onChange={(e) => setEmail(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleSendResetCode();
+                        }
+                      }}
+                    />
+                    <MailIcon className="absolute right-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+                  </div>
+                </Field>
+
+                <FieldSeparator />
+
+                <Field>
+                  <Button
+                    size="lg"
+                    className="w-full h-12 text-md font-semibold cursor-pointer"
+                    disabled={requestResetPending || !email.trim()}
+                    onClick={handleSendResetCode}
+                  >
+                    {requestResetPending ? (
+                      <>
+                        <Loader2Icon className="animate-spin size-4 mr-2" />
+                        <span>Sending reset code...</span>
+                      </>
+                    ) : (
+                      <span>Send Verification Code</span>
+                    )}
+                  </Button>
+                </Field>
+
+                <div className="text-center pt-2">
+                  <Link
+                    href="/sign-in"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5"
+                  >
+                    <ArrowLeftIcon className="size-3.5" /> Back to Sign In
+                  </Link>
+                </div>
+              </FieldGroup>
+            </FieldSet>
+          ) : (
+            /* ── STAGE 2: OTP + OLD PASSWORD + NEW PASSWORD ───────────────────── */
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FieldSet className="space-y-6">
                 <Field className="space-y-1">
-                  <FieldTitle className="text-4xl font-bold text-left">Reset Password</FieldTitle>
-                  <FieldDescription className="text-left text-md">
-                    Enter your email address to receive a 6-digit verification code.
+                  <div className="flex items-center justify-between mb-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="text-xs text-muted-foreground hover:text-foreground -ml-2 h-8 px-2 flex items-center gap-1 cursor-pointer"
+                      onClick={() => setStep("email")}
+                    >
+                      <ArrowLeftIcon className="size-3" /> Change email
+                    </Button>
+                    <span className="text-xs text-muted-foreground truncate max-w-50">
+                      {email}
+                    </span>
+                  </div>
+                  <FieldTitle className="text-3xl font-bold text-left">
+                    Set New Password
+                  </FieldTitle>
+                  <FieldDescription className="text-left text-sm">
+                    Enter the 6-digit verification code sent to your email and choose a new master password.
                   </FieldDescription>
                 </Field>
 
-                <FieldGroup className="space-y-4">
-                  <Field>
-                    <FieldLabel htmlFor="email" className="text-sm font-medium">
-                      Email address
-                    </FieldLabel>
-                    <div className="relative">
-                      <Input
-                        type="email"
-                        id="email"
-                        required
-                        placeholder="e.g. alexpeart@gmail.com"
-                        value={email}
-                        className="h-12 pr-10"
-                        autoComplete="email"
-                        onChange={(e) => setEmail(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            handleSendResetCode();
-                          }
-                        }}
-                      />
-                      <MailIcon className="absolute right-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+                <FieldGroup className="space-y-5">
+                  {/* 1. Verification Code (OTP) */}
+                  <Field className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <FieldLabel htmlFor="otp-verification" className="text-sm font-medium">
+                        Verification Code
+                      </FieldLabel>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        disabled={resendPending}
+                        className="h-7 text-xs text-primary hover:text-primary/80 px-2 cursor-pointer"
+                        onClick={handleResendCode}
+                      >
+                        {resendPending ? (
+                          <Loader2Icon className="animate-spin size-3 mr-1" />
+                        ) : (
+                          <RotateCcwIcon className="size-3 mr-1" />
+                        )}
+                        Resend code
+                      </Button>
                     </div>
+                    <InputOTP
+                      maxLength={6}
+                      id="otp-verification"
+                      pattern={REGEXP_ONLY_DIGITS}
+                      value={otpValue}
+                      onChange={(val) => setOtpValue(val)}
+                    >
+                      <InputOTPGroup className="w-full flex items-center justify-between gap-1.5 sm:gap-2 *:data-[slot=input-otp-slot]:h-13 *:data-[slot=input-otp-slot]:flex-1 *:data-[slot=input-otp-slot]:text-xl *:data-[slot=input-otp-slot]:rounded-md">
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
                   </Field>
 
                   <FieldSeparator />
 
+                  {/* 2. Re-encryption Section (if user has existing vaults) */}
+                  {hasVaults && !wipeVaults && (
+                    <Controller
+                      name="currentPassword"
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid} className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <FieldLabel htmlFor="current-password" className="text-sm font-medium">
+                              Current Master Password
+                            </FieldLabel>
+                            <span className="text-xs text-primary font-medium flex items-center gap-1">
+                              <KeyRoundIcon className="size-3" /> Re-encrypts {vaults.length} vault{vaults.length !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              id="current-password"
+                              type={showCurrentPassword ? "text" : "password"}
+                              placeholder="Enter your current password"
+                              aria-invalid={fieldState.invalid}
+                              className="h-12 pr-10"
+                              autoComplete="current-password"
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
+                              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                            >
+                              {showCurrentPassword ? (
+                                <EyeIcon className="h-4 w-4" aria-hidden="true" />
+                              ) : (
+                                <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
+                              )}
+                            </Button>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Used client-side to decrypt your existing vault items and re-encrypt them with your new password.
+                          </p>
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      )}
+                    />
+                  )}
+
+                  {/* Option for users who forgot their current password */}
+                  {hasVaults && (
+                    <div className="p-3 bg-muted/40 rounded-lg border border-border text-xs flex flex-col gap-2">
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={wipeVaults}
+                          onChange={(e) => setWipeVaults(e.target.checked)}
+                          className="rounded border-border accent-primary cursor-pointer"
+                        />
+                        <span className="font-medium text-foreground">
+                          I do not know my current password
+                        </span>
+                      </label>
+                      {wipeVaults && (
+                        <div className="flex items-start gap-2 text-destructive mt-1">
+                          <ShieldAlertIcon className="size-4 shrink-0 mt-0.5" />
+                          <span>
+                            Warning: Because WardPass uses zero-knowledge encryption, your existing {vaults.length} vault{vaults.length !== 1 ? "s" : ""} cannot be decrypted without your current password. Resetting will permanently clear your old vaults so you can start fresh.
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* 3. New Master Password */}
+                  <Controller
+                    name="password"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid} className="space-y-1.5">
+                        <FieldLabel htmlFor="new-master-password" className="text-sm font-medium">
+                          New Master Password
+                        </FieldLabel>
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            id="new-master-password"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="************"
+                            aria-invalid={fieldState.invalid}
+                            className="h-12 pr-10"
+                            autoComplete="new-password"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeIcon className="h-4 w-4" aria-hidden="true" />
+                            ) : (
+                              <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
+                            )}
+                          </Button>
+                        </div>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  {/* 4. Confirm New Master Password */}
+                  <Controller
+                    name="confirmPassword"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid} className="space-y-1.5">
+                        <FieldLabel htmlFor="confirm-master-password" className="text-sm font-medium">
+                          Confirm New Master Password
+                        </FieldLabel>
+                        <PasswordInput
+                          {...field}
+                          id="confirm-master-password"
+                          placeholder="************"
+                          aria-invalid={fieldState.invalid}
+                          className="h-12"
+                          autoComplete="new-password"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  <FieldSeparator />
+
+                  {/* 5. Submit Button */}
                   <Field>
                     <Button
+                      type="submit"
+                      disabled={isBusy || otpValue.length !== 6}
                       size="lg"
                       className="w-full h-12 text-md font-semibold cursor-pointer"
-                      disabled={requestResetPending || !email.trim()}
-                      onClick={handleSendResetCode}
                     >
-                      {requestResetPending ? (
-                        <>
-                          <Loader2Icon className="animate-spin size-4 mr-2" />
-                          <span>Sending reset code...</span>
-                        </>
+                      {isBusy ? (
+                        <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
+                          <span className="shimmer shimmer-duration-1000">
+                            RESETTING & RE-ENCRYPTING...
+                          </span>
+                        </CustomLoadingState>
+                      ) : hasVaults && !wipeVaults ? (
+                        <span>Reset Password & Re-encrypt Vaults</span>
+                      ) : hasVaults && wipeVaults ? (
+                        <span>Reset Password & Clear Vaults</span>
                       ) : (
-                        <span>Send Verification Code</span>
+                        <span>Reset Password</span>
                       )}
                     </Button>
                   </Field>
 
-                  <div className="text-center pt-2">
+                  <div className="text-center pt-1">
                     <Link
                       href="/sign-in"
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5"
@@ -371,262 +616,19 @@ export default function ResetPassword() {
                   </div>
                 </FieldGroup>
               </FieldSet>
-            ) : (
-              /* ── STAGE 2: OTP + OLD PASSWORD + NEW PASSWORD ───────────────────── */
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FieldSet className="space-y-6">
-                  <Field className="space-y-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="text-xs text-muted-foreground hover:text-foreground -ml-2 h-8 px-2 flex items-center gap-1 cursor-pointer"
-                        onClick={() => setStep("email")}
-                      >
-                        <ArrowLeftIcon className="size-3" /> Change email
-                      </Button>
-                      <span className="text-xs text-muted-foreground truncate max-w-50">
-                        {email}
-                      </span>
-                    </div>
-                    <FieldTitle className="text-3xl font-bold text-left">
-                      Set New Password
-                    </FieldTitle>
-                    <FieldDescription className="text-left text-sm">
-                      Enter the 6-digit verification code sent to your email and choose a new master password.
-                    </FieldDescription>
-                  </Field>
-
-                  <FieldGroup className="space-y-5">
-                    {/* 1. Verification Code (OTP) */}
-                    <Field className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <FieldLabel htmlFor="otp-verification" className="text-sm font-medium">
-                          Verification Code
-                        </FieldLabel>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          disabled={resendPending}
-                          className="h-7 text-xs text-primary hover:text-primary/80 px-2 cursor-pointer"
-                          onClick={handleResendCode}
-                        >
-                          {resendPending ? (
-                            <Loader2Icon className="animate-spin size-3 mr-1" />
-                          ) : (
-                            <RotateCcwIcon className="size-3 mr-1" />
-                          )}
-                          Resend code
-                        </Button>
-                      </div>
-                      <InputOTP
-                        maxLength={6}
-                        id="otp-verification"
-                        pattern={REGEXP_ONLY_DIGITS}
-                        value={otpValue}
-                        onChange={(val) => setOtpValue(val)}
-                      >
-                        <InputOTPGroup className="w-full flex items-center justify-between gap-1.5 sm:gap-2 *:data-[slot=input-otp-slot]:h-13 *:data-[slot=input-otp-slot]:flex-1 *:data-[slot=input-otp-slot]:text-xl *:data-[slot=input-otp-slot]:rounded-md">
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          <InputOTPSlot index={3} />
-                          <InputOTPSlot index={4} />
-                          <InputOTPSlot index={5} />
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </Field>
-
-                    <FieldSeparator />
-
-                    {/* 2. Re-encryption Section (if user has existing vaults) */}
-                    {hasVaults && !wipeVaults && (
-                      <Controller
-                        name="currentPassword"
-                        control={form.control}
-                        render={({ field, fieldState }) => (
-                          <Field data-invalid={fieldState.invalid} className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <FieldLabel htmlFor="current-password" className="text-sm font-medium">
-                                Current Master Password
-                              </FieldLabel>
-                              <span className="text-xs text-primary font-medium flex items-center gap-1">
-                                <KeyRoundIcon className="size-3" /> Re-encrypts {vaults.length} vault{vaults.length !== 1 ? "s" : ""}
-                              </span>
-                            </div>
-                            <div className="relative">
-                              <Input
-                                {...field}
-                                id="current-password"
-                                type={showCurrentPassword ? "text" : "password"}
-                                placeholder="Enter your current password"
-                                aria-invalid={fieldState.invalid}
-                                className="h-12 pr-10"
-                                autoComplete="current-password"
-                              />
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
-                                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                              >
-                                {showCurrentPassword ? (
-                                  <EyeIcon className="h-4 w-4" aria-hidden="true" />
-                                ) : (
-                                  <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
-                                )}
-                              </Button>
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                              Used client-side to decrypt your existing vault items and re-encrypt them with your new password.
-                            </p>
-                            {fieldState.invalid && (
-                              <FieldError errors={[fieldState.error]} />
-                            )}
-                          </Field>
-                        )}
-                      />
-                    )}
-
-                    {/* Option for users who forgot their current password */}
-                    {hasVaults && (
-                      <div className="p-3 bg-muted/40 rounded-lg border border-border text-xs flex flex-col gap-2">
-                        <label className="flex items-center gap-2 cursor-pointer select-none">
-                          <input
-                            type="checkbox"
-                            checked={wipeVaults}
-                            onChange={(e) => setWipeVaults(e.target.checked)}
-                            className="rounded border-border accent-primary cursor-pointer"
-                          />
-                          <span className="font-medium text-foreground">
-                            I do not know my current password
-                          </span>
-                        </label>
-                        {wipeVaults && (
-                          <div className="flex items-start gap-2 text-destructive mt-1">
-                            <ShieldAlertIcon className="size-4 shrink-0 mt-0.5" />
-                            <span>
-                              Warning: Because WardPass uses zero-knowledge encryption, your existing {vaults.length} vault{vaults.length !== 1 ? "s" : ""} cannot be decrypted without your current password. Resetting will permanently clear your old vaults so you can start fresh.
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* 3. New Master Password */}
-                    <Controller
-                      name="password"
-                      control={form.control}
-                      render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid} className="space-y-1.5">
-                          <FieldLabel htmlFor="new-master-password" className="text-sm font-medium">
-                            New Master Password
-                          </FieldLabel>
-                          <div className="relative">
-                            <Input
-                              {...field}
-                              id="new-master-password"
-                              type={showPassword ? "text" : "password"}
-                              placeholder="************"
-                              aria-invalid={fieldState.invalid}
-                              className="h-12 pr-10"
-                              autoComplete="new-password"
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent cursor-pointer"
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              {showPassword ? (
-                                <EyeIcon className="h-4 w-4" aria-hidden="true" />
-                              ) : (
-                                <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
-                              )}
-                            </Button>
-                          </div>
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      )}
-                    />
-
-                    {/* 4. Confirm New Master Password */}
-                    <Controller
-                      name="confirmPassword"
-                      control={form.control}
-                      render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid} className="space-y-1.5">
-                          <FieldLabel htmlFor="confirm-master-password" className="text-sm font-medium">
-                            Confirm New Master Password
-                          </FieldLabel>
-                          <PasswordInput
-                            {...field}
-                            id="confirm-master-password"
-                            placeholder="************"
-                            aria-invalid={fieldState.invalid}
-                            className="h-12"
-                            autoComplete="new-password"
-                          />
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      )}
-                    />
-
-                    <FieldSeparator />
-
-                    {/* 5. Submit Button */}
-                    <Field>
-                      <Button
-                        type="submit"
-                        disabled={isBusy || otpValue.length !== 6}
-                        size="lg"
-                        className="w-full h-12 text-md font-semibold cursor-pointer"
-                      >
-                        {isBusy ? (
-                          <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
-                            <span className="shimmer shimmer-duration-1000">
-                              RESETTING & RE-ENCRYPTING...
-                            </span>
-                          </CustomLoadingState>
-                        ) : hasVaults && !wipeVaults ? (
-                          <span>Reset Password & Re-encrypt Vaults</span>
-                        ) : hasVaults && wipeVaults ? (
-                          <span>Reset Password & Clear Vaults</span>
-                        ) : (
-                          <span>Reset Password</span>
-                        )}
-                      </Button>
-                    </Field>
-
-                    <div className="text-center pt-1">
-                      <Link
-                        href="/sign-in"
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1.5"
-                      >
-                        <ArrowLeftIcon className="size-3.5" /> Back to Sign In
-                      </Link>
-                    </div>
-                  </FieldGroup>
-                </FieldSet>
-              </form>
-            )}
-          </div>
+            </form>
+          )}
         </div>
+      </ResizablePanel>
 
-        {/* PROMOTIONAL / BRANDING CARD COLUMN */}
-        <div className="w-full hidden lg:flex flex-col items-center justify-center p-8">
-          <WebsiteCredentialCard />
-        </div>
-      </div>
-      <DotPattern />
-    </>
+      <ResizableHandle withHandle />
+
+      {/* PROMOTIONAL / BRANDING CARD COLUMN */}
+      <ResizablePanel className="size-full hidden lg:flex items-center justify-center p-8">
+        <div className="z-12"><WebsiteCredentialCard /></div>
+      </ResizablePanel>
+
+      <DotPattern className="absolute z-10 size-full opacity-80" />
+    </ResizablePanelGroup>
   );
 }

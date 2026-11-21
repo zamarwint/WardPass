@@ -20,20 +20,20 @@ import { CustomLoadingState } from "@/components/LoadingStates";
 import { SvgCircle } from "@/components/app/SVG";
 import { UnlockVaultModal } from "@/components/app/UnlockVaultModal";
 
-import LoginItem from "@/components/app/vault-item/read/LoginItem";
-import SecureNoteItem from "@/components/app/vault-item/read/SecureNoteItem";
-import CreditCardItem from "@/components/app/vault-item/read/CreditCardItem";
-import IdentityItem from "@/components/app/vault-item/read/IdentityItem";
+import LoginItem from "@/components/app/vault-item-crud/read/LoginItem";
+import SecureNoteItem from "@/components/app/vault-item-crud/read/SecureNoteItem";
+import CreditCardItem from "@/components/app/vault-item-crud/read/CreditCardItem";
+import IdentityItem from "@/components/app/vault-item-crud/read/IdentityItem";
 
-import CreateLoginItem from "@/components/app/vault-item/create/CreateLoginItem";
-import CreateSecureNoteItem from "@/components/app/vault-item/create/CreateSecureNoteItem";
-import CreateCreditCardItem from "@/components/app/vault-item/create/CreateCreditCardItem";
-import CreateIdentityItem from "@/components/app/vault-item/create/CreateIdentityItem";
+import CreateLoginItem from "@/components/app/vault-item-crud/create/CreateLoginItem";
+import CreateSecureNoteItem from "@/components/app/vault-item-crud/create/CreateSecureNoteItem";
+import CreateCreditCardItem from "@/components/app/vault-item-crud/create/CreateCreditCardItem";
+import CreateIdentityItem from "@/components/app/vault-item-crud/create/CreateIdentityItem";
 
-import LoginDropdown from "@/components/app/vault-item/dropdowns/LoginDropdown";
-import SecureNoteDropdown from "@/components/app/vault-item/dropdowns/SecureNoteDropdown";
-import CreditCardDropdown from "@/components/app/vault-item/dropdowns/CreditCardDropdown";
-import IdentityDropdown from "@/components/app/vault-item/dropdowns/IdentityDropdown";
+import LoginDropdown from "@/components/app/vault-item-crud/dropdowns/LoginDropdown";
+import SecureNoteDropdown from "@/components/app/vault-item-crud/dropdowns/SecureNoteDropdown";
+import CreditCardDropdown from "@/components/app/vault-item-crud/dropdowns/CreditCardDropdown";
+import IdentityDropdown from "@/components/app/vault-item-crud/dropdowns/IdentityDropdown";
 
 import { VaultItem, VaultItemType } from "@/lib/types/VaultType";
 import { CreditCardJSON, IdentityJSON, LoginJSON, SecureNoteJSON } from "@/lib/types/VaultItemType";

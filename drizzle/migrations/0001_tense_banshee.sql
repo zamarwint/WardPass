@@ -1,0 +1,28 @@
+ALTER TABLE "account" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "account" FORCE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "session" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "session" FORCE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "user" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "user" FORCE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "vault" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "vault" FORCE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "vaultItem" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "vaultItem" FORCE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "verification" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+ALTER TABLE "verification" FORCE ROW LEVEL SECURITY;--> statement-breakpoint
+CREATE POLICY "account_admin_all" ON "account" AS PERMISSIVE FOR ALL TO public USING (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on') WITH CHECK (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on');--> statement-breakpoint
+CREATE POLICY "account_user_manage_own" ON "account" AS PERMISSIVE FOR ALL TO public USING ("account"."userId" = current_setting('app.current_user_id', true)) WITH CHECK ("account"."userId" = current_setting('app.current_user_id', true));--> statement-breakpoint
+CREATE POLICY "account_insert_unauth" ON "account" AS PERMISSIVE FOR INSERT TO public WITH CHECK (current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or "account"."userId" = current_setting('app.current_user_id', true));--> statement-breakpoint
+CREATE POLICY "session_admin_all" ON "session" AS PERMISSIVE FOR ALL TO public USING (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on') WITH CHECK (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on');--> statement-breakpoint
+CREATE POLICY "session_user_manage_own" ON "session" AS PERMISSIVE FOR ALL TO public USING ("session"."userId" = current_setting('app.current_user_id', true)) WITH CHECK ("session"."userId" = current_setting('app.current_user_id', true));--> statement-breakpoint
+CREATE POLICY "session_insert_unauth" ON "session" AS PERMISSIVE FOR INSERT TO public WITH CHECK (current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or "session"."userId" = current_setting('app.current_user_id', true));--> statement-breakpoint
+CREATE POLICY "user_admin_all" ON "user" AS PERMISSIVE FOR ALL TO public USING (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on') WITH CHECK (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on');--> statement-breakpoint
+CREATE POLICY "user_view_own" ON "user" AS PERMISSIVE FOR SELECT TO public USING ("user"."id" = current_setting('app.current_user_id', true));--> statement-breakpoint
+CREATE POLICY "user_update_own" ON "user" AS PERMISSIVE FOR UPDATE TO public USING ("user"."id" = current_setting('app.current_user_id', true)) WITH CHECK ("user"."id" = current_setting('app.current_user_id', true) and ("user"."role" is null or "user"."role" = 'user'));--> statement-breakpoint
+CREATE POLICY "user_insert_unauth" ON "user" AS PERMISSIVE FOR INSERT TO public WITH CHECK (current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or "user"."id" = current_setting('app.current_user_id', true));--> statement-breakpoint
+CREATE POLICY "vault_admin_all" ON "vault" AS PERMISSIVE FOR ALL TO public USING (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on') WITH CHECK (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on');--> statement-breakpoint
+CREATE POLICY "vault_user_manage_own" ON "vault" AS PERMISSIVE FOR ALL TO public USING ("vault"."userId" = current_setting('app.current_user_id', true)) WITH CHECK ("vault"."userId" = current_setting('app.current_user_id', true));--> statement-breakpoint
+CREATE POLICY "vault_item_admin_all" ON "vaultItem" AS PERMISSIVE FOR ALL TO public USING (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on') WITH CHECK (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on');--> statement-breakpoint
+CREATE POLICY "vault_item_user_manage_own" ON "vaultItem" AS PERMISSIVE FOR ALL TO public USING (exists (select 1 from "vault" where "vault"."id" = "vaultItem"."vaultId" and "vault"."userId" = current_setting('app.current_user_id', true))) WITH CHECK (exists (select 1 from "vault" where "vault"."id" = "vaultItem"."vaultId" and "vault"."userId" = current_setting('app.current_user_id', true)));--> statement-breakpoint
+CREATE POLICY "verification_admin_all" ON "verification" AS PERMISSIVE FOR ALL TO public USING (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on') WITH CHECK (current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on');--> statement-breakpoint
+CREATE POLICY "verification_public_flow" ON "verification" AS PERMISSIVE FOR ALL TO public USING (true) WITH CHECK (true);

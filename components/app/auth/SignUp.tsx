@@ -8,9 +8,9 @@ import { Controller } from "react-hook-form"
 import * as z from "zod"
 
 import { PaymentCard, WebsiteCredentialCard } from "@/components/UICards";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { DotPattern } from "@/components/ui/dot-pattern";
-import { Field, FieldError, FieldGroup, FieldLabel, FieldSeparator, FieldTitle } from "@/components/ui/field";
+import { Field, FieldContent, FieldError, FieldLabel, FieldSeparator, FieldTitle } from "@/components/ui/field";
 import { FieldDescription } from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
 import { EyeIcon, EyeOffIcon, ShieldPlus } from "lucide-react";
@@ -19,11 +19,11 @@ import { useMemo, useState, useTransition } from "react";
 import { passwordStrength } from "check-password-strength";
 import { PasswordInput } from "@/components/PasswordInput";
 
-// import PasswordStrengthBar from "@/app/_components/PasswordStrengthBar";
 import { signUpSchema } from "@/lib/validations/authSchemas";
 import { useSignUp } from "@/lib/mutations/AuthMutations";
 import { CustomLoadingState } from "@/components/LoadingStates";
 import PasswordStrengthBar from "@/components/PasswordStrengthBar";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 
 export default function SignUp() {
     const [signUpPending, startSignUpTransition] = useTransition();
@@ -63,15 +63,15 @@ export default function SignUp() {
     }
 
     return (
-        <>
-            <div className="flex items-center justify-center w-screen h-screen z-998">
-                {/* SIGN UP CARD */}
-                <div className="bg-background w-full h-full flex flex-col items-center justify-center gap-5 border-r border-foreground/5">
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FieldGroup className="w-xl">
-                            <FieldTitle className="text-4xl text-primary font-bold">Sign Up</FieldTitle>
-                            <FieldDescription>Create a new <strong>strongroom.</strong></FieldDescription>
+        <ResizablePanelGroup className="w-screen h-screen">
+            {/* SIGN UP CARD */}
+            <ResizablePanel className="z-11 bg-background/90 size-full flex items-center justify-center">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+                    <Field className="w-full px-20 space-y-1">
+                        <FieldTitle className="text-4xl text-primary font-bold">Sign Up</FieldTitle>
+                        <FieldDescription className="mb-4">Create a new <strong>strongroom.</strong></FieldDescription>
 
+                        <FieldContent className="gap-4">
                             {/* Name Field */}
                             <Controller
                                 name="name"
@@ -84,7 +84,7 @@ export default function SignUp() {
                                             id="name"
                                             placeholder="e.g. John Doe"
                                             aria-invalid={fieldState.invalid}
-                                            className="h-12"
+                                            className="h-12 w-lvw"
                                             autoComplete="off"
                                             maxLength={31}
                                         />
@@ -182,35 +182,41 @@ export default function SignUp() {
                                     </Field>
                                 )}
                             />
-                        </FieldGroup>
 
-                        <Button type="submit" variant="default" size="lg" className="w-full h-12" disabled={form.formState.isSubmitting || signUpPending || signUpIsPending}>
-                            {signUpPending || signUpIsPending ? (
-                                <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
-                                    <span className="shimmer shimmer-duration-1000">INITIALIZING</span>
-                                </CustomLoadingState>
-                            ) : (
-                                <>
-                                    <ShieldPlus /> INITIALIZE WARDPASS
-                                </>
-                            )}
-                        </Button>
 
-                        <FieldSeparator />
 
-                        <FieldDescription className="py-4">
-                            Already have an account?
-                            <Link href="/sign-in" className="mx-2">LOGIN</Link>
-                        </FieldDescription>
-                    </form>
-                </div>
-                {/* STACK THE CARDS ON TOP OF EACH OTHER */}
-                <div className="w-full flex flex-col items-center justify-center bg-transparent">
-                    <div className="z-998 rotate-13 -translate-y-8"><PaymentCard withoutHeader={true} /></div>
-                    <div className="z-999 -rotate-13 translate-y-1"><WebsiteCredentialCard withoutHeader={true} /></div>
-                </div>
-            </div>
-            <DotPattern />
-        </>
+                            <Button type="submit" variant="default" size="lg" className="h-12" disabled={form.formState.isSubmitting || signUpPending || signUpIsPending}>
+                                {signUpPending || signUpIsPending ? (
+                                    <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
+                                        <span className="shimmer shimmer-duration-1000">INITIALIZING</span>
+                                    </CustomLoadingState>
+                                ) : (
+                                    <>
+                                        <ShieldPlus /> INITIALIZE WARDPASS
+                                    </>
+                                )}
+                            </Button>
+
+                            <FieldSeparator />
+
+                            <FieldDescription>
+                                Already have an account?
+                                <Link href="/sign-in" className={buttonVariants({ variant: "link" })}>LOGIN</Link>
+                            </FieldDescription>
+                        </FieldContent>
+                    </Field>
+                </form>
+            </ResizablePanel>
+
+            <ResizableHandle withHandle />
+
+            {/* STACK THE CARDS ON TOP OF EACH OTHER */}
+            <ResizablePanel className="size-full flex flex-col items-center justify-center">
+                <div className="z-18 rotate-13 -translate-y-8"><PaymentCard withoutHeader={true} /></div>
+                <div className="z-19 -rotate-13 translate-y-1"><WebsiteCredentialCard withoutHeader={true} /></div>
+            </ResizablePanel>
+
+            <DotPattern className="absolute z-10 size-full opacity-80" />
+        </ResizablePanelGroup>
     )
 }

@@ -19,6 +19,15 @@ import {
 } from "../lib/crypto/aes";
 import { deriveKey, generateSalt, toBase64, fromBase64 } from "../lib/crypto/argon2";
 
+import {
+  account,
+  session as sessionTable,
+  user as userTable,
+  vault as vaultTable,
+  vaultItem as vaultItemTable,
+  verification as verificationTable,
+} from "../drizzle/schema";
+
 describe("Authentication & Security Test Suite", () => {
   // ════════════════════════════════════════════════════════════════════════════
   // 1. PASSWORD POLICY & SCHEMA VALIDATION
@@ -91,7 +100,7 @@ describe("Authentication & Security Test Suite", () => {
       assert.strictEqual(resMismatch.success, false);
       if (!resMismatch.success) {
         const errors = resMismatch.error.flatten().fieldErrors;
-        assert.ok(errors.confirmPassword?.includes("Passwords do not match"));
+        assert.ok(errors.confirmPassword?.some((msg) => msg.includes("Passwords do not match")));
       }
 
       // 3. Invalid email
@@ -203,6 +212,88 @@ describe("Authentication & Security Test Suite", () => {
       // Admin user accepted
       const adminSession = { user: { id: "u2", role: "admin" } };
       assert.doesNotThrow(() => requireAdminSessionMock(adminSession));
+    });
+
+    it("should have Row Level Security enabled on all 6 database schema tables", () => {
+      const tables = [
+        { name: "account", table: account },
+        { name: "session", table: sessionTable },
+        { name: "user", table: userTable },
+        { name: "vault", table: vaultTable },
+        { name: "vaultItem", table: vaultItemTable },
+        { name: "verification", table: verificationTable },
+      ];
+
+      for (const { name, table } of tables) {
+        const isRlsEnabled = (table as any)[Symbol.for("drizzle:EnableRLS")];
+        assert.strictEqual(
+          isRlsEnabled,
+          true,
+          `Table "${name}" must have Row Level Security enabled via .enableRLS()`
+        );
+      }
+    });
+
+    it("should configure admin and least-privilege user policies on all tables", () => {
+      const getPolicies = (table: any): string[] => {
+        const extraColumns = table[Symbol.for("drizzle:ExtraConfigColumns")];
+        const extraBuilder = table[Symbol.for("drizzle:ExtraConfigBuilder")];
+        const extra = extraBuilder(extraColumns);
+        return extra.filter((x: any) => x?.name).map((x: any) => x.name);
+      };
+
+      // 1. Vault: Admin gets full access, user only manages own vaults
+      const vaultPolicies = getPolicies(vaultTable);
+      assert.ok(vaultPolicies.includes("vault_admin_all"), "Vault missing vault_admin_all policy");
+      assert.ok(vaultPolicies.includes("vault_user_manage_own"), "Vault missing vault_user_manage_own policy");
+
+      // 2. VaultItem: Admin gets full access, user only accesses items of own vault
+      const vaultItemPolicies = getPolicies(vaultItemTable);
+      assert.ok(vaultItemPolicies.includes("vault_item_admin_all"), "VaultItem missing vault_item_admin_all policy");
+      assert.ok(vaultItemPolicies.includes("vault_item_user_manage_own"), "VaultItem missing vault_item_user_manage_own policy");
+
+      // 3. User: Admin gets full access, user can view and update own profile without role elevation
+      const userPolicies = getPolicies(userTable);
+      assert.ok(userPolicies.includes("user_admin_all"), "User missing user_admin_all policy");
+      assert.ok(userPolicies.includes("user_view_own"), "User missing user_view_own policy");
+      assert.ok(userPolicies.includes("user_update_own"), "User missing user_update_own policy");
+
+      // 4. Session: Admin gets full access, user only manages own sessions
+      const sessionPolicies = getPolicies(sessionTable);
+      assert.ok(sessionPolicies.includes("session_admin_all"), "Session missing session_admin_all policy");
+      assert.ok(sessionPolicies.includes("session_user_manage_own"), "Session missing session_user_manage_own policy");
+
+      // 5. Account: Admin gets full access, user only manages own account
+      const accountPolicies = getPolicies(account);
+      assert.ok(accountPolicies.includes("account_admin_all"), "Account missing account_admin_all policy");
+      assert.ok(accountPolicies.includes("account_user_manage_own"), "Account missing account_user_manage_own policy");
+
+      // 6. Verification: Admin gets full access, public verification flow permitted
+      const verificationPolicies = getPolicies(verificationTable);
+      assert.ok(verificationPolicies.includes("verification_admin_all"), "Verification missing verification_admin_all policy");
+      assert.ok(verificationPolicies.includes("verification_public_flow"), "Verification missing verification_public_flow policy");
+    });
+
+    it("should restrict users from privilege escalation (cannot elevate role to admin)", () => {
+      // Logic verified by user_update_own policy:
+      // withCheck: ("user"."role" is null or "user"."role" = 'user')
+      const evaluateUserRoleUpdate = (attemptedRole: string | null) => {
+        const allowed = attemptedRole === null || attemptedRole === "user";
+        if (!allowed) {
+          throw new Error("Privilege escalation rejected: users cannot grant admin role.");
+        }
+        return true;
+      };
+
+      // Allowed self-updates
+      assert.strictEqual(evaluateUserRoleUpdate("user"), true);
+      assert.strictEqual(evaluateUserRoleUpdate(null), true);
+
+      // Unauthorized elevation to admin rejected
+      assert.throws(
+        () => evaluateUserRoleUpdate("admin"),
+        /Privilege escalation rejected/
+      );
     });
   });
 

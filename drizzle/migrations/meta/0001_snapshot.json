@@ -1,6 +1,6 @@
 {
-  "id": "1cc39e2b-738b-4f94-9286-cb158bb5d8d1",
-  "prevId": "1e7928d2-c4da-4806-9c00-c08ac3ee6230",
+  "id": "4e8491ee-5c50-4de2-b415-3c98c7534995",
+  "prevId": "1cc39e2b-738b-4f94-9286-cb158bb5d8d1",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -123,9 +123,39 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "account_admin_all": {
+          "name": "account_admin_all",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'",
+          "withCheck": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'"
+        },
+        "account_user_manage_own": {
+          "name": "account_user_manage_own",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "\"account\".\"userId\" = current_setting('app.current_user_id', true)",
+          "withCheck": "\"account\".\"userId\" = current_setting('app.current_user_id', true)"
+        },
+        "account_insert_unauth": {
+          "name": "account_insert_unauth",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "public"
+          ],
+          "withCheck": "current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or \"account\".\"userId\" = current_setting('app.current_user_id', true)"
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.session": {
       "name": "session",
@@ -238,9 +268,39 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "session_admin_all": {
+          "name": "session_admin_all",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'",
+          "withCheck": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'"
+        },
+        "session_user_manage_own": {
+          "name": "session_user_manage_own",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "\"session\".\"userId\" = current_setting('app.current_user_id', true)",
+          "withCheck": "\"session\".\"userId\" = current_setting('app.current_user_id', true)"
+        },
+        "session_insert_unauth": {
+          "name": "session_insert_unauth",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "public"
+          ],
+          "withCheck": "current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or \"session\".\"userId\" = current_setting('app.current_user_id', true)"
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.user": {
       "name": "user",
@@ -336,9 +396,48 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "user_admin_all": {
+          "name": "user_admin_all",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'",
+          "withCheck": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'"
+        },
+        "user_view_own": {
+          "name": "user_view_own",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ],
+          "using": "\"user\".\"id\" = current_setting('app.current_user_id', true)"
+        },
+        "user_update_own": {
+          "name": "user_update_own",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "public"
+          ],
+          "using": "\"user\".\"id\" = current_setting('app.current_user_id', true)",
+          "withCheck": "\"user\".\"id\" = current_setting('app.current_user_id', true) and (\"user\".\"role\" is null or \"user\".\"role\" = 'user')"
+        },
+        "user_insert_unauth": {
+          "name": "user_insert_unauth",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "public"
+          ],
+          "withCheck": "current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or \"user\".\"id\" = current_setting('app.current_user_id', true)"
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.vault": {
       "name": "vault",
@@ -475,9 +574,30 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "vault_admin_all": {
+          "name": "vault_admin_all",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'",
+          "withCheck": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'"
+        },
+        "vault_user_manage_own": {
+          "name": "vault_user_manage_own",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "\"vault\".\"userId\" = current_setting('app.current_user_id', true)",
+          "withCheck": "\"vault\".\"userId\" = current_setting('app.current_user_id', true)"
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.vaultItem": {
       "name": "vaultItem",
@@ -568,9 +688,30 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "vault_item_admin_all": {
+          "name": "vault_item_admin_all",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'",
+          "withCheck": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'"
+        },
+        "vault_item_user_manage_own": {
+          "name": "vault_item_user_manage_own",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "exists (select 1 from \"vault\" where \"vault\".\"id\" = \"vaultItem\".\"vaultId\" and \"vault\".\"userId\" = current_setting('app.current_user_id', true))",
+          "withCheck": "exists (select 1 from \"vault\" where \"vault\".\"id\" = \"vaultItem\".\"vaultId\" and \"vault\".\"userId\" = current_setting('app.current_user_id', true))"
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.verification": {
       "name": "verification",
@@ -635,9 +776,30 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
+      "policies": {
+        "verification_admin_all": {
+          "name": "verification_admin_all",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'",
+          "withCheck": "current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'"
+        },
+        "verification_public_flow": {
+          "name": "verification_public_flow",
+          "as": "PERMISSIVE",
+          "for": "ALL",
+          "to": [
+            "public"
+          ],
+          "using": "true",
+          "withCheck": "true"
+        }
+      },
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     }
   },
   "enums": {},

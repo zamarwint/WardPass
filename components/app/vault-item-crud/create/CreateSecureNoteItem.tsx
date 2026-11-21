@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Loader2Icon, PlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { VaultItemType } from "@/lib/types/VaultType";
 import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";

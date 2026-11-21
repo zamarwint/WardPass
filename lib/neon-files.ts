@@ -3,20 +3,43 @@ import "server-only";
 import { Files } from "files-sdk";
 import { neon } from "files-sdk/neon";
 
-const bucket = process.env.NEON_STORAGE_BUCKET;
-const endpoint = process.env.AWS_ENDPOINT_URL_S3;
+const {
+  AWS_ENDPOINT_URL_S3,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  AWS_REGION,
+  NEON_STORAGE_BUCKET,
+} = process.env;
 
-if (!bucket || !endpoint) {
-  throw new Error("Missing Neon storage configuration.");
+const missing = [
+  ["AWS_ENDPOINT_URL_S3", AWS_ENDPOINT_URL_S3],
+  ["AWS_ACCESS_KEY_ID", AWS_ACCESS_KEY_ID],
+  ["AWS_SECRET_ACCESS_KEY", AWS_SECRET_ACCESS_KEY],
+  ["NEON_STORAGE_BUCKET", NEON_STORAGE_BUCKET],
+]
+  .filter(([, value]) => !value)
+  .map(([name]) => name);
+
+if (missing.length > 0) {
+  throw new Error(
+    `Missing Neon storage environment variables: ${missing.join(", ")}`,
+  );
 }
 
-// Neon public-read URL format:
-// {endpoint}/{bucket}/{key}
-export const avatarPublicBaseUrl = `${endpoint.replace(/\/+$/, "")}/${bucket}`;
+const endpoint = AWS_ENDPOINT_URL_S3!.replace(/\/+$/, "");
+const bucket = NEON_STORAGE_BUCKET!;
+
+export const avatarPublicBaseUrl = `${endpoint}/${bucket}`;
 
 export const files = new Files({
   adapter: neon({
     bucket,
+    endpoint,
+    region: AWS_REGION || "us-east-1",
+    accessKeyId: AWS_ACCESS_KEY_ID!,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY!,
+
+    // Use this only with a public_read bucket.
     publicBaseUrl: avatarPublicBaseUrl,
   }),
 });

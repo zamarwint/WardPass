@@ -1,6 +1,7 @@
 'use server'
 
 import { auth } from "@/utils/auth"
+import { requireAdminSession } from "@/lib/server/auth";
 
 export async function createUser({
     email,
@@ -11,6 +12,7 @@ export async function createUser({
     password: string,
     name: string
 }) {
+    await requireAdminSession();
     const newUser = await auth.api.createUser({
         body: {
             email, // required

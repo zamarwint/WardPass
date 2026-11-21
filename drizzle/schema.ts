@@ -6,6 +6,7 @@ import {
   timestamp,
   uniqueIndex,
   boolean,
+  pgPolicy,
 } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 import type { VaultItemType } from "@/lib/types/VaultType";
@@ -41,8 +42,25 @@ export const account = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("cascade"),
+    pgPolicy("account_admin_all", {
+      as: "permissive",
+      for: "all",
+      using: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+      withCheck: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+    }),
+    pgPolicy("account_user_manage_own", {
+      as: "permissive",
+      for: "all",
+      using: sql`${table.userId} = current_setting('app.current_user_id', true)`,
+      withCheck: sql`${table.userId} = current_setting('app.current_user_id', true)`,
+    }),
+    pgPolicy("account_insert_unauth", {
+      as: "permissive",
+      for: "insert",
+      withCheck: sql`current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or ${table.userId} = current_setting('app.current_user_id', true)`,
+    }),
   ],
-);
+).enableRLS();
 
 export const verification = pgTable(
   "verification",
@@ -61,8 +79,20 @@ export const verification = pgTable(
       "btree",
       table.identifier.asc().nullsLast().op("text_ops"),
     ),
+    pgPolicy("verification_admin_all", {
+      as: "permissive",
+      for: "all",
+      using: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+      withCheck: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+    }),
+    pgPolicy("verification_public_flow", {
+      as: "permissive",
+      for: "all",
+      using: sql`true`,
+      withCheck: sql`true`,
+    }),
   ],
-);
+).enableRLS();
 
 export const session = pgTable(
   "session",
@@ -95,8 +125,25 @@ export const session = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("cascade"),
+    pgPolicy("session_admin_all", {
+      as: "permissive",
+      for: "all",
+      using: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+      withCheck: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+    }),
+    pgPolicy("session_user_manage_own", {
+      as: "permissive",
+      for: "all",
+      using: sql`${table.userId} = current_setting('app.current_user_id', true)`,
+      withCheck: sql`${table.userId} = current_setting('app.current_user_id', true)`,
+    }),
+    pgPolicy("session_insert_unauth", {
+      as: "permissive",
+      for: "insert",
+      withCheck: sql`current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or ${table.userId} = current_setting('app.current_user_id', true)`,
+    }),
   ],
-);
+).enableRLS();
 
 export const user = pgTable(
   "user",
@@ -120,8 +167,30 @@ export const user = pgTable(
       "btree",
       table.email.asc().nullsLast().op("text_ops"),
     ),
+    pgPolicy("user_admin_all", {
+      as: "permissive",
+      for: "all",
+      using: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+      withCheck: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+    }),
+    pgPolicy("user_view_own", {
+      as: "permissive",
+      for: "select",
+      using: sql`${table.id} = current_setting('app.current_user_id', true)`,
+    }),
+    pgPolicy("user_update_own", {
+      as: "permissive",
+      for: "update",
+      using: sql`${table.id} = current_setting('app.current_user_id', true)`,
+      withCheck: sql`${table.id} = current_setting('app.current_user_id', true) and (${table.role} is null or ${table.role} = 'user')`,
+    }),
+    pgPolicy("user_insert_unauth", {
+      as: "permissive",
+      for: "insert",
+      withCheck: sql`current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or ${table.id} = current_setting('app.current_user_id', true)`,
+    }),
   ],
-);
+).enableRLS();
 
 export const vault = pgTable(
   "vault",
@@ -161,8 +230,20 @@ export const vault = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("cascade"),
+    pgPolicy("vault_admin_all", {
+      as: "permissive",
+      for: "all",
+      using: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+      withCheck: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+    }),
+    pgPolicy("vault_user_manage_own", {
+      as: "permissive",
+      for: "all",
+      using: sql`${table.userId} = current_setting('app.current_user_id', true)`,
+      withCheck: sql`${table.userId} = current_setting('app.current_user_id', true)`,
+    }),
   ],
-);
+).enableRLS();
 
 export const vaultItem = pgTable(
   "vaultItem",
@@ -193,8 +274,20 @@ export const vaultItem = pgTable(
     })
       .onUpdate("cascade")
       .onDelete("cascade"),
+    pgPolicy("vault_item_admin_all", {
+      as: "permissive",
+      for: "all",
+      using: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+      withCheck: sql`current_setting('app.current_user_role', true) = 'admin' or current_setting('app.bypass_rls', true) = 'on'`,
+    }),
+    pgPolicy("vault_item_user_manage_own", {
+      as: "permissive",
+      for: "all",
+      using: sql`exists (select 1 from "vault" where "vault"."id" = ${table.vaultId} and "vault"."userId" = current_setting('app.current_user_id', true))`,
+      withCheck: sql`exists (select 1 from "vault" where "vault"."id" = ${table.vaultId} and "vault"."userId" = current_setting('app.current_user_id', true))`,
+    }),
   ],
-);
+).enableRLS();
 
 export const userRelations = relations(user, ({ many }) => ({
   accounts: many(account),

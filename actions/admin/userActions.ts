@@ -2,8 +2,10 @@
 
 import { auth } from "@/utils/auth"
 import { headers } from "next/headers";
+import { requireAdminSession } from "@/lib/server/auth";
 
 export async function setUserRole({ userId, role }: { userId: string, role: "admin" | "user" | ("admin" | "user")[] }) {
+    await requireAdminSession();
     const data = await auth.api.setRole({
         body: {
             userId,
@@ -16,6 +18,7 @@ export async function setUserRole({ userId, role }: { userId: string, role: "adm
 }
 
 export async function setUserPassword({ userId, newPassword }: { userId: string, newPassword: string }) {
+    await requireAdminSession();
     const data = await auth.api.setUserPassword({
         body: {
             newPassword, // required
@@ -34,6 +37,7 @@ export async function updateUser({
     userId: string,
     userData: { name?: string, email?: string, image?: string }
 }) {
+    await requireAdminSession();
     const data = await auth.api.adminUpdateUser({
         body: {
             userId, // required
@@ -54,6 +58,7 @@ export async function banUser({
     banReason: string,
     banExpiresIn: number,
 }) {
+    await requireAdminSession();
     const data = await auth.api.banUser({
         body: {
             userId, // required
@@ -67,6 +72,7 @@ export async function banUser({
 }
 
 export async function unbanUser({ userId }: { userId: string }) {
+    await requireAdminSession();
     const data = await auth.api.unbanUser({
         body: {
             userId, // required
@@ -78,6 +84,7 @@ export async function unbanUser({ userId }: { userId: string }) {
 }
 
 export async function revokeAllUserSessions(userId: string) {
+    await requireAdminSession();
     const data = await auth.api.revokeUserSessions({
         body: {
             userId, // required
@@ -89,6 +96,7 @@ export async function revokeAllUserSessions(userId: string) {
 }
 
 export async function impersonateUser(userId: string) {
+    await requireAdminSession();
     const data = await auth.api.impersonateUser({
         body: {
             userId, // required
@@ -100,6 +108,7 @@ export async function impersonateUser(userId: string) {
 }
 
 export async function stopImpersonatingUser() {
+    await requireAdminSession();
     const data = await auth.api.stopImpersonating({
         // This endpoint requires session cookies.
         headers: await headers(),
@@ -108,12 +117,13 @@ export async function stopImpersonatingUser() {
 }
 
 export async function removeUser(userId: string) {
-    const deletedUser = await auth.api.removeUser({
+    await requireAdminSession();
+    const data = await auth.api.removeUser({
         body: {
             userId, // required
         },
         // This endpoint requires session cookies.
         headers: await headers(),
     });
-    return deletedUser;
+    return data;
 }

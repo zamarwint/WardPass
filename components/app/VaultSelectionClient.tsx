@@ -50,7 +50,7 @@ function GetStarted() {
             <Card className="p-4 select-none">
               <CardTitle>Import Credentials</CardTitle>
               <CardDescription>Migrating to WardPass? No need to worry! Import your credentials as CSV files and WardPass will automatically configure them for you.</CardDescription>
-              <Link href="/strongroom/import" className={buttonVariants()}>Import Credentials</Link>
+              <Link href="/strongroom/transfer-credentials" className={buttonVariants()}>Transfer Credentials</Link>
             </Card>
           </CarouselItem>
           <CarouselItem className="basis-1/3">
