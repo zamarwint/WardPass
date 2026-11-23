@@ -22,8 +22,8 @@ export default function SignOutAlert({ open, onOpenChange }: { open: boolean, on
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={signOut} disabled={signOutPending || signOutMutation.isPending}>{signOutPending || signOutMutation.isPending ? "Signing you out..." : "Sign Out"}</AlertDialogAction>
+                    <AlertDialogCancel size="lg">Cancel</AlertDialogCancel>
+                    <AlertDialogAction size="lg" onClick={signOut} disabled={signOutPending || signOutMutation.isPending}>{signOutPending || signOutMutation.isPending ? "Signing you out..." : "Sign Out"}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

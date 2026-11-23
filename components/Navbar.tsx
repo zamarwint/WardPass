@@ -71,7 +71,7 @@ export default function Navbar() {
             </CustomLoadingState>
           ) : session.data?.user ? (
             <>
-              <Link href="/strongroom" className={cn(buttonVariants({ variant: 'default', size: 'sm' }))}>Open Strongroom</Link>
+              <Link href="/strongroom" className={cn(buttonVariants({ variant: 'default', size: 'lg' }))}>Open Strongroom</Link>
               <UserDropdown onSidebar={false} />
             </>
           ) : (
@@ -82,7 +82,7 @@ export default function Navbar() {
               >
                 Sign In
               </Link>
-              <Link href="/sign-up" className={cn("flex items-center gap-1.5", buttonVariants({ size: "sm" }))}>
+              <Link href="/sign-up" className={cn("flex items-center gap-1.5", buttonVariants({ size: "lg" }))}>
                 <span>Get Started</span>
                 <ArrowRight className="size-3" />
               </Link>
