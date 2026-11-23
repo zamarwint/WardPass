@@ -69,12 +69,12 @@ export default function ChromeExtensionPage() {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3.5">
-              <Link href="/sign-up" className={cn("flex items-center gap-2", buttonVariants({ size: "lg" }))}>
+              <Link href="/sign-up" className={cn(buttonVariants({ size: "lg" }), "h-12 px-10 flex items-center gap-2 font-semibold")}>
                 <span>Get Early Access</span>
                 <ArrowRight className="size-4" />
               </Link>
 
-              <Link href="/security-whitepaper" className={cn(buttonVariants({ variant: "outline", size: "lg" }))}>Review Extension Security</Link>
+              <Link href="/security-whitepaper" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-12 px-10 flex items-center gap-2 font-semibold")}>Review Extension Security</Link>
 
             </div>
           </div>

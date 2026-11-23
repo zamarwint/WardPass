@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Loader2Icon, PlusIcon } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
 import { VaultItemType } from "@/lib/types/VaultType";
 import { useCreateVaultItem } from "@/lib/mutations/CoreCreateMutations";
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerDescription, DrawerTitle } from "@/components/ui/drawer";
@@ -19,6 +18,7 @@ import { secureNoteSchema } from "@/lib/validations/vaultItemSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
+import { SecureNoteTiptapEditor } from "@/components/tiptap/SecureNoteTiptapEditor";
 
 export default function CreateSecureNoteItem({ open, onOpenChange, vaultId }: { open: boolean, onOpenChange: (open: boolean) => void, vaultId: string }) {
     // 2. Create form instance with resolver
@@ -55,7 +55,7 @@ export default function CreateSecureNoteItem({ open, onOpenChange, vaultId }: { 
                     <DrawerTitle>Create Secure Note Item</DrawerTitle>
                     <DrawerDescription>Create a new secure note item.</DrawerDescription>
                 </DrawerHeader>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 size-full p-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 size-full p-4 overflow-y-scroll">
                     <FieldGroup>
                         <Controller
                             name="title"
@@ -85,14 +85,10 @@ export default function CreateSecureNoteItem({ open, onOpenChange, vaultId }: { 
                             render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
                                     <FieldLabel htmlFor="content">Content</FieldLabel>
-                                    <Textarea
-                                        {...field}
-                                        placeholder="Write your notes here..."
-                                        id="content"
-                                        aria-invalid={fieldState.invalid}
-                                        className="h-12 min-h-75 resize-none"
-                                        autoComplete="off"
-                                        maxLength={2000}
+                                    <SecureNoteTiptapEditor
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        onBlur={field.onBlur}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
@@ -101,6 +97,7 @@ export default function CreateSecureNoteItem({ open, onOpenChange, vaultId }: { 
                                 </Field>
                             )}
                         />
+
                     </FieldGroup>
                     <DrawerFooter className="flex flex-row">
                         <DrawerClose>Cancel</DrawerClose>

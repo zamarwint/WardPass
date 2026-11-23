@@ -231,7 +231,7 @@ export default function PasswordGeneratorPage() {
                     {/* ACTION BUTTONS */}
                     <div className="flex flex-wrap items-center gap-3 pt-2">
                         <Button
-                            className="h-11 px-6 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm shadow-xs cursor-pointer"
+                            className="h-12 px-10 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-sm shadow-xs cursor-pointer"
                             size="lg"
                             onClick={passwordGenerate}
                         >
@@ -239,7 +239,7 @@ export default function PasswordGeneratorPage() {
                             Generate Password
                         </Button>
                         <Button
-                            className="h-11 px-6 rounded-lg bg-card hover:bg-muted text-foreground border border-border text-sm font-medium shadow-xs cursor-pointer"
+                            className="h-12 px-10 rounded-lg bg-card hover:bg-muted text-foreground border border-border text-sm font-medium shadow-xs cursor-pointer"
                             variant="outline"
                             size="lg"
                             onClick={copyPassword}
@@ -248,7 +248,7 @@ export default function PasswordGeneratorPage() {
                             Copy Password
                         </Button>
                         <Button
-                            className="h-11 px-4 rounded-lg text-muted-foreground hover:text-foreground text-sm cursor-pointer"
+                            className="h-12 px-10 rounded-lg text-muted-foreground hover:text-foreground text-sm cursor-pointer"
                             variant="ghost"
                             size="lg"
                             onClick={clearDisplay}

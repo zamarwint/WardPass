@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/alert-dialog"
 import SignOut from "@/components/app/auth/SignOut";
 import { useGetSession } from "@/lib/queries/SessionQueries";
-import { useRouter } from "next/navigation";
 import { CustomLoadingState, SkeletonLoadingState } from "@/components/LoadingStates";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
@@ -220,83 +219,81 @@ export default function Account() {
     const session = useGetSession();
     console.log(session.data?.session.userAgent);
 
-    const router = useRouter();
-
     return (
-        <div className="flex flex-col gap-10 items-start justify-start pt-5 px-10 py-5">
-            <Field className="flex flex-col gap-5">
-                <FieldGroup>
-                    <Field>
-                        <FieldLabel className="text-2xl">Account Settings</FieldLabel>
-                        <FieldDescription>Update your account information and preferences.</FieldDescription>
-                    </Field>
-                    <FieldSeparator />
-
-                    {session.isPending ? (
-                        <SkeletonLoadingState numberOfSkeletons={5} skeletonClassName="w-full max-w-sm h-12" wrapperClassName="flex flex-col gap-5" />
-                    ) : (
-                        <FieldGroup className="flex flex-row items-center justify-center">
-                            <Field>
-                                <FieldTitle className="text-xl">Update Email Address</FieldTitle>
-                                <FieldDescription>
-                                    Update your email address.
-                                </FieldDescription>
-                            </Field>
-                            <Field className="w-fit">
-                                <ChangeEmail />
-                            </Field>
-                        </FieldGroup>
-                    )}
-                </FieldGroup>
-
-                {!session.data?.user?.emailVerified && <FieldSeparator />}
-
-                {!session.data?.user?.emailVerified && <FieldGroup className="flex flex-row items-center justify-center">
-                    <Field>
-                        <FieldTitle className="text-sm text-destructive">Email not verified</FieldTitle>
-                        <FieldDescription>Please verify your email to continue using the application.</FieldDescription>
-                    </Field>
-                    <Field className="w-fit">
-                        <Link href={`/verify-email?email=${session.data?.user.email}`} className={buttonVariants({ variant: "link" })}>
-                            <SquareArrowUpRight />
-                            <span>Verify Email</span>
-                        </Link>
-                    </Field>
-                </FieldGroup>}
-
+        <Field className="flex flex-col gap-5 p-10">
+            <FieldGroup>
+                <Field>
+                    <FieldLabel className="text-2xl">Account Settings</FieldLabel>
+                    <FieldDescription>Update your account information and preferences.</FieldDescription>
+                </Field>
                 <FieldSeparator />
-                <FieldGroup>
-                    <FieldTitle className="text-xl">Change Password</FieldTitle>
-                    <FieldDescription>
-                        To change your password, please go to the <span className="btn-link cursor-pointer font-bold" onClick={() => router.push('/reset-password')}>Reset Password</span> page.
-                    </FieldDescription>
-                    <FieldDescription>
-                        NB: If you are signed in with Google, our OAuth provider, you do not have a <span className="font-bold">password</span>. If you wish to delete your account, you will need a password. If you are having difficulties creating a password when signed in with Google, please contact support.<br />
-                    </FieldDescription>
-                </FieldGroup>
 
-                <FieldSeparator />
-                <FieldGroup className="flex flex-row items-center justify-center">
-                    <Field>
-                        <FieldLabel className="text-xl text-foreground">Sign out</FieldLabel>
-                        <FieldDescription>Sign out of this session.</FieldDescription>
-                    </Field>
-                    <Field className="w-fit">
-                        <SignOut />
-                    </Field>
-                </FieldGroup>
+                {session.isPending ? (
+                    <SkeletonLoadingState numberOfSkeletons={5} skeletonClassName="w-full max-w-sm h-12" wrapperClassName="flex flex-col gap-5" />
+                ) : (
+                    <FieldGroup className="flex flex-row items-center justify-center">
+                        <Field>
+                            <FieldTitle className="text-xl">Update Email Address</FieldTitle>
+                            <FieldDescription>
+                                Update your email address.
+                            </FieldDescription>
+                        </Field>
+                        <Field className="w-fit">
+                            <ChangeEmail />
+                        </Field>
+                    </FieldGroup>
+                )}
+            </FieldGroup>
 
-                <FieldSeparator />
-                <FieldGroup className="flex flex-row items-center justify-center">
-                    <Field>
-                        <FieldLabel className="text-xl">Danger Zone</FieldLabel>
-                        <FieldDescription>This section contains actions that are irreversible.</FieldDescription>
-                    </Field>
-                    <Field className="w-fit">
-                        <DeleteAccount />
-                    </Field>
-                </FieldGroup>
-            </Field>
-        </div>
+            {!session.data?.user?.emailVerified && <FieldSeparator />}
+
+            {!session.data?.user?.emailVerified && <FieldGroup className="flex flex-row items-center justify-center">
+                <Field>
+                    <FieldTitle className="text-sm text-destructive">Email not verified</FieldTitle>
+                    <FieldDescription>Please verify your email to continue using the application.</FieldDescription>
+                </Field>
+                <Field className="w-fit">
+                    <Link href={`/verify-email?email=${session.data?.user.email}`} className={buttonVariants({ variant: "link" })}>
+                        <SquareArrowUpRight />
+                        <span>Verify Email</span>
+                    </Link>
+                </Field>
+            </FieldGroup>}
+
+            <FieldSeparator />
+            <FieldGroup className="flex flex-row items-center justify-center">
+                <Field>
+                    <FieldTitle className="text-xl">Update Password</FieldTitle>
+                    <FieldDescription>Update your account password.</FieldDescription>
+                </Field>
+                <Field className="w-fit">
+                    <Link href="/reset-password" className={buttonVariants({ className: "h-12 px-10" })}>
+                        <span>Reset Password</span>
+                    </Link>
+                </Field>
+            </FieldGroup>
+
+            <FieldSeparator />
+            <FieldGroup className="flex flex-row items-center justify-center">
+                <Field>
+                    <FieldLabel className="text-xl text-foreground">Sign out</FieldLabel>
+                    <FieldDescription>Sign out of this session.</FieldDescription>
+                </Field>
+                <Field className="w-fit">
+                    <SignOut />
+                </Field>
+            </FieldGroup>
+
+            <FieldSeparator />
+            <FieldGroup className="flex flex-row items-center justify-center">
+                <Field>
+                    <FieldLabel className="text-xl">Danger Zone</FieldLabel>
+                    <FieldDescription>This section contains actions that are irreversible.</FieldDescription>
+                </Field>
+                <Field className="w-fit">
+                    <DeleteAccount />
+                </Field>
+            </FieldGroup>
+        </Field>
     )
 }

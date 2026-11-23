@@ -16,7 +16,7 @@ export default function PlaygroundLayout({
     children: React.ReactNode
 }>) {
     return (
-        <div className="size-full flex flex-col items-center justify-center overflow-hidden">
+        <div className="size-full overflow-y-auto bg-background selection:bg-primary/20">
             {children}
         </div>
     )

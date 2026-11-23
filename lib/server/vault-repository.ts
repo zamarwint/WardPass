@@ -2,7 +2,7 @@ import "server-only";
 
 import { and, asc, desc, eq, isNull, isNotNull, sql } from "drizzle-orm";
 import { db } from "@/drizzle/client";
-import { vault, vaultItem } from "@/drizzle/schema";
+import { user, vault, vaultItem } from "@/drizzle/schema";
 
 export async function listVaultsForUser(userId: string) {
   return db
@@ -19,6 +19,12 @@ export async function listVaultsForUser(userId: string) {
 }
 
 export async function getVaultPageDataForUser(userId: string, vaultId: string) {
+  const [userRecord] = await db
+    .select({ vaultItemLimit: user.vaultItemLimit })
+    .from(user)
+    .where(eq(user.id, userId))
+    .limit(1);
+
   const rows = await db
     .select({
       vault,
@@ -46,6 +52,7 @@ export async function getVaultPageDataForUser(userId: string, vaultId: string) {
     ...currentVault,
     vaultItems,
     trashedCount: rows[0].trashedCount,
+    vaultItemLimit: userRecord?.vaultItemLimit ?? 5,
   };
 }
 

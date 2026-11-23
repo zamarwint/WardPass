@@ -1,4 +1,5 @@
 import { PasswordInput } from "@/components/PasswordInput";
+import PasswordStrengthBar from "@/components/PasswordStrengthBar";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -14,8 +15,9 @@ import { Input } from "@/components/ui/input";
 import { useCreateUserMutation } from "@/lib/mutations/AdminMutations";
 import { signUpSchema } from "@/lib/validations/authSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { passwordStrength } from "check-password-strength";
 import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -37,6 +39,13 @@ export default function AdminCreateUser() {
         }
     })
 
+    // PASSWORD STRENGTH
+    const watchedPassword = form.watch("password");
+    const passStrength = useMemo(
+        () => (watchedPassword ? passwordStrength(watchedPassword).value : ""),
+        [watchedPassword]
+    );
+
     function onSubmit(data: z.infer<typeof signUpSchema>) {
         startAdminCreateUserTransition(async () => {
             mutate({
@@ -55,7 +64,7 @@ export default function AdminCreateUser() {
         })
     }
     return (
-        <FieldGroup className="border border-border rounded-xl p-10">
+        <FieldGroup className="border border-border rounded-xl p-5">
             <Field>
                 <FieldLegend>Create User</FieldLegend>
                 <FieldDescription>
@@ -142,6 +151,7 @@ export default function AdminCreateUser() {
                                         )}
                                     </Button>
                                 </div>
+                                <PasswordStrengthBar strength={passStrength} />
                                 {fieldState.invalid && (
                                     <FieldError errors={[fieldState.error]} />
                                 )}

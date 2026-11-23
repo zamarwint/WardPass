@@ -111,7 +111,7 @@ export default function ContactPage() {
         </div>
 
         <div className="py-12">
-          <Link href="/" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+          <Link href="/" className={cn(buttonVariants({ size: "sm", variant: "outline" }), "h-12 px-10")}>
             <ArrowLeft className="size-3.5 mr-1" />
             <span>Return to Home</span>
           </Link>

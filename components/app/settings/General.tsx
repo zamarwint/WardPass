@@ -51,8 +51,8 @@ function ProfileName({ data }: { data: any }) {
         <div className="size-full flex flex-row items-center justify-between">
             <FieldLegend className="size-full">Full Name</FieldLegend>
             <div className="size-full flex items-center justify-center gap-3">
-                <Input type="text" className="size-sm" placeholder="e.g. John Doe" value={newName} onChange={(e) => setNewName(e.target.value)} />
-                <Button disabled={!newName || nameChangePending || (newName === data?.user.name)} onClick={updateUserName}>
+                <Input type="text" className="size-sm h-12" placeholder="e.g. John Doe" value={newName} onChange={(e) => setNewName(e.target.value)} />
+                <Button disabled={!newName || nameChangePending || (newName === data?.user.name)} onClick={updateUserName} className="h-12 w-fit px-10">
                     {nameChangePending ? (
                         <>
                             <Loader2Icon className="size-4 animate-spin" />
@@ -75,68 +75,66 @@ export default function GeneralSettings() {
     const { data } = useGetSession();
 
     return (
-        <div className="flex flex-col gap-10 items-start justify-start px-10 py-5">
-            <Field className="flex flex-col gap-5">
+        <Field className="flex flex-col gap-5 p-10">
+            <Field>
+                <FieldTitle className='text-2xl'>General Settings</FieldTitle>
+                <FieldDescription>Update your general settings.</FieldDescription>
+            </Field>
+            <FieldSeparator />
+            <FieldGroup className="flex flex-row items-center gap-2">
                 <Field>
-                    <FieldTitle className='text-2xl'>General Settings</FieldTitle>
-                    <FieldDescription>Update your general settings.</FieldDescription>
+                    <FieldLabel className="text-xl">Language</FieldLabel>
+                    <FieldDescription>Choose your preferred language.</FieldDescription>
+                </Field>
+
+                <Field className="w-2xs text-left">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger render={
+                            <Button disabled variant="outline" size="lg" className="h-12 w-fit px-10">
+                                English (Coming soon)
+                            </Button>
+                        }>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                                English
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                Spanish
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                French
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                Dutch
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </Field>
+            </FieldGroup>
+            <FieldSeparator />
+            <FieldGroup className="size-full flex flex-row gap-4 items-center justify-between">
+                <Field>
+                    <FieldLabel className="text-xl">Theme</FieldLabel>
+                    <FieldDescription>Switch between light, dark, and system themes.</FieldDescription>
+                </Field>
+                <FieldContent className="w-full">
+                    <SwitchDualIconLabelDemo />
+                </FieldContent>
+            </FieldGroup>
+            <FieldSeparator />
+            <FieldGroup>
+                <Field>
+                    <FieldLabel className="text-xl">Profile</FieldLabel>
+                    <FieldDescription>
+                        Change profile picture and name.
+                    </FieldDescription>
                 </Field>
                 <FieldSeparator />
-                <FieldGroup className="flex flex-row items-center gap-2">
-                    <Field>
-                        <FieldLabel className="text-xl">Language</FieldLabel>
-                        <FieldDescription>Choose your preferred language.</FieldDescription>
-                    </Field>
-
-                    <Field className="w-2xs text-left">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger render={
-                                <Button disabled variant="outline" size="lg">
-                                    English (Coming soon)
-                                </Button>
-                            }>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                    English
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Spanish
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    French
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    Dutch
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </Field>
-                </FieldGroup>
+                <ProfileName data={data} />
                 <FieldSeparator />
-                <FieldGroup className="size-full flex flex-row gap-4 items-center justify-between">
-                    <Field>
-                        <FieldLabel className="text-xl">Theme</FieldLabel>
-                        <FieldDescription>Switch between light, dark, and system themes.</FieldDescription>
-                    </Field>
-                    <FieldContent className="w-full">
-                        <SwitchDualIconLabelDemo />
-                    </FieldContent>
-                </FieldGroup>
-                <FieldSeparator />
-                <FieldGroup>
-                    <Field>
-                        <FieldLabel className="text-xl">Profile</FieldLabel>
-                        <FieldDescription>
-                            Change profile picture and name.
-                        </FieldDescription>
-                    </Field>
-                    <FieldSeparator />
-                    <ProfileName data={data} />
-                    <FieldSeparator />
-                    <ProfilePicture data={data} />
-                </FieldGroup>
-            </Field>
-        </div>
+                <ProfilePicture data={data} />
+            </FieldGroup>
+        </Field>
     )
 }

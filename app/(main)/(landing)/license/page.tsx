@@ -83,12 +83,12 @@ export default function LicensePage() {
         </div>
 
         <div className="py-8 flex items-center justify-between">
-          <Link href="/" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+          <Link href="/" className={cn(buttonVariants({ size: "sm", variant: "outline" }), "h-12 px-10")}>
             <ArrowLeft className="size-3.5 mr-1" />
             <span>Back to WardPass</span>
           </Link>
 
-          <Link href="https://github.com/zamarwint/WardPass" target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ size: "sm" }))}>
+          <Link href="https://github.com/zamarwint/WardPass" target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ size: "sm" }), "h-12 px-10")}>
             <span>View GitHub Repository</span>
             <ArrowUpRight className="size-3.5 ml-1" />
           </Link>

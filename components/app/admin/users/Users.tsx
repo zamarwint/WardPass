@@ -69,7 +69,7 @@ function LoadingState({ label }: { label: string }) {
 
 function UserCard({ user }: { user: UserCardData & UserActionsUser }) {
     return (
-        <div className="w-full flex justify-between items-center gap-4 border border-border rounded-xl p-5">
+        <div className="w-full flex justify-between items-center gap-4 border border-border rounded-xl p-5 bg-foreground/5">
             <Field className="min-w-0">
                 <FieldTitle>{user.name}</FieldTitle>
                 <FieldDescription>ID: {user.id}</FieldDescription>
@@ -105,7 +105,7 @@ function GetUser() {
                 <FieldTitle>Search User</FieldTitle>
                 <FieldDescription>Search for a user by entering their ID.</FieldDescription>
                 <FieldLabel htmlFor="user-search">Search</FieldLabel>
-                <InputGroup className="max-w-full h-8.5">
+                <InputGroup className="max-w-full h-12">
                     <InputGroupInput
                         id="user-search"
                         placeholder="Search user..."
@@ -161,6 +161,7 @@ function ListUsers() {
                     onChange={(e) => setLimitInput(e.target.value)}
                     value={limitInput}
                     placeholder="Set Limit"
+                    className="h-12"
                 />
             </Field>
             {isPending ? (
@@ -170,7 +171,7 @@ function ListUsers() {
             ) : userList.length === 0 ? (
                 <FieldDescription>No users found.</FieldDescription>
             ) : (
-                <FieldGroup className="overflow-y-auto max-h-[40vh]">
+                <FieldGroup className="overflow-y-auto max-h-[40vh] border border-border p-2 rounded-xl">
                     {userList.map((user) => (
                         <UserCard key={user.id} user={user} />
                     ))}
@@ -183,16 +184,16 @@ function ListUsers() {
 export default function HandleListUsers() {
     return (
         <div className="size-full">
-            <FieldGroup className="border border-border rounded-xl p-10">
+            <FieldGroup className="border border-border rounded-xl p-5">
                 <Field>
                     <FieldLegend>Select an Action</FieldLegend>
                     <FieldDescription>Select an action to perform.</FieldDescription>
                 </Field>
                 <FieldSeparator />
                 <Tabs>
-                    <TabsList className="mb-2">
+                    <TabsList className="mb-2 py-5">
                         {USER_ACTIONS.map((action) => (
-                            <TabsTrigger key={action.value} value={action.value}>
+                            <TabsTrigger key={action.value} value={action.value} className="p-4">
                                 {action.label}
                             </TabsTrigger>
                         ))}

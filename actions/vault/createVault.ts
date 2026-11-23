@@ -3,7 +3,7 @@
 import { count, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { db } from "@/drizzle/client";
-import { vault } from "@/drizzle/schema";
+import { user, vault } from "@/drizzle/schema";
 import { requireUserSession } from "@/lib/server/auth";
 import { revalidatePath } from "next/cache";
 
@@ -24,8 +24,15 @@ export async function createVault(
     .from(vault)
     .where(eq(vault.userId, userId));
 
-  if (vaultCount.count >= 5) {
-    throw new Error("You can create at most 5 vaults.");
+  const [userRecord] = await db
+    .select({ vaultLimit: user.vaultLimit })
+    .from(user)
+    .where(eq(user.id, userId))
+    .limit(1);
+
+  const maxVaults = userRecord?.vaultLimit ?? (session.user as any).vaultLimit ?? 5;
+  if (vaultCount.count >= maxVaults) {
+    throw new Error(`You can create at most ${maxVaults} vaults.`);
   }
 
   const slug = name.toLowerCase().replace(/\s/g, "-");

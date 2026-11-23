@@ -184,7 +184,7 @@ const AdminUsersChart = () => {
 
 const AdminAnalyticsPanel = ({ userSessionData }: { userSessionData: any }) => {
     return (
-        <Field className="flex flex-col gap-10">
+        <Field className="flex flex-col gap-10 p-10">
             <FieldContent>
                 <FieldGroup>
                     <Field>
@@ -219,7 +219,7 @@ export default function GeneralAdminPage() {
     const { isPending, data, error } = useGetSession();
 
     return (
-        <motion.div className="flex flex-col gap-10 items-start justify-start pt-5 px-10">
+        <>
             {isPending ? (
                 <CustomLoadingState loaderChoice={2} className="size-full flex items-center justify-center gap-2">
                     <span className="shimmer shimmer-duration-1000"> Loading... </span>
@@ -232,6 +232,6 @@ export default function GeneralAdminPage() {
             ) : (
                 <AdminAnalyticsPanel userSessionData={data?.user} />
             )}
-        </motion.div>
+        </>
     )
 }

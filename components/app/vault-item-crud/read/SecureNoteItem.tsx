@@ -1,52 +1,62 @@
-import {
-    Field,
-    FieldContent,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-    FieldSeparator,
-    FieldSet,
-    FieldTitle,
-} from "@/components/ui/field"
+"use client";
 
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea";
+import React, { useMemo } from "react";
+import { NotebookPen, FileText } from "lucide-react";
 import { SecureNoteJSON } from "@/lib/types/VaultItemType";
+import { SecureNoteTiptapViewer } from "@/components/tiptap/SecureNoteTiptapEditor";
+import { ItemHeader, ItemMetadata, CopyButton } from "./DetailItem";
 
 export default function SecureNoteItem({ secureNoteItem }: { secureNoteItem: SecureNoteJSON }) {
+    // Calculate plain text preview and stats
+    const { plainText, wordCount, charCount } = useMemo(() => {
+        const text = secureNoteItem.content
+            ? secureNoteItem.content.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/g, " ").trim()
+            : "";
+        const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+        return {
+            plainText: text,
+            wordCount: words,
+            charCount: text.length,
+        };
+    }, [secureNoteItem.content]);
+
     return (
-        <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background overflow-y-scroll">
-            <FieldSet>
-                <FieldTitle className="text-primary text-6xl font-bold">{secureNoteItem.title}</FieldTitle>
-                <FieldDescription className="text-muted-foreground text-xl">View your <span className="font-bold">{secureNoteItem.itemType}</span> details.</FieldDescription>
-            </FieldSet>
+        <div className="w-full max-w-4xl mx-auto p-6 sm:p-10 flex flex-col gap-6">
+            {/* ITEM HEADER */}
+            <ItemHeader
+                title={secureNoteItem.title}
+                itemType="Secure Note"
+                icon={NotebookPen}
+                iconBgColor="bg-amber-500/10 text-amber-500 dark:text-amber-400 border-amber-500/20"
+                badgeColor="text-amber-500/90 dark:text-amber-400/90 border-amber-500/25 bg-amber-500/5"
+                subtitle={`${wordCount} word${wordCount !== 1 ? "s" : ""} • ${charCount} characters`}
+                actions={
+                    <div className="flex items-center gap-2">
+                        <CopyButton value={plainText} label="Note content" />
+                    </div>
+                }
+            />
 
-            <FieldGroup className="hidden lg:flex gap-4 w-full">
-                <Field>
-                    <FieldLabel>Title</FieldLabel>
-                    <Input type="text" placeholder="Name of secure note item" id="name" value={secureNoteItem.title} readOnly className="h-12" />
-                </Field>
-                <Field>
-                    <FieldLabel>Note</FieldLabel>
-                    <Textarea placeholder="Note" id="note" value={secureNoteItem.content} readOnly className="min-h-75 resize-none" />
-                </Field>
-            </FieldGroup>
+            {/* NOTE VIEWER CARD */}
+            <div className="rounded-2xl border border-border/40 bg-card/25 shadow-xs overflow-hidden flex flex-col">
+                <div className="flex items-center justify-between px-5 py-3 border-b border-border/40 bg-muted/30 text-xs text-muted-foreground font-medium">
+                    <div className="flex items-center gap-2">
+                        <FileText className="size-3.5 text-amber-500" />
+                        <span>Formatted Content</span>
+                    </div>
+                    <span>{wordCount} words</span>
+                </div>
 
-            <FieldGroup>
-                <FieldSeparator />
-                <Field orientation="horizontal">
-                    <FieldLabel>Created At</FieldLabel>
-                    <FieldContent>
-                        <FieldDescription>{secureNoteItem.createdAt?.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</FieldDescription>
-                    </FieldContent>
-                </Field>
-                <Field orientation="horizontal">
-                    <FieldLabel>Updated At</FieldLabel>
-                    <FieldContent>
-                        <FieldDescription>{secureNoteItem.updatedAt?.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</FieldDescription>
-                    </FieldContent>
-                </Field>
-            </FieldGroup>
-        </Field>
-    )
+                <div className="p-6 min-h-[360px] bg-card/10">
+                    <SecureNoteTiptapViewer
+                        content={secureNoteItem.content}
+                        className="border-none bg-transparent p-0"
+                    />
+                </div>
+            </div>
+
+            {/* TIMESTAMPS / METADATA */}
+            <ItemMetadata createdAt={secureNoteItem.createdAt} updatedAt={secureNoteItem.updatedAt} />
+        </div>
+    );
 }

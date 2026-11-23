@@ -4,8 +4,8 @@ import { listVaultsForUser } from "@/lib/server/vault-repository";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { CustomLoadingState } from "@/components/LoadingStates";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/sidebars/app-sidebar";
 
 export default async function AppLayout({
     children,
@@ -28,7 +28,7 @@ export default async function AppLayout({
         <HydrationBoundary state={dehydrate(queryClient)}>
             <SidebarProvider>
                 <AppSidebar />
-                <main className="size-full h-screen">
+                <SidebarInset className="h-screen min-w-0 overflow-hidden">
                     <Suspense fallback={
                         <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
                             <span className="shimmer shimmer-duration-1000"> Loading... </span>
@@ -36,7 +36,7 @@ export default async function AppLayout({
                     }>
                         {children}
                     </Suspense>
-                </main>
+                </SidebarInset>
             </SidebarProvider>
         </HydrationBoundary>
     )

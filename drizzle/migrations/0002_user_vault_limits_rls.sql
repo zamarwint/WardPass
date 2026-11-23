@@ -1,0 +1,6 @@
+ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "vaultLimit" integer DEFAULT 5 NOT NULL;--> statement-breakpoint
+ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "vaultItemLimit" integer DEFAULT 5 NOT NULL;--> statement-breakpoint
+DROP POLICY IF EXISTS "user_update_own" ON "user";--> statement-breakpoint
+CREATE POLICY "user_update_own" ON "user" AS PERMISSIVE FOR UPDATE TO public USING ("user"."id" = current_setting('app.current_user_id', true)) WITH CHECK ("user"."id" = current_setting('app.current_user_id', true) and ("user"."role" is null or "user"."role" = 'user') and ("user"."vaultLimit" = (select u."vaultLimit" from "user" u where u.id = "user"."id")) and ("user"."vaultItemLimit" = (select u."vaultItemLimit" from "user" u where u.id = "user"."id")));--> statement-breakpoint
+DROP POLICY IF EXISTS "user_insert_unauth" ON "user";--> statement-breakpoint
+CREATE POLICY "user_insert_unauth" ON "user" AS PERMISSIVE FOR INSERT TO public WITH CHECK (current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or ("user"."id" = current_setting('app.current_user_id', true) and "user"."vaultLimit" = 5 and "user"."vaultItemLimit" = 5));

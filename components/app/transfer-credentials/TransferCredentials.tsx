@@ -27,13 +27,13 @@ export default function TransferCredentials() {
             </div>
 
             {/* TAB SELECTOR */}
-            <Tabs className="flex items-center p-1 rounded-xl w-full shadow-xs">
-                <TabsList className="mb-2">
-                    <TabsTrigger value={credentialTabs[0]}>
+            <Tabs className="flex items-center rounded-xl w-full shadow-xs">
+                <TabsList className="mb-2 py-5 w-fit">
+                    <TabsTrigger className="p-4" value={credentialTabs[0]}>
                         <FileUp className="size-4 text-primary" />
                         <span>Import Credentials</span>
                     </TabsTrigger>
-                    <TabsTrigger value={credentialTabs[1]}>
+                    <TabsTrigger className="p-4" value={credentialTabs[1]}>
                         <Download className="size-4 text-primary" />
                         <span>Export Credentials</span>
                     </TabsTrigger>

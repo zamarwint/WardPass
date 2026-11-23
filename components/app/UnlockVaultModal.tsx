@@ -85,6 +85,7 @@ export function UnlockVaultModal({
                         onChange={(e) => setPassword(e.target.value)}
                         autoFocus
                         className="h-12"
+                        disabled={isUnlocking}
                     />
                 </div>
                 <Button type="submit" disabled={isUnlocking} className="w-full h-12">

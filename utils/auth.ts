@@ -91,6 +91,18 @@ export const auth = betterAuth({
         input: false, // Prevent users from setting their own role during signup
         required: true,
       },
+      vaultLimit: {
+        type: "number",
+        defaultValue: 5,
+        input: false, // Prevent users from setting their own vault limit during signup or updates
+        required: true,
+      },
+      vaultItemLimit: {
+        type: "number",
+        defaultValue: 5,
+        input: false, // Prevent users from setting their own vault item limit
+        required: true,
+      },
     },
   },
 });

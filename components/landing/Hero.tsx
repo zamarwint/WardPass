@@ -53,12 +53,12 @@ export default function Hero() {
 
             {/* CALL TO ACTION BUTTONS */}
             <div className="mt-8 flex flex-wrap items-center gap-3.5 w-full sm:w-auto">
-              <Link href="/sign-up" className={cn("flex items-center gap-2", buttonVariants({ size: "lg" }))}>
+              <Link href="/sign-up" className={cn(buttonVariants({ size: "lg" }), "h-12 px-10 flex items-center gap-2 font-semibold")}>
                 <span>Get Early Access</span>
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
 
-              <Link href="#interactive-demo" className={cn("flex items-center gap-2", buttonVariants({ variant: "outline", size: "lg" }))}>
+              <Link href="#interactive-demo" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-12 px-10 flex items-center gap-2 font-semibold")}>
                 <Terminal className="size-4 text-primary" />
                 <span>Interactive Crypto Demo</span>
               </Link>

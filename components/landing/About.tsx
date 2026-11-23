@@ -170,7 +170,7 @@ export default function About() {
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed mb-6">
                 {current.desc}
               </p>
-              <Link href="/sign-up" className={cn("flex items-center gap-1.5", buttonVariants({ size: "sm" }))}>
+              <Link href="/sign-up" className={cn(buttonVariants({ size: "sm" }), "h-12 px-10 flex items-center gap-1.5 font-semibold")}>
                 <span>Start Storing {current.title}</span>
                 <ArrowRight className="size-3.5" />
               </Link>

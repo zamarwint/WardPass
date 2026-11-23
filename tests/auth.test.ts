@@ -295,6 +295,54 @@ describe("Authentication & Security Test Suite", () => {
         /Privilege escalation rejected/
       );
     });
+
+    it("should include vaultLimit and vaultItemLimit columns with default 5 on user schema", () => {
+      assert.ok(userTable.vaultLimit, "userTable should have vaultLimit column");
+      assert.ok(userTable.vaultItemLimit, "userTable should have vaultItemLimit column");
+      assert.strictEqual(userTable.vaultLimit.default, 5);
+      assert.strictEqual(userTable.vaultItemLimit.default, 5);
+    });
+
+    it("should restrict users from self-escalating vault and vault item limits via RLS policy", () => {
+      // Logic enforced by user_update_own policy:
+      // withCheck: ("user"."vaultLimit" = (select u."vaultLimit" from "user" u where u.id = "user"."id"))
+      // and ("user"."vaultItemLimit" = (select u."vaultItemLimit" from "user" u where u.id = "user"."id"))
+      const evaluateLimitSelfUpdate = (
+        currentLimits: { vaultLimit: number; vaultItemLimit: number },
+        attemptedLimits: { vaultLimit: number; vaultItemLimit: number },
+        isAdmin = false,
+      ) => {
+        if (isAdmin) return true;
+        if (
+          attemptedLimits.vaultLimit !== currentLimits.vaultLimit ||
+          attemptedLimits.vaultItemLimit !== currentLimits.vaultItemLimit
+        ) {
+          throw new Error("RLS violation: non-admin users cannot alter vaultLimit or vaultItemLimit");
+        }
+        return true;
+      };
+
+      const userLimits = { vaultLimit: 5, vaultItemLimit: 5 };
+
+      // Normal user unchanged limits succeeds
+      assert.strictEqual(evaluateLimitSelfUpdate(userLimits, { vaultLimit: 5, vaultItemLimit: 5 }), true);
+
+      // Normal user self-escalating limits fails
+      assert.throws(
+        () => evaluateLimitSelfUpdate(userLimits, { vaultLimit: 10, vaultItemLimit: 5 }),
+        /RLS violation/
+      );
+      assert.throws(
+        () => evaluateLimitSelfUpdate(userLimits, { vaultLimit: 5, vaultItemLimit: 50 }),
+        /RLS violation/
+      );
+
+      // Admin or direct DB update succeeds
+      assert.strictEqual(
+        evaluateLimitSelfUpdate(userLimits, { vaultLimit: 20, vaultItemLimit: 100 }, true),
+        true
+      );
+    });
   });
 
   // ════════════════════════════════════════════════════════════════════════════

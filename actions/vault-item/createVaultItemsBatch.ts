@@ -3,7 +3,7 @@
 import { and, count, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { db } from "@/drizzle/client";
-import { vault, vaultItem } from "@/drizzle/schema";
+import { user, vault, vaultItem } from "@/drizzle/schema";
 import { requireUserSession } from "@/lib/server/auth";
 import { VaultItemType } from "@/lib/types/VaultType";
 import { revalidatePath } from "next/cache";
@@ -45,11 +45,18 @@ export async function createVaultItemsBatch({
 
   if (!ownedVault) throw new Error("Vault not found or access denied.");
 
+  const [userRecord] = await db
+    .select({ vaultItemLimit: user.vaultItemLimit })
+    .from(user)
+    .where(eq(user.id, session.user.id))
+    .limit(1);
+
+  const maxItems = userRecord?.vaultItemLimit ?? (session.user as any).vaultItemLimit ?? 5;
   const currentCount = Number(ownedVault.itemCount);
-  const remainingSlots = Math.max(0, 5 - currentCount);
+  const remainingSlots = Math.max(0, maxItems - currentCount);
 
   if (remainingSlots <= 0) {
-    throw new Error("This vault is full (maximum 5 items including trashed).");
+    throw new Error(`This vault is full (maximum ${maxItems} items including trashed).`);
   }
 
   // Insert up to available slots

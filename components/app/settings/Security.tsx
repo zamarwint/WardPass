@@ -2,6 +2,7 @@
 
 import {
     Field,
+    FieldContent,
     FieldDescription,
     FieldGroup,
     FieldLegend,
@@ -63,74 +64,78 @@ export default function Security() {
     };
 
     return (
-        <div className="pt-5 px-10 py-5 space-y-5">
+        <FieldGroup className="rounded-none p-10">
             <Field>
                 <FieldTitle className="text-2xl">Security</FieldTitle>
                 <FieldDescription>Update your security settings.</FieldDescription>
             </Field>
-            <FieldGroup className="border border-border rounded-xl p-10">
-                <Field>
-                    <FieldLegend>Unlock WardPass with:</FieldLegend>
-                    <FieldDescription>Set your preferred unlocking method.</FieldDescription>
 
-                    <FieldSeparator />
+            <FieldSeparator />
 
-                    <div className="flex items-center gap-3 mb-6 p-4 bg-muted/50 rounded-lg">
-                        <LockKeyholeIcon className="w-5 h-5 text-primary" />
-                        <div>
-                            <p className="font-semibold">End-to-End Encryption Enabled</p>
-                            <p className="text-sm text-muted-foreground">Your strongroom is secured using your login password. WardPass cannot access your data.</p>
-                        </div>
+            <Field orientation="vertical" className="size-full">
+                <FieldLegend>Preferred unlocking method</FieldLegend>
+                <FieldDescription>Set your preferred unlocking method. Currently you can only unlock vaults using your login password.</FieldDescription>
+
+                <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
+                    <LockKeyholeIcon className="size-5 text-primary" />
+                    <div>
+                        <p className="font-semibold">End-to-End Encryption Enabled</p>
+                        <p className="text-sm text-muted-foreground">Your strongroom is secured using your login password. WardPass cannot access your data.</p>
                     </div>
+                </div>
+            </Field>
 
-                    <Field className="mb-6">
-                        <FieldTitle>Auto Lock after:</FieldTitle>
-                        <FieldDescription>Set your preferred auto lock time.</FieldDescription>
-                        <Select onValueChange={(e) => setSelectedAutoLock(e as string)} value={displayAutoLock}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select preferred lock time." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {autoLockOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value} className="cursor-pointer">
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </Field>
+            <Field orientation="vertical" className="size-full">
+                <FieldTitle>Auto Lock</FieldTitle>
+                <FieldDescription>Set your preferred auto lock time.</FieldDescription>
+                <FieldContent className="size-full">
+                    <Select onValueChange={(e) => setSelectedAutoLock(e as string)} value={displayAutoLock}>
+                        <SelectTrigger className="size-full py-5">
+                            <SelectValue placeholder="Select preferred lock time." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {autoLockOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value} className="cursor-pointer py-5">
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </FieldContent>
+            </Field>
 
-                    <Field className="mb-4">
-                        <FieldTitle>Hide vault after inactivity of:</FieldTitle>
-                        <FieldDescription>Set the time it takes for the vault to automatically hide.</FieldDescription>
-                        <Select onValueChange={(e) => setSelectedHiddenTabTimeout(e as string)} value={displayHiddenTab}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select preferred timeout period." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {hiddenTabTimeoutOptions.map((option) => (
-                                    <SelectItem key={option.value} value={option.value} className="cursor-pointer">
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </Field>
+            <Field orientation="vertical" className="size-full">
+                <FieldTitle>Hide vault after inactivity</FieldTitle>
+                <FieldDescription>Set the time it takes for the vault to automatically hide.</FieldDescription>
+                <FieldContent className="size-full">
+                    <Select onValueChange={(e) => setSelectedHiddenTabTimeout(e as string)} value={displayHiddenTab}>
+                        <SelectTrigger className="size-full py-5">
+                            <SelectValue placeholder="Select preferred timeout period." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {hiddenTabTimeoutOptions.map((option) => (
+                                <SelectItem key={option.value} value={option.value} className="cursor-pointer py-5">
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </FieldContent>
+            </Field>
 
-                    <Field orientation="horizontal">
-                        <Button
-                            size="lg"
-                            onClick={handleSave}
-                            disabled={
-                                displayAutoLock === autoLockTimeInMinutes.toString() &&
-                                displayHiddenTab === hiddenTabTimeoutInMinutes.toString()
-                            }
-                        >
-                            Save changes
-                        </Button>
-                    </Field>
-                </Field>
-            </FieldGroup>
-        </div>
+            <Field orientation="vertical">
+                <Button
+                    size="lg"
+                    onClick={handleSave}
+                    className="h-12 w-fit px-10"
+                    disabled={
+                        displayAutoLock === autoLockTimeInMinutes.toString() &&
+                        displayHiddenTab === hiddenTabTimeoutInMinutes.toString()
+                    }
+                >
+                    Save changes
+                </Button>
+            </Field>
+        </FieldGroup>
     )
 }

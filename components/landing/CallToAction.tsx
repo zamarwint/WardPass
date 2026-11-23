@@ -48,7 +48,7 @@ export default function CallToAction() {
                   <CustomLoadingState loaderChoice={2}>Loading...</CustomLoadingState>
                 </span>
               ) : (
-                <Link href={data?.user ? "/strongroom" : "/sign-up"} className={cn("flex items-center gap-2", buttonVariants({ size: "lg" }))}>
+                <Link href={data?.user ? "/strongroom" : "/sign-up"} className={cn(buttonVariants({ size: "lg" }), "h-12 px-10 flex items-center gap-2 font-semibold")}>
                   <span>{data?.user ? "Open Your Strongroom" : "Get Started with WardPass"}</span>
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
@@ -56,7 +56,7 @@ export default function CallToAction() {
               }
             </>
 
-            <Link href="/security-whitepaper" className={cn("flex items-center gap-2", buttonVariants({ variant: "outline", size: "lg" }))}>
+            <Link href="/security-whitepaper" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-12 px-10 flex items-center gap-2 font-semibold")}>
               <ShieldCheck className="size-4 text-primary" />
               <span>Security Whitepaper</span>
             </Link>

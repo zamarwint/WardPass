@@ -3,7 +3,8 @@ import { betterFetch } from "@better-fetch/fetch"; // already installed with bet
 import { BetterAuthSessionType } from "@/lib/types/BetterAuthSessionType";
 
 const APP_HOME = "/strongroom";
-const ADMIN_PATH = "/strongroom/admin";
+const ADMIN_PATH = "/admin";
+const SETTINGS_PATH = "/settings";
 const AUTH_PAGES = ["/sign-in", "/sign-up"];
 
 // MATCHES THE PATH ITSELF OR ANYTHING UNDER IT: "/strongroom" AND "/strongroom/abc", BUT NOT "/strongroomfoo"
@@ -15,10 +16,12 @@ export async function proxy(request: NextRequest) {
 
   const isProtected = isUnder(pathname, APP_HOME); // includes the admin pages
   const isAdminPage = isUnder(pathname, ADMIN_PATH);
+  const isSettingsPage = isUnder(pathname, SETTINGS_PATH);
   const isAuthPage = AUTH_PAGES.some((page) => isUnder(pathname, page));
 
   // NOT A PAGE WE GUARD: SKIP THE SESSION LOOKUP ENTIRELY
-  if (!isProtected && !isAuthPage) return NextResponse.next();
+  if (!isProtected && !isAuthPage && !isSettingsPage)
+    return NextResponse.next();
 
   // betterFetch is a thin wrapper around native fetch, so it is safe here.
   // It calls the /api/auth/get-session route handler, which runs in Node.js and does the database lookup.
@@ -38,6 +41,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
+  if (isSettingsPage && !session) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
+  }
+
   // Authenticated user hitting sign in / sign up: send to the app
   if (isAuthPage && session) {
     return NextResponse.redirect(new URL(APP_HOME, request.url));
@@ -54,5 +61,10 @@ export async function proxy(request: NextRequest) {
 export const config = {
   // ONLY RUN ON THE PAGES THAT NEED A SESSION CHECK.
   // THE OLD "EVERYTHING EXCEPT /api AND _next" MATCHER ALSO RAN (AND CALLED get-session) FOR EVERY IMAGE, FONT AND ICON.
-  matcher: ["/strongroom/:path*", "/sign-in/:path*", "/sign-up/:path*"],
+  matcher: [
+    "/strongroom/:path*",
+    "/settings/:path*",
+    "/sign-in/:path*",
+    "/sign-up/:path*",
+  ],
 };

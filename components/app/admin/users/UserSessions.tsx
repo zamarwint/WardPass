@@ -151,7 +151,7 @@ function SessionButtonDropdown({ sessionId }: { sessionId: string }) {
 
 function SessionCard({ session }: { session: SessionCardData }) {
     return (
-        <div className="w-full flex justify-between items-center gap-4 border border-border rounded-xl p-5">
+        <div className="w-full flex justify-between items-center gap-4 border border-border rounded-xl p-5 bg-foreground/5">
             <Field className="min-w-0">
                 <FieldTitle className="wrap-break-word">Agent: {session.userAgent ?? "Unknown"}</FieldTitle>
                 <FieldDescription>IP Address: {session.ipAddress ?? "Unknown"}</FieldDescription>
@@ -167,7 +167,7 @@ function SessionCard({ session }: { session: SessionCardData }) {
 
 function SessionList({ sessions }: { sessions: SessionCardData[] }) {
     return (
-        <FieldGroup className="overflow-y-auto max-h-[40vh]">
+        <FieldGroup className="overflow-y-auto max-h-[40vh] border border-border p-2 rounded-xl">
             {sessions.map((session) => (
                 <SessionCard key={session.id} session={session} />
             ))}
@@ -218,7 +218,7 @@ function SearchUserSessions() {
                 <FieldTitle>Search for a User</FieldTitle>
                 <FieldDescription>Enter the user ID to view their sessions.</FieldDescription>
                 <FieldLabel htmlFor="user-session-search">User ID</FieldLabel>
-                <InputGroup className="max-w-full h-8.5">
+                <InputGroup className="max-w-full h-12">
                     <InputGroupInput
                         id="user-session-search"
                         placeholder="Enter a user ID..."
@@ -252,16 +252,16 @@ function SearchUserSessions() {
 export default function UserSessions() {
     return (
         <div className="size-full">
-            <FieldGroup className="border border-border rounded-xl p-10">
+            <FieldGroup className="border border-border rounded-xl p-5">
                 <Field>
                     <FieldLegend>Select an Action</FieldLegend>
                     <FieldDescription>Select an action to perform.</FieldDescription>
                 </Field>
                 <FieldSeparator />
                 <Tabs>
-                    <TabsList className="mb-2">
+                    <TabsList className="mb-2 py-5">
                         {SESSION_ACTIONS.map((action) => (
-                            <TabsTrigger key={action.value} value={action.value}>
+                            <TabsTrigger key={action.value} value={action.value} className="p-4">
                                 {action.label}
                             </TabsTrigger>
                         ))}

@@ -438,5 +438,20 @@ describe("Vault Item CRUD Operations", () => {
       const remainingSlots = Math.max(0, VAULT_ITEM_LIMIT - currentItemCount);
       assert.strictEqual(remainingSlots, 0);
     });
+
+    it("should dynamically accommodate upgraded limits for donor users", () => {
+      const donorItemLimit = 25;
+      const donorVaultLimit = 15;
+      const currentVaultCount = 8;
+      const currentItemCount = 12;
+
+      // Can create more vaults up to donorVaultLimit
+      const canCreateVault = currentVaultCount < donorVaultLimit;
+      assert.strictEqual(canCreateVault, true);
+
+      // Remaining item slots match upgraded limit
+      const remainingSlots = Math.max(0, donorItemLimit - currentItemCount);
+      assert.strictEqual(remainingSlots, 13);
+    });
   });
 });

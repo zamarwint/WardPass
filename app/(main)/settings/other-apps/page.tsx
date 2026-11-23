@@ -48,7 +48,7 @@ const otherApps = [
 
 export default function OtherAppsPage() {
     return (
-        <div className="pt-5 px-10 py-5">
+        <div className="p-10">
             <div className="pb-6 flex flex-col gap-2">
                 <h1 className="text-2xl font-semibold">Other Apps by the ZWNT Company.</h1>
                 <p className="text-sm text-muted-foreground">Check out our other apps!</p>
@@ -56,11 +56,11 @@ export default function OtherAppsPage() {
 
             <div className="grid grid-cols-2 gap-4">
                 {otherApps.map((app, key) => (
-                    <Field key={key} className="border border-border rounded-xl p-10 max-w-full break-keep">
+                    <Field key={key} className="border border-border rounded-none p-10 max-w-full break-keep">
                         <FieldTitle>{app.title}</FieldTitle>
                         <FieldDescription>{app.description}</FieldDescription>
                         <Link href={app.comingSoon ? '/' : app.url} target="_blank" rel="noopener noreferrer" className="text-sm text-center flex items-center justify-start gap-2">
-                            <Button disabled={app.comingSoon} variant={app.comingSoon ? "ghost" : "default"} size="lg" className="w-full flex justify-center items-center p-6 mt-4">
+                            <Button disabled={app.comingSoon} variant={app.comingSoon ? "ghost" : "default"} size="lg" className="w-full flex justify-center items-center p-6 mt-4 rounded-none">
                                 <span>{app.comingSoon ? "Coming soon" : "Visit app"}</span> <ExternalLink size={16} />
                             </Button>
                         </Link>

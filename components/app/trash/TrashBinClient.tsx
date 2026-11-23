@@ -42,6 +42,7 @@ import { SvgCircle } from "@/components/app/SVG";
 import { CustomLoadingState } from "@/components/LoadingStates";
 import { useVaultStore } from "@/stores/vault";
 import { useGetAllVaultsWithTrashedItems } from "@/lib/queries/VaultQueries";
+import { useGetSession } from "@/lib/queries/SessionQueries";
 import { Vault, VaultItemType } from "@/lib/types/VaultType";
 import { CreditCardJSON, IdentityJSON, LoginJSON, SecureNoteJSON } from "@/lib/types/VaultItemType";
 import { cn } from "@/lib/utils";
@@ -434,6 +435,8 @@ export default function TrashBinClient() {
 
     // Queries
     const { data: vaultsData, isLoading, error } = useGetAllVaultsWithTrashedItems();
+    const session = useGetSession();
+    const vaultItemLimit = (session.data?.user as any)?.vaultItemLimit ?? 5;
     // MEMOIZED SO `vaults` KEEPS THE SAME IDENTITY BETWEEN RENDERS (A FRESH `[]` EVERY RENDER RE-TRIGGERED THE EFFECT/MEMOS)
     const vaults = useMemo<Vault[]>(() => (vaultsData as Vault[] | undefined) ?? [], [vaultsData]);
 

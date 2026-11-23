@@ -22,12 +22,12 @@ export function ProfileAvatar({ image, alt, fallback, size }: { image: string, a
 export function ProfilePicture({ data }: { data: any }) {
     return (
         <Field className="size-full flex flex-row items-center justify-between">
-            <FieldLegend>Profile Picture</FieldLegend>
+            <FieldLegend className="size-full">Profile Picture</FieldLegend>
             <FieldContent>
                 <div className="size-full flex items-center justify-center gap-3">
                     {/* BUTTONS */}
                     <Dialog>
-                        <DialogTrigger className={buttonVariants({ variant: "default", size: "lg" })}>
+                        <DialogTrigger className={buttonVariants({ variant: "default", size: "lg", className: "h-12 w-fit px-10" })}>
                             <UserRoundPen />
                             <span>Edit Profile Picture</span>
                         </DialogTrigger>

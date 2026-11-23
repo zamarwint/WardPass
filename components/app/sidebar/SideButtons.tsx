@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { LockIcon, PencilIcon, TrashIcon, Vault } from "lucide-react";
+import { ChevronLeft, ExternalLink, LayoutGrid, LockIcon, LucideIcon, Nfc, PencilIcon, Settings2, ShieldCheck, ShieldCog, ShieldUser, TrashIcon, Vault } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { RenderIcon } from "@/components/IconMap";
@@ -19,7 +19,8 @@ import DeleteVault from "../vault-crud/DeleteVault";
 
 const VAULT_BASE_PATH = "/strongroom/";
 
-export function SideLogo() {
+// MAIN SIDEBAR COMPONENTS
+export function MainTopArea() {
     const router = useRouter();
 
     return (
@@ -127,10 +128,10 @@ export function VaultSideButton() {
 
             {/* THE DIALOGS LIVE OUTSIDE THE LIST, SO CLICKS INSIDE THEM CAN'T BUBBLE INTO A VAULT BUTTON */}
             {vaultToUpdate && (
-                <UpdateVault key={vaultToUpdate.id} open={updateOpen} onOpenChange={setUpdateOpen} vault={vaultToUpdate} />
+                <UpdateVault open={updateOpen} onOpenChange={setUpdateOpen} vault={vaultToUpdate} />
             )}
             {vaultToDelete && (
-                <DeleteVault key={vaultToDelete.id} open={deleteOpen} onOpenChange={setDeleteOpen} vault={vaultToDelete} />
+                <DeleteVault open={deleteOpen} onOpenChange={setDeleteOpen} vault={vaultToDelete} />
             )}
         </>
     )
@@ -149,6 +150,118 @@ export function LockSideButton({ disabled = false }: { disabled?: boolean }) {
             <LockIcon size={16} />
             <span className="text-sm">Lock WardPass</span>
         </SidebarMenuButton>
+    )
+}
+
+// NAVLINKS TYPE
+type NavLinks = {
+    label: string,
+    icon: LucideIcon,
+    path: string
+}
+
+// ADMIN SIDEBAR COMPONENTS
+export function AdminSideButton() {
+    const pathName = usePathname();
+    const router = useRouter();
+
+    const navigationLinks: NavLinks[] = [
+        {
+            label: "Preferences",
+            icon: ShieldCheck,
+            path: "/admin",
+        },
+        {
+            label: "User Management",
+            icon: ShieldUser,
+            path: "/admin/user-management",
+        },
+        {
+            label: "Contact Super Admin / Owner",
+            icon: Nfc,
+            path: "https://zamarwint.xyz/#contact",
+        }
+    ];
+
+    return (
+        <SidebarMenuItem className="flex flex-col items-center gap-1">
+            {navigationLinks.map((link, key) => (
+                <SidebarMenuButton key={key}
+                    variant={pathName === link.path ? 'highlight' : 'default'}
+                    onClick={() => router.push(link.path)}
+                    className='h-12 p-5'
+                >
+                    <link.icon className={cn("", pathName === link.path && "text-primary")} />
+                    <span className={cn("font-bold", pathName === link.path && "text-primary")}>{link.label}</span>
+                </SidebarMenuButton>
+            ))}
+        </SidebarMenuItem>
+    )
+}
+
+// SETTINGS SIDEBAR COMPONENTS
+export function SettingsSideButton() {
+    const pathName = usePathname();
+    const router = useRouter();
+
+    const navigationLinks: NavLinks[] = [
+        {
+            label: "Preferences",
+            icon: Settings2,
+            path: "/settings",
+        },
+        {
+            label: "Security",
+            icon: ShieldCog,
+            path: "/settings/security"
+        },
+        {
+            label: "Other Apps",
+            icon: LayoutGrid,
+            path: "/settings/other-apps"
+        },
+        {
+            label: "Donate",
+            icon: ExternalLink,
+            path: "#",
+        },
+        {
+            label: "Contact Us",
+            icon: ExternalLink,
+            path: "/contact",
+        },
+    ];
+
+    return (
+        <SidebarMenuItem className="flex flex-col items-center gap-1">
+            {navigationLinks.map((link, key) => (
+                <SidebarMenuButton key={key}
+                    variant={pathName === link.path ? 'highlight' : 'default'}
+                    onClick={() => router.push(link.path)}
+                    className='h-12 p-5'
+                >
+                    <link.icon className={cn("", pathName === link.path && "text-primary")} />
+                    <span className={cn("font-bold", pathName === link.path && "text-primary")}>{link.label}</span>
+                </SidebarMenuButton>
+            ))}
+        </SidebarMenuItem>
+    )
+}
+
+// OTHER COMPONENTS
+export function BackButtonTopArea() {
+    const router = useRouter();
+
+    return (
+        <SidebarMenuItem className="flex items-center justify-center cursor-pointer">
+            <SidebarMenuButton
+                className="text-md tracking-tighter flex items-center justify-center font-semibold w-full h-12"
+                onClick={() => router.push('/strongroom')}
+            >
+                <ChevronLeft />
+                <span>Back to Strongroom</span>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
     )
 }
 

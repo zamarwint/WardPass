@@ -11,8 +11,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Loader2Icon, PenIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { SecureNoteJSON } from "@/lib/types/VaultItemType";
 import { useUpdateVaultItem } from "@/lib/mutations/CoreUpdateMutations";
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader } from "@/components/ui/drawer";
@@ -21,6 +19,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { secureNoteSchema } from "@/lib/validations/vaultItemSchemas";
 import { SecureNoteJSONRaw } from "@/lib/types/RawVaultItemType";
+import { SecureNoteTiptapEditor } from "@/components/tiptap/SecureNoteTiptapEditor";
 
 export default function UpdateSecureNoteItem({ open, onOpenChange, secureNoteItem }: { open: boolean, onOpenChange: (open: boolean) => void, secureNoteItem: SecureNoteJSON }) {
     // 2. Create form instance with resolver
@@ -54,7 +53,7 @@ export default function UpdateSecureNoteItem({ open, onOpenChange, secureNoteIte
                     <FieldDescription>Update {secureNoteItem.title}.</FieldDescription>
                 </DrawerHeader>
 
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 size-full p-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 size-full p-4 overflow-y-scroll">
                     <FieldGroup>
                         <Controller
                             name="title"
@@ -84,14 +83,10 @@ export default function UpdateSecureNoteItem({ open, onOpenChange, secureNoteIte
                             render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
                                     <FieldLabel htmlFor="content">Content</FieldLabel>
-                                    <Textarea
-                                        {...field}
-                                        placeholder="Write your notes here..."
-                                        id="content"
-                                        aria-invalid={fieldState.invalid}
-                                        className="h-12 min-h-75 resize-none"
-                                        autoComplete="off"
-                                        maxLength={2000}
+                                    <SecureNoteTiptapEditor
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        onBlur={field.onBlur}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />

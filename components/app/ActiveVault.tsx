@@ -6,6 +6,7 @@ import { useState, useEffect, useMemo, type MouseEvent } from "react";
 import { CreditCard, Globe, IdCard, LayoutList, NotebookPen, PlusIcon, Search, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
     DropdownMenu,
@@ -16,8 +17,8 @@ import {
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { CustomLoadingState } from "@/components/LoadingStates";
-import { SvgCircle } from "@/components/app/SVG";
 import { UnlockVaultModal } from "@/components/app/UnlockVaultModal";
 
 import LoginItem from "@/components/app/vault-item-crud/read/LoginItem";
@@ -41,10 +42,9 @@ import { useVaultStore } from "@/stores/vault";
 import { deriveKey, fromBase64 } from "@/lib/crypto/argon2";
 import { decryptVaultKey, verifyVaultKey, decryptData } from "@/lib/crypto/aes";
 import { useGetVaultPageData } from "@/lib/queries/VaultQueries";
+import { useGetSession } from "@/lib/queries/SessionQueries";
 import { cn } from "@/lib/utils";
-
-// MAX NUMBER OF ITEMS (CURRENT + TRASHED) A VAULT CAN HOLD
-const VAULT_ITEM_LIMIT = 5;
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent } from "../ui/empty";
 
 // DECRYPTED ITEMS ARE THE DB ROW MERGED WITH THE DECRYPTED JSON PAYLOAD, SO updatedAt EXISTS AT RUNTIME
 type DecryptedItem = (LoginJSON | SecureNoteJSON | CreditCardJSON | IdentityJSON) & {
@@ -63,9 +63,15 @@ const ITEM_TYPE_OPTIONS: { value: ItemTypeFilter; label: string }[] = [
 ];
 
 const ROW_BASE_CLASSES =
-    "w-full min-h-fit max-h-24 text-md flex items-center justify-between cursor-pointer py-4 px-2 transition-all duration-100 ease-in";
+    "w-full rounded-xl border flex items-center justify-between cursor-pointer p-3 transition-all duration-150 ease-in-out group select-none";
 
 const formatDate = (date?: Date | string | null) => (date ? new Date(date).toDateString() : "—");
+
+// STRIP HTML TAGS FOR CLEAN TEXT PREVIEWS IN SUMMARY CARDS
+const stripHtml = (html?: string | null) => {
+    if (!html) return "";
+    return html.replace(/<[^>]*>?/gm, "").replace(/&nbsp;/g, " ").trim();
+};
 
 // MILLISECONDS SINCE EPOCH FOR SORTING. MISSING/INVALID DATES COUNT AS 0, SO THEY SINK TO THE BOTTOM
 const toTimestamp = (date?: Date | string | null) => {
@@ -104,40 +110,48 @@ function getSearchableText(item: DecryptedItem): string {
     }
 }
 
-// SUMMARY SHOWN IN THE LEFT-HAND LIST, ONE LAYOUT PER ITEM TYPE
+// SUMMARY SHOWN IN THE LEFT-HAND LIST, MODERN AND UNIFORM ACROSS ALL ITEM TYPES
 function ItemSummary({ item }: { item: DecryptedItem }) {
     switch (item.itemType) {
         case VaultItemType.LOGIN: {
             const login = item as LoginJSON;
             return (
-                <div className="flex w-full items-center gap-3 p-2">
-                    <div className="w-18.75 h-12.5 shrink-0 flex items-center justify-center bg-background rounded-xl">
-                        <Globe className="size-[80%] text-primary" />
+                <div className="flex w-full items-center gap-3 min-w-0">
+                    <div className="size-10 rounded-xl bg-blue-500/10 text-blue-500 dark:text-blue-400 border border-blue-500/20 flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-105">
+                        <Globe className="size-5" />
                     </div>
-                    <div className="min-w-0 flex flex-col items-start justify-center">
-                        <p className="max-w-full truncate text-primary font-bold">{login.name}</p>
-                        <p className="max-w-full truncate font-mono text-sm">{login.email}</p>
+                    <div className="min-w-0 flex-1 flex flex-col items-start justify-center">
+                        <div className="flex items-center gap-2 w-full">
+                            <span className="font-semibold text-sm truncate text-foreground">{login.name}</span>
+                            <Badge variant="outline" className="text-[10px] font-medium px-1.5 py-0 h-4 shrink-0 text-blue-500/90 dark:text-blue-400/90 border-blue-500/25 bg-blue-500/5">
+                                Login
+                            </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate w-full font-mono mt-0.5">
+                            {login.username || login.email || login.url || "No account details"}
+                        </p>
                     </div>
                 </div>
             );
         }
         case VaultItemType.SECURE_NOTE: {
             const note = item as SecureNoteJSON & { updatedAt?: Date | string | null };
+            const preview = stripHtml(note.content);
             return (
-                <div className="flex w-full flex-col gap-3 p-2">
-                    <div className="flex flex-col items-start justify-center gap-2">
-                        <div className="flex items-center gap-2">
-                            <NotebookPen className="size-6 text-primary" />
-                            <p className="font-bold">{note.title}</p>
-                        </div>
-                        <p className="text-md text-muted-foreground font-medium line-clamp-1 w-[80%]">{note.content}</p>
+                <div className="flex w-full items-center gap-3 min-w-0">
+                    <div className="size-10 rounded-xl bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-105">
+                        <NotebookPen className="size-5" />
                     </div>
-                    <div className="flex flex-col">
-                        <Separator />
-                        <div className="flex items-center justify-between w-full pt-2">
-                            <p className="text-xs font-medium text-muted-foreground">LAST UPDATED</p>
-                            <p className="text-xs font-mono text-muted-foreground">{formatDate(note.updatedAt)}</p>
+                    <div className="min-w-0 flex-1 flex flex-col items-start justify-center">
+                        <div className="flex items-center gap-2 w-full">
+                            <span className="font-semibold text-sm truncate text-foreground">{note.title}</span>
+                            <Badge variant="outline" className="text-[10px] font-medium px-1.5 py-0 h-4 shrink-0 text-amber-500/90 dark:text-amber-400/90 border-amber-500/25 bg-amber-500/5">
+                                Note
+                            </Badge>
                         </div>
+                        <p className="text-xs text-muted-foreground truncate w-full mt-0.5">
+                            {preview || "Empty note"}
+                        </p>
                     </div>
                 </div>
             );
@@ -145,12 +159,20 @@ function ItemSummary({ item }: { item: DecryptedItem }) {
         case VaultItemType.CREDIT_CARD: {
             const card = item as CreditCardJSON;
             return (
-                <div className="flex w-full flex-col gap-2 p-2">
-                    <CreditCard className="size-6 text-primary" />
-                    <div className="flex flex-col items-start justify-center gap-1">
-                        <p className="font-bold">{card.cardHolderName}</p>
-                        <p className="text-md text-muted-foreground font-medium line-clamp-1">
+                <div className="flex w-full items-center gap-3 min-w-0">
+                    <div className="size-10 rounded-xl bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-105">
+                        <CreditCard className="size-5" />
+                    </div>
+                    <div className="min-w-0 flex-1 flex flex-col items-start justify-center">
+                        <div className="flex items-center gap-2 w-full">
+                            <span className="font-semibold text-sm truncate text-foreground">{card.cardHolderName || "Payment Card"}</span>
+                            <Badge variant="outline" className="text-[10px] font-medium px-1.5 py-0 h-4 shrink-0 text-emerald-500/90 dark:text-emerald-400/90 border-emerald-500/25 bg-emerald-500/5">
+                                Card
+                            </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate w-full font-mono mt-0.5">
                             {maskCardNumber(card.cardNumber)}
+                            {card.expiryDate ? ` • Exp: ${card.expiryDate}` : ""}
                         </p>
                     </div>
                 </div>
@@ -158,14 +180,22 @@ function ItemSummary({ item }: { item: DecryptedItem }) {
         }
         case VaultItemType.IDENTITY: {
             const identity = item as IdentityJSON;
+            const subtitle = [identity.occupation, identity.companyName, identity.email].filter(Boolean).join(" • ") || (identity.phoneNumber ? String(identity.phoneNumber) : "Identity profile");
             return (
-                <div className="flex w-full items-center gap-3 p-2">
-                    <div className="w-18.75 h-12.5 shrink-0 flex items-center justify-center bg-background rounded-full">
-                        <IdCard className="size-[70%] text-primary" />
+                <div className="flex w-full items-center gap-3 min-w-0">
+                    <div className="size-10 rounded-xl bg-purple-500/10 text-purple-500 dark:text-purple-400 border border-purple-500/20 flex items-center justify-center shrink-0 transition-transform duration-150 group-hover:scale-105">
+                        <IdCard className="size-5" />
                     </div>
-                    <div className="min-w-0 flex flex-col items-start justify-center">
-                        <p className="max-w-full truncate font-bold">{identity.name}</p>
-                        <p className="font-mono text-sm">{identity.phoneNumber}</p>
+                    <div className="min-w-0 flex-1 flex flex-col items-start justify-center">
+                        <div className="flex items-center gap-2 w-full">
+                            <span className="font-semibold text-sm truncate text-foreground">{identity.name}</span>
+                            <Badge variant="outline" className="text-[10px] font-medium px-1.5 py-0 h-4 shrink-0 text-purple-500/90 dark:text-purple-400/90 border-purple-500/25 bg-purple-500/5">
+                                Identity
+                            </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate w-full mt-0.5">
+                            {subtitle}
+                        </p>
                     </div>
                 </div>
             );
@@ -245,9 +275,11 @@ export default function ActiveVault() {
     // GET CURRENT VAULT ITEMS AND TRASHED VAULT ITEMS, AND REFETCH THEM WHEN CRUD OPERATIONS OCCUR, AND WHEN THE PAGE IS REVISITED
     // CHECKING TO SEE IF VAULT ITEM LIMIT IS REACHED IN BOTH THE CURRENT VAULT AND THE TRASH.
     const { data: vaultItems, isLoading: vaultItemsLoading, error: vaultItemsError } = useGetVaultPageData(vaultId);
+    const session = useGetSession();
+    const vaultItemLimit = (vaultItems as any)?.vaultItemLimit ?? (session.data?.user as any)?.vaultItemLimit ?? 5;
 
     const isVaultLimit =
-        !!vaultItems && (vaultItems.vaultItems?.length ?? 0) + (vaultItems.trashedCount ?? 0) >= VAULT_ITEM_LIMIT;
+        !!vaultItems && (vaultItems.vaultItems?.length ?? 0) + (vaultItems.trashedCount ?? 0) >= vaultItemLimit;
 
     // ERROR HANDLING (SIDE EFFECTS BELONG IN AN EFFECT, NOT IN THE RENDER BODY)
     useEffect(() => {
@@ -386,28 +418,34 @@ export default function ActiveVault() {
             <CreateIdentityItem open={createIdentity} onOpenChange={() => setCreateIdentity((prev) => !prev)} vaultId={vaultId} />
 
             {/* VAULT PAGE CONTAINER */}
-            <ResizablePanelGroup orientation="horizontal" className="size-full flex items-center justify-center overflow-hidden">
+            <ResizablePanelGroup orientation="horizontal" className="size-full overflow-hidden">
                 {/* VAULT ITEMS LIST AREA */}
-                <ResizablePanel defaultSize="40%" className="size-full h-screen">
-                    <div className="size-full border-r border-muted flex flex-col items-center justify-start overflow-hidden select-none">
-                        {/* CREATE VAULT ITEM BUTTON */}
+                <ResizablePanel defaultSize="32%" minSize="22%" maxSize="50%" className="size-full border-r border-border/50 flex flex-col overflow-hidden bg-background select-none">
+                    {/* TOP ACTION BAR: SIDEBAR TRIGGER & CREATE BUTTON */}
+                    <div className="w-full p-3.5 border-b border-border/40 shrink-0 flex items-center gap-2 bg-background">
+                        <SidebarTrigger className="shrink-0 cursor-pointer" />
                         <DropdownMenu>
                             <DropdownMenuTrigger
                                 render={
-                                    <Button disabled={isVaultLimit || vaultItemsLoading} variant="outline" size="lg" className="w-[80%] my-8 py-6 text-md rounded-xl">
+                                    <Button
+                                        disabled={isVaultLimit || vaultItemsLoading}
+                                        variant="outline"
+                                        size="sm"
+                                        className="flex-1 h-9 py-5 text-sm rounded-xl font-medium cursor-pointer border-dashed border-primary/40 hover:border-primary/80 hover:bg-primary/5 transition-all"
+                                    >
                                         {vaultItemsLoading ? (
                                             <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
                                                 <span className="shimmer shimmer-duration-1000"> Loading... </span>
                                             </CustomLoadingState>
                                         ) : isVaultLimit ? (
                                             <>
-                                                <XIcon size={24} className="text-foreground mr-2" />
-                                                Vault Item Limit Reached
+                                                <XIcon size={18} className="text-foreground mr-2 shrink-0" />
+                                                <span className="truncate">Limit Reached</span>
                                             </>
                                         ) : (
                                             <>
-                                                <PlusIcon size={24} className="text-primary mr-2" />
-                                                Add New Item
+                                                <PlusIcon size={18} className="text-primary mr-2 shrink-0" />
+                                                <span>Add New Item</span>
                                             </>
                                         )}
                                     </Button>
@@ -420,153 +458,163 @@ export default function ActiveVault() {
                                 <DropdownMenuItem onClick={() => setCreateIdentity(true)} className="cursor-pointer">Identity</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <Separator className="bg-muted" />
+                    </div>
 
-                        {/* VAULT ITEM SEARCH BAR + TYPE SELECT */}
-                        <div className="w-full flex items-center gap-2 px-8 py-4">
-                            <InputGroup className="flex-1 min-w-0 h-8.5">
-                                <InputGroupInput
-                                    id="vault-item-search"
-                                    aria-label="Search vault items"
-                                    placeholder="Search vault items..."
-                                    autoComplete="off"
-                                    spellCheck={false}
-                                    disabled={!hasItems}
-                                    // THE PANEL IS select-none, WHICH SAFARI APPLIES TO INPUTS TOO: KEEP THE FIELD TYPEABLE
-                                    className="select-text"
-                                    onChange={(e) => setSearchText(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Escape" && searchText) {
-                                            e.preventDefault();
-                                            setSearchText("");
-                                        }
-                                    }}
-                                    value={searchText}
-                                />
-                                <InputGroupAddon>
-                                    <Search className="size-4 text-muted-foreground" />
-                                </InputGroupAddon>
-                                {searchText && (
-                                    <InputGroupAddon align="inline-end">
-                                        <button
-                                            type="button"
-                                            aria-label="Clear search"
-                                            onClick={() => setSearchText("")}
-                                            className="flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                                        >
-                                            <XIcon className="size-4" />
-                                        </button>
-                                    </InputGroupAddon>
-                                )}
-                            </InputGroup>
-
-                            {/* ITEM TYPE FILTER */}
-                            <Select
-                                items={ITEM_TYPE_OPTIONS}
-                                value={typeFilter as VaultItemType}
-                                onValueChange={(value) => {
-                                    // BASE UI CAN PASS null, SO IGNORE IT
-                                    if (value) setTypeFilter(value as ItemTypeFilter);
-                                }}
+                    {/* VAULT ITEM SEARCH BAR + TYPE SELECT */}
+                    <div className="w-full flex items-center gap-2 px-3.5 py-3 border-b border-border/40 shrink-0 bg-muted/10">
+                        <InputGroup className="flex-1 min-w-0 h-8.5">
+                            <InputGroupInput
+                                id="vault-item-search"
+                                aria-label="Search vault items"
+                                placeholder="Search vault items..."
+                                autoComplete="off"
+                                spellCheck={false}
                                 disabled={!hasItems}
-                            >
-                                <SelectTrigger aria-label="Filter by item type" className="w-40 shrink-0 h-8.5 data-[size=default]:h-8.5">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {ITEM_TYPE_OPTIONS.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <Separator className="bg-muted" />
-
-                        {/* VAULT ITEMS LIST */}
-                        <div className="size-full overflow-y-auto pb-8 flex items-center justify-center no-scrollbar" onDoubleClick={handleListDoubleClick}>
-                            {isListLoading ? (
-                                <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
-                                    <span className="shimmer shimmer-duration-1000"> Loading... </span>
-                                </CustomLoadingState>
-                            ) : filteredItems.length === 0 ? (
-                                <div className="text-muted-foreground mt-4 flex flex-col items-center gap-3 text-center max-w-fit">
-                                    <p>{emptyMessage}</p>
-                                    {isFiltering && hasItems && (
-                                        <Button variant="outline" size="sm" onClick={resetFilters} className="cursor-pointer">
-                                            Clear search and filter
-                                        </Button>
-                                    )}
-                                </div>
-                            ) : (
-                                <div className="size-full text-left p-4 flex flex-col items-start justify-start no-scrollbar rounded-none">
-                                    {isFiltering && (
-                                        <p className="text-xs font-medium text-muted-foreground px-2 pb-2" aria-live="polite">
-                                            {filteredItems.length} result{filteredItems.length !== 1 ? "s" : ""}
-                                        </p>
-                                    )}
-                                    {filteredItems.map((item) => {
-                                        const isSelected = selectedItemId === item.id;
-                                        const select = () => setSelectedItemId(item.id);
-
-                                        return (
-                                            <div
-                                                key={item.id}
-                                                data-vault-item
-                                                className={cn(ROW_BASE_CLASSES, isSelected ? "btn-teritary" : "btn-ghost")}
-                                                onClick={select}
-                                            >
-                                                {/* THE SUMMARY IS THE KEYBOARD TARGET; THE DROPDOWN IS A SIBLING SO NO INTERACTIVE ELEMENT IS NESTED */}
-                                                <div
-                                                    role="button"
-                                                    tabIndex={0}
-                                                    aria-pressed={isSelected}
-                                                    className="flex-1 min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === "Enter" || e.key === " ") {
-                                                            e.preventDefault();
-                                                            select();
-                                                        }
-                                                    }}
-                                                >
-                                                    <ItemSummary item={item} />
-                                                </div>
-                                                {isSelected && (
-                                                    <ItemDropdown item={item} open={openDropdown} onOpenChange={toggleDropdown} />
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                                // THE PANEL IS select-none, WHICH SAFARI APPLIES TO INPUTS TOO: KEEP THE FIELD TYPEABLE
+                                className="select-text"
+                                onChange={(e) => setSearchText(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Escape" && searchText) {
+                                        e.preventDefault();
+                                        setSearchText("");
+                                    }
+                                }}
+                                value={searchText}
+                            />
+                            <InputGroupAddon>
+                                <Search className="size-4 text-muted-foreground" />
+                            </InputGroupAddon>
+                            {searchText && (
+                                <InputGroupAddon align="inline-end">
+                                    <button
+                                        type="button"
+                                        aria-label="Clear search"
+                                        onClick={() => setSearchText("")}
+                                        className="flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                                    >
+                                        <XIcon className="size-4" />
+                                    </button>
+                                </InputGroupAddon>
                             )}
-                        </div>
+                        </InputGroup>
+
+                        {/* ITEM TYPE FILTER */}
+                        <Select
+                            items={ITEM_TYPE_OPTIONS}
+                            value={typeFilter as VaultItemType}
+                            onValueChange={(value) => {
+                                // BASE UI CAN PASS null, SO IGNORE IT
+                                if (value) setTypeFilter(value as ItemTypeFilter);
+                            }}
+                            disabled={!hasItems}
+                        >
+                            <SelectTrigger aria-label="Filter by item type" className="w-36 shrink-0 h-8.5 data-[size=default]:h-8.5">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {ITEM_TYPE_OPTIONS.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    {/* VAULT ITEMS LIST */}
+                    <div
+                        className="flex-1 w-full overflow-y-auto no-scrollbar"
+                        onDoubleClick={handleListDoubleClick}
+                    >
+                        {isListLoading ? (
+                            <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2 py-12">
+                                <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                            </CustomLoadingState>
+                        ) : filteredItems.length === 0 ? (
+                            <div className="size-full flex flex-col items-center justify-center text-muted-foreground p-6 text-center">
+                                <p className="text-sm">{emptyMessage}</p>
+                                {isFiltering && hasItems && (
+                                    <Button variant="outline" size="sm" onClick={resetFilters} className="mt-3 cursor-pointer">
+                                        Clear search and filter
+                                    </Button>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="w-full p-3.5 flex flex-col items-stretch justify-start gap-2.5 no-scrollbar">
+                                {isFiltering && (
+                                    <p className="text-xs font-medium text-muted-foreground px-1 pb-1" aria-live="polite">
+                                        {filteredItems.length} result{filteredItems.length !== 1 ? "s" : ""}
+                                    </p>
+                                )}
+                                {filteredItems.map((item) => {
+                                    const isSelected = selectedItemId === item.id;
+                                    const select = () => setSelectedItemId(item.id);
+
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            data-vault-item
+                                            className={cn(
+                                                ROW_BASE_CLASSES,
+                                                isSelected
+                                                    ? "bg-accent/80 border-primary/50 shadow-xs ring-1 ring-primary/20"
+                                                    : "border-border/40 bg-card/30 hover:bg-muted/50 hover:border-border/70"
+                                            )}
+                                            onClick={select}
+                                        >
+                                            {/* THE SUMMARY IS THE KEYBOARD TARGET; THE DROPDOWN IS A SIBLING SO NO INTERACTIVE ELEMENT IS NESTED */}
+                                            <div
+                                                role="button"
+                                                tabIndex={0}
+                                                aria-pressed={isSelected}
+                                                className="flex-1 min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter" || e.key === " ") {
+                                                        e.preventDefault();
+                                                        select();
+                                                    }
+                                                }}
+                                            >
+                                                <ItemSummary item={item} />
+                                            </div>
+                                            {isSelected && (
+                                                <div className="shrink-0 pl-1">
+                                                    <ItemDropdown item={item} open={openDropdown} onOpenChange={toggleDropdown} />
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 </ResizablePanel>
 
                 <ResizableHandle withHandle />
 
                 {/* SELECTED ITEMS AREA */}
-                <ResizablePanel defaultSize="60%" className="size-full h-screen">
-                    <div className="size-full flex items-center justify-center overflow-y-auto">
-                        {isListLoading ? (
-                            <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
-                                <span className="shimmer shimmer-duration-1000"> Loading... </span>
-                            </CustomLoadingState>
-                        ) : !selectedItem ? (
-                            <div className="flex flex-col items-center gap-1">
-                                <SvgCircle>
-                                    <LayoutList size={80} className="text-primary relative z-10" />
-                                </SvgCircle>
-                                <h1 className="text-2xl font-semibold text-foreground mt-2">No item selected</h1>
-                                <p className="text-muted-foreground text-center">Select an item to view details.</p>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center size-full">
-                                <ItemDetails item={selectedItem} />
-                            </div>
-                        )}
-                    </div>
+                <ResizablePanel defaultSize="68%" minSize="35%" className="size-full flex flex-col overflow-hidden bg-background">
+                    {isListLoading ? (
+                        <CustomLoadingState loaderChoice={1} className="size-full flex items-center justify-center gap-2">
+                            <span className="shimmer shimmer-duration-1000"> Loading... </span>
+                        </CustomLoadingState>
+                    ) : !selectedItem ? (
+                        <div className="size-full flex items-center justify-center p-8">
+                            <Empty>
+                                <EmptyHeader>
+                                    <EmptyMedia variant="icon">
+                                        <LayoutList className="text-primary relative z-10" />
+                                    </EmptyMedia>
+                                    <EmptyTitle className="text-xl">No item selected</EmptyTitle>
+                                    <EmptyDescription className="text-sm">Select an item from the list to view its details.</EmptyDescription>
+                                </EmptyHeader>
+                            </Empty>
+                        </div>
+                    ) : (
+                        <div className="size-full overflow-y-auto">
+                            <ItemDetails item={selectedItem} />
+                        </div>
+                    )}
                 </ResizablePanel>
             </ResizablePanelGroup>
         </>

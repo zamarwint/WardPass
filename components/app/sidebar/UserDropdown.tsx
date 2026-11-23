@@ -86,13 +86,13 @@ export default function UserDropdown({ onSidebar }: UserDropdownProps) {
                 <DropdownMenuContent align="end">
                     {checkAdmin.data && <DropdownMenuGroup>
                         {checkAdmin.data && <DropdownMenuLabel>Admin Controls</DropdownMenuLabel>}
-                        {checkAdmin.data && <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/admin')}><Shield className="mr-0.5" /> Admin Panel</DropdownMenuItem>}
+                        {checkAdmin.data && <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/admin')}><Shield className="mr-0.5" /> Admin Panel</DropdownMenuItem>}
                         {checkAdmin.data && <DropdownMenuSeparator />}
                     </DropdownMenuGroup>}
 
                     <DropdownMenuGroup>
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/settings')}><Settings size={16} className="mr-0.5" /> Settings</DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/settings')}><Settings size={16} className="mr-0.5" /> Settings</DropdownMenuItem>
                         <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/strongroom/trash')}><Trash size={16} className="mr-0.5" /> Trash</DropdownMenuItem>
                         <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSignOut(!openSignOut)}><LogOut size={16} className="mr-0.5" /> Log Out</DropdownMenuItem>
                     </DropdownMenuGroup>

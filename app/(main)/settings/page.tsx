@@ -1,4 +1,6 @@
+import Account from "@/components/app/settings/Account";
 import GeneralSettings from "@/components/app/settings/General";
+import { Separator } from "@/components/ui/separator";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,5 +13,11 @@ export const metadata: Metadata = {
     }
 };
 export default function GeneralSettingsPage() {
-    return <GeneralSettings />
+    return (
+        <>
+            <GeneralSettings />
+            <Separator />
+            <Account />
+        </>
+    )
 }

@@ -1,5 +1,6 @@
 import { deleteVault } from "@/actions/vault/deleteVault";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export function useDeleteVaultMutation(
@@ -7,6 +8,7 @@ export function useDeleteVaultMutation(
   onOpenChange: (open: boolean) => void,
 ) {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationKey: ["delete-vault", vaultId],
@@ -18,6 +20,7 @@ export function useDeleteVaultMutation(
     onSuccess: () => {
       toast.dismiss();
       toast.success("Vault deleted successfully!");
+      router.push("/");
       queryClient.invalidateQueries({
         queryKey: ["vaults"],
         refetchType: "active",

@@ -6,6 +6,7 @@ import {
   timestamp,
   uniqueIndex,
   boolean,
+  integer,
   pgPolicy,
 } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
@@ -161,6 +162,8 @@ export const user = pgTable(
     banReason: text(),
     banned: boolean(),
     role: text(),
+    vaultLimit: integer().default(5).notNull(),
+    vaultItemLimit: integer().default(5).notNull(),
   },
   (table) => [
     uniqueIndex("user_email_key").using(
@@ -182,12 +185,12 @@ export const user = pgTable(
       as: "permissive",
       for: "update",
       using: sql`${table.id} = current_setting('app.current_user_id', true)`,
-      withCheck: sql`${table.id} = current_setting('app.current_user_id', true) and (${table.role} is null or ${table.role} = 'user')`,
+      withCheck: sql`${table.id} = current_setting('app.current_user_id', true) and (${table.role} is null or ${table.role} = 'user') and (${table.vaultLimit} = (select u."vaultLimit" from "user" u where u.id = ${table.id})) and (${table.vaultItemLimit} = (select u."vaultItemLimit" from "user" u where u.id = ${table.id}))`,
     }),
     pgPolicy("user_insert_unauth", {
       as: "permissive",
       for: "insert",
-      withCheck: sql`current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or ${table.id} = current_setting('app.current_user_id', true)`,
+      withCheck: sql`current_setting('app.current_user_id', true) is null or current_setting('app.current_user_id', true) = '' or current_setting('app.bypass_rls', true) = 'on' or (${table.id} = current_setting('app.current_user_id', true) and ${table.vaultLimit} = 5 and ${table.vaultItemLimit} = 5)`,
     }),
   ],
 ).enableRLS();

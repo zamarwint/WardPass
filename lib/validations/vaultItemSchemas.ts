@@ -22,6 +22,9 @@ export const loginItemSchema = z.object({
     ),
 });
 
+// Helper to strip HTML tags and check if actual text exists
+const stripHtml = (html: string) => html.replace(/<[^>]*>?/gm, "").trim();
+
 export const secureNoteSchema = z.object({
   title: z
     .string()
@@ -30,7 +33,10 @@ export const secureNoteSchema = z.object({
   content: z
     .string()
     .min(10, "Secure note content must be at least 10 characters.")
-    .max(2000, "Secure note content must not exceed 2000 characters."),
+    .max(2000, "Secure note content must not exceed 2000 characters.")
+    .refine((val) => stripHtml(val).length > 0, {
+      message: "Content cannot be empty",
+    }),
 });
 
 export const creditCardSchema = z.object({
@@ -84,16 +90,34 @@ export const identitySchema = z.object({
     .string()
     .max(30, "Addresses must not exceed 30 characters.")
     .optional(),
-  address2: z.string().max(30, "Addresses must not exceed 30 characters.").optional(),
+  address2: z
+    .string()
+    .max(30, "Addresses must not exceed 30 characters.")
+    .optional(),
   zipCode: z
     .string()
     .max(7, "Zip / Postal codes must not exceed 7 characters.")
     .optional(),
-  city: z.string().max(30, "City names must not exceed 30 characters.").optional(),
-  state: z.string().max(30, "State names must not exceed 30 characters.").optional(),
-  country: z.string().max(40, "Country names must not exceed 40 characters.").optional(),
-  floor: z.string().max(20, "Floor names must not exceed 20 characters.").optional(),
-  county: z.string().max(40, "County names must not exceed 40 characters.").optional(),
+  city: z
+    .string()
+    .max(30, "City names must not exceed 30 characters.")
+    .optional(),
+  state: z
+    .string()
+    .max(30, "State names must not exceed 30 characters.")
+    .optional(),
+  country: z
+    .string()
+    .max(40, "Country names must not exceed 40 characters.")
+    .optional(),
+  floor: z
+    .string()
+    .max(20, "Floor names must not exceed 20 characters.")
+    .optional(),
+  county: z
+    .string()
+    .max(40, "County names must not exceed 40 characters.")
+    .optional(),
   poBox: z
     .number()
     .min(1, "PO Box must be between 1 to 6 digits.")

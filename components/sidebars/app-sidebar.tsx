@@ -10,16 +10,16 @@ import {
 } from "@/components/ui/sidebar"
 
 import { BugPlay, FolderSync } from "lucide-react"
-import { Separator } from "./ui/separator"
-import { LinkSideButton, LockSideButton, SideLogo, VaultSideButton } from "./app/sidebar/SideButtons"
-import UserDropdown from "./app/sidebar/UserDropdown"
+import { Separator } from "../ui/separator"
+import { LinkSideButton, LockSideButton, MainTopArea, VaultSideButton } from "../app/sidebar/SideButtons"
+import UserDropdown from "../app/sidebar/UserDropdown"
 
 export function AppSidebar() {
     return (
         <Sidebar>
             <SidebarHeader>
                 <SidebarMenu>
-                    <SideLogo />
+                    <MainTopArea />
                 </SidebarMenu>
             </SidebarHeader>
             <Separator />

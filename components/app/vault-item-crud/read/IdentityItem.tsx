@@ -1,168 +1,262 @@
-import {
-    Field,
-    FieldContent,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-    FieldSeparator,
-    FieldSet,
-    FieldTitle,
-} from "@/components/ui/field"
+"use client";
 
-import { Input } from "@/components/ui/input"
+import React from "react";
+import {
+    IdCard,
+    User,
+    Mail,
+    Phone,
+    MapPin,
+    Building2,
+    Briefcase,
+    Shield,
+    Globe,
+    Share2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { IdentityJSON } from "@/lib/types/VaultItemType";
+import { ItemHeader, DetailRow, SectionCard, ItemMetadata, CopyButton } from "./DetailItem";
 
 export default function IdentityItem({ identityItem }: { identityItem: IdentityJSON }) {
+    const hasLocation = Boolean(
+        identityItem.address1 ||
+        identityItem.address2 ||
+        identityItem.city ||
+        identityItem.state ||
+        identityItem.zipCode ||
+        identityItem.country ||
+        identityItem.floor ||
+        identityItem.county ||
+        identityItem.poBox
+    );
+
+    const hasIds = Boolean(
+        identityItem.socialSecurityNumber ||
+        identityItem.passportNumber ||
+        identityItem.licenseNumber
+    );
+
+    const hasWork = Boolean(identityItem.companyName || identityItem.occupation);
+
+    const hasSocials = Boolean(
+        identityItem.x ||
+        identityItem.linkedin ||
+        identityItem.github ||
+        identityItem.instagram ||
+        identityItem.tiktok ||
+        identityItem.facebook ||
+        identityItem.other
+    );
+
+    const fullAddress = [
+        identityItem.address1,
+        identityItem.address2,
+        identityItem.floor ? `Floor ${identityItem.floor}` : null,
+        [identityItem.city, identityItem.county, identityItem.state, identityItem.zipCode].filter(Boolean).join(", "),
+        identityItem.poBox ? `PO Box ${identityItem.poBox}` : null,
+        identityItem.country,
+    ]
+        .filter(Boolean)
+        .join("\n");
+
     return (
-        <Field className="w-full min-h-full flex flex-col items-start justify-start border-r border-muted px-8 py-8 gap-8 bg-background overflow-y-scroll">
-            <FieldSet>
-                <FieldTitle className="text-primary text-6xl font-bold">{identityItem.name}</FieldTitle>
-                <FieldDescription className="text-muted-foreground text-xl">View your <span className="font-bold">{identityItem.itemType}</span> details.</FieldDescription>
-            </FieldSet>
+        <div className="w-full max-w-4xl mx-auto p-6 sm:p-10 flex flex-col gap-6">
+            {/* ITEM HEADER */}
+            <ItemHeader
+                title={identityItem.name}
+                itemType="Identity"
+                icon={IdCard}
+                iconBgColor="bg-purple-500/10 text-purple-500 dark:text-purple-400 border-purple-500/20"
+                badgeColor="text-purple-500/90 dark:text-purple-400/90 border-purple-500/25 bg-purple-500/5"
+                subtitle={
+                    [identityItem.occupation, identityItem.companyName, identityItem.email]
+                        .filter(Boolean)
+                        .join(" • ") || undefined
+                }
+                actions={
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 text-xs font-semibold rounded-xl border-border/60 hover:bg-muted/80 cursor-pointer shadow-2xs"
+                        onClick={() => {
+                            const summary = [
+                                identityItem.name,
+                                identityItem.email,
+                                identityItem.phoneNumber ? String(identityItem.phoneNumber) : null,
+                            ]
+                                .filter(Boolean)
+                                .join(" | ");
+                            navigator.clipboard.writeText(summary);
+                        }}
+                    >
+                        <User className="size-3.5 text-purple-500" />
+                        <span>Copy Profile</span>
+                    </Button>
+                }
+            />
 
-            <FieldGroup className="hidden lg:flex flex-col gap-4 w-full">
-                {/* Personal Details */}
-                <FieldTitle className="text-2xl font-semibold">Personal Details</FieldTitle>
-                <FieldSeparator />
-                <FieldGroup className="hidden lg:grid grid-cols-2">
-                    <Field>
-                        <FieldLabel>Name</FieldLabel>
-                        <Input type="text" placeholder="Name of identity item" id="name" value={identityItem.name} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Email</FieldLabel>
-                        <Input type="email" placeholder="Email" id="email" value={identityItem.email} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Phone Number</FieldLabel>
-                        <Input type="tel" placeholder="+1 234 567 890" id="phoneNumber" value={identityItem.phoneNumber} readOnly className="h-12" />
-                    </Field>
-                </FieldGroup>
+            {/* PERSONAL & CONTACT */}
+            <SectionCard title="Personal & Contact" icon={User}>
+                <DetailRow label="Full Name" value={identityItem.name} icon={User} />
+                <DetailRow
+                    label="Email Address"
+                    value={identityItem.email}
+                    icon={Mail}
+                    href={`mailto:${identityItem.email}`}
+                    mono
+                />
+                {identityItem.phoneNumber && (
+                    <DetailRow
+                        label="Phone Number"
+                        value={identityItem.phoneNumber}
+                        icon={Phone}
+                        href={`tel:${identityItem.phoneNumber}`}
+                        mono
+                    />
+                )}
+            </SectionCard>
 
-                {/* Location Details */}
-                <FieldTitle className="text-2xl font-semibold pt-8">Location Details</FieldTitle>
-                <FieldSeparator />
-                <FieldGroup className="hidden lg:grid grid-cols-2">
-                    <Field>
-                        <FieldLabel>Address Line 1</FieldLabel>
-                        <Input type="text" placeholder="Address Line 1" id="address1" value={identityItem.address1} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Address Line 2</FieldLabel>
-                        <Input type="text" placeholder="Address Line 2" id="address2" value={identityItem.address2} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>ZIP Code</FieldLabel>
-                        <Input type="text" placeholder="ZIP Code" id="zipCode" value={identityItem.zipCode} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>City</FieldLabel>
-                        <Input type="text" placeholder="City" id="city" value={identityItem.city} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>State</FieldLabel>
-                        <Input type="text" placeholder="State" id="state" value={identityItem.state} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Country</FieldLabel>
-                        <Input type="text" placeholder="Country" id="country" value={identityItem.country} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Floor</FieldLabel>
-                        <Input type="text" placeholder="Floor" id="floor" value={identityItem.floor} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>County</FieldLabel>
-                        <Input type="text" placeholder="County" id="county" value={identityItem.county} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>PO Box</FieldLabel>
-                        <Input type="text" placeholder="PO Box" id="poBox" value={identityItem.poBox} readOnly className="h-12" />
-                    </Field>
-                </FieldGroup>
+            {/* GOVERNMENT IDENTIFIERS (IF ANY) */}
+            {hasIds && (
+                <SectionCard title="Government Identification" icon={Shield}>
+                    {identityItem.socialSecurityNumber && (
+                        <DetailRow
+                            label="Social Security Number (SSN)"
+                            value={identityItem.socialSecurityNumber}
+                            icon={Shield}
+                            isSecret
+                            mono
+                        />
+                    )}
+                    {identityItem.passportNumber && (
+                        <DetailRow
+                            label="Passport Number"
+                            value={identityItem.passportNumber}
+                            icon={IdCard}
+                            isSecret
+                            mono
+                        />
+                    )}
+                    {identityItem.licenseNumber && (
+                        <DetailRow
+                            label="Driver's License Number"
+                            value={identityItem.licenseNumber}
+                            icon={IdCard}
+                            isSecret
+                            mono
+                        />
+                    )}
+                </SectionCard>
+            )}
 
-                {/* ID Details */}
-                <FieldTitle className="text-2xl font-semibold pt-8">ID Details</FieldTitle>
-                <FieldSeparator />
-                <FieldGroup className="hidden lg:grid grid-cols-2">
-                    <Field>
-                        <FieldLabel>Social Security Number</FieldLabel>
-                        <Input type="text" placeholder="Social Security Number" id="socialSecurityNumber" value={identityItem.socialSecurityNumber} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Passport Number</FieldLabel>
-                        <Input type="text" placeholder="Passport Number" id="passportNumber" value={identityItem.passportNumber} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>License Number</FieldLabel>
-                        <Input type="text" placeholder="License Number" id="licenseNumber" value={identityItem.licenseNumber} readOnly className="h-12" />
-                    </Field>
-                </FieldGroup>
+            {/* LOCATION & MAILING ADDRESS */}
+            {hasLocation && (
+                <SectionCard title="Address & Location" icon={MapPin}>
+                    <div className="relative rounded-xl border border-border/40 bg-card/40 p-4 flex flex-col gap-1 text-sm text-foreground/90 font-sans leading-relaxed">
+                        {identityItem.address1 && <p className="font-medium">{identityItem.address1}</p>}
+                        {identityItem.address2 && <p className="text-muted-foreground">{identityItem.address2}</p>}
+                        {identityItem.floor && <p className="text-xs text-muted-foreground font-mono">Floor / Suite: {identityItem.floor}</p>}
+                        {(identityItem.city || identityItem.state || identityItem.zipCode) && (
+                            <p>
+                                {[identityItem.city, identityItem.county, identityItem.state, identityItem.zipCode]
+                                    .filter(Boolean)
+                                    .join(", ")}
+                            </p>
+                        )}
+                        {identityItem.poBox && <p className="text-xs text-muted-foreground font-mono">PO Box: {identityItem.poBox}</p>}
+                        {identityItem.country && <p className="text-muted-foreground font-medium mt-0.5">{identityItem.country}</p>}
 
-                {/* Work details */}
-                <FieldTitle className="text-2xl font-semibold pt-8">Work details</FieldTitle>
-                <FieldSeparator />
-                <FieldGroup className="hidden lg:grid grid-cols-2">
-                    <Field>
-                        <FieldLabel>Company Name</FieldLabel>
-                        <Input type="text" placeholder="Company Name" id="companyName" value={identityItem.companyName} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Occupation</FieldLabel>
-                        <Input type="text" placeholder="Occupation" id="occupation" value={identityItem.occupation} readOnly className="h-12" />
-                    </Field>
-                </FieldGroup>
+                        <div className="absolute top-2 right-2">
+                            <CopyButton value={fullAddress} label="Address" />
+                        </div>
+                    </div>
+                </SectionCard>
+            )}
 
-                {/* Social details */}
-                <FieldTitle className="text-2xl font-semibold pt-8">Social details</FieldTitle>
-                <FieldSeparator />
-                <FieldGroup className="hidden lg:grid grid-cols-2">
-                    <Field>
-                        <FieldLabel>X</FieldLabel>
-                        <Input type="text" placeholder="X" id="x" value={identityItem.x} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Linkedin</FieldLabel>
-                        <Input type="text" placeholder="Linkedin" id="linkedin" value={identityItem.linkedin} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Instagram</FieldLabel>
-                        <Input type="text" placeholder="Instagram" id="instagram" value={identityItem.instagram} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Tiktok</FieldLabel>
-                        <Input type="text" placeholder="Tiktok" id="tiktok" value={identityItem.tiktok} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Facebook</FieldLabel>
-                        <Input type="text" placeholder="Facebook" id="facebook" value={identityItem.facebook} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Github</FieldLabel>
-                        <Input type="text" placeholder="Github" id="github" value={identityItem.github} readOnly className="h-12" />
-                    </Field>
-                    <Field>
-                        <FieldLabel>Other</FieldLabel>
-                        <Input type="text" placeholder="Other" id="other" value={identityItem.other} readOnly className="h-12" />
-                    </Field>
-                </FieldGroup>
-            </FieldGroup>
+            {/* EMPLOYMENT & WORK */}
+            {hasWork && (
+                <SectionCard title="Employment Details" icon={Briefcase}>
+                    {identityItem.companyName && (
+                        <DetailRow
+                            label="Company Name"
+                            value={identityItem.companyName}
+                            icon={Building2}
+                        />
+                    )}
+                    {identityItem.occupation && (
+                        <DetailRow
+                            label="Occupation / Title"
+                            value={identityItem.occupation}
+                            icon={Briefcase}
+                        />
+                    )}
+                </SectionCard>
+            )}
 
-            <FieldGroup>
-                <FieldSeparator />
-                <Field orientation="horizontal">
-                    <FieldLabel>Created At</FieldLabel>
-                    <FieldContent>
-                        <FieldDescription>{identityItem.createdAt?.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</FieldDescription>
-                    </FieldContent>
-                </Field>
-                <Field orientation="horizontal">
-                    <FieldLabel>Updated At</FieldLabel>
-                    <FieldContent>
-                        <FieldDescription>{identityItem.updatedAt?.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</FieldDescription>
-                    </FieldContent>
-                </Field>
-            </FieldGroup>
-        </Field>
-    )
+            {/* SOCIALS & ONLINE PROFILES */}
+            {hasSocials && (
+                <SectionCard title="Online & Social Profiles" icon={Share2}>
+                    {identityItem.x && (
+                        <DetailRow
+                            label="X (Twitter)"
+                            value={identityItem.x}
+                            icon={Globe}
+                            href={identityItem.x}
+                        />
+                    )}
+                    {identityItem.linkedin && (
+                        <DetailRow
+                            label="LinkedIn"
+                            value={identityItem.linkedin}
+                            icon={Globe}
+                            href={identityItem.linkedin}
+                        />
+                    )}
+                    {identityItem.github && (
+                        <DetailRow
+                            label="GitHub"
+                            value={identityItem.github}
+                            icon={Globe}
+                            href={identityItem.github}
+                        />
+                    )}
+                    {identityItem.instagram && (
+                        <DetailRow
+                            label="Instagram"
+                            value={identityItem.instagram}
+                            icon={Globe}
+                            href={identityItem.instagram}
+                        />
+                    )}
+                    {identityItem.tiktok && (
+                        <DetailRow
+                            label="TikTok"
+                            value={identityItem.tiktok}
+                            icon={Globe}
+                            href={identityItem.tiktok}
+                        />
+                    )}
+                    {identityItem.facebook && (
+                        <DetailRow
+                            label="Facebook"
+                            value={identityItem.facebook}
+                            icon={Globe}
+                            href={identityItem.facebook}
+                        />
+                    )}
+                    {identityItem.other && (
+                        <DetailRow
+                            label="Other Link"
+                            value={identityItem.other}
+                            icon={Globe}
+                            href={identityItem.other}
+                        />
+                    )}
+                </SectionCard>
+            )}
+
+            {/* TIMESTAMPS / METADATA */}
+            <ItemMetadata createdAt={identityItem.createdAt} updatedAt={identityItem.updatedAt} />
+        </div>
+    );
 }

@@ -136,11 +136,11 @@ export default function SecurityWhitepaperPage() {
           </div>
           <div className="flex flex-wrap items-center gap-3">
 
-            <Link href="https://github.com/zamarwint/WardPass" target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ size: "sm" }))}>
+            <Link href="https://github.com/zamarwint/WardPass" target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ size: "sm" }), "h-12 px-10")}>
               <span>View Source Code</span>
               <ArrowUpRight className="size-3.5 ml-1" />
             </Link>
-            <Link href="/" className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
+            <Link href="/" className={cn(buttonVariants({ size: "sm", variant: "outline" }), "h-12 px-10")}>
               <ArrowLeft className="size-3.5 mr-1" />
               <span>Return to Home</span>
             </Link>

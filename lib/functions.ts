@@ -48,7 +48,7 @@ export function useKeyboardShortcuts() {
     const handleKeyAltU = (e: KeyboardEvent) => {
       if (e.key === "u" && e.altKey) {
         // Open user settings
-        router.push("/strongroom/settings");
+        router.push("/settings");
       }
     };
 

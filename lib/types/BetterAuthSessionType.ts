@@ -23,6 +23,8 @@ export type BetterAuthSessionType = {
     banned: boolean | null;
     banReason: string | null;
     banExpires: Date | null;
+    vaultLimit?: number;
+    vaultItemLimit?: number;
   };
 };
 
@@ -50,6 +52,8 @@ export type userData = {
   banned: boolean | null;
   banReason: string | null;
   banExpires: Date | null;
+  vaultLimit?: number;
+  vaultItemLimit?: number;
 };
 
 export type emailUserData = {
