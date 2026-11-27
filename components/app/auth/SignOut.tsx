@@ -16,7 +16,7 @@ export default function SignOut() {
     }
 
     return (
-        <Button disabled={signOutPending || signOutMutation.isPending} variant="secondary" size="lg" className="cursor-pointer h-12 w-fit px-10" onClick={signOut}>
+        <Button disabled={signOutPending || signOutMutation.isPending} variant="secondary" size="lg" className="h-10 px-4 rounded-xl font-semibold cursor-pointer w-full sm:w-auto" onClick={signOut}>
             {signOutPending || signOutMutation.isPending ? (
                 <>
                     <Loader2Icon className="size-4 animate-spin" />

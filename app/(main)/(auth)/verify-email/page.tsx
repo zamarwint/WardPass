@@ -2,7 +2,7 @@ import EmailVerification from "@/components/app/auth/EmailVerification"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-    title: "Email Verification | WardPass",
+    title: "Email Verification · WardPass",
     robots: {
         googleBot: {
             index: false,

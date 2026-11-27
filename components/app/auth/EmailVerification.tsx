@@ -95,7 +95,12 @@ export default function EmailVerification() {
                                 <FieldTitle className="text-sm">Verification code</FieldTitle>
                                 <FieldDescription>Enter your verification code</FieldDescription>
                                 <FieldContent className="gap-4">
-                                    <InputOTP maxLength={6} id="otp-verification" pattern={REGEXP_ONLY_DIGITS} required onChange={(value) => setOtpValue(value)}>
+                                    <InputOTP maxLength={6} id="otp-verification" pattern={REGEXP_ONLY_DIGITS} required onChange={(value) => setOtpValue(value)} disabled={verificationPending} onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault();
+                                            handleVerifyEmail();
+                                        }
+                                    }}>
                                         <InputOTPGroup className="w-full flex items-center justify-center *:data-[slot=input-otp-slot]:h-14 *:data-[slot=input-otp-slot]:w-full *:data-[slot=input-otp-slot]:text-xl">
                                             <InputOTPSlot index={0} />
                                             <InputOTPSlot index={1} />
@@ -108,7 +113,7 @@ export default function EmailVerification() {
 
                                     <FieldSeparator />
 
-                                    <Button size="lg" className="text-md px-6 py-7" onClick={handleVerifyEmail}>
+                                    <Button size="lg" className="text-md px-6 py-7" onClick={handleVerifyEmail} disabled={verificationPending}>
                                         {verificationPending ? (
                                             <>
                                                 <Loader2Icon className="animate-spin" />
@@ -127,9 +132,14 @@ export default function EmailVerification() {
                                 <FieldTitle className="text-md">Enter your email again</FieldTitle>
                                 <FieldDescription>Please provide your email address again to resend the verification code.</FieldDescription>
                                 <FieldContent className="gap-4">
-                                    <Input type="email" id="email" required placeholder="Email Address" className="h-12" onChange={(e) => setNewEmail(e.target.value)} />
+                                    <Input type="email" id="email" required placeholder="Email Address" className="h-12" onChange={(e) => setNewEmail(e.target.value)} disabled={verificationRequestPending} onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault();
+                                            handleSendVerification();
+                                        }
+                                    }} />
                                     <FieldSeparator />
-                                    <Button size="lg" className="text-md px-6 py-7" onClick={handleSendVerification}>
+                                    <Button size="lg" className="text-md px-6 py-7" onClick={handleSendVerification} disabled={verificationRequestPending}>
                                         {verificationRequestPending ? (
                                             <>
                                                 <Loader2Icon className="animate-spin" />

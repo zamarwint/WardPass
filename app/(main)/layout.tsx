@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import MainLoading from "./loading";
 import { useKeyboardShortcuts } from "@/lib/functions";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { WorkspaceSidebarShell } from "@/components/sidebars/sliding-sidebar";
 
 const ReactQueryDevtools = dynamic(
     () => import("@tanstack/react-query-devtools").then((module) => module.ReactQueryDevtools),
@@ -47,7 +48,7 @@ export default function MainLayout({
             <QueryClientProvider client={queryClient}>
                 <Suspense fallback={<MainLoading />}>
                     <TooltipProvider>
-                        {children}
+                        <WorkspaceSidebarShell>{children}</WorkspaceSidebarShell>
                     </TooltipProvider>
                 </Suspense>
                 {process.env.NODE_ENV === "development" && (

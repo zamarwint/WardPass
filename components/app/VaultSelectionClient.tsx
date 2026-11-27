@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
     ShieldCheck,
@@ -35,21 +35,35 @@ import DeleteVault from "@/components/app/vault-crud/DeleteVault";
 import { useGetVaults } from "@/lib/queries/VaultQueries";
 import { useGetSession } from "@/lib/queries/SessionQueries";
 import { VaultSummary } from "@/lib/types/VaultType";
-import { cn } from "@/lib/utils";
 
 export default function VaultSelectionClient() {
+    // ── Hydration guard ────────────────────────────────────────────────────────
+    // All data fetched by TanStack Query (vaults, session) is unavailable during
+    // SSR, so the server renders counts / names as 0 / "Member". On the client,
+    // the stale cache is hydrated immediately, producing a different DOM. We gate
+    // ALL dynamic content behind `mounted` so server & client emit the same HTML
+    // on first paint, eliminating every hydration mismatch in this component.
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+
     const { data: vaults, isPending, error } = useGetVaults();
     const user = useGetSession();
     const vaultList = vaults ?? [];
     const vaultLimit = (user.data?.user as any)?.vaultLimit ?? 5;
     const canCreateVault = vaultList.length < vaultLimit;
 
-    // Search filter state for vaults
+    // Search filter state
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Modal state for editing and deleting vaults directly from cards
+    // Modal state for editing and deleting vaults from cards
     const [vaultToUpdate, setVaultToUpdate] = useState<VaultSummary | null>(null);
-    const [vaultToDelete, setVaultToDelete] = useState<{ id: string; name: string; slug: string; icon: string; iconColor: string | null } | null>(null);
+    const [vaultToDelete, setVaultToDelete] = useState<{
+        id: string;
+        name: string;
+        slug: string;
+        icon: string;
+        iconColor: string | null;
+    } | null>(null);
 
     const filteredVaults = useMemo(() => {
         const query = searchQuery.trim().toLowerCase();
@@ -59,17 +73,18 @@ export default function VaultSelectionClient() {
 
     const userName = user.data?.user?.name || "Member";
 
+    // ── Shared static shell (always server-identical) ──────────────────────────
     return (
         <div className="size-full overflow-y-auto bg-background selection:bg-primary/20">
-            {/* Direct Vault Modals */}
-            {vaultToUpdate && (
+            {/* Modals – client-only, never rendered on server */}
+            {mounted && vaultToUpdate && (
                 <UpdateVault
                     open={Boolean(vaultToUpdate)}
                     onOpenChange={(open) => !open && setVaultToUpdate(null)}
                     vault={vaultToUpdate}
                 />
             )}
-            {vaultToDelete && (
+            {mounted && vaultToDelete && (
                 <DeleteVault
                     open={Boolean(vaultToDelete)}
                     onOpenChange={(open) => !open && setVaultToDelete(null)}
@@ -85,8 +100,8 @@ export default function VaultSelectionClient() {
                         <SidebarTrigger className="cursor-pointer" />
                         <div className="flex items-center gap-2">
                             <span className="relative flex size-2.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full size-2.5 bg-emerald-500"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                <span className="relative inline-flex rounded-full size-2.5 bg-emerald-500" />
                             </span>
                             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider hidden sm:inline-block">
                                 Zero-Knowledge Strongroom
@@ -94,16 +109,23 @@ export default function VaultSelectionClient() {
                         </div>
                     </div>
 
+                    {/* Vault count badge + create button — hidden until mounted to avoid mismatch */}
                     <div className="flex items-center gap-3">
-                        <Badge variant="outline" className="px-2.5 py-1 text-xs font-mono font-medium border-border/60 bg-muted/30">
-                            {vaultList.length} / {vaultLimit} Vaults
-                        </Badge>
-                        <CreateVault
-                            disabled={!canCreateVault || Boolean(error)}
-                            variant="default"
-                            size="sm"
-                            className="h-9 px-3.5 text-xs font-semibold rounded-xl shadow-2xs"
-                        />
+                        {mounted ? (
+                            <>
+                                <Badge variant="outline" className="px-2.5 py-1 text-xs font-mono font-medium border-border/60 bg-muted/30">
+                                    {vaultList.length} / {vaultLimit} Vaults
+                                </Badge>
+                                <CreateVault
+                                    disabled={!canCreateVault || Boolean(error)}
+                                    variant="default"
+                                    size="sm"
+                                    className="h-9 px-3.5 text-xs font-semibold rounded-xl shadow-2xs"
+                                />
+                            </>
+                        ) : (
+                            <div className="h-9 w-24 rounded-xl bg-muted/30 animate-pulse" />
+                        )}
                     </div>
                 </div>
 
@@ -112,7 +134,9 @@ export default function VaultSelectionClient() {
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
                         <div className="flex flex-col gap-2 max-w-2xl">
                             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-                                Welcome to your <span className="text-primary">Strongroom,</span> {userName}
+                                Welcome to your <span className="text-primary">Strongroom,</span>{" "}
+                                {/* userName is dynamic — suppress until mounted */}
+                                {mounted ? userName : <span className="inline-block w-28 h-7 rounded-lg bg-muted/40 animate-pulse align-middle" />}
                             </h1>
                             <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
                                 Your zero-knowledge encrypted vault repository. All passwords, financial cards, confidential notes,
@@ -134,7 +158,7 @@ export default function VaultSelectionClient() {
                     </div>
                 </div>
 
-                {/* Quick Utilities Bar */}
+                {/* Quick Utilities Bar — static links, always safe */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <Link
                         href="/strongroom/playground"
@@ -146,7 +170,7 @@ export default function VaultSelectionClient() {
                             </div>
                             <div className="flex flex-col min-w-0">
                                 <span className="text-sm font-semibold text-foreground truncate">Security Playground</span>
-                                <span className="text-xs text-muted-foreground truncate">Test password entropy & tools</span>
+                                <span className="text-xs text-muted-foreground truncate">Test password entropy &amp; tools</span>
                             </div>
                         </div>
                         <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0" />
@@ -190,12 +214,14 @@ export default function VaultSelectionClient() {
                     <div className="flex items-center gap-3">
                         <Database className="size-5 text-primary" />
                         <h2 className="text-xl font-bold tracking-tight text-foreground">Your Vaults</h2>
+                        {/* Count badge — suppress on server */}
                         <Badge variant="secondary" className="text-xs font-semibold px-2 py-0.5">
-                            {vaultList.length}
+                            {mounted ? vaultList.length : 0}
                         </Badge>
                     </div>
 
-                    {vaultList.length > 0 && (
+                    {/* Search bar — only visible once mounted & vaults loaded */}
+                    {mounted && vaultList.length > 0 && (
                         <div className="relative w-full sm:w-72">
                             <Search className="size-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                             <Input
@@ -216,8 +242,15 @@ export default function VaultSelectionClient() {
                     )}
                 </div>
 
-                {/* Vaults Grid Display */}
-                {isPending ? (
+                {/* Vaults Grid Display — fully gated on mounted to avoid all mismatches */}
+                {!mounted ? (
+                    // Server / pre-hydration skeleton — matches what server emits
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {[1, 2, 3].map((i) => (
+                            <div key={i} className="h-[170px] rounded-2xl border border-border/40 bg-muted/20 animate-pulse" />
+                        ))}
+                    </div>
+                ) : isPending ? (
                     <CustomLoadingState loaderChoice={1} className="py-20 flex items-center justify-center gap-2">
                         <span className="shimmer shimmer-duration-1000">Loading your vaults...</span>
                     </CustomLoadingState>
@@ -258,9 +291,7 @@ export default function VaultSelectionClient() {
                                 <div
                                     key={vault.id}
                                     className="group relative flex flex-col justify-between p-5 rounded-2xl border border-border/50 bg-card/40 hover:bg-card hover:border-border/80 hover:shadow-md transition-all duration-200"
-                                    style={{
-                                        borderLeft: `4px solid ${iconColor}`,
-                                    }}
+                                    style={{ borderLeft: `4px solid ${iconColor}` }}
                                 >
                                     <div className="flex items-start justify-between gap-3">
                                         <Link
@@ -313,7 +344,7 @@ export default function VaultSelectionClient() {
                                                     className="flex items-center gap-2 cursor-pointer"
                                                 >
                                                     <Pencil className="size-4" />
-                                                    <span>Edit & Theme</span>
+                                                    <span>Edit &amp; Theme</span>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
                                                 <DropdownMenuItem
@@ -330,13 +361,9 @@ export default function VaultSelectionClient() {
                                     {/* Bottom Card Footer */}
                                     <div className="flex items-center justify-between pt-4 mt-4 border-t border-border/30">
                                         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                            <span
-                                                className="size-2 rounded-full"
-                                                style={{ backgroundColor: iconColor }}
-                                            />
+                                            <span className="size-2 rounded-full" style={{ backgroundColor: iconColor }} />
                                             <span className="font-mono text-[11px] uppercase tracking-wider">{iconColor}</span>
                                         </div>
-
                                         <Link
                                             href={`/strongroom/${vault.id}`}
                                             className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
@@ -349,7 +376,7 @@ export default function VaultSelectionClient() {
                             );
                         })}
 
-                        {/* Direct "+ Add New Vault" Action Card in Grid if capacity allows */}
+                        {/* "+ Add New Vault" card when capacity allows */}
                         {canCreateVault && (
                             <div className="flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-border/60 hover:border-primary/50 bg-card/20 hover:bg-muted/20 transition-all duration-200 text-center gap-3 min-h-[170px]">
                                 <div className="size-10 rounded-full bg-muted/60 text-muted-foreground flex items-center justify-center">

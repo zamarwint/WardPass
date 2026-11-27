@@ -2,17 +2,44 @@
 
 import { useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronLeft, ExternalLink, LayoutGrid, LockIcon, LucideIcon, Nfc, PencilIcon, Settings2, ShieldCheck, ShieldCog, ShieldUser, TrashIcon, Vault } from "lucide-react";
+import {
+    ChartNoAxesColumnIncreasing,
+    ChevronLeft,
+    ExternalLink,
+    Heart,
+    LayoutGrid,
+    LockIcon,
+    LucideIcon,
+    MessageSquare,
+    Nfc,
+    PencilIcon,
+    Settings2,
+    Shield,
+    ShieldCog,
+    ShieldUser,
+    TrashIcon,
+    Vault,
+} from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { RenderIcon } from "@/components/IconMap";
 import { useVaultStore } from "@/stores/vault";
 import { VaultSummary } from "@/lib/types/VaultType";
 import { useGetVaults } from "@/lib/queries/VaultQueries";
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+import {
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from "@/components/ui/sidebar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import Notifications from "./Notifications";
 import UpdateVault from "../vault-crud/UpdateVault";
 import DeleteVault from "../vault-crud/DeleteVault";
@@ -24,25 +51,58 @@ export function MainTopArea() {
     const router = useRouter();
 
     return (
-        <SidebarMenuItem className="flex items-center justify-between text-primary cursor-pointer">
-            <SidebarMenuButton
-                className="text-xl tracking-tighter font-bold w-fit"
-                onClick={() => router.push('/')}
-            >WARDPASS</SidebarMenuButton>
-            <div>
+        <SidebarMenuItem className="flex items-center justify-between gap-2 px-1 py-0.5">
+            <button
+                type="button"
+                onClick={() => router.push("/")}
+                className="group flex items-center gap-2.5 rounded-xl px-1.5 py-1 text-left transition-colors hover:bg-sidebar-accent/60 cursor-pointer"
+            >
+                <div className="size-8 rounded-xl bg-primary/15 border border-primary/25 text-primary flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                    <Shield className="size-4" />
+                </div>
+                <div className="flex flex-col leading-none">
+                    <span className="text-sm font-extrabold tracking-tight text-foreground">
+                        WARDPASS
+                    </span>
+                    <span className="text-[10px] font-medium text-muted-foreground tracking-wider uppercase mt-0.5">
+                        Strongroom
+                    </span>
+                </div>
+            </button>
+
+            <div className="flex items-center">
                 <Notifications />
-                <Tooltip>
-                    <TooltipTrigger
-                        render={
-                            <Button size="icon-lg" variant="ghost" aria-label="All Vaults" onClick={() => router.push('/strongroom')}>
-                                <Vault />
-                            </Button>
-                        }
-                    />
-                    <TooltipContent>All Vaults</TooltipContent>
-                </Tooltip>
             </div>
         </SidebarMenuItem>
+    );
+}
+
+export function HomeSideButton() {
+    const router = useRouter();
+
+    return (
+        <SidebarGroup>
+            <SidebarGroupLabel className="px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                Home
+            </SidebarGroupLabel>
+            <Tooltip>
+                <TooltipTrigger
+                    render={
+                        <SidebarMenuButton
+                            aria-label="All Vaults"
+                            onClick={() => router.push("/strongroom")}
+                            className="group/lock h-9.5 w-full rounded-xl px-2.5 flex items-center justify-start gap-2.5 text-muted-foreground hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-500/10 transition-all duration-150 cursor-pointer"
+                        >
+                            <span className="size-6 rounded-lg bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shrink-0 group-hover/lock:scale-105 transition-transform">
+                                <Vault className="size-3.5" />
+                            </span>
+                            <span className="text-sm font-medium">Strongroom Home</span>
+                        </SidebarMenuButton>
+                    }
+                />
+                <TooltipContent>Visit Strongroom Home</TooltipContent>
+            </Tooltip>
+        </SidebarGroup>
     )
 }
 
@@ -51,9 +111,6 @@ export function VaultSideButton() {
     const pathName = usePathname();
     const router = useRouter();
 
-    // ONE UPDATE DIALOG AND ONE DELETE DIALOG FOR THE WHOLE LIST (NOT ONE PER VAULT), PLUS THE VAULT EACH WAS OPENED FOR.
-    // A SHARED `open` BOOLEAN WITH ONE DIALOG PER VAULT OPENED EVERY VAULT'S DIALOG AT ONCE, AND THE LAST ONE RENDERED WAS ON TOP.
-    // THE VAULT IS KEPT AFTER THE DIALOG CLOSES SO IT CAN PLAY ITS EXIT ANIMATION.
     const [vaultToUpdate, setVaultToUpdate] = useState<VaultSummary | null>(null);
     const [updateOpen, setUpdateOpen] = useState(false);
     const [vaultToDelete, setVaultToDelete] = useState<VaultSummary | null>(null);
@@ -71,50 +128,87 @@ export function VaultSideButton() {
 
     return (
         <>
-            <SidebarGroup>
-                <SidebarGroupLabel>Vaults</SidebarGroupLabel>
-                <SidebarMenu>
+            <SidebarGroup className="px-2 py-2">
+                <div className="flex items-center justify-between px-2 mb-1">
+                    <SidebarGroupLabel className="px-0 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                        Vaults
+                    </SidebarGroupLabel>
+                    {vaults && vaults.length > 0 && (
+                        <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 rounded-md bg-muted/60 text-muted-foreground">
+                            {vaults.length}
+                        </span>
+                    )}
+                </div>
+
+                <SidebarMenu className="gap-1">
                     {isPending ? (
-                        <SidebarMenuItem className="w-full flex items-center justify-center text-muted-foreground text-xs">
-                            <div>Loading vaults...</div>
+                        <SidebarMenuItem className="w-full flex items-center justify-center py-4 text-muted-foreground text-xs">
+                            <span>Loading vaults...</span>
                         </SidebarMenuItem>
                     ) : error ? (
-                        <SidebarMenuItem className="w-full flex items-center justify-center text-muted-foreground text-xs">
-                            <div>Failed to load vaults.</div>
+                        <SidebarMenuItem className="w-full flex items-center justify-center py-4 text-destructive text-xs">
+                            <span>Failed to load vaults.</span>
                         </SidebarMenuItem>
                     ) : !vaults || vaults.length === 0 ? (
-                        <SidebarMenuItem className="w-full flex items-center justify-center text-muted-foreground text-xs">
-                            <div>No Vaults.</div>
+                        <SidebarMenuItem className="w-full flex items-center justify-center py-4 text-muted-foreground text-xs">
+                            <span>No Vaults yet.</span>
                         </SidebarMenuItem>
                     ) : (
                         vaults.map((vault: VaultSummary) => {
                             const href = VAULT_BASE_PATH + vault.id;
                             const isActive = pathName === href || pathName.startsWith(`${href}/`);
+                            const accentColor = vault.iconColor || "#d4a843";
 
-                            // THE CLICK HANDLER IS ON THE BUTTON, NOT THE <li>: THE MENU IS PORTALED BUT STILL BUBBLES REACT EVENTS
-                            // TO ITS PARENTS, SO AN onClick ON THE <li> ALSO NAVIGATED WHEN YOU PICKED "Update" OR "Delete"
                             return (
-                                <SidebarMenuItem key={vault.id} className="size-full cursor-pointer">
+                                <SidebarMenuItem key={vault.id} className="cursor-pointer">
                                     <ContextMenu>
                                         <ContextMenuTrigger
                                             render={
                                                 <SidebarMenuButton
-                                                    variant={isActive ? 'highlight' : 'default'}
                                                     onClick={() => router.push(href)}
-                                                    className='size-full flex items-center justify-start text-center gap-2 p-5'
+                                                    className={cn(
+                                                        "relative h-10 w-full rounded-xl px-2.5 flex items-center justify-start gap-2.5 transition-all duration-150 cursor-pointer",
+                                                        isActive
+                                                            ? "bg-sidebar-accent/90 text-foreground font-semibold shadow-2xs ring-1 ring-border/50"
+                                                            : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 font-medium"
+                                                    )}
                                                 >
-                                                    <RenderIcon name={vault.icon} size={16} color={vault.iconColor ? vault.iconColor : 'white'} />
-                                                    <span className="text-sm font-semibold">{vault.name}</span>
+                                                    {isActive && (
+                                                        <span
+                                                            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 rounded-r-full"
+                                                            style={{ backgroundColor: accentColor }}
+                                                        />
+                                                    )}
+                                                    <span
+                                                        className="size-6 rounded-lg flex items-center justify-center shrink-0 border transition-transform duration-150 group-hover/menu-button:scale-105"
+                                                        style={{
+                                                            backgroundColor: `${accentColor}1A`,
+                                                            borderColor: `${accentColor}35`,
+                                                        }}
+                                                    >
+                                                        <RenderIcon
+                                                            name={vault.icon}
+                                                            size={14}
+                                                            color={accentColor}
+                                                        />
+                                                    </span>
+                                                    <span className="text-sm truncate">{vault.name}</span>
                                                 </SidebarMenuButton>
                                             }
                                         />
-                                        <ContextMenuContent>
-                                            <ContextMenuItem onClick={() => openUpdate(vault)}>
-                                                <PencilIcon size={20} className="mr-2" />
+                                        <ContextMenuContent className="w-40 rounded-xl">
+                                            <ContextMenuItem
+                                                onClick={() => openUpdate(vault)}
+                                                className="cursor-pointer rounded-lg"
+                                            >
+                                                <PencilIcon size={16} className="mr-2" />
                                                 <span>Update</span>
                                             </ContextMenuItem>
-                                            <ContextMenuItem onClick={() => openDelete(vault)}>
-                                                <TrashIcon size={20} className="mr-2" />
+                                            <ContextMenuItem
+                                                onClick={() => openDelete(vault)}
+                                                className="cursor-pointer rounded-lg text-destructive focus:text-destructive"
+                                            >
+                                                <TrashIcon size={16} className="mr-2" />
                                                 <span>Delete</span>
                                             </ContextMenuItem>
                                         </ContextMenuContent>
@@ -126,7 +220,6 @@ export function VaultSideButton() {
                 </SidebarMenu>
             </SidebarGroup>
 
-            {/* THE DIALOGS LIVE OUTSIDE THE LIST, SO CLICKS INSIDE THEM CAN'T BUBBLE INTO A VAULT BUTTON */}
             {vaultToUpdate && (
                 <UpdateVault open={updateOpen} onOpenChange={setUpdateOpen} vault={vaultToUpdate} />
             )}
@@ -134,7 +227,7 @@ export function VaultSideButton() {
                 <DeleteVault open={deleteOpen} onOpenChange={setDeleteOpen} vault={vaultToDelete} />
             )}
         </>
-    )
+    );
 }
 
 export function LockSideButton({ disabled = false }: { disabled?: boolean }) {
@@ -142,23 +235,32 @@ export function LockSideButton({ disabled = false }: { disabled?: boolean }) {
 
     const handleLock = () => {
         router.push("/strongroom");
-        useVaultStore.getState().lockAll(); // Shows the unlock modal
+        useVaultStore.getState().lockAll();
     };
 
     return (
-        <SidebarMenuButton disabled={disabled} size="lg" className="w-full flex justify-start" onClick={handleLock}>
-            <LockIcon size={16} />
-            <span className="text-sm">Lock WardPass</span>
-        </SidebarMenuButton>
-    )
+        <SidebarMenuItem>
+            <SidebarMenuButton
+                disabled={disabled}
+                onClick={handleLock}
+                className="group/lock h-9.5 w-full rounded-xl px-2.5 flex items-center justify-start gap-2.5 text-muted-foreground hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-500/10 transition-all duration-150 cursor-pointer"
+            >
+                <span className="size-6 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover/lock:scale-105 transition-transform">
+                    <LockIcon className="size-3.5" />
+                </span>
+                <span className="text-sm font-medium">Lock WardPass</span>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+    );
 }
 
 // NAVLINKS TYPE
 type NavLinks = {
-    label: string,
-    icon: LucideIcon,
-    path: string
-}
+    label: string;
+    icon: LucideIcon;
+    path: string;
+    external?: boolean;
+};
 
 // ADMIN SIDEBAR COMPONENTS
 export function AdminSideButton() {
@@ -167,8 +269,8 @@ export function AdminSideButton() {
 
     const navigationLinks: NavLinks[] = [
         {
-            label: "Preferences",
-            icon: ShieldCheck,
+            label: "Analytics",
+            icon: ChartNoAxesColumnIncreasing,
             path: "/admin",
         },
         {
@@ -177,26 +279,55 @@ export function AdminSideButton() {
             path: "/admin/user-management",
         },
         {
-            label: "Contact Super Admin / Owner",
+            label: "Contact Super Admin",
             icon: Nfc,
             path: "https://zamarwint.xyz/#contact",
-        }
+            external: true,
+        },
     ];
 
     return (
-        <SidebarMenuItem className="flex flex-col items-center gap-1">
-            {navigationLinks.map((link, key) => (
-                <SidebarMenuButton key={key}
-                    variant={pathName === link.path ? 'highlight' : 'default'}
-                    onClick={() => router.push(link.path)}
-                    className='h-12 p-5'
-                >
-                    <link.icon className={cn("", pathName === link.path && "text-primary")} />
-                    <span className={cn("font-bold", pathName === link.path && "text-primary")}>{link.label}</span>
-                </SidebarMenuButton>
-            ))}
-        </SidebarMenuItem>
-    )
+        <SidebarMenu className="gap-1">
+            {navigationLinks.map((link) => {
+                const isActive = pathName === link.path;
+                return (
+                    <SidebarMenuItem key={link.path}>
+                        <SidebarMenuButton
+                            onClick={() => {
+                                if (link.external) {
+                                    window.open(link.path, "_blank", "noopener,noreferrer");
+                                } else {
+                                    router.push(link.path);
+                                }
+                            }}
+                            className={cn(
+                                "relative h-9.5 w-full rounded-xl px-2.5 flex items-center justify-between gap-2.5 transition-all duration-150 cursor-pointer",
+                                isActive
+                                    ? "bg-sidebar-accent/90 text-foreground font-semibold shadow-2xs ring-1 ring-border/50"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 font-medium"
+                            )}
+                        >
+                            {isActive && (
+                                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 rounded-r-full bg-primary" />
+                            )}
+                            <div className="flex items-center gap-2.5 min-w-0">
+                                <link.icon
+                                    className={cn(
+                                        "size-4 shrink-0 transition-colors",
+                                        isActive ? "text-primary" : "text-muted-foreground"
+                                    )}
+                                />
+                                <span className="text-sm truncate">{link.label}</span>
+                            </div>
+                            {link.external && (
+                                <ExternalLink className="size-3.5 text-muted-foreground/60 shrink-0" />
+                            )}
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                );
+            })}
+        </SidebarMenu>
+    );
 }
 
 // SETTINGS SIDEBAR COMPONENTS
@@ -213,56 +344,90 @@ export function SettingsSideButton() {
         {
             label: "Security",
             icon: ShieldCog,
-            path: "/settings/security"
+            path: "/settings/security",
         },
         {
             label: "Other Apps",
             icon: LayoutGrid,
-            path: "/settings/other-apps"
+            path: "/settings/other-apps",
         },
         {
             label: "Donate",
-            icon: ExternalLink,
+            icon: Heart,
             path: "#",
         },
         {
             label: "Contact Us",
-            icon: ExternalLink,
+            icon: MessageSquare,
             path: "/contact",
         },
     ];
 
     return (
-        <SidebarMenuItem className="flex flex-col items-center gap-1">
-            {navigationLinks.map((link, key) => (
-                <SidebarMenuButton key={key}
-                    variant={pathName === link.path ? 'highlight' : 'default'}
-                    onClick={() => router.push(link.path)}
-                    className='h-12 p-5'
-                >
-                    <link.icon className={cn("", pathName === link.path && "text-primary")} />
-                    <span className={cn("font-bold", pathName === link.path && "text-primary")}>{link.label}</span>
-                </SidebarMenuButton>
-            ))}
-        </SidebarMenuItem>
-    )
+        <SidebarMenu className="gap-1">
+            {navigationLinks.map((link) => {
+                const isActive = pathName === link.path;
+                return (
+                    <SidebarMenuItem key={link.label}>
+                        <SidebarMenuButton
+                            onClick={() => {
+                                if (link.path !== "#") {
+                                    router.push(link.path);
+                                }
+                            }}
+                            className={cn(
+                                "relative h-9.5 w-full rounded-xl px-2.5 flex items-center justify-between gap-2.5 transition-all duration-150 cursor-pointer",
+                                isActive
+                                    ? "bg-sidebar-accent/90 text-foreground font-semibold shadow-2xs ring-1 ring-border/50"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 font-medium"
+                            )}
+                        >
+                            {isActive && (
+                                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 rounded-r-full bg-primary" />
+                            )}
+                            <div className="flex items-center gap-2.5 min-w-0">
+                                <link.icon
+                                    className={cn(
+                                        "size-4 shrink-0 transition-colors",
+                                        isActive ? "text-primary" : "text-muted-foreground"
+                                    )}
+                                />
+                                <span className="text-sm truncate">{link.label}</span>
+                            </div>
+                            {(link.path === "/contact" || link.path === "#") && (
+                                <ExternalLink className="size-3.5 text-muted-foreground/60 shrink-0" />
+                            )}
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                );
+            })}
+        </SidebarMenu>
+    );
 }
 
 // OTHER COMPONENTS
-export function BackButtonTopArea() {
+export function BackButtonTopArea({ title }: { title?: string }) {
     const router = useRouter();
 
     return (
-        <SidebarMenuItem className="flex items-center justify-center cursor-pointer">
-            <SidebarMenuButton
-                className="text-md tracking-tighter flex items-center justify-center font-semibold w-full h-12"
-                onClick={() => router.push('/strongroom')}
+        <SidebarMenuItem className="flex flex-col gap-2 px-1 py-0.5">
+            <button
+                type="button"
+                onClick={() => router.push("/strongroom")}
+                className="group flex items-center gap-2 h-9 w-full rounded-xl px-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/60 transition-all cursor-pointer"
             >
-                <ChevronLeft />
+                <ChevronLeft className="size-4 shrink-0 transition-transform duration-150 group-hover:-translate-x-0.5" />
                 <span>Back to Strongroom</span>
-            </SidebarMenuButton>
+            </button>
+            {title && (
+                <div className="px-2.5 pb-1">
+                    <span className="text-base font-bold tracking-tight text-foreground">
+                        {title}
+                    </span>
+                </div>
+            )}
         </SidebarMenuItem>
-    )
+    );
 }
 
 export function LinkSideButton({
@@ -283,15 +448,31 @@ export function LinkSideButton({
     const pathName = usePathname();
     const router = useRouter();
 
-    // MATCH WHOLE PATH SEGMENTS: "/strongroom" SHOULD NOT ALSO HIGHLIGHT "/strongroom-settings"
     const isActive = hrefExact
         ? pathName === href
         : pathName === href || pathName.startsWith(href.endsWith("/") ? href : `${href}/`);
 
     return (
-        <SidebarMenuButton onClick={() => router.push(href)} disabled={disabled} variant={isActive ? "outline" : null} size="lg" className={cn("w-full flex items-center justify-start", className)}>
-            {Icon}
-            <span className="text-sm">{text}</span>
-        </SidebarMenuButton>
-    )
+        <SidebarMenuItem>
+            <SidebarMenuButton
+                onClick={() => router.push(href)}
+                disabled={disabled}
+                className={cn(
+                    "relative h-9.5 w-full rounded-xl px-2.5 flex items-center justify-start gap-2.5 transition-all duration-150 cursor-pointer",
+                    isActive
+                        ? "bg-sidebar-accent/90 text-foreground font-semibold shadow-2xs ring-1 ring-border/50"
+                        : "text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 font-medium",
+                    className
+                )}
+            >
+                {isActive && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 rounded-r-full bg-primary" />
+                )}
+                <span className={cn("shrink-0 [&>svg]:size-4", isActive ? "text-primary" : "text-muted-foreground")}>
+                    {Icon}
+                </span>
+                <span className="text-sm truncate">{text}</span>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+    );
 }

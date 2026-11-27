@@ -1,8 +1,39 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    Ban,
+    EllipsisVertical,
+    KeyRound,
+    LogOut,
+    Pencil,
+    ShieldCheck,
+    Trash2,
+    UserCheck,
+    UserCog,
+    UserX,
+} from "lucide-react";
 import { useState } from "react";
-import { BanUserAlert, ImpersonateUser, RemoveUser, RevokeAllUserSessions, SetUserPasswordAlert, SetUserRoleAlert, StopImpersonation, UnbanUserAlert, UpdateUserAlert } from "../user-actions/UserActions";
+import {
+    BanUserAlert,
+    ImpersonateUser,
+    RemoveUser,
+    RevokeAllUserSessions,
+    SetUserPasswordAlert,
+    SetUserRoleAlert,
+    StopImpersonation,
+    UnbanUserAlert,
+    UpdateUserAlert,
+} from "../user-actions/UserActions";
 
 export function UserActionsDropdown({ user }: { user: any }) {
     const [openSetUserRole, setOpenSetUserRole] = useState(false);
@@ -16,47 +47,82 @@ export function UserActionsDropdown({ user }: { user: any }) {
     const [openRemoveUser, setOpenRemoveUser] = useState(false);
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger render={
-                <Button variant="ghost">
-                    <EllipsisVertical className="size-4" />
-                </Button>
-            }>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end'>
-                <DropdownMenuGroup>
-                    <DropdownMenuLabel>
-                        User Actions
-                    </DropdownMenuLabel>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSetUserRole(true)}>Set Role</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenSetUserPassword(true)}>Set User Password</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUpdateUser(true)}>Update User</DropdownMenuItem>
-                    {!user.banned && <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenBanUser(true)} disabled={user.banned}>Ban User</DropdownMenuItem>}
-                    {user.banned && <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenUnbanUser(true)} disabled={!user.banned}>Unban User</DropdownMenuItem>}
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <DropdownMenuLabel>
-                        Sessions Actions
-                    </DropdownMenuLabel>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenRevokeAllUserSessions(true)}>Revoke all User Sessions</DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <DropdownMenuLabel>
-                        Impersonation
-                    </DropdownMenuLabel>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenImpersonateUser(true)}>Impersonate User</DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenStopImpersonation(true)}>Stop Impersonation</DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <DropdownMenuLabel>
-                        Delete User
-                    </DropdownMenuLabel>
-                    <DropdownMenuItem className="cursor-pointer" onClick={() => setOpenRemoveUser(true)}>Remove User</DropdownMenuItem>
-                </DropdownMenuGroup>
-            </DropdownMenuContent>
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger
+                    render={
+                        <Button variant="ghost" size="icon" className="rounded-xl cursor-pointer" aria-label="User actions">
+                            <EllipsisVertical className="size-4" />
+                        </Button>
+                    }
+                />
+                <DropdownMenuContent align="end" className="w-52 rounded-xl">
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>User Actions</DropdownMenuLabel>
+                        <DropdownMenuItem className="cursor-pointer rounded-lg gap-2" onClick={() => setOpenSetUserRole(true)}>
+                            <ShieldCheck className="size-4" />
+                            <span>Set Role</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer rounded-lg gap-2" onClick={() => setOpenSetUserPassword(true)}>
+                            <KeyRound className="size-4" />
+                            <span>Set Password</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer rounded-lg gap-2" onClick={() => setOpenUpdateUser(true)}>
+                            <Pencil className="size-4" />
+                            <span>Update User</span>
+                        </DropdownMenuItem>
+                        {!user.banned ? (
+                            <DropdownMenuItem
+                                className="cursor-pointer rounded-lg gap-2 text-amber-600 dark:text-amber-400"
+                                onClick={() => setOpenBanUser(true)}
+                            >
+                                <Ban className="size-4" />
+                                <span>Ban User</span>
+                            </DropdownMenuItem>
+                        ) : (
+                            <DropdownMenuItem
+                                className="cursor-pointer rounded-lg gap-2 text-emerald-600 dark:text-emerald-400"
+                                onClick={() => setOpenUnbanUser(true)}
+                            >
+                                <UserCheck className="size-4" />
+                                <span>Unban User</span>
+                            </DropdownMenuItem>
+                        )}
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>Sessions</DropdownMenuLabel>
+                        <DropdownMenuItem className="cursor-pointer rounded-lg gap-2" onClick={() => setOpenRevokeAllUserSessions(true)}>
+                            <LogOut className="size-4" />
+                            <span>Revoke All Sessions</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>Impersonation</DropdownMenuLabel>
+                        <DropdownMenuItem className="cursor-pointer rounded-lg gap-2" onClick={() => setOpenImpersonateUser(true)}>
+                            <UserCog className="size-4" />
+                            <span>Impersonate User</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer rounded-lg gap-2" onClick={() => setOpenStopImpersonation(true)}>
+                            <UserX className="size-4" />
+                            <span>Stop Impersonation</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>Danger Zone</DropdownMenuLabel>
+                        <DropdownMenuItem
+                            className="cursor-pointer rounded-lg gap-2 text-destructive focus:text-destructive"
+                            onClick={() => setOpenRemoveUser(true)}
+                        >
+                            <Trash2 className="size-4" />
+                            <span>Remove User</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                </DropdownMenuContent>
+            </DropdownMenu>
+
             {/* DIALOGS */}
             <SetUserRoleAlert
                 open={openSetUserRole}
@@ -84,13 +150,11 @@ export function UserActionsDropdown({ user }: { user: any }) {
                 onOpenChange={setOpenUnbanUser}
                 userId={user.id}
             />
-            {/* REVOKE ALL USER SESSIONS */}
             <RevokeAllUserSessions
                 open={openRevokeAllUserSessions}
                 onOpenChange={setOpenRevokeAllUserSessions}
                 userId={user.id}
             />
-            {/* IMPERSONATION */}
             <ImpersonateUser
                 open={openImpersonateUser}
                 onOpenChange={setOpenImpersonateUser}
@@ -100,12 +164,11 @@ export function UserActionsDropdown({ user }: { user: any }) {
                 open={openStopImpersonation}
                 onOpenChange={setOpenStopImpersonation}
             />
-            {/* REMOVE USER */}
             <RemoveUser
                 open={openRemoveUser}
                 onOpenChange={setOpenRemoveUser}
                 userId={user.id}
             />
-        </DropdownMenu>
-    )
+        </>
+    );
 }

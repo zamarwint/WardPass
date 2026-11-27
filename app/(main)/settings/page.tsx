@@ -1,6 +1,5 @@
 import Account from "@/components/app/settings/Account";
 import GeneralSettings from "@/components/app/settings/General";
-import { Separator } from "@/components/ui/separator";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,12 +11,12 @@ export const metadata: Metadata = {
         }
     }
 };
+
 export default function GeneralSettingsPage() {
     return (
-        <>
+        <div className="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-8 flex flex-col gap-8">
             <GeneralSettings />
-            <Separator />
             <Account />
-        </>
-    )
+        </div>
+    );
 }

@@ -7,37 +7,46 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-import { Separator } from "../ui/separator"
-import { AdminSideButton, BackButtonTopArea } from "../app/sidebar/SideButtons"
-import UserDropdown from "../app/sidebar/UserDropdown"
+import { Separator } from "../ui/separator";
+import { AdminSideButton, BackButtonTopArea } from "../app/sidebar/SideButtons";
+import UserDropdown from "../app/sidebar/UserDropdown";
 
-export function AdminSidebar() {
+export function AdminSidebarContent() {
     return (
-        <Sidebar>
-            <SidebarHeader>
+        <>
+            <SidebarHeader className="px-2.5 py-3">
                 <SidebarMenu>
-                    <BackButtonTopArea />
+                    <BackButtonTopArea title="Admin Console" />
                 </SidebarMenu>
             </SidebarHeader>
-            <Separator />
-            <SidebarContent>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Admin Controls</SidebarGroupLabel>
+            <Separator className="bg-border/40" />
+            <SidebarContent className="px-2 py-2">
+                <SidebarGroup className="p-1">
+                    <SidebarGroupLabel className="px-2 mb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                        Admin Controls
+                    </SidebarGroupLabel>
                     <AdminSideButton />
                 </SidebarGroup>
             </SidebarContent>
-            <Separator />
-            <SidebarFooter>
+            <Separator className="bg-border/40" />
+            <SidebarFooter className="px-2 py-2.5">
                 <SidebarMenu>
-                    <SidebarGroup>
-                        <SidebarGroupLabel>Account</SidebarGroupLabel>
+                    <SidebarGroup className="p-1">
                         <UserDropdown onSidebar={true} />
                     </SidebarGroup>
                 </SidebarMenu>
             </SidebarFooter>
+        </>
+    );
+}
+
+export function AdminSidebar() {
+    return (
+        <Sidebar className="border-r border-border/50">
+            <AdminSidebarContent />
             <SidebarRail />
         </Sidebar>
-    )
+    );
 }

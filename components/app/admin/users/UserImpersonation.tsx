@@ -1,46 +1,53 @@
-import { Field, FieldContent, FieldDescription, FieldLegend, FieldSet } from "@/components/ui/field";
+"use client";
+
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useDBListUserImpersonations } from "@/lib/queries/AdminQueries";
+
+const formatTimestamp = (value: Date | string) => new Date(value).toLocaleString();
 
 export function UserImpersonation() {
     const dbImpersonationList = useDBListUserImpersonations();
 
     return (
-        <FieldSet>
-            <Field>
-                <FieldLegend>User Impersonation</FieldLegend>
-                <FieldDescription>Impersonate users to help them with their issues.</FieldDescription>
-                <FieldDescription>Here is a list of current impersonated sessions.</FieldDescription>
-                <FieldContent className="mt-2">
-                    <Table className="border border-border rounded-xl p-10">
-                        <TableCaption>Impersonated Sessions</TableCaption>
-                        <TableHeader>
+        <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-0.5">
+                <h3 className="text-base font-semibold text-foreground">Impersonated Sessions</h3>
+                <p className="text-xs text-muted-foreground">
+                    Audit log of active and historical admin impersonation sessions.
+                </p>
+            </div>
+
+            <div className="rounded-xl border border-border/60 overflow-hidden bg-background/60">
+                <Table>
+                    <TableCaption className="pb-3">Impersonated Sessions</TableCaption>
+                    <TableHeader className="bg-muted/40">
+                        <TableRow>
+                            <TableHead>Admin ID / Name</TableHead>
+                            <TableHead>Session ID</TableHead>
+                            <TableHead>Start Time</TableHead>
+                            <TableHead>End Time</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {!dbImpersonationList.data?.length ? (
                             <TableRow>
-                                <TableHead>Admin Name</TableHead>
-                                <TableHead>User ID</TableHead>
-                                <TableHead>Impersonation Start Time</TableHead>
-                                <TableHead>Impersonation End Time</TableHead>
+                                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground text-sm">
+                                    No impersonated sessions found.
+                                </TableCell>
                             </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {!dbImpersonationList.data?.length ? (
-                                <TableRow>
-                                    <TableCell colSpan={4} className="text-center">
-                                        No impersonated sessions found.
-                                    </TableCell>
-                                </TableRow>
-                            ) : dbImpersonationList.data?.map((session) => (
+                        ) : (
+                            dbImpersonationList.data.map((session) => (
                                 <TableRow key={session.id}>
-                                    <TableCell>{session.impersonatedBy}</TableCell>
-                                    <TableCell>{session.id}</TableCell>
-                                    <TableCell>{session.createdAt.toISOString()}</TableCell>
-                                    <TableCell>{session.expiresAt.toISOString()}</TableCell>
+                                    <TableCell className="font-medium">{session.impersonatedBy}</TableCell>
+                                    <TableCell className="font-mono text-xs text-muted-foreground">{session.id}</TableCell>
+                                    <TableCell className="text-xs">{formatTimestamp(session.createdAt)}</TableCell>
+                                    <TableCell className="text-xs">{formatTimestamp(session.expiresAt)}</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </FieldContent>
-            </Field>
-        </FieldSet>
-    )
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+        </div>
+    );
 }

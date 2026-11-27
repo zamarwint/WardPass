@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, X, ArrowRight, Lock } from "lucide-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, useScroll } from "motion/react";
 import { LogoSwitch, ModeToggleIcon } from "./ThemeChange";
 import { useGetSession } from "@/lib/queries/SessionQueries";
 import UserDropdown from "./app/sidebar/UserDropdown";
-import { CustomLoadingState } from "./LoadingStates";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { OpenSourceProjectAlert } from "./Banners";
@@ -62,31 +61,57 @@ export default function Navbar() {
         </nav>
 
         {/* RIGHT ACTIONS */}
-        <div className="hidden items-center justify-center gap-3 lg:flex">
-          <ModeToggleIcon />
+        <div className="hidden items-center gap-2.5 lg:flex">
+          <div className="flex items-center justify-center rounded-xl border border-border/60 bg-muted/30 p-0.5 hover:bg-muted/60 transition-colors">
+            <ModeToggleIcon />
+          </div>
+
+          <div className="h-5 w-px bg-border/60 mx-0.5" aria-hidden="true" />
 
           {session.isPending ? (
-            <CustomLoadingState loaderChoice={2} className="text-xs text-muted-foreground">
-              Loading...
-            </CustomLoadingState>
+            <div className="flex items-center gap-2">
+              <div className="h-9.5 w-32 rounded-xl bg-muted/50 animate-pulse" />
+              <div className="size-9.5 rounded-xl bg-muted/50 animate-pulse" />
+            </div>
           ) : session.data?.user ? (
-            <>
-              <Link href="/strongroom" className={cn(buttonVariants({ variant: 'default', size: 'lg' }))}>Open Strongroom</Link>
-              <UserDropdown onSidebar={false} />
-            </>
-          ) : (
-            <>
+            <div className="flex items-center gap-2">
               <Link
-                className="px-3 py-1.5 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
+                href="/strongroom"
+                className={cn(
+                  buttonVariants({ variant: "default" }),
+                  "group h-9.5 px-4 rounded-xl text-xs font-semibold gap-2 shadow-sm hover:shadow-md transition-all"
+                )}
+              >
+                <Lock className="size-3.5" />
+                <span>Open Strongroom</span>
+                <ArrowRight className="size-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
+              </Link>
+              <ul className="flex items-center list-none m-0 p-0">
+                <UserDropdown onSidebar={false} />
+              </ul>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
                 href="/sign-in"
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "h-9.5 px-4 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all"
+                )}
               >
                 Sign In
               </Link>
-              <Link href="/sign-up" className={cn("flex items-center gap-1.5", buttonVariants({ size: "lg" }))}>
+              <Link
+                href="/sign-up"
+                className={cn(
+                  buttonVariants({ variant: "default" }),
+                  "group h-9.5 px-4.5 rounded-xl text-xs font-semibold gap-1.5 shadow-sm hover:shadow-md transition-all"
+                )}
+              >
                 <span>Get Started</span>
-                <ArrowRight className="size-3" />
+                <ArrowRight className="size-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
               </Link>
-            </>
+            </div>
           )}
         </div>
 

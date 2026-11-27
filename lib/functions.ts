@@ -67,3 +67,19 @@ export function useKeyboardShortcuts() {
     };
   });
 }
+
+export function useSubmitOnEnter({ func }: { func: () => void }) {
+  useEffect(() => {
+    if (typeof window === undefined) return;
+
+    const submitOnEnter = (e: KeyboardEvent) => {
+      if (e.key === "Enter") func();
+    };
+
+    window.addEventListener("keydown", submitOnEnter);
+
+    return () => {
+      window.removeEventListener("keydown", submitOnEnter);
+    };
+  });
+}

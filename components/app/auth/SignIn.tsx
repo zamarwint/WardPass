@@ -75,6 +75,7 @@ export default function SignIn() {
                                             aria-invalid={fieldState.invalid}
                                             className="h-12"
                                             autoComplete="off"
+                                            disabled={form.formState.isSubmitting || emailPending || emailSignIn.isPending}
                                         />
                                         {fieldState.invalid && (
                                             <FieldError errors={[fieldState.error]} />
@@ -104,6 +105,7 @@ export default function SignIn() {
                                                 aria-invalid={fieldState.invalid}
                                                 className="h-12"
                                                 autoComplete="off"
+                                                disabled={form.formState.isSubmitting || emailPending || emailSignIn.isPending}
                                             />
                                             <Button
                                                 type="button"

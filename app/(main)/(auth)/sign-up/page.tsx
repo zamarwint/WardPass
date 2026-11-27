@@ -2,7 +2,7 @@ import SignUp from "@/components/app/auth/SignUp";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Sign up | WardPass",
+    title: "Sign Up · WardPass",
     robots: {
         googleBot: {
             index: false,

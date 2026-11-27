@@ -1,4 +1,6 @@
-import { PasswordInput } from "@/components/PasswordInput"
+"use client";
+
+import { PasswordInput } from "@/components/PasswordInput";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -8,107 +10,135 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useBanUser, useImpersonateUser, useRemoveUser, useRevokeAllUserSessions, useSetUserPassword, useSetUserRole, useStopImpersonation, useUnbanUser, useUpdateUser } from "@/lib/mutations/AdminUserActionMutations"
-import { resetPasswordSchema } from "@/lib/validations/authSchemas"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { EyeIcon, EyeOffIcon } from "lucide-react"
-import { useState, useTransition } from "react"
-import { Controller, useForm } from "react-hook-form"
-import z from "zod"
-import { ProfilePictureUpload } from "../../settings/ProfilePicUpload"
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    useBanUser,
+    useImpersonateUser,
+    useRemoveUser,
+    useRevokeAllUserSessions,
+    useSetUserPassword,
+    useSetUserRole,
+    useStopImpersonation,
+    useUnbanUser,
+    useUpdateUser,
+} from "@/lib/mutations/AdminUserActionMutations";
+import { resetPasswordSchema } from "@/lib/validations/authSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useState, useTransition } from "react";
+import { Controller, useForm } from "react-hook-form";
+import z from "zod";
+import { ProfilePictureUpload } from "../../settings/ProfilePicUpload";
 
-export function SetUserRoleAlert({ open, onOpenChange, userId, currentRole }: { open: boolean, onOpenChange: (open: boolean) => void, userId: string, currentRole: "admin" | "user" | ("admin" | "user")[] }) {
-    const [role, setRole] = useState<"admin" | "user" | ("admin" | "user")[]>(currentRole)
+export function SetUserRoleAlert({
+    open,
+    onOpenChange,
+    userId,
+    currentRole,
+}: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    userId: string;
+    currentRole: "admin" | "user" | ("admin" | "user")[];
+}) {
+    const [role, setRole] = useState<"admin" | "user" | ("admin" | "user")[]>(currentRole);
     const { mutate, isPending, error } = useSetUserRole();
 
     const handleSubmit = () => {
         mutate({ userId, role });
         onOpenChange(false);
-    }
+    };
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-2xl">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Set User Role</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Set user role of this user.
-                    </AlertDialogDescription>
+                    <AlertDialogDescription>Select the permission role for this user.</AlertDialogDescription>
                 </AlertDialogHeader>
-                <Select value={role as string} onValueChange={(value) => setRole(value as "admin" | "user" | ("admin" | "user")[])}>
-                    <SelectTrigger>
+                <Select
+                    value={role as string}
+                    onValueChange={(value) => setRole(value as "admin" | "user" | ("admin" | "user")[])}
+                >
+                    <SelectTrigger className="h-11 rounded-xl">
                         <SelectValue placeholder="Select user role" />
                     </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="admin" className="cursor-pointer">Admin</SelectItem>
-                        <SelectItem value="user" className="cursor-pointer">User</SelectItem>
-                        <SelectItem value={JSON.stringify(["admin", "user"])} className="cursor-pointer">Admin & User</SelectItem>
+                    <SelectContent className="rounded-xl">
+                        <SelectItem value="admin" className="cursor-pointer rounded-lg">Admin</SelectItem>
+                        <SelectItem value="user" className="cursor-pointer rounded-lg">User</SelectItem>
+                        <SelectItem value={JSON.stringify(["admin", "user"])} className="cursor-pointer rounded-lg">
+                            Admin &amp; User
+                        </SelectItem>
                     </SelectContent>
                 </Select>
-                {error && <p className="text-red-500 text-center">{error.message}</p>}
+                {error && <p className="text-destructive text-sm text-center">{error.message}</p>}
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSubmit} disabled={isPending}>Set Role</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="rounded-xl" onClick={handleSubmit} disabled={isPending}>
+                        Set Role
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
 
-export function SetUserPasswordAlert({ open, onOpenChange, userId }: { open: boolean, onOpenChange: (open: boolean) => void, userId: string }) {
+export function SetUserPasswordAlert({
+    open,
+    onOpenChange,
+    userId,
+}: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    userId: string;
+}) {
     const [showPassword, setShowPassword] = useState(false);
-
     const [setUserPasswordPending, startSetUserPasswordTransition] = useTransition();
     const { mutate, isPending, error } = useSetUserPassword();
 
-    // 2. Create form instance with resolver
     const form = useForm<z.infer<typeof resetPasswordSchema>>({
         resolver: zodResolver(resetPasswordSchema),
         mode: "onChange",
         defaultValues: {
             password: "",
-            confirmPassword: ""
-        }
-    })
+            confirmPassword: "",
+        },
+    });
 
     function onSubmit(data: z.infer<typeof resetPasswordSchema>) {
         startSetUserPasswordTransition(async () => {
             mutate({ userId, newPassword: data.password });
             onOpenChange(false);
-        })
+        });
     }
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-2xl">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Set User Password</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Set new password of this user.
-                    </AlertDialogDescription>
+                    <AlertDialogDescription>Set a new master password for this user.</AlertDialogDescription>
                 </AlertDialogHeader>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                    {/* Password Field */}
+                <form id="set-user-password-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <Controller
                         name="password"
                         control={form.control}
                         render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor="master-password">New Master Password</FieldLabel>
+                                <FieldLabel htmlFor="admin-set-master-password">New Master Password</FieldLabel>
                                 <div className="relative">
                                     <Input
                                         {...field}
-                                        id="master-password"
+                                        id="admin-set-master-password"
                                         type={showPassword ? "text" : "password"}
                                         placeholder="************"
                                         aria-invalid={fieldState.invalid}
-                                        className="h-12"
+                                        className="h-11 rounded-xl pr-10"
                                         autoComplete="off"
                                     />
                                     <Button
@@ -125,47 +155,57 @@ export function SetUserPasswordAlert({ open, onOpenChange, userId }: { open: boo
                                         )}
                                     </Button>
                                 </div>
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
-                                )}
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                             </Field>
                         )}
                     />
 
-                    {/* Confirm Password Field */}
                     <Controller
                         name="confirmPassword"
                         control={form.control}
                         render={({ field, fieldState }) => (
                             <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor="confirmMasterPassword">Confirm New Master Password</FieldLabel>
+                                <FieldLabel htmlFor="admin-confirm-master-password">Confirm New Master Password</FieldLabel>
                                 <PasswordInput
                                     {...field}
-                                    id="confirmMasterPassword"
+                                    id="admin-confirm-master-password"
                                     type="password"
                                     placeholder="************"
                                     aria-invalid={fieldState.invalid}
-                                    className="h-12"
+                                    className="h-11 rounded-xl"
                                     autoComplete="off"
                                 />
-                                {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
-                                )}
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                             </Field>
                         )}
                     />
                 </form>
-                {error && <p className="text-red-500 text-center">{error.message}</p>}
+                {error && <p className="text-destructive text-sm text-center">{error.message}</p>}
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction type="submit" disabled={isPending || setUserPasswordPending}>Set Password</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <Button
+                        type="submit"
+                        form="set-user-password-form"
+                        className="rounded-xl"
+                        disabled={isPending || setUserPasswordPending}
+                    >
+                        Set Password
+                    </Button>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
 
-export function UpdateUserAlert({ open, onOpenChange, user }: { open: boolean, onOpenChange: (open: boolean) => void, user: any }) {
+export function UpdateUserAlert({
+    open,
+    onOpenChange,
+    user,
+}: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    user: any;
+}) {
     const { mutate, isPending } = useUpdateUser();
 
     const [name, setName] = useState<string>(user.name);
@@ -174,47 +214,64 @@ export function UpdateUserAlert({ open, onOpenChange, user }: { open: boolean, o
     const handleSubmit = () => {
         mutate({ userId: user.id, userData: { name, email } });
         onOpenChange(false);
-    }
+    };
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-2xl max-h-[90vh] overflow-y-auto">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Update User</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Are you sure you want to update this user?
-                    </AlertDialogDescription>
+                    <AlertDialogDescription>Update profile details for this user.</AlertDialogDescription>
                 </AlertDialogHeader>
                 <Field>
-                    <FieldLabel htmlFor="name">Name</FieldLabel>
-                    <Input id="name" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} className="h-12" />
+                    <FieldLabel htmlFor="admin-update-name">Name</FieldLabel>
+                    <Input
+                        id="admin-update-name"
+                        placeholder="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="h-11 rounded-xl"
+                    />
                     <FieldError errors={[]} />
                 </Field>
                 <Field>
-                    <FieldLabel htmlFor="email">Email</FieldLabel>
-                    <Input id="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="h-12" />
+                    <FieldLabel htmlFor="admin-update-email">Email</FieldLabel>
+                    <Input
+                        id="admin-update-email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="h-11 rounded-xl"
+                    />
                     <FieldError errors={[]} />
                 </Field>
                 <Field>
-                    <FieldLabel htmlFor="image">Profile Picture</FieldLabel>
+                    <FieldLabel htmlFor="admin-update-image">Profile Picture</FieldLabel>
                     <div className="flex flex-col items-center justify-center gap-2">
-                        <ProfilePictureUpload
-                            imageUrl={user.image}
-                            userName={user.name}
-                        />
+                        <ProfilePictureUpload imageUrl={user.image} userName={user.name} />
                     </div>
                     <FieldError errors={[]} />
                 </Field>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSubmit} disabled={isPending}>Update User</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="rounded-xl" onClick={handleSubmit} disabled={isPending}>
+                        Update User
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
 
-export function BanUserAlert({ open, onOpenChange, userId }: { open: boolean, onOpenChange: (open: boolean) => void, userId: string }) {
+export function BanUserAlert({
+    open,
+    onOpenChange,
+    userId,
+}: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    userId: string;
+}) {
     const [banReason, setBanReason] = useState<string>("");
     const [banExpiresIn, setBanExpiresIn] = useState<string>("7");
     const { mutate, isPending, error } = useBanUser();
@@ -222,159 +279,210 @@ export function BanUserAlert({ open, onOpenChange, userId }: { open: boolean, on
     const handleSubmit = () => {
         mutate({ userId, banReason, banExpiresIn: parseInt(banExpiresIn) });
         onOpenChange(false);
-    }
+    };
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-2xl">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Ban User</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Are you sure you want to ban this user?
-                    </AlertDialogDescription>
+                    <AlertDialogDescription>Suspend this user&apos;s access to WardPass.</AlertDialogDescription>
                 </AlertDialogHeader>
-                <Label htmlFor='ban'>Enter the ban reason</Label>
-                <Input id='ban' placeholder="Ban reason" value={banReason} onChange={(e) => setBanReason(e.target.value)} />
-                <Select value={banExpiresIn} onValueChange={(value) => setBanExpiresIn(value as string)}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Ban expires in" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="7" className="cursor-pointer">7 days</SelectItem>
-                        <SelectItem value="30" className="cursor-pointer">30 days</SelectItem>
-                        <SelectItem value="90" className="cursor-pointer">90 days</SelectItem>
-                        <SelectItem value="180" className="cursor-pointer">180 days</SelectItem>
-                        <SelectItem value="365" className="cursor-pointer">1 year</SelectItem>
-                        <SelectItem value="-1" className="cursor-pointer">Permanent</SelectItem>
-                    </SelectContent>
-                </Select>
-                {error && <p className="text-red-500 text-center">{error.message}</p>}
+                <div className="flex flex-col gap-3">
+                    <Label htmlFor="ban">Ban Reason</Label>
+                    <Input
+                        id="ban"
+                        placeholder="Enter ban reason..."
+                        value={banReason}
+                        onChange={(e) => setBanReason(e.target.value)}
+                        className="h-11 rounded-xl"
+                    />
+                    <Label>Duration</Label>
+                    <Select value={banExpiresIn} onValueChange={(value) => setBanExpiresIn(value as string)}>
+                        <SelectTrigger className="h-11 rounded-xl">
+                            <SelectValue placeholder="Ban expires in" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                            <SelectItem value="7" className="cursor-pointer rounded-lg">7 days</SelectItem>
+                            <SelectItem value="30" className="cursor-pointer rounded-lg">30 days</SelectItem>
+                            <SelectItem value="90" className="cursor-pointer rounded-lg">90 days</SelectItem>
+                            <SelectItem value="180" className="cursor-pointer rounded-lg">180 days</SelectItem>
+                            <SelectItem value="365" className="cursor-pointer rounded-lg">1 year</SelectItem>
+                            <SelectItem value="-1" className="cursor-pointer rounded-lg">Permanent</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                {error && <p className="text-destructive text-sm text-center">{error.message}</p>}
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSubmit} disabled={isPending}>Ban</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="rounded-xl" onClick={handleSubmit} disabled={isPending}>
+                        Ban User
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
 
-export function UnbanUserAlert({ open, onOpenChange, userId }: { open: boolean, onOpenChange: (open: boolean) => void, userId: string }) {
+export function UnbanUserAlert({
+    open,
+    onOpenChange,
+    userId,
+}: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    userId: string;
+}) {
     const { mutate, isPending } = useUnbanUser();
 
     const handleSubmit = () => {
         mutate({ userId });
         onOpenChange(false);
-    }
+    };
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-2xl">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Unban User</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Are you sure you want to unban this user?
-                    </AlertDialogDescription>
+                    <AlertDialogDescription>Restore this user&apos;s access to WardPass.</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSubmit} disabled={isPending}>Unban</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="rounded-xl" onClick={handleSubmit} disabled={isPending}>
+                        Unban User
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
 
-// REVOKE ALL USER SESSIONS
-export function RevokeAllUserSessions({ open, onOpenChange, userId }: { open: boolean, onOpenChange: (open: boolean) => void, userId: string }) {
+export function RevokeAllUserSessions({
+    open,
+    onOpenChange,
+    userId,
+}: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    userId: string;
+}) {
     const { mutate, isPending } = useRevokeAllUserSessions();
 
     const handleSubmit = () => {
         mutate({ userId });
         onOpenChange(false);
-    }
+    };
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-2xl">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Revoke All User Sessions</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to revoke all sessions for this user? This will log them out of all sessions, and they will need to log in again.
+                        Are you sure you want to revoke all sessions for this user? This will log them out of all devices.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSubmit} disabled={isPending}>Revoke All Sessions</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="rounded-xl" onClick={handleSubmit} disabled={isPending}>
+                        Revoke All Sessions
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
 
-export function ImpersonateUser({ open, onOpenChange, userId }: { open: boolean, onOpenChange: (open: boolean) => void, userId: string }) {
+export function ImpersonateUser({
+    open,
+    onOpenChange,
+    userId,
+}: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    userId: string;
+}) {
     const { mutate, isPending } = useImpersonateUser();
 
     const handleSubmit = () => {
         mutate({ userId });
         onOpenChange(false);
-    }
+    };
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-2xl">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Impersonate User</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This will temporarily give you full admin access to the user account.
+                        This will temporarily give you admin impersonation access to this user&apos;s account.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSubmit} disabled={isPending}>Impersonate</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="rounded-xl" onClick={handleSubmit} disabled={isPending}>
+                        Impersonate
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
 
-export function StopImpersonation({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) {
+export function StopImpersonation({
+    open,
+    onOpenChange,
+}: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+}) {
     const { mutate, isPending } = useStopImpersonation();
 
     const handleSubmit = () => {
         mutate();
         onOpenChange(false);
-    }
+    };
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-2xl">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Stop Impersonation</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Are you sure you want to stop your current impersonation?
+                        Are you sure you want to stop your current impersonation session?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSubmit} disabled={isPending}>Stop Impersonation</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="rounded-xl" onClick={handleSubmit} disabled={isPending}>
+                        Stop Impersonation
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
 
-// REMOVE / DELETE USER
-export function RemoveUser({ open, onOpenChange, userId }: { open: boolean, onOpenChange: (open: boolean) => void, userId: string }) {
+export function RemoveUser({
+    open,
+    onOpenChange,
+    userId,
+}: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    userId: string;
+}) {
     const { mutate, isPending } = useRemoveUser();
 
     const handleSubmit = () => {
         mutate({ userId });
         onOpenChange(false);
-    }
+    };
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent>
+            <AlertDialogContent className="rounded-2xl">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Remove User</AlertDialogTitle>
                     <AlertDialogDescription>
@@ -382,10 +490,16 @@ export function RemoveUser({ open, onOpenChange, userId }: { open: boolean, onOp
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSubmit} disabled={isPending}>Remove User</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                        className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        onClick={handleSubmit}
+                        disabled={isPending}
+                    >
+                        Remove User
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }

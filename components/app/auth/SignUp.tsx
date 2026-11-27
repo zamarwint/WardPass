@@ -86,7 +86,7 @@ export default function SignUp() {
                                             aria-invalid={fieldState.invalid}
                                             className="h-12 w-lvw"
                                             autoComplete="off"
-                                            maxLength={31}
+                                            disabled={form.formState.isSubmitting || signUpPending || signUpIsPending}
                                         />
                                         {fieldState.invalid && (
                                             <FieldError errors={[fieldState.error]} />
@@ -110,6 +110,7 @@ export default function SignUp() {
                                             aria-invalid={fieldState.invalid}
                                             className="h-12"
                                             autoComplete="off"
+                                            disabled={form.formState.isSubmitting || signUpPending || signUpIsPending}
                                         />
                                         {fieldState.invalid && (
                                             <FieldError errors={[fieldState.error]} />
@@ -134,6 +135,7 @@ export default function SignUp() {
                                                 aria-invalid={fieldState.invalid}
                                                 className="h-12"
                                                 autoComplete="off"
+                                                disabled={form.formState.isSubmitting || signUpPending || signUpIsPending}
                                             />
                                             <Button
                                                 type="button"
@@ -172,6 +174,7 @@ export default function SignUp() {
                                             aria-invalid={fieldState.invalid}
                                             className="h-12"
                                             autoComplete="off"
+                                            disabled={form.formState.isSubmitting || signUpPending || signUpIsPending}
                                         />
                                         <div className="w-full text-xs text-green-600">
                                             <p>{confirmPasswordSuccess}</p>
